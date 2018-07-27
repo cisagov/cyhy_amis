@@ -20,14 +20,6 @@ data "aws_ami" "mongo" {
   most_recent = true
 }
 
-resource "aws_ebs_volume" "mongo_data" {
-  availability_zone = "${var.aws_region}a"
-  type = "gp2"
-  size = 8
-  
-  tags = "${var.tags}"
-}
-
 resource "aws_instance" "mongo" {
   ami = "${data.aws_ami.mongo.id}"
   instance_type = "t2.micro"
@@ -47,9 +39,48 @@ resource "aws_instance" "mongo" {
   tags = "${var.tags}"
 }
 
+resource "aws_ebs_volume" "mongo_data" {
+  availability_zone = "${var.aws_region}a"
+  type = "io1"
+  size = 20
+  iops = 1000
+  
+  tags = "${var.tags}"
+}
+
+resource "aws_ebs_volume" "mongo_journal" {
+  availability_zone = "${var.aws_region}a"
+  type = "io1"
+  size = 8
+  iops = 250
+  
+  tags = "${var.tags}"
+}
+
+resource "aws_ebs_volume" "mongo_log" {
+  availability_zone = "${var.aws_region}a"
+  type = "io1"
+  size = 8
+  iops = 100
+  
+  tags = "${var.tags}"
+}
+
 resource "aws_volume_attachment" "mongo_data_attachment" {
   device_name = "/dev/xvdb"
   volume_id = "${aws_ebs_volume.mongo_data.id}"
+  instance_id = "${aws_instance.mongo.id}"
+}
+
+resource "aws_volume_attachment" "mongo_journal_attachment" {
+  device_name = "/dev/xvdc"
+  volume_id = "${aws_ebs_volume.mongo_journal.id}"
+  instance_id = "${aws_instance.mongo.id}"
+}
+
+resource "aws_volume_attachment" "mongo_log_attachment" {
+  device_name = "/dev/xvdd"
+  volume_id = "${aws_ebs_volume.mongo_log.id}"
   instance_id = "${aws_instance.mongo.id}"
 }
 
