@@ -1,0 +1,6 @@
+---
+# tasks file for nmap
+- name: Install nmap
+  apt:
+    name: nmap
+    state: latest

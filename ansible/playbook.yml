@@ -1,0 +1,14 @@
+---
+- hosts: all
+  name: Update the base image
+  become: yes
+  become_method: sudo
+  roles:
+    - upgrade
+
+- hosts: nmap
+  name: Install nmap
+  become: yes
+  become_method: sudo
+  roles:
+    - nmap

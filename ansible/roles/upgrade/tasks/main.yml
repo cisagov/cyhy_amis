@@ -1,0 +1,7 @@
+---
+# tasks file for upgrade
+- name: upgrade the instance
+  apt:
+    name: '*'
+    state: latest
+    update_cache: yes

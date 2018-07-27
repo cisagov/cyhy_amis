@@ -1,0 +1,39 @@
+{
+    "builders": [{
+        "type": "amazon-ebs",
+        "region": "us-east-1",
+        "source_ami_filter": {
+            "filters": {
+                "virtualization-type": "hvm",
+                "name": "debian-stretch-hvm-x86_64-gp2-*",
+                "root-device-type": "ebs"
+            },
+            "owners": [
+                "379101102735"
+            ],
+            "most_recent": true
+        },
+        "instance_type": "t2.micro",
+        "ssh_username": "root",
+        "ami_name": "cyhy-nmap-hvm-{{timestamp}}-x86_64-ebs",
+
+        "tags": {
+            "Team": "NCATS OIS - Development",
+            "Application": "Cyber Hygiene",
+            "OS_Version": "Amazon Linux",
+            "Release": "Latest",
+            "Base_AMI_Name": "{{ .SourceAMIName }}"
+        }
+    }],
+
+    "provisioners": [
+        {
+            "type": "ansible",
+            "playbook_file": "ansible/playbook.yml",
+            "groups": [
+                "nmap"
+            ],
+            "user": "admin"
+        }
+    ]
+}
