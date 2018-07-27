@@ -1,7 +1,7 @@
 nmap
 =========
 
-A role for NMAP servers.
+A role for installing and configuring NMAP servers.
 
 Requirements
 ------------
