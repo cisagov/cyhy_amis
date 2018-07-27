@@ -2,7 +2,7 @@
 
 Build with:
 ```
-packer-io build packer/packer.json
+packer build packer/nmap.json
 ```
 
 ## License ##
