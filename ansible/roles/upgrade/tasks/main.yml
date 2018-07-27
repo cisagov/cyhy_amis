@@ -1,5 +1,12 @@
 ---
 # tasks file for upgrade
+- name: install aptitude
+  apt:
+    name: 'aptitude'
+    state: latest
+    update_cache: yes
+    force_apt_get: yes
+
 - name: upgrade the instance
   apt:
     name: '*'
