@@ -1,4 +1,4 @@
-# NCATS AWS AMIs :file_folder: #
+# NCATS AWS AMIs :dvd: #
 
 Build with:
 ```
