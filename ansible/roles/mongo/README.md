@@ -1,7 +1,7 @@
-nmap
+mongo
 =========
 
-A role for installing and configuring NMAP servers.
+A role for installing and configuring MongoDB servers.
 
 Requirements
 ------------
@@ -23,11 +23,11 @@ Example Playbook
 
 Here's how to use it in a playbook:
 
-    - hosts: nmap
+    - hosts: mongo
       become: yes
       become_method: sudo
       roles:
-         - nmap
+         - mongo
 
 License
 -------
