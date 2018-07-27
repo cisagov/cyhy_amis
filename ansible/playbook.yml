@@ -6,6 +6,13 @@
   roles:
     - upgrade
 
+- hosts: all
+  name: Configure ssh
+  become: yes
+  become_method: sudo
+  roles:
+    - ssh
+
 - hosts: nmap
   name: Install nmap
   become: yes
