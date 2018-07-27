@@ -12,3 +12,10 @@
   become_method: sudo
   roles:
     - nmap
+
+- hosts: mongo
+  name: Install and configure MongoDB
+  become: yes
+  become_method: sudo
+  roles:
+    - mongo
