@@ -14,13 +14,13 @@
             "most_recent": true
         },
         "instance_type": "t2.micro",
-        "ssh_username": "root",
+        "ssh_username": "admin",
         "ami_name": "cyhy-nmap-hvm-{{timestamp}}-x86_64-ebs",
 
         "tags": {
             "Team": "NCATS OIS - Development",
             "Application": "Cyber Hygiene",
-            "OS_Version": "Amazon Linux",
+            "OS_Version": "Debian Stretch",
             "Release": "Latest",
             "Base_AMI_Name": "{{ .SourceAMIName }}"
         }
@@ -32,8 +32,7 @@
             "playbook_file": "ansible/playbook.yml",
             "groups": [
                 "nmap"
-            ],
-            "user": "admin"
+            ]
         }
     ]
 }
