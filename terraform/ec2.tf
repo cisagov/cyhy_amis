@@ -24,7 +24,7 @@ resource "aws_instance" "mongo" {
   ami = "${data.aws_ami.mongo.id}"
   instance_type = "t2.micro"
   # ebs_optimized = true
-  availability_zone = "${var.aws_region}a"
+  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   root_block_device {
     volume_type = "gp2"
@@ -40,7 +40,7 @@ resource "aws_instance" "mongo" {
 }
 
 resource "aws_ebs_volume" "mongo_data" {
-  availability_zone = "${var.aws_region}a"
+  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
   size = 20
   iops = 1000
@@ -49,7 +49,7 @@ resource "aws_ebs_volume" "mongo_data" {
 }
 
 resource "aws_ebs_volume" "mongo_journal" {
-  availability_zone = "${var.aws_region}a"
+  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
   size = 8
   iops = 250
@@ -58,7 +58,7 @@ resource "aws_ebs_volume" "mongo_journal" {
 }
 
 resource "aws_ebs_volume" "mongo_log" {
-  availability_zone = "${var.aws_region}a"
+  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
   size = 8
   iops = 100
