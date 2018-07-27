@@ -1,0 +1,9 @@
+---
+# tasks file for ssh
+- name: Add authorized ssh keys
+  authorized_key:
+    user: admin
+    key: '{{ item.1 }}'
+  with_subelements:
+    - '{{ users }}'
+    - ssh_keys
