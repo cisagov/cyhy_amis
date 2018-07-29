@@ -26,17 +26,21 @@ resource "aws_instance" "mongo" {
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
+  # TEMP - After testing, move to cyhy_private_subnet
+  subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
+  associate_public_ip_address = true
+
   root_block_device {
     volume_type = "gp2"
     volume_size = 8
     delete_on_termination = true
   }
 
-  security_groups = [
-    "${aws_security_group.mongo_sg.name}"
+  vpc_security_group_ids = [
+    "${aws_security_group.cyhy_scanner_sg.id}"
   ]
 
-  tags = "${var.tags}"
+  tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
 }
 
 resource "aws_ebs_volume" "mongo_data" {
@@ -44,8 +48,8 @@ resource "aws_ebs_volume" "mongo_data" {
   type = "io1"
   size = 20
   iops = 1000
-  
-  tags = "${var.tags}"
+
+  tags = "${merge(var.tags, map("Name", "Mongo Data"))}"
 }
 
 resource "aws_ebs_volume" "mongo_journal" {
@@ -53,8 +57,8 @@ resource "aws_ebs_volume" "mongo_journal" {
   type = "io1"
   size = 8
   iops = 250
-  
-  tags = "${var.tags}"
+
+  tags = "${merge(var.tags, map("Name", "Mongo Journal"))}"
 }
 
 resource "aws_ebs_volume" "mongo_log" {
@@ -62,8 +66,8 @@ resource "aws_ebs_volume" "mongo_log" {
   type = "io1"
   size = 8
   iops = 100
-  
-  tags = "${var.tags}"
+
+  tags = "${merge(var.tags, map("Name", "Mongo Log"))}"
 }
 
 resource "aws_volume_attachment" "mongo_data_attachment" {
@@ -82,22 +86,4 @@ resource "aws_volume_attachment" "mongo_log_attachment" {
   device_name = "/dev/xvdd"
   volume_id = "${aws_ebs_volume.mongo_log.id}"
   instance_id = "${aws_instance.mongo.id}"
-}
-
-resource "aws_security_group" "mongo_sg" {
-  ingress {
-    from_port = 22
-    to_port = 22
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port = 0
-    to_port = 0
-    protocol = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = "${var.tags}"
 }
