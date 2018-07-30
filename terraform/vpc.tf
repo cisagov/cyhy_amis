@@ -269,3 +269,50 @@ resource "aws_security_group" "cyhy_scanner_sg" {
 
   tags = "${merge(var.tags, map("Name", "CyHy Scanners"))}"
 }
+
+# Security group for the bastion host
+resource "aws_security_group" "cyhy_bastion_sg" {
+  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+
+  # Allow SSH ingress from anywhere
+  ingress {
+    protocol = "tcp"
+    cidr_blocks = [
+     "0.0.0.0/0"
+    ]
+    from_port = 22
+    to_port = 22
+  }
+
+  # Allow ephemeral ports from anywhere
+  ingress {
+    protocol = "tcp"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+    from_port = 1024
+    to_port = 65535
+  }
+
+  # Allow SSH egress to the scanner subnet
+  egress {
+    protocol = "tcp"
+    cidr_blocks = [
+     "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
+    ]
+    from_port = 22
+    to_port = 22
+  }
+
+  # Allow egress on all ephemeral ports
+  egress {
+    protocol = "tcp"
+    cidr_blocks = [
+      "0.0.0.0/0"
+    ]
+    from_port = 1024
+    to_port = 65535
+  }
+
+  tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
+}
