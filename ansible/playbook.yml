@@ -33,3 +33,10 @@
   become_method: sudo
   roles:
     - nessus
+
+- hosts: docker
+  name: Install Docker
+  become: yes
+  become_method: sudo
+  roles:
+    - docker
