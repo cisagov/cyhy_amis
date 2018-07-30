@@ -1,14 +1,22 @@
 ---
 # tasks file for upgrade
-- name: Install aptitude
+- name: Install aptitude (debian group only)
+  when: "'debian' in group_names"
   apt:
     name: 'aptitude'
     state: latest
     update_cache: yes
     force_apt_get: yes
 
-- name: Upgrade the instance
+- name: Upgrade the instance (debian group only)
+  when: "'debian' in group_names"
   apt:
     name: '*'
     state: latest
     update_cache: yes
+
+- name: Upgrade all packages (nessus group only)
+  when: "'nessus' in group_names"
+  yum:
+    name: '*'
+    state: latest
