@@ -31,6 +31,7 @@
             "type": "ansible",
             "playbook_file": "ansible/playbook.yml",
             "groups": [
+                "debian",
                 "bastion"
             ]
         }
