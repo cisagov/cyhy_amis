@@ -26,9 +26,8 @@ resource "aws_instance" "mongo" {
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  # TEMP - After testing, move to cyhy_private_subnet
-  subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
-  associate_public_ip_address = true
+  subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
+  # associate_public_ip_address = true
 
   root_block_device {
     volume_type = "gp2"
@@ -37,7 +36,7 @@ resource "aws_instance" "mongo" {
   }
 
   vpc_security_group_ids = [
-    "${aws_security_group.cyhy_scanner_sg.id}"
+    "${aws_security_group.cyhy_private_sg.id}"
   ]
 
   tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
