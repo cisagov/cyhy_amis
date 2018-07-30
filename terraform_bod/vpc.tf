@@ -125,7 +125,7 @@ resource "aws_network_acl_rule" "private_ingress_anywhere_via_ephemeral_ports" {
   rule_number = 110
   rule_action = "allow"
   cidr_block = "0.0.0.0/0"
-  from_port = 1025
+  from_port = 1024
   to_port = 65535
 }
 
@@ -191,7 +191,7 @@ resource "aws_network_acl_rule" "private_egress_to_public_via_ephemeral_ports" {
   rule_number = 150
   rule_action = "allow"
   cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
-  from_port = 1025
+  from_port = 1024
   to_port = 65535
 }
 
@@ -225,7 +225,7 @@ resource "aws_network_acl_rule" "public_ingress_from_private_via_ephemeral_ports
   rule_number = 110
   rule_action = "allow"
   cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
-  from_port = 1025
+  from_port = 1024
   to_port = 65535
 }
 
@@ -249,7 +249,7 @@ resource "aws_network_acl_rule" "public_egress_to_anywhere_via_ephemeral_ports" 
   rule_number = 140
   rule_action = "allow"
   cidr_block = "0.0.0.0/0"
-  from_port = 1025
+  from_port = 1024
   to_port = 65535
 }
 
@@ -278,7 +278,7 @@ resource "aws_security_group_rule" "docker_ephemeral_ports_from_anywhere" {
   cidr_blocks = [
     "0.0.0.0/0"
   ]
-  from_port = 1025
+  from_port = 1024
   to_port = 65535
 }
 
