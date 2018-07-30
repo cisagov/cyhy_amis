@@ -61,30 +61,32 @@ resource "aws_internet_gateway" "bod_igw" {
   tags = "${merge(var.tags, map("Name", "BOD 18-01 IGW"))}"
 }
 
-# Default route table, which routes all external traffic through the
-# NAT gateway
+# Default route table
 resource "aws_default_route_table" "bod_default_route_table" {
   default_route_table_id = "${aws_vpc.bod_vpc.default_route_table_id}"
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.bod_nat_gw.id}"
-  }
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 default route table"))}"
 }
 
-# Route table for our public subnet, which routes all external traffic
-# through the internet gateway
+# Route all external traffic through the NAT gateway
+resource "aws_route" "route_external_traffic_through_nat_gateway" {
+  route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = "${aws_nat_gateway.bod_nat_gw.id}"
+}
+
+# Route table for our public subnet
 resource "aws_route_table" "bod_public_route_table" {
   vpc_id = "${aws_vpc.bod_vpc.id}"
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.bod_igw.id}"
-  }
-
   tags = "${merge(var.tags, map("Name", "BOD 18-01 public route table"))}"
+}
+
+# Route all external traffic through the internet gateway
+resource "aws_route" "route_external_traffic_through_internet_gateway" {
+  route_table_id = "${aws_route_table.bod_public_route_table.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = "${aws_internet_gateway.bod_igw.id}"
 }
 
 # Associate the route table with the public subnet
@@ -100,81 +102,97 @@ resource "aws_network_acl" "bod_private_acl" {
     "${aws_subnet.bod_private_subnet.id}"
   ]
 
-  # Allow inbound SSH traffic from public subnet
-  ingress {
-    protocol = "tcp"
-    rule_no = 100
-    action = "allow"
-    cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow ephemeral ports from anywhere
-  ingress {
-    protocol = "tcp"
-    rule_no = 110
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow outbound on ephemeral ports to public subnet
-  egress {
-    protocol = "tcp"
-    rule_no = 120
-    action = "allow"
-    cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow outbound HTTP and HTTPS
-  egress {
-    protocol = "tcp"
-    rule_no = 130
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 80
-    to_port = 80
-  }
-  egress {
-    protocol = "tcp"
-    rule_no = 131
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 443
-    to_port = 443
-  }
-
-  # Allow outbound SMTP
-  egress {
-    protocol = "tcp"
-    rule_no = 140
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 25
-    to_port = 25
-  }
-  egress {
-    protocol = "tcp"
-    rule_no = 141
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 465
-    to_port = 465
-  }
-  egress {
-    protocol = "tcp"
-    rule_no = 142
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 587
-    to_port = 587
-  }
-
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Private"))}"
+}
+
+# Allow ssh ingress from the public subnet
+resource "aws_network_acl_rule" "private_ingress_from_public_via_ssh" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 100
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow ingress via ephemeral ports from anywhere
+resource "aws_network_acl_rule" "private_ingress_anywhere_via_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 110
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 1025
+  to_port = 65535
+}
+
+# Allow outbound HTTP and HTTPS
+resource "aws_network_acl_rule" "private_egress_anywhere_via_http" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 130
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 80
+  to_port = 80
+}
+resource "aws_network_acl_rule" "private_egress_anywhere_via_https" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 131
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 443
+  to_port = 443
+}
+
+# Allow outbound SMTP
+resource "aws_network_acl_rule" "private_egress_anywhere_via_port_25" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 140
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 25
+  to_port = 25
+}
+resource "aws_network_acl_rule" "private_egress_anywhere_via_port_465" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 141
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 465
+  to_port = 465
+}
+resource "aws_network_acl_rule" "private_egress_anywhere_via_port_587" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 142
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 587
+  to_port = 587
+}
+
+# Allow egress to the public subnet via ephemeral ports
+resource "aws_network_acl_rule" "private_egress_to_public_via_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 150
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
+  from_port = 1025
+  to_port = 65535
 }
 
 # ACL for the public subnet of the VPC
@@ -184,173 +202,172 @@ resource "aws_network_acl" "bod_public_acl" {
     "${aws_subnet.bod_public_subnet.id}"
   ]
 
-  # Allow SSH in from anywhere to the public subnet
-  ingress {
-    protocol = "tcp"
-    rule_no = 100
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow ephemeral ports from the private subnet
-  ingress {
-    protocol = "tcp"
-    rule_no = 110
-    action = "allow"
-    cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
-    from_port = 1025
-    to_port = 65535
-  }
-
-  # Allow SSH to the private subnet
-  egress {
-    protocol = "tcp"
-    rule_no = 140
-    action = "allow"
-    cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow egress on ephemeral ports to anywhere
-  egress {
-    protocol = "tcp"
-    rule_no = 150
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 1025
-    to_port = 65535
-  }
-
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Public"))}"
 }
 
-# Security group for the private portion of the VPC
-resource "aws_security_group" "bod_private_sg" {
+# Allow ingress from anywhere via ssh
+resource "aws_network_acl_rule" "public_ingress_from_anywhere_via_ssh" {
+  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 100
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow ingress from the private subnet via ephemeral ports
+resource "aws_network_acl_rule" "public_ingress_from_private_via_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 110
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
+  from_port = 1025
+  to_port = 65535
+}
+
+# Allow egress to the private subnet via ssh
+resource "aws_network_acl_rule" "public_egress_to_private_via_ssh" {
+  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 130
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow egress to anywhere via ephemeral ports
+resource "aws_network_acl_rule" "public_egress_to_anywhere_via_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 140
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 1025
+  to_port = 65535
+}
+
+# Security group for the Docker portion of the VPC
+resource "aws_security_group" "bod_docker_sg" {
   vpc_id = "${aws_vpc.bod_vpc.id}"
+  
+  tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker"))}"
+}
 
-  # Allow SSH ingress from the public subnet
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "${aws_subnet.bod_public_subnet.cidr_block}"
-    ]
-    from_port = 22
-    to_port = 22
-  }
+# Allow SSH ingress from the bastion security group
+resource "aws_security_group_rule" "docker_ssh_ingress_from_bastion" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.bod_bastion_sg.id}"
+  from_port = 22
+  to_port = 22
+}
 
-  # Allow ephemeral ports from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
+# Allow ephemeral ports from anywhere
+resource "aws_security_group_rule" "docker_ephemeral_ports_from_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 1025
+  to_port = 65535
+}
 
-  # Allow ephemeral ports to the public subnet
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "${aws_subnet.bod_public_subnet.cidr_block}"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
+# Allow HTTP and HTTPS egress anywhere
+resource "aws_security_group_rule" "docker_http_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 80
+  to_port = 80
+}
+resource "aws_security_group_rule" "docker_https_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 443
+  to_port = 443
+}
 
-  # Allow HTTP and HTTPS egress anywhere
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 80
-    to_port = 80
-  }
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 443
-    to_port = 443
-  }
-
-  # Allow SMTP egress anywhere
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 25
-    to_port = 25
-  }
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 465
-    to_port = 465
-  }
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 587
-    to_port = 587
-  }
-
-  tags = "${merge(var.tags, map("Name", "BOD 18-01 Private"))}"
+# Allow SMTP egress anywhere
+resource "aws_security_group_rule" "docker_port_25_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 25
+  to_port = 25
+}
+resource "aws_security_group_rule" "docker_port_465_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 465
+  to_port = 465
+}
+resource "aws_security_group_rule" "docker_port_587_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 587
+  to_port = 587
 }
 
 # Security group for the public portion of the VPC
 resource "aws_security_group" "bod_public_sg" {
   vpc_id = "${aws_vpc.bod_vpc.id}"
 
-  # Allow SSH ingress from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "0.0.0.0/0"
-    ]
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow ephemeral ports from the private subnet
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "${aws_subnet.bod_private_subnet.cidr_block}"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow SSH to the private subnet
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "${aws_subnet.bod_private_subnet.cidr_block}"
-    ]
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow egress on all ephemeral ports to anywhere
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
-
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Public"))}"
+}
+
+# Security group for the bastion portion of the VPC
+resource "aws_security_group" "bod_bastion_sg" {
+  vpc_id = "${aws_vpc.bod_vpc.id}"
+
+  tags = "${merge(var.tags, map("Name", "BOD 18-01 Bastion"))}"
+}
+
+# Allow ssh ingress from anywhere
+resource "aws_security_group_rule" "bastion_ssh_from_anywhere" {
+  security_group_id = "${aws_security_group.bod_bastion_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 22
+  to_port = 22
+}
+
+# Allow ssh egress to the docker security group
+resource "aws_security_group_rule" "bastion_ssh_to_docker" {
+  security_group_id = "${aws_security_group.bod_bastion_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  from_port = 22
+  to_port = 22
 }

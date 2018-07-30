@@ -38,7 +38,7 @@ resource "aws_instance" "docker" {
   }
 
   vpc_security_group_ids = [
-    "${aws_security_group.bod_private_sg.id}"
+    "${aws_security_group.bod_docker_sg.id}"
   ]
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
