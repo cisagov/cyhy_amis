@@ -1,4 +1,4 @@
-# The bastion AMI
+# The docker AMI
 data "aws_ami" "docker" {
   filter {
     name = "name"
