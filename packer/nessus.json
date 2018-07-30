@@ -5,22 +5,22 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "debian-stretch-hvm-x86_64-gp2-*",
+                "image-id": "ami-1efa9964",
                 "root-device-type": "ebs"
             },
             "owners": [
-                "379101102735"
+                "679593333241"
             ],
             "most_recent": true
         },
-        "instance_type": "t2.micro",
-        "ssh_username": "admin",
-        "ami_name": "cyhy-mongo-hvm-{{timestamp}}-x86_64-ebs",
+        "instance_type": "m4.large",
+        "ssh_username": "ec2-user",
+        "ami_name": "cyhy-nessus-hvm-{{timestamp}}-x86_64-ebs",
 
         "tags": {
             "Team": "NCATS OIS - Development",
             "Application": "Cyber Hygiene",
-            "OS_Version": "Debian Stretch",
+            "OS_Version": "Amazon Linux 4.14",
             "Release": "Latest",
             "Base_AMI_Name": "{{ .SourceAMIName }}"
         }
@@ -31,8 +31,8 @@
             "type": "ansible",
             "playbook_file": "ansible/playbook.yml",
             "groups": [
-                "mongo",
-                "debian"
+                "nessus",
+                "amazon-linux"
             ]
         }
     ]
