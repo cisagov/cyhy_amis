@@ -1,7 +1,7 @@
 {
     "builders": [{
         "type": "amazon-ebs",
-        "region": "us-east-1",
+        "region": "us-east-2",
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
@@ -16,6 +16,9 @@
         "instance_type": "t2.micro",
         "ssh_username": "admin",
         "ami_name": "cyhy-mongo-hvm-{{timestamp}}-x86_64-ebs",
+        "ami_regions": [
+            "us-east-1"
+        ],
 
         "tags": {
             "Team": "NCATS OIS - Development",
