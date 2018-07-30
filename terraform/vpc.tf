@@ -173,10 +173,30 @@ resource "aws_network_acl" "cyhy_scanner_acl" {
     to_port = 22
   }
 
+  # Allow ingress from TCP ephemeral ports from anywhere
+  ingress {
+    protocol = "tcp"
+    rule_no = 120
+    action = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port = 1024
+    to_port = 65535
+  }
+
+  # Allow ingress from UDP ephemeral ports from anywhere
+  ingress {
+    protocol = "udp"
+    rule_no = 130
+    action = "allow"
+    cidr_block = "0.0.0.0/0"
+    from_port = 1024
+    to_port = 65535
+  }
+
   # Allow egress on all ports and protocols to anywhere
   egress {
     protocol = "-1"
-    rule_no = 120
+    rule_no = 140
     action = "allow"
     cidr_block = "0.0.0.0/0"
     from_port = 0
@@ -255,6 +275,26 @@ resource "aws_security_group" "cyhy_scanner_sg" {
     ]
     from_port = 22
     to_port = 22
+  }
+
+  # Allow TCP ephemeral ports from anywhere
+  ingress {
+    protocol = "tcp"
+    cidr_blocks = [
+     "0.0.0.0/0"
+    ]
+    from_port = 1024
+    to_port = 65535
+  }
+
+  # Allow UDP ephemeral ports from anywhere
+  ingress {
+    protocol = "udp"
+    cidr_blocks = [
+     "0.0.0.0/0"
+    ]
+    from_port = 1024
+    to_port = 65535
   }
 
   # Allow egress on all ports and protocols to anywhere
