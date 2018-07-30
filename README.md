@@ -5,6 +5,7 @@ Build with:
 packer build packer/nmap.json
 packer build packer/nessus.json
 packer build packer/mongo.json
+packer build packer/bastion.json
 ```
 
 ## License ##
