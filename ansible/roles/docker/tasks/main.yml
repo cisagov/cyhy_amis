@@ -1,0 +1,33 @@
+---
+# tasks file for docker
+- name: Install prerequisites so apt can use a repo over HTTPS
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg2  
+      - software-properties-common
+
+- name: Get official Docker GPG key
+  apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    id: 0EBFCD88
+
+- name: Copy sources list for official Docker package repo
+  copy:
+    src: docker.list
+    dest: /etc/apt/sources.list.d
+    mode: 0644
+
+- name: Update the cache with the Docker goodness
+  apt:
+    update_cache: yes
+
+- name: Install docker and docker-compose
+  apt:
+    name:
+     - docker-ce
+     - docker-compose
+  notify:
+    - Enable docker

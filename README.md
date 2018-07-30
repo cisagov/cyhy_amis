@@ -6,6 +6,7 @@ packer build packer/nmap.json
 packer build packer/nessus.json
 packer build packer/mongo.json
 packer build packer/bastion.json
+packer build packer/docker.json
 ```
 
 ## License ##

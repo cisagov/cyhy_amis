@@ -1,7 +1,7 @@
 {
     "builders": [{
         "type": "amazon-ebs",
-        "region": "us-east-1",
+        "region": "us-east-2",
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
@@ -16,6 +16,9 @@
         "instance_type": "m4.large",
         "ssh_username": "ec2-user",
         "ami_name": "cyhy-nessus-hvm-{{timestamp}}-x86_64-ebs",
+        "ami_regions": [
+            "us-east-1"
+        ],
 
         "tags": {
             "Team": "NCATS OIS - Development",
