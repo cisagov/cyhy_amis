@@ -23,7 +23,7 @@ Example Playbook
 
 Here's how to use it in a playbook:
 
-    - hosts: mongo
+    - hosts: docker
       become: yes
       become_method: sudo
       roles:
