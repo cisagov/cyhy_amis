@@ -194,12 +194,12 @@ resource "aws_network_acl" "bod_public_acl" {
     to_port = 22
   }
 
-  # Allow ephemeral ports from the public subnet
+  # Allow ephemeral ports from the private subnet
   ingress {
     protocol = "tcp"
     rule_no = 110
     action = "allow"
-    cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
+    cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
     from_port = 1025
     to_port = 65535
   }
@@ -209,7 +209,7 @@ resource "aws_network_acl" "bod_public_acl" {
     protocol = "tcp"
     rule_no = 140
     action = "allow"
-    cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
+    cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
     from_port = 22
     to_port = 22
   }
