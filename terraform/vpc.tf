@@ -66,12 +66,14 @@ resource "aws_internet_gateway" "cyhy_igw" {
 resource "aws_default_route_table" "cyhy_default_route_table" {
   default_route_table_id = "${aws_vpc.cyhy_vpc.default_route_table_id}"
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    nat_gateway_id = "${aws_nat_gateway.cyhy_nat_gw.id}"
-  }
-
   tags = "${merge(var.tags, map("Name", "CyHy NATGW"))}"
+}
+
+# Route all external traffic through the NAT gateway
+resource "aws_route" "route_external_traffic_through_nat_gateway" {
+  route_table_id = "${aws_default_route_table.cyhy_default_route_table.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = "${aws_nat_gateway.cyhy_nat_gw.id}"
 }
 
 # Route table for our scanner subnet, which routes all external traffic
@@ -79,12 +81,14 @@ resource "aws_default_route_table" "cyhy_default_route_table" {
 resource "aws_route_table" "cyhy_scanner_route_table" {
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = "${aws_internet_gateway.cyhy_igw.id}"
-  }
-
   tags = "${merge(var.tags, map("Name", "CyHy Scanners IGW"))}"
+}
+
+# Route all external traffic through the internet gateway
+resource "aws_route" "route_external_traffic_through_internet_gateway" {
+  route_table_id = "${aws_route_table.cyhy_scanner_route_table.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id = "${aws_internet_gateway.cyhy_igw.id}"
 }
 
 # Associate the route table with the scanner subnet
@@ -100,50 +104,55 @@ resource "aws_network_acl" "cyhy_private_acl" {
     "${aws_subnet.cyhy_private_subnet.id}"
   ]
 
-  # Allow ephemeral ports from anywhere
-  ingress {
-    protocol = "tcp"
-    rule_no = 100
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow inbound SSH traffic from scanner subnet
-  # Needed for commander to talk to scanners
-  ingress {
-    protocol = "tcp"
-    rule_no = 110
-    action = "allow"
-    cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow outbound SSH to scanner subnet
-  # Needed for commander to talk to scanners
-  egress {
-    protocol = "tcp"
-    rule_no = 120
-    action = "allow"
-    cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow outbound on ephemeral ports to scanner subnet
-  # Needed for commander to talk to scanners
-  egress {
-    protocol = "tcp"
-    rule_no = 130
-    action = "allow"
-    cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
-    from_port = 1024
-    to_port = 65535
-  }
-
   tags = "${merge(var.tags, map("Name", "CyHy Private"))}"
+}
+
+# Allow ingress from scanner subnet via ephemeral ports
+resource "aws_network_acl_rule" "private_ingress_from_scanner_via_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.cyhy_private_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 100
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
+  from_port = 1024
+  to_port = 65535
+}
+
+# Allow ingress from the scanner subnet via ssh
+resource "aws_network_acl_rule" "private_ingress_from_scanner_via_ssh" {
+  network_acl_id = "${aws_network_acl.cyhy_private_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 110
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow egress to the scanner subnet via ssh
+resource "aws_network_acl_rule" "private_egress_to_scanner_via_ssh" {
+  network_acl_id = "${aws_network_acl.cyhy_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 120
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow egress to the scanner subnet via ephemeral ports
+resource "aws_network_acl_rule" "private_egress_to_scanner_via_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.cyhy_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 130
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
+  from_port = 1024
+  to_port = 65535
 }
 
 # ACL for the scanner subnet of the VPC
@@ -153,206 +162,167 @@ resource "aws_network_acl" "cyhy_scanner_acl" {
     "${aws_subnet.cyhy_scanner_subnet.id}"
   ]
 
-  # Allow Nessus port inbound from anywhere
-  ingress {
-    protocol = "tcp"
-    rule_no = 100
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 8834
-    to_port = 8834
-  }
-
-  # Allow SSH in from anywhere to the scanner subnet
-  ingress {
-    protocol = "tcp"
-    rule_no = 110
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow ingress from TCP ephemeral ports from anywhere
-  ingress {
-    protocol = "tcp"
-    rule_no = 120
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow ingress from UDP ephemeral ports from anywhere
-  ingress {
-    protocol = "udp"
-    rule_no = 130
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow egress on all ports and protocols to anywhere
-  egress {
-    protocol = "-1"
-    rule_no = 140
-    action = "allow"
-    cidr_block = "0.0.0.0/0"
-    from_port = 0
-    to_port = 0
-  }
-
   tags = "${merge(var.tags, map("Name", "CyHy Scanners"))}"
+}
+
+# Allow ingress from anywhere via the Nessus UI port
+resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_nessus" {
+  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 100
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 8834
+  to_port = 8834
+}
+
+# Allow ingress from anywhere via ssh
+resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ssh" {
+  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 110
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow ingress from anywhere via ephemeral ports
+resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ephemeral_ports_tcp" {
+  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  egress = false
+  protocol = "tcp"
+  rule_number = 120
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 1024
+  to_port = 65535
+}
+resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ephemeral_ports_udp" {
+  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  egress = false
+  protocol = "udp"
+  rule_number = 130
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 1024
+  to_port = 65535
+}
+
+# Allow egress to the scanner subnet via ephemeral ports
+resource "aws_network_acl_rule" "scanner_egress_to_anywhere_via_any_port" {
+  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  egress = true
+  protocol = "-1"
+  rule_number = 140
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 0
+  to_port = 0
 }
 
 # Security group for the private portion of the VPC
 resource "aws_security_group" "cyhy_private_sg" {
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
 
-  # Allow ephemeral ports from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow SSH ingress from the scanner subnet
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
-    ]
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow SSH egress to the scanner subnet
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
-    ]
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow SSH egress to anywhere
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
-
   tags = "${merge(var.tags, map("Name", "CyHy Private"))}"
+}
+
+# Allow ingress via ephemeral ports from anywhere
+resource "aws_security_group_rule" "private_ingress_from_anywhere_via_ephemeral_ports" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 1024
+  to_port = 65535
+}
+
+# Allow SSH ingress from the scanner security group
+resource "aws_security_group_rule" "private_ssh_ingress_from_scanner" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow SSH egress to the scanner security group
+resource "aws_security_group_rule" "private_ssh_egress_to_scanner" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  from_port = 22
+  to_port = 22
 }
 
 # Security group for the scanner portion of the VPC
 resource "aws_security_group" "cyhy_scanner_sg" {
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
 
-  # Allow Nessus port from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 8834
-    to_port = 8834
-  }
-
-  # Allow SSH ingress from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "0.0.0.0/0"
-    ]
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow TCP ephemeral ports from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow UDP ephemeral ports from anywhere
-  ingress {
-    protocol = "udp"
-    cidr_blocks = [
-     "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
-
-  # Allow egress on all ports and protocols to anywhere
-  egress {
-    protocol = "-1"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 0
-    to_port = 0
-  }
-
   tags = "${merge(var.tags, map("Name", "CyHy Scanners"))}"
 }
 
-# Security group for the bastion host
-resource "aws_security_group" "cyhy_bastion_sg" {
-  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+# Allow ingress from anywhere via the Nessus UI port
+resource "aws_security_group_rule" "scanner_ingress_anywhere_via_nessus" {
+  security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 8834
+  to_port = 8834
+}
 
-  # Allow SSH ingress from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "0.0.0.0/0"
-    ]
-    from_port = 22
-    to_port = 22
-  }
+# Allow ingress from anywhere via ssh
+resource "aws_security_group_rule" "scanner_ingress_anywhere_via_ssh" {
+  security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 22
+  to_port = 22
+}
 
-  # Allow ephemeral ports from anywhere
-  ingress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
+# Allow ingress from anywhere via ephemeral ports
+resource "aws_security_group_rule" "scanner_ingress_anywhere_tcp" {
+  security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 1024
+  to_port = 65535
+}
+resource "aws_security_group_rule" "scanner_ingress_anywhere_udp" {
+  security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  type = "ingress"
+  protocol = "udp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 1024
+  to_port = 65535
+}
 
-  # Allow SSH egress to the scanner subnet
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-     "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
-    ]
-    from_port = 22
-    to_port = 22
-  }
-
-  # Allow egress on all ephemeral ports
-  egress {
-    protocol = "tcp"
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-    from_port = 1024
-    to_port = 65535
-  }
-
-  tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
+# Allow egress anywhere via all ports and protocols
+resource "aws_security_group_rule" "scanner_egress_anywhere" {
+  security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  type = "egress"
+  protocol = "-1"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 0
+  to_port = 0
 }
