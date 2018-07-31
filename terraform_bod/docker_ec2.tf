@@ -41,5 +41,7 @@ resource "aws_instance" "docker" {
     "${aws_security_group.bod_docker_sg.id}"
   ]
 
+  user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
+
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
 }
