@@ -1,9 +1,0 @@
----
-# tasks file for ssh
-- name: Add authorized ssh keys
-  authorized_key:
-    user: '{{ ansible_user_id }}'
-    key: '{{ item.1 }}'
-  with_subelements:
-    - '{{ users }}'
-    - ssh_keys

@@ -13,3 +13,12 @@ variable "tags" {
   default = {}
   description = "Tags to apply to all AWS resources created"
 }
+
+variable "mongo_disks" {
+  type = "map"
+  default = {
+    data = "/dev/xvdb"
+    journal = "/dev/xvdc"
+    log = "/dev/xvdd"
+  }
+}
