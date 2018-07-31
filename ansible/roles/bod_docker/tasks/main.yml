@@ -1,0 +1,28 @@
+---
+# tasks file for bod_docker
+- name: Create the /var/cyhy directory
+  file:
+    path: /var/cyhy
+    state: directory
+    mode: 0755
+    owner: admin
+    group: admin
+
+- name: Clone the orchestrator repository
+  git:
+    repo: https://github.com/dhs-ncats/orchestrator.git
+    dest: /var/cyhy/orchestrator
+
+- name: Copying orchestrator secrets
+  copy:
+    src: /home/jeremy_frasier/dhs-ncats/orchestrator/secrets_production/
+    dest: /var/cyhy/orchestrator/secrets
+    owner: admin
+    group: admin
+    mode: 0644
+
+- name: Pull the docker images but do not start docker-compose
+  docker_service:
+    project_src: /var/cyhy/orchestrator
+    pull: yes
+    stopped: yes

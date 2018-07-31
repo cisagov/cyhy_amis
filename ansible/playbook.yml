@@ -40,3 +40,10 @@
   become_method: sudo
   roles:
     - docker
+
+- hosts: bod_docker
+  name: Configure Docker host for BOD 18-01 scanning
+  become: yes
+  become_method: sudo
+  roles:
+    - bod_docker
