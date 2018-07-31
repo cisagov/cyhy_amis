@@ -5,7 +5,7 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "image-id": "ami-1efa9964",
+                "name": "Nessus 6.11.3 (master-*) BYOL-*",
                 "root-device-type": "ebs"
             },
             "owners": [
