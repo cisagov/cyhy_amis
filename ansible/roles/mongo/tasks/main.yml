@@ -20,3 +20,15 @@
     name: mongodb-org=4.0.0
   notify:
     - Enable mongo
+
+- name: Configure mongo service to run after cloud-config
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    regexp: ^After=
+    state: present
+    line: After=network.target cloud-config.service
+
+# Mongo performs best with XFS filesystems
+- name: Install xfsprogs
+  apt:
+    name: xfsprogs

@@ -1,0 +1,47 @@
+#cloud-config
+
+#device_aliases: {'mongo_data': '/dev/xvdb'}
+
+# Wait for EBS disks to be attached
+bootcmd:
+  - 'while [ `lsblk | wc -l` -lt 6 ]; do echo Waiting for disks to attach...; sleep 5; done'
+
+# Format filesystem on each EBS volume (if one was not already there)
+fs_setup:
+  - label: 'mongo_data'
+    filesystem: 'xfs'
+    device: '${mongo_disk_data}'
+    partition: 'auto'
+    overwrite: False
+    # NOTE: The overwrite flag appears to be ignored
+    # TODO: Fix it so we don't recreate the fs every time a new instance starts
+
+  - label: 'mongo_journal'
+    filesystem: 'ext4'
+    device: '${mongo_disk_journal}'
+    partition: 'auto'
+    overwrite: False
+
+  - label: 'mongo_log'
+    filesystem: 'ext4'
+    device: '${mongo_disk_log}'
+    partition: 'auto'
+    overwrite: False
+
+mounts:
+  # Add new mounts to /etc/fstab, but don't automatically mount them
+  # We must handle nested mounts in runcmd section below
+  - [ ${mongo_disk_data}, /var/lib/mongodb, xfs, 'defaults,noauto', '0', '2' ]
+  - [ ${mongo_disk_journal}, /var/lib/mongodb/journal, ext4, 'defaults,noauto', '0', '2' ]
+  - [ ${mongo_disk_log}, /var/log/mongodb, ext4, 'defaults,noauto', '0', '2' ]
+
+runcmd:
+  - [ mount, --verbose, /var/lib/mongodb ]
+  - [ mkdir, --verbose, --parents, /var/lib/mongodb/journal ]
+  - [ mount, --verbose, /var/lib/mongodb/journal ]
+  - [ mount, --verbose, /var/log/mongodb ]
+  - [ chown, --verbose, --recursive, 'mongodb:mongodb', /var/log/mongodb ]
+  - [ chown, --verbose, --recursive, 'mongodb:mongodb', /var/lib/mongodb ]
+
+output:
+  - all: '| tee -a /var/log/cloud-init-output.log'

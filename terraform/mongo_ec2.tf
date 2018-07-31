@@ -39,6 +39,8 @@ resource "aws_instance" "mongo" {
     "${aws_security_group.cyhy_private_sg.id}"
   ]
 
+  user_data = "${data.template_cloudinit_config.cloud_init_tasks.rendered}"
+
   tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
 }
 
@@ -70,19 +72,19 @@ resource "aws_ebs_volume" "mongo_log" {
 }
 
 resource "aws_volume_attachment" "mongo_data_attachment" {
-  device_name = "/dev/xvdb"
+  device_name = "${var.mongo_disks["data"]}"
   volume_id = "${aws_ebs_volume.mongo_data.id}"
   instance_id = "${aws_instance.mongo.id}"
 }
 
 resource "aws_volume_attachment" "mongo_journal_attachment" {
-  device_name = "/dev/xvdc"
+  device_name = "${var.mongo_disks["journal"]}"
   volume_id = "${aws_ebs_volume.mongo_journal.id}"
   instance_id = "${aws_instance.mongo.id}"
 }
 
 resource "aws_volume_attachment" "mongo_log_attachment" {
-  device_name = "/dev/xvdd"
+  device_name = "${var.mongo_disks["log"]}"
   volume_id = "${aws_ebs_volume.mongo_log.id}"
   instance_id = "${aws_instance.mongo.id}"
 }
