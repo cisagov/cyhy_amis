@@ -1,4 +1,4 @@
-# cloud-init commands
+# cloud-init commands for configuring ssh and mongo
 
 data "template_file" "mongo_disk_setup" {
   template = "${file("scripts/mongo_disk_setup.yml")}"
@@ -10,11 +10,7 @@ data "template_file" "mongo_disk_setup" {
   }
 }
 
-data "template_file" "user_ssh_setup" {
-  template = "${file("scripts/user_ssh_setup.yml")}"
-}
-
-data "template_cloudinit_config" "cloud_init_tasks" {
+data "template_cloudinit_config" "ssh_and_mongo_cloud_init_tasks" {
   gzip = false
   base64_encode = false
 

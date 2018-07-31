@@ -39,7 +39,7 @@ resource "aws_instance" "mongo" {
     "${aws_security_group.cyhy_private_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.cloud_init_tasks.rendered}"
+  user_data = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
 }
