@@ -86,7 +86,7 @@ resource "aws_route_table" "bod_public_route_table" {
 resource "aws_route" "route_external_traffic_through_internet_gateway" {
   route_table_id = "${aws_route_table.bod_public_route_table.id}"
   destination_cidr_block = "0.0.0.0/0"
-  nat_gateway_id = "${aws_internet_gateway.bod_igw.id}"
+  gateway_id = "${aws_internet_gateway.bod_igw.id}"
 }
 
 # Associate the route table with the public subnet
