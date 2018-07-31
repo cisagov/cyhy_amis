@@ -211,7 +211,7 @@ resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ephemeral_por
   to_port = 65535
 }
 
-# Allow egress to the scanner subnet via ephemeral ports
+# Allow egress to anywhere via any protocol and port
 resource "aws_network_acl_rule" "scanner_egress_to_anywhere_via_any_port" {
   network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
   egress = true
