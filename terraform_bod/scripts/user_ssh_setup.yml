@@ -1,0 +1,27 @@
+#cloud-config
+
+users:
+  - name: mark.feldhousen
+    groups: [ sudo ]
+    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDMAreqS1aycngT1qQAsXfo7/hzt8JdSvC1bD9Sr0WpTUVWWe6WW2mYQ9fHAYJ4pPGb/Jf3h15NRMHCwsMPuFoP+9m7iebzvS47/ce1g07AOK3bf2yR12v/S9QFArgAyabqRpDz43yay2t+3IjSHxZlKKNg0nV4xiP/LRqXvzFCjZDAu5zslFH/urZ6bhHxQMywWdW0RHfWXdz+O6rGR8f1soCPw7ylwf2AzlaeCR/WnT9QiK5TG5TxrkomnliE56T0JkhldGrTldkt2NK1R9+3wF4603nQqKkcCgXFtZKk0wKc5T+Z/B/mS9LW0ayarj1V6H1i5mpscYOD33Z6HalEXd25XO31oCDt9FuA7pHOZQInTpvNODktjwkkz0Dk6i6q3b60JaviB5ECaC9bcQDfXFGVNzA/+UVtOIKOKmp7ge8n31jEEq6nklDxrVkA/7n7cKXjUTZbV5Lru+3of8lLdYCcJhcLLMDSmJbGtw7/AN55+vxj072pLs1LAUcDBlEtqq5rShUcFeFDuxl0Cs7BRab87h6nO/uIKTAb4ZNbAKt0BuKW2gzRoVjUhibMLc/loJyeZuWa67QQ8Ae76h24dPUz44Ryul/X5LHingGd3lwQMyW/0mjpVKjC0lsUsGa+J2wezsMzxr8sj9TjYzhMCURf79E6DBUO1zUuFc0kyw== mark.feldhousen
+  - name: david.redmin
+    groups: [ sudo ]
+    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPCUrFIDwLAZrlkzvK7rcOVYNE7vSyopGHMFZTX7YlQS david.redmin
+  - name: jeremy.frasier
+    groups: [ sudo ]
+    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHJkFgYx58vd/JCikIQRVmQUBNa5k1h9Z+xzM6AjZLqE jeremy.frasier
+  - name: kyle.evers
+    groups: [ sudo ]
+    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKY5tqMRtnZSkVPwU0X1zKA8L3RnvmhSAR/bHAtd3Vcr kyle.evers

@@ -35,7 +35,8 @@
             "playbook_file": "ansible/playbook.yml",
             "groups": [
                 "debian",
-                "docker"
+                "docker",
+                "bod_docker"
             ]
         }
     ]

@@ -24,10 +24,19 @@
   apt:
     update_cache: yes
 
-- name: Install docker and docker-compose
+- name: Install docker
   apt:
     name:
-     - docker-ce
-     - docker-compose
+      - docker-ce
   notify:
     - Enable docker
+
+- name: Install pip
+  apt:
+    name:
+      - python-pip
+
+- name: Install docker-compose
+  pip:
+    name:
+     - docker-compose

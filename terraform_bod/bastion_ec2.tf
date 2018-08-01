@@ -42,5 +42,7 @@ resource "aws_instance" "bastion" {
     "${aws_security_group.bod_bastion_sg.id}"
   ]
 
+  user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
+
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Bastion"))}"
 }

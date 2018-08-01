@@ -340,7 +340,7 @@ resource "aws_security_group_rule" "scanner_egress_anywhere" {
 # Allow egress via ssh to the private security group
 resource "aws_security_group_rule" "scanner_egress_to_private_sg_via_ssh" {
   security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
-  type = "ingress"
+  type = "egress"
   protocol = "tcp"
   source_security_group_id = "${aws_security_group.cyhy_private_sg.id}"
   from_port = 22
