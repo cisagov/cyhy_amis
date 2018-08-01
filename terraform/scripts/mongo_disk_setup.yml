@@ -4,7 +4,7 @@
 
 mounts:
   # Add new mounts to /etc/fstab, but don't automatically mount them
-  # We must handle nested mounts in runcmd section below
+  # We must handle nested mounts in bootcmd section below
   - [ ${mongo_disk_data}, /var/lib/mongodb, xfs, 'defaults,noauto', '0', '2' ]
   - [ ${mongo_disk_journal}, /var/lib/mongodb/journal, ext4, 'defaults,noauto', '0', '2' ]
   - [ ${mongo_disk_log}, /var/log/mongodb, ext4, 'defaults,noauto', '0', '2' ]
