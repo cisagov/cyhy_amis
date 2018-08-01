@@ -147,20 +147,30 @@ resource "aws_security_group" "nessus_scanner_sg" {
   tags = "${merge(var.tags, map("Name", "CyHy Nessus Scanners"))}"
 }
 
-# Allow ingress from anywhere via ssh
-resource "aws_security_group_rule" "scanner_ingress_anywhere_via_ssh" {
+# Allow ingress from trusted ingress networks via ssh
+resource "aws_security_group_rule" "scanner_ingress_trusted_via_ssh" {
   security_group_id = "${aws_security_group.nessus_scanner_sg.id}"
   type = "ingress"
   protocol = "tcp"
-  cidr_blocks = [
-    "0.0.0.0/0"
-  ]
+  cidr_blocks = "${var.trusted_ingress_networks_ipv4}"
+  # ipv6_cidr_blocks = "${var.trusted_ingress_networks_ipv6}"
   from_port = 22
   to_port = 22
 }
 
-# Allow ingress from anywhere via ephemeral ports
-resource "aws_security_group_rule" "scanner_ingress_anywhere_via_ephemeral_ports_tcp" {
+# Allow ingress from trusted ingress networks via Nessus
+resource "aws_security_group_rule" "scanner_ingress_trusted_via_nessus" {
+  security_group_id = "${aws_security_group.nessus_scanner_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = "${var.trusted_ingress_networks_ipv4}"
+  # ipv6_cidr_blocks = "${var.trusted_ingress_networks_ipv6}"
+  from_port = 8834
+  to_port = 8834
+}
+
+# Allow ingress from anywhere via ephemeral ports (except Nessus TCP 8834)
+resource "aws_security_group_rule" "scanner_ingress_anywhere_via_lower_ephemeral_ports_tcp" {
   security_group_id = "${aws_security_group.nessus_scanner_sg.id}"
   type = "ingress"
   protocol = "tcp"
@@ -168,6 +178,16 @@ resource "aws_security_group_rule" "scanner_ingress_anywhere_via_ephemeral_ports
     "0.0.0.0/0"
   ]
   from_port = 1024
+  to_port = 8833
+}
+resource "aws_security_group_rule" "scanner_ingress_anywhere_via_upper_ephemeral_ports_tcp" {
+  security_group_id = "${aws_security_group.nessus_scanner_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 8835
   to_port = 65535
 }
 resource "aws_security_group_rule" "scanner_ingress_anywhere_via_ephemeral_ports_udp" {
