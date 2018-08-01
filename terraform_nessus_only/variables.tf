@@ -16,3 +16,15 @@ variable "tags" {
   }
   description = "Tags to apply to all AWS resources created"
 }
+
+# This should be overridden by a production.tfvars file,
+# most-likely stored outside of version control
+variable "trusted_ingress_networks_ipv4" {
+  type = "list"
+  default = [ "0.0.0.0/0" ]
+}
+
+variable "trusted_ingress_networks_ipv6" {
+  type = "list"
+  default = [ "::/0" ]
+}
