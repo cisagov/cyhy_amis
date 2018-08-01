@@ -2,15 +2,6 @@
 
 #device_aliases: {'mongo_data': '/dev/xvdb'}
 
-# Wait for EBS disks to be attached
-bootcmd:
-  - 'while [ `lsblk | wc -l` -lt 6 ]; do echo Waiting for disks to attach...; sleep 5; done'
-  # Format filesystem on each EBS volume (if one was not already there)
-  # fs_setup does not honor the overwrite argument.  Always in full-cowboy mode. (v0.7.9)
-  - 'blkid -c /dev/null ${mongo_disk_data} || mkfs.xfs ${mongo_disk_data} -L mongo_data'
-  - 'blkid -c /dev/null ${mongo_disk_journal} || mkfs.ext4 -v ${mongo_disk_journal} -L mongo_journal'
-  - 'blkid -c /dev/null ${mongo_disk_log} || mkfs.ext4 -v ${mongo_disk_log} -L mongo_log'
-
 mounts:
   # Add new mounts to /etc/fstab, but don't automatically mount them
   # We must handle nested mounts in runcmd section below
@@ -18,15 +9,22 @@ mounts:
   - [ ${mongo_disk_journal}, /var/lib/mongodb/journal, ext4, 'defaults,noauto', '0', '2' ]
   - [ ${mongo_disk_log}, /var/log/mongodb, ext4, 'defaults,noauto', '0', '2' ]
 
-runcmd:
-  - 'mount --verbose /var/lib/mongodb'
+bootcmd:
+  # Wait for EBS disks to be attached
+  - 'while [ `lsblk | wc -l` -lt 6 ]; do echo Waiting for disks to attach...; sleep 5; done'
+  # Format filesystem on each EBS volume (if one was not already there)
+  # fs_setup does not honor the overwrite argument.  Always in full-cowboy mode. (v0.7.9)
+  - 'blkid -c /dev/null ${mongo_disk_data} || mkfs.xfs ${mongo_disk_data} -L mongo_data'
+  - 'blkid -c /dev/null ${mongo_disk_journal} || mkfs.ext4 -v ${mongo_disk_journal} -L mongo_journal'
+  - 'blkid -c /dev/null ${mongo_disk_log} || mkfs.ext4 -v ${mongo_disk_log} -L mongo_log'
+  # Mount mongo volumes and set ownership
+  # Due to funky timing of mounts vs. bootcmd, specify the full mount commands
+  - 'mount --verbose --types xfs ${mongo_disk_data} /var/lib/mongodb'
   - 'mkdir --verbose --parents /var/lib/mongodb/journal'
-  - 'mount --verbose /var/lib/mongodb/journal'
-  - 'mount --verbose /var/log/mongodb'
+  - 'mount --verbose --types ext4 ${mongo_disk_journal} /var/lib/mongodb/journal'
+  - 'mount --verbose --types ext4 ${mongo_disk_log} /var/log/mongodb'
   - 'chown --verbose --recursive mongodb:mongodb /var/log/mongodb'
   - 'chown --verbose --recursive mongodb:mongodb /var/lib/mongodb'
-  # Avoid timing issues by restarting mongo service after all prep work is done
-  - 'systemctl restart mongod.service'
 
 output:
   - all: '| tee -a /var/log/cloud-init-output.log'
