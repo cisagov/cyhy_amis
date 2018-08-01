@@ -11,28 +11,6 @@ bootcmd:
   - 'blkid -c /dev/null ${mongo_disk_journal} || mkfs.ext4 -v ${mongo_disk_journal} -L mongo_journal'
   - 'blkid -c /dev/null ${mongo_disk_log} || mkfs.ext4 -v ${mongo_disk_log} -L mongo_log'
 
-# Format filesystem on each EBS volume (if one was not already there)
-# fs_setup:
-#   - label: 'mongo_data'
-#     filesystem: 'xfs'
-#     device: '${mongo_disk_data}'
-#     partition: 'auto'
-#     overwrite: False
-#     # NOTE: The overwrite flag appears to be ignored
-#     # TODO: Fix it so we don't recreate the fs every time a new instance starts
-#
-#   - label: 'mongo_journal'
-#     filesystem: 'ext4'
-#     device: '${mongo_disk_journal}'
-#     partition: 'auto'
-#     overwrite: False
-#
-#   - label: 'mongo_log'
-#     filesystem: 'ext4'
-#     device: '${mongo_disk_log}'
-#     partition: 'auto'
-#     overwrite: False
-
 mounts:
   # Add new mounts to /etc/fstab, but don't automatically mount them
   # We must handle nested mounts in runcmd section below
