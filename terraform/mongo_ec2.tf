@@ -47,7 +47,7 @@ resource "aws_instance" "mongo" {
 resource "aws_ebs_volume" "mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
-  size = 20
+  size = "${terraform.workspace == "production" ? 200 : 20}"
   iops = 1000
 
   tags = "${merge(var.tags, map("Name", "Mongo Data"))}"
