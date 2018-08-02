@@ -5,7 +5,7 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "debian-stretch-hvm-x86_64-gp2-*",
+                "name": "debian-jessie-amd64-hvm-*",
                 "root-device-type": "ebs"
             },
             "owners": [
@@ -15,7 +15,7 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "admin",
-        "ami_name": "cyhy-mongo-hvm-{{timestamp}}-x86_64-ebs",
+        "ami_name": "cyhy-mongo-hvm-{{timestamp}}-amd64-ebs",
         "ami_regions": [
             "us-east-1"
         ],
@@ -23,7 +23,7 @@
         "tags": {
             "Team": "NCATS OIS - Development",
             "Application": "Cyber Hygiene",
-            "OS_Version": "Debian Stretch",
+            "OS_Version": "Debian Jessie",
             "Release": "Latest",
             "Base_AMI_Name": "{{ .SourceAMIName }}"
         }
