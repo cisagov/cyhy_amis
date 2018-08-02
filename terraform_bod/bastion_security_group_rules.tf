@@ -1,0 +1,20 @@
+# Allow ssh ingress from trusted ingress networks
+resource "aws_security_group_rule" "bastion_ssh_from_trusted" {
+  security_group_id = "${aws_security_group.bod_bastion_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = "${var.trusted_ingress_networks_ipv4}"
+  # ipv6_cidr_blocks = "${var.trusted_ingress_networks_ipv6}"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow ssh egress to the docker security group
+resource "aws_security_group_rule" "bastion_ssh_to_docker" {
+  security_group_id = "${aws_security_group.bod_bastion_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  from_port = 22
+  to_port = 22
+}
