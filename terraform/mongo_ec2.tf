@@ -49,6 +49,7 @@ resource "aws_ebs_volume" "mongo_data" {
   type = "io1"
   size = "${terraform.workspace == "production" ? 200 : 20}"
   iops = 1000
+  encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Data"))}"
 }
@@ -58,6 +59,7 @@ resource "aws_ebs_volume" "mongo_journal" {
   type = "io1"
   size = 8
   iops = 250
+  encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Journal"))}"
 }
@@ -67,6 +69,7 @@ resource "aws_ebs_volume" "mongo_log" {
   type = "io1"
   size = 8
   iops = 100
+  encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Log"))}"
 }
