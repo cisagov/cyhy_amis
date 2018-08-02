@@ -61,3 +61,25 @@ resource "aws_security_group_rule" "docker_port_587_anywhere" {
   from_port = 587
   to_port = 587
 }
+
+# Allow DNS egress anywhere
+resource "aws_security_group_rule" "docker_dns_anywhere_tcp" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 53
+  to_port = 53
+}
+resource "aws_security_group_rule" "docker_dns_anywhere_udp" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "udp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 53
+  to_port = 53
+}
