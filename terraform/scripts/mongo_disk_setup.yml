@@ -11,7 +11,7 @@ mounts:
 
 bootcmd:
   # Wait for EBS disks to be attached
-  - 'while [ `lsblk | wc -l` -lt 6 ]; do echo Waiting for disks to attach...; sleep 5; done'
+  - 'while [ `lsblk | grep -c " disk"` -lt 4 ]; do echo Waiting for disks to attach...; sleep 5; done'
   # Format filesystem on each EBS volume (if one was not already there)
   # fs_setup does not honor the overwrite argument.  Always in full-cowboy mode. (v0.7.9)
   - 'blkid -c /dev/null ${mongo_disk_data} || mkfs.xfs ${mongo_disk_data} -L mongo_data'

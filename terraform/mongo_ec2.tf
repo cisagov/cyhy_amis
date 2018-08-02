@@ -2,7 +2,7 @@ data "aws_ami" "mongo" {
   filter {
     name = "name"
     values = [
-      "cyhy-mongo-hvm-*-x86_64-ebs"
+      "cyhy-mongo-hvm-*-amd64-ebs"
     ]
   }
 
