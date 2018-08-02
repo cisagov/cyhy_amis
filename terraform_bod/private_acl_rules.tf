@@ -10,12 +10,22 @@ resource "aws_network_acl_rule" "private_ingress_from_public_via_ssh" {
   to_port = 22
 }
 
-# Allow ingress via ephemeral ports from anywhere
-resource "aws_network_acl_rule" "private_ingress_anywhere_via_ephemeral_ports" {
+# Allow ingress via ephemeral ports from anywhere via TCP or UDP
+resource "aws_network_acl_rule" "private_ingress_anywhere_via_ephemeral_ports_tcp" {
   network_acl_id = "${aws_network_acl.bod_private_acl.id}"
   egress = false
   protocol = "tcp"
   rule_number = 110
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  from_port = 1024
+  to_port = 65535
+}
+resource "aws_network_acl_rule" "private_ingress_anywhere_via_ephemeral_ports_udp" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = false
+  protocol = "udp"
+  rule_number = 111
   rule_action = "allow"
   cidr_block = "0.0.0.0/0"
   from_port = 1024
