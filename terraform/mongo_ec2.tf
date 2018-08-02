@@ -22,7 +22,7 @@ data "aws_ami" "mongo" {
 
 resource "aws_instance" "mongo" {
   ami = "${data.aws_ami.mongo.id}"
-  instance_type = "t2.micro"
+  instance_type = "${terraform.workspace == "production" ? "m4.large" : "t2.micro"}"
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
@@ -47,8 +47,9 @@ resource "aws_instance" "mongo" {
 resource "aws_ebs_volume" "mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
-  size = 20
+  size = "${terraform.workspace == "production" ? 200 : 20}"
   iops = 1000
+  encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Data"))}"
 }
@@ -58,6 +59,7 @@ resource "aws_ebs_volume" "mongo_journal" {
   type = "io1"
   size = 8
   iops = 250
+  encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Journal"))}"
 }
@@ -67,6 +69,7 @@ resource "aws_ebs_volume" "mongo_log" {
   type = "io1"
   size = 8
   iops = 100
+  encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Log"))}"
 }
