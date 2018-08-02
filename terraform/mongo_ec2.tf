@@ -22,7 +22,7 @@ data "aws_ami" "mongo" {
 
 resource "aws_instance" "mongo" {
   ami = "${data.aws_ami.mongo.id}"
-  instance_type = "t2.micro"
+  instance_type = "${terraform.workspace == "production" ? "m4.large" : "t2.micro"}"
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
