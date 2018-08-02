@@ -99,6 +99,10 @@ resource "aws_network_acl_rule" "public_ingress_from_anywhere_via_ephemeral_port
 }
 
 # Allow ingress from anywhere via ssh
+#
+# TODO - This should be locked down using
+# var/trusted_ingress_networks_ipv4 and
+# var/trusted_ingress_networks_ipv6
 resource "aws_network_acl_rule" "public_ingress_from_anywhere_via_ssh" {
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = false
