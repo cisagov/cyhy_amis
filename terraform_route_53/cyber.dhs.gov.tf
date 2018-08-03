@@ -149,14 +149,6 @@ resource "aws_route53_record" "drop_ncats_A" {
   records = [ "64.69.57.40" ]
 }
 
-resource "aws_route53_record" "firewall_ncats_A" {
-  zone_id = "${aws_route53_zone.cyber_dhs_gov_zone.zone_id}"
-  name    = "firewall.ncats.${aws_route53_zone.cyber_dhs_gov_zone.name}"
-  type    = "A"
-  ttl     = 300
-  records = [ "64.69.57.2" ]
-}
-
 resource "aws_route53_record" "fw01_ncats_A" {
   zone_id = "${aws_route53_zone.cyber_dhs_gov_zone.zone_id}"
   name    = "fw01.ncats.${aws_route53_zone.cyber_dhs_gov_zone.name}"
@@ -186,7 +178,7 @@ resource "aws_route53_record" "vip_ncats_A" {
   name    = "vip.ncats.${aws_route53_zone.cyber_dhs_gov_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "64.69.57.5" ]
+  records = [ "64.69.57.2" ]
 }
 
 resource "aws_route53_record" "vpn_ncats_CNAME" {
