@@ -1,6 +1,7 @@
 # The BOD 18-01 VPC
 resource "aws_vpc" "bod_vpc" {
   cidr_block = "10.10.12.0/23"
+  enable_dns_hostnames = true
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01"))}"
 }
@@ -66,6 +67,13 @@ resource "aws_default_route_table" "bod_default_route_table" {
   default_route_table_id = "${aws_vpc.bod_vpc.default_route_table_id}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 default route table"))}"
+}
+
+# Route all CyHy traffic through the VPC peering connection
+resource "aws_route" "route_cyhy_traffic_through_peering_connection" {
+  route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
+  destination_cidr_block = "${data.aws_vpc.cyhy_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection_to_cyhy.id}"
 }
 
 # Route all external traffic through the NAT gateway

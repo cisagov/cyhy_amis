@@ -120,3 +120,15 @@ resource "aws_network_acl_rule" "private_egress_to_public_via_ephemeral_ports" {
   from_port = 1024
   to_port = 65535
 }
+
+# Allow MongoDB egress to the CyHy private subnet
+resource "aws_network_acl_rule" "private_egress_to_cyhy_private_via_mongodb" {
+  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 170
+  rule_action = "allow"
+  cidr_block = "${data.aws_subnet.cyhy_private_subnet.cidr_block}"
+  from_port = 27017
+  to_port = 27017
+}
