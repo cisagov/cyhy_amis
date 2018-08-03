@@ -10,8 +10,8 @@ variable "aws_availability_zone" {
 
 variable "tags" {
   type = "map"
-  default = {}
   description = "Tags to apply to all AWS resources created"
+  default = {}
 }
 
 variable "mongo_disks" {
@@ -21,4 +21,18 @@ variable "mongo_disks" {
     journal = "/dev/xvdc"
     log = "/dev/xvdd"
   }
+}
+
+# This should be overridden by a production.tfvars file,
+# most-likely stored outside of version control
+variable "trusted_ingress_networks_ipv4" {
+  type = "list"
+  description = "IPv4 CIDR blocks from which to allow ingress to the bastion server"
+  default = [ "0.0.0.0/0" ]
+}
+
+variable "trusted_ingress_networks_ipv6" {
+  type = "list"
+  description = "IPv6 CIDR blocks from which to allow ingress to the bastion server"
+  default = [ "::/0" ]
 }

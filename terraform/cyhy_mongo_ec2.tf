@@ -44,6 +44,16 @@ resource "aws_instance" "mongo" {
   tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
 }
 
+# Note that the EBS volumes contain production data. Therefore we need
+# these resources to be immortal in the "production" workspace, and so
+# I am using the prevent_destroy lifecycle element to disallow the
+# destruction of it via terraform in that case.
+#
+# I'd like to use "${terraform.workspace == "production" ? true :
+# false}", so the prevent_destroy only applies to the production
+# workspace, but it appears that interpolations are not supported
+# inside of the lifecycle block
+# (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
@@ -52,8 +62,11 @@ resource "aws_ebs_volume" "mongo_data" {
   encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Data"))}"
-}
 
+  lifecycle {
+    prevent_destroy = true
+  }
+}
 resource "aws_ebs_volume" "mongo_journal" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
@@ -62,8 +75,11 @@ resource "aws_ebs_volume" "mongo_journal" {
   encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Journal"))}"
-}
 
+  lifecycle {
+    prevent_destroy = true
+  }
+}
 resource "aws_ebs_volume" "mongo_log" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
@@ -72,6 +88,10 @@ resource "aws_ebs_volume" "mongo_log" {
   encrypted = true
 
   tags = "${merge(var.tags, map("Name", "Mongo Log"))}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_volume_attachment" "mongo_data_attachment" {
