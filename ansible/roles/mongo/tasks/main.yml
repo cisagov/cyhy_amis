@@ -30,10 +30,11 @@
 
 - name: Configure mongo service to listen on all interfaces
   lineinfile:
-    dest: /lib/systemd/system/mongod.service
-    regexp: '^( *bindIp=.*)$'
+    dest: /etc/mongod.conf
+    regexp: '^([ \t]*bindIp=.*)$'
     state: present
-    line: '#\1'
+    line: '# \1'
+    backrefs: yes
 
 # Mongo performs best with XFS filesystems
 - name: Install xfsprogs
