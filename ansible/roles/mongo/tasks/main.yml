@@ -28,13 +28,25 @@
     state: present
     line: After=network.target cloud-config.service
 
-- name: Configure mongo service to listen on all interfaces
+- name: Configure mongo service to use wired tiger
   lineinfile:
     dest: /etc/mongod.conf
-    regexp: '^([ \t]*bindIp=.*)$'
+    regexp: 'engine:'
     state: present
-    line: '# \1'
-    backrefs: yes
+    line: '  engine: wiredTiger'
+
+- name: Configure mongo service to listen on all interfaces
+  blockinfile:
+    path: /etc/mongod.conf
+    block: |
+      net:
+        port: 27017
+      # bindIp: 127.0.0.1
+      # ssl:
+      #   mode: disabled
+      # http:
+      #   enabled: true
+      #   RESTInterfaceEnabled: true
 
 # Mongo performs best with XFS filesystems
 - name: Install xfsprogs
