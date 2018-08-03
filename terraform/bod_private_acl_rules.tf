@@ -128,7 +128,7 @@ resource "aws_network_acl_rule" "private_egress_to_cyhy_private_via_mongodb" {
   protocol = "tcp"
   rule_number = 170
   rule_action = "allow"
-  cidr_block = "${data.aws_subnet.cyhy_private_subnet.cidr_block}"
+  cidr_block = "${aws_subnet.cyhy_private_subnet.cidr_block}"
   from_port = 27017
   to_port = 27017
 }

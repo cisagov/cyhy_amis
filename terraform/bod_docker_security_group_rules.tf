@@ -90,7 +90,7 @@ resource "aws_security_group_rule" "docker_egress_to_cyhy_private_via_mongodb" {
   security_group_id = "${aws_security_group.bod_docker_sg.id}"
   type = "egress"
   protocol = "tcp"
-  source_security_group_id = "${data.aws_security_group.cyhy_private_sg.id}"
+  source_security_group_id = "${aws_security_group.cyhy_private_sg.id}"
   from_port = 27017
   to_port = 27017
 }

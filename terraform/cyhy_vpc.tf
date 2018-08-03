@@ -17,7 +17,7 @@ resource "aws_vpc" "cyhy_vpc" {
   # supported inside of the lifecycle block
   # (https://github.com/hashicorp/terraform/issues/3116).
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
@@ -86,14 +86,14 @@ resource "aws_default_route_table" "cyhy_default_route_table" {
 }
 
 # Route all BOD traffic through the VPC peering connection
-resource "aws_route" "route_external_traffic_through_vpc_peering_connection" {
+resource "aws_route" "cyhy_route_external_traffic_through_vpc_peering_connection" {
   route_table_id = "${aws_default_route_table.cyhy_default_route_table.id}"
-  destination_cidr_block = "${data.aws_vpc.bod_vpc.cidr_block}"
-  vpc_peering_connection_id = "${data.aws_vpc_peering_connection.peering_connection.id}"
+  destination_cidr_block = "${aws_vpc.bod_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection.id}"
 }
 
 # Route all external traffic through the NAT gateway
-resource "aws_route" "route_external_traffic_through_nat_gateway" {
+resource "aws_route" "cyhy_route_external_traffic_through_nat_gateway" {
   route_table_id = "${aws_default_route_table.cyhy_default_route_table.id}"
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id = "${aws_nat_gateway.cyhy_nat_gw.id}"
@@ -108,14 +108,14 @@ resource "aws_route_table" "cyhy_scanner_route_table" {
 }
 
 # Route all external traffic through the internet gateway
-resource "aws_route" "route_external_traffic_through_internet_gateway" {
+resource "aws_route" "cyhy_route_external_traffic_through_internet_gateway" {
   route_table_id = "${aws_route_table.cyhy_scanner_route_table.id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id = "${aws_internet_gateway.cyhy_igw.id}"
 }
 
 # Associate the route table with the scanner subnet
-resource "aws_route_table_association" "association" {
+resource "aws_route_table_association" "cyhy_association" {
   subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
   route_table_id = "${aws_route_table.cyhy_scanner_route_table.id}"
 }

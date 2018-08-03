@@ -53,7 +53,7 @@ resource "aws_network_acl_rule" "private_ingress_from_bod_private_via_mongodb" {
   protocol = "tcp"
   rule_number = 140
   rule_action = "allow"
-  cidr_block = "${data.aws_subnet.bod_private_subnet.cidr_block}"
+  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
   from_port = 27017
   to_port = 27017
 }
@@ -65,7 +65,7 @@ resource "aws_network_acl_rule" "private_egress_to_bod_private_via_ephemeral_por
   protocol = "tcp"
   rule_number = 150
   rule_action = "allow"
-  cidr_block = "${data.aws_subnet.bod_private_subnet.cidr_block}"
+  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
   from_port = 1024
   to_port = 65535
 }

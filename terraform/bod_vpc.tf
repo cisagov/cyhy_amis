@@ -70,14 +70,14 @@ resource "aws_default_route_table" "bod_default_route_table" {
 }
 
 # Route all CyHy traffic through the VPC peering connection
-resource "aws_route" "route_cyhy_traffic_through_peering_connection" {
+resource "aws_route" "bod_route_cyhy_traffic_through_peering_connection" {
   route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
-  destination_cidr_block = "${data.aws_vpc.cyhy_vpc.cidr_block}"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection_to_cyhy.id}"
+  destination_cidr_block = "${aws_vpc.cyhy_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection.id}"
 }
 
 # Route all external traffic through the NAT gateway
-resource "aws_route" "route_external_traffic_through_nat_gateway" {
+resource "aws_route" "bod_route_external_traffic_through_nat_gateway" {
   route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id = "${aws_nat_gateway.bod_nat_gw.id}"
@@ -98,7 +98,7 @@ resource "aws_route" "route_external_traffic_through_internet_gateway" {
 }
 
 # Associate the route table with the public subnet
-resource "aws_route_table_association" "association" {
+resource "aws_route_table_association" "bod_association" {
   subnet_id = "${aws_subnet.bod_public_subnet.id}"
   route_table_id = "${aws_route_table.bod_public_route_table.id}"
 }

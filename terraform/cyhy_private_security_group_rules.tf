@@ -35,7 +35,7 @@ resource "aws_security_group_rule" "private_mongodb_ingress_from_bod_private" {
   security_group_id = "${aws_security_group.cyhy_private_sg.id}"
   type = "ingress"
   protocol = "tcp"
-  source_security_group_id = "${data.aws_security_group.bod_docker_sg.id}"
+  source_security_group_id = "${aws_security_group.bod_docker_sg.id}"
   from_port = 27017
   to_port = 27017
 }
