@@ -28,6 +28,13 @@
     state: present
     line: After=network.target cloud-config.service
 
+- name: Configure mongo service to listen on all interfaces
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    regexp: '^( *bindIp=.*)$'
+    state: present
+    line: '#\1'
+
 # Mongo performs best with XFS filesystems
 - name: Install xfsprogs
   apt:
