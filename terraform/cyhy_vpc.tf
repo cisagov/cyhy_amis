@@ -17,7 +17,7 @@ resource "aws_vpc" "cyhy_vpc" {
   # supported inside of the lifecycle block
   # (https://github.com/hashicorp/terraform/issues/3116).
   lifecycle {
-    prevent_destroy = false
+    prevent_destroy = true
   }
 }
 
