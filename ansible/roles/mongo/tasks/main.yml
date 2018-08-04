@@ -1,4 +1,28 @@
 ---
 # tasks file for mongo
-- name: Test
-  shell: echo "test" > /test.txt
+- name: Check if any mongo users already exist
+  shell: mongo --eval 'db.getUsers()' admin
+  ignore_errors: true
+  register: checkifmongousers
+  changed_when: false
+
+- name: Create admin user in admin db (first user, no authentication)
+  mongodb_user:
+    database: admin
+    name: "admin"
+    password: "admin"   # TODO: Move this to a secure location (ansible vault? EC2 Parameter Store?) and change to real password
+    roles: userAdminAnyDatabase
+    state: present
+  when: checkifmongousers.rc == 0
+
+- name: Update admin user in admin db (after first time, authenticate as admin)
+  mongodb_user:
+    database: admin
+    name: "admin"
+    password: "admin"   # TODO: Move this to a secure location (ansible vault? EC2 Parameter Store?) and change to real password
+    roles: userAdminAnyDatabase
+    state: present
+    login_database: admin
+    login_user: "admin"
+    login_password: "admin"  # TODO: Move this to a secure location (ansible vault? EC2 Parameter Store?) and change to real password
+  when: checkifmongousers.rc == 1
