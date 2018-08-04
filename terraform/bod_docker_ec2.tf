@@ -1,5 +1,5 @@
 # The docker AMI
-data "aws_ami" "docker" {
+data "aws_ami" "bod_docker" {
   filter {
     name = "name"
     values = [
@@ -22,8 +22,8 @@ data "aws_ami" "docker" {
 }
 
 # The docker EC2 instance
-resource "aws_instance" "docker" {
-  ami = "${data.aws_ami.docker.id}"
+resource "aws_instance" "bod_docker" {
+  ami = "${data.aws_ami.bod_docker.id}"
   instance_type = "t2.micro"
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
