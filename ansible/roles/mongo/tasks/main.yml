@@ -1,0 +1,4 @@
+---
+# tasks file for mongo
+- name: Test
+  shell: echo "test" > /test.txt
