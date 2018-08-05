@@ -1,5 +1,5 @@
 mongo
-=========
+=====
 
 A role for installing and configuring MongoDB servers.
 
