@@ -34,8 +34,8 @@
             "type": "ansible",
             "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
-                "nessus",
-                "amazon-linux"
+                "amazon-linux",
+                "nessus"
             ]
         }
     ]

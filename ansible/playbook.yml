@@ -21,21 +21,6 @@
       search_regex: OpenSSH
     when: bastion_host is not defined
 
-- hosts: all
-  gather_facts: no
-  check_mode: no
-  become: no
-  tasks:
-    - name: Install python 2.7
-      raw: >
-        test -e /usr/bin/python ||
-        (
-          (test -e /usr/bin/apt-get && (apt-get -y update && apt-get install -y python)) ||
-          (test -e /usr/bin/yum && (yum makecache fast && yum install -y python))
-        )
-      args:
-        creates: /usr/bin/python
-
 - hosts: mongo
   name: Configure MongoDB
   become: yes

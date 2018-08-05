@@ -48,17 +48,13 @@
       #   enabled: true
       #   RESTInterfaceEnabled: true
 
-# Mongo performs best with XFS filesystems
-- name: Install xfsprogs
-  apt:
-    name: xfsprogs
-
 - name: Install pip
   apt:
     name: python-pip
+    state: latest
 
 # pymongo is needed for ansible mongodb_user module
 - name: Install pymongo via pip
   pip:
     name: pymongo
-    state: present
+    state: latest

@@ -1,10 +1,11 @@
 ---
 - hosts: all
-  name: Update the base image
+  name: Update the base image and install python
   become: yes
   become_method: sudo
   roles:
     - upgrade
+    - python
 
 - hosts: nmap
   name: Install nmap
@@ -14,10 +15,11 @@
     - nmap
 
 - hosts: mongo
-  name: Install and configure MongoDB
+  name: Install and configure MongoDB and xfsprogs
   become: yes
   become_method: sudo
   roles:
+    - xfs
     - mongo
 
 - hosts: nessus

@@ -13,10 +13,10 @@
   apt:
     name: '*'
     state: latest
-    update_cache: yes
 
-- name: Upgrade all packages (nessus group only)
-  when: "'nessus' in group_names"
+- name: Upgrade all packages (amazon-linux group only)
+  when: "'amazon-linux' in group_names"
   yum:
     name: '*'
     state: latest
+    update_cache: yes
