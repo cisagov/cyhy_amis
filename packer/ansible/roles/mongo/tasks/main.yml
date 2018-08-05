@@ -36,17 +36,12 @@
     line: '  engine: wiredTiger'
 
 - name: Configure mongo service to listen on all interfaces
-  blockinfile:
+  lineinfile:
     path: /etc/mongod.conf
-    block: |
-      net:
-        port: 27017
-      # bindIp: 127.0.0.1
-      # ssl:
-      #   mode: disabled
-      # http:
-      #   enabled: true
-      #   RESTInterfaceEnabled: true
+    regexp: '^([ \t]*bindIp:.*)$'
+    state: present
+    line: '#\1'
+    backrefs: yes
 
 - name: Install pip
   apt:
