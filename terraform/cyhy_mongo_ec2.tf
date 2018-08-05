@@ -115,6 +115,17 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   device_name = "${var.mongo_disks["data"]}"
   volume_id = "${aws_ebs_volume.cyhy_mongo_data.id}"
   instance_id = "${aws_instance.cyhy_mongo.id}"
+
+  # Terraform attempts to destroy the volume attachments before it attempts to
+  # destroy the EC2 instance they are attached to.  EC2 does not like that and
+  # it results in the failed destruction of the volume attachments.  To get
+  # around this, we explicitly terminate the cyhy_mongo volume via the AWS CLI
+  # in a destroy provisioner; this gracefully shuts down the instance and
+  # allows terraform to successfully destroy the volume attachments.
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+  }
 }
 
 resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
