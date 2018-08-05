@@ -125,17 +125,54 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   provisioner "local-exec" {
     when = "destroy"
     command = "aws ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    on_failure = "continue"
   }
+
+  # Wait until cyhy_mongo instance is terminated before continuing on
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+  }
+
+  skip_destroy = true
 }
 
 resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
   device_name = "${var.mongo_disks["journal"]}"
   volume_id = "${aws_ebs_volume.cyhy_mongo_journal.id}"
   instance_id = "${aws_instance.cyhy_mongo.id}"
+
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    on_failure = "continue"
+  }
+
+  # Wait until cyhy_mongo instance is terminated before continuing on
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+  }
+
+  skip_destroy = true
 }
 
 resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   device_name = "${var.mongo_disks["log"]}"
   volume_id = "${aws_ebs_volume.cyhy_mongo_log.id}"
   instance_id = "${aws_instance.cyhy_mongo.id}"
+
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    on_failure = "continue"
+  }
+
+  # Wait until cyhy_mongo instance is terminated before continuing on
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+  }
+
+  skip_destroy = true
 }
