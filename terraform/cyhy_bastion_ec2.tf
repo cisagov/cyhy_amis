@@ -30,7 +30,7 @@ resource "aws_instance" "cyhy_bastion" {
 
 #   arguments = [
 #     "--user=${var.remote_ssh_user}",
-#     "--ssh-common-args='-o \"StrictHostKeyChecking no\"'"
+#     "--ssh-common-args='-o StrictHostKeyChecking=no'"
 #   ]
 #   envs = [
 #     "host=${aws_instance.cyhy_bastion.public_ip}",

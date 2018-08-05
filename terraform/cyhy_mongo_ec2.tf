@@ -50,7 +50,7 @@ module "cyhy_mongo_ansible_provisioner" {
 
   arguments = [
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o \"StrictHostKeyChecking no\" -o ProxyCommand=\"ssh -W %h:%p -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
     "host=${aws_instance.cyhy_mongo.private_ip}",
