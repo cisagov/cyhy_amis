@@ -124,14 +124,14 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
     on_failure = "continue"
   }
 
   # Wait until cyhy_mongo instance is terminated before continuing on
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
   }
 
   skip_destroy = true
@@ -144,14 +144,14 @@ resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
 
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
     on_failure = "continue"
   }
 
   # Wait until cyhy_mongo instance is terminated before continuing on
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
   }
 
   skip_destroy = true
@@ -164,14 +164,14 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
 
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
     on_failure = "continue"
   }
 
   # Wait until cyhy_mongo instance is terminated before continuing on
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
   }
 
   skip_destroy = true
