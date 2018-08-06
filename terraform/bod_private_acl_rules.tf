@@ -5,7 +5,7 @@ resource "aws_network_acl_rule" "private_ingress_from_public_via_ssh" {
   protocol = "tcp"
   rule_number = 100
   rule_action = "allow"
-  cidr_block = "0.0.0.0/0"
+  cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
   from_port = 22
   to_port = 22
 }
