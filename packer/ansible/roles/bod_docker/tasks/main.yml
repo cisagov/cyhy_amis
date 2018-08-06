@@ -26,14 +26,6 @@
     extra_opts:
       - "--strip-components=1"
 
-- name: Copying orchestrator secrets
-  copy:
-    src: orchestrator_secrets/
-    dest: /var/cyhy/orchestrator/secrets
-    owner: admin
-    group: admin
-    mode: 0644
-
 - name: Pull the orchestrator docker images but do not start docker-compose
   docker_service:
     project_src: /var/cyhy/orchestrator
@@ -57,14 +49,6 @@
     group: admin
     extra_opts:
       - "--strip-components=1"
-
-- name: Copying cyhy-mailer secrets
-  copy:
-    src: cyhy-mailer_secrets/
-    dest: /var/cyhy/cyhy-mailer/secrets
-    owner: admin
-    group: admin
-    mode: 0644
 
 - name: Pull the cyhy-mailer docker image but do not start docker-compose
   docker_service:
