@@ -1,4 +1,5 @@
 *~
+playbook.retry
 .terraform
 terraform.tfstate*
 *.tfvars
