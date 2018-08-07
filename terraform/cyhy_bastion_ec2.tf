@@ -23,3 +23,19 @@ resource "aws_instance" "cyhy_bastion" {
 
   tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
 }
+
+# Provision the bastion EC2 instance via Ansible
+# module "cyhy_bastion_ansible_provisioner" {
+#   source = "github.com/cloudposse/tf_ansible"
+
+#   arguments = [
+#     "--user=${var.remote_ssh_user}",
+#     "--ssh-common-args='-o StrictHostKeyChecking=no'"
+#   ]
+#   envs = [
+#     "host=${aws_instance.cyhy_bastion.public_ip}",
+#     "host_groups=mongo"
+#   ]
+#   playbook = "../ansible/playbook.yml"
+#   dry_run = false
+# }

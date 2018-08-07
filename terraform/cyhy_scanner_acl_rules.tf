@@ -1,4 +1,8 @@
 # Allow ingress from anywhere via the Nessus UI port
+#
+# TODO - This should be locked down using
+# var/trusted_ingress_networks_ipv4 and
+# var/trusted_ingress_networks_ipv6
 resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_nessus" {
   network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
   egress = false
@@ -11,6 +15,10 @@ resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_nessus" {
 }
 
 # Allow ingress from anywhere via ssh
+#
+# TODO - This should be locked down using
+# var/trusted_ingress_networks_ipv4 and
+# var/trusted_ingress_networks_ipv6
 resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ssh" {
   network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
   egress = false
@@ -44,7 +52,8 @@ resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ephemeral_por
   to_port = 65535
 }
 
-# Allow egress to anywhere via any protocol and port
+# Allow egress to anywhere via any protocol and port, since we're
+# scanning
 resource "aws_network_acl_rule" "scanner_egress_to_anywhere_via_any_port" {
   network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
   egress = true

@@ -1,73 +1,118 @@
 ---
 # tasks file for bod_docker
-- name: Create the /var/cyhy directory
+
+#
+# Load mongo uses and passwords into a variable
+#
+- name: Grab mongo users and passwords from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: mongo_users.yml
+    dest: /tmp/mongo_users.yml
+    mode: get
+  become: no
+
+- name: Load mongo users and passwords from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/mongo_users.yml
+    name: mongo_users
+  become: no
+
+#
+# orchestrator secrets
+#
+- name: Create the secrets directories for orchestrator and cyhy-mailer
   file:
-    path: /var/cyhy
+    path: "{{ item }}"
     state: directory
-    mode: 0755
-    owner: admin
-    group: admin
+  loop:
+    - /var/cyhy/orchestrator/secrets
+    - /var/cyhy/cyhy-mailer/secrets
 
-- name: Create the /var/cyhy/orchestrator directory
-  file:
-    path: /var/cyhy/orchestrator
-    state: directory
-    mode: 0755
-    owner: admin
-    group: admin
-
-- name: Download and untar the orchestrator tarball
-  unarchive:
-    src: https://api.github.com/repos/dhs-ncats/orchestrator/tarball/develop
-    dest: /var/cyhy/orchestrator
-    remote_src: yes
-    owner: admin
-    group: admin
-    extra_opts:
-      - "--strip-components=1"
-
-- name: Copying orchestrator secrets
+- name: Create the orchestrator credentials file to allow reading the cyhy database
   copy:
-    src: orchestrator_secrets/
+    dest: /var/cyhy/orchestrator/secrets/cyhy_read_creds.yml
+    owner: admin
+    group: admin
+    mode: 0440
+    content: |
+      version: '1'
+
+      database:
+        name: cyhy
+        uri: mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@{{ mongo_host }}:27017/cyhy
+
+- name: Create the orchestrator credentials file to allow reading the scan database
+  copy:
+    dest: /var/cyhy/orchestrator/secrets/scan_read_creds.yml
+    owner: admin
+    group: admin
+    mode: 0440
+    content: |
+      version: '1'
+
+      database:
+        name: scan
+        uri: mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@{{ mongo_host }}:27017/scan
+
+- name: Create the orchestrator credentials file to allow writing to the scan database
+  copy:
+    dest: /var/cyhy/orchestrator/secrets/scan_write_creds.yml
+    owner: admin
+    group: admin
+    mode: 0440
+    content: |
+      version: '1'
+
+      database:
+        name: scan
+        uri: mongodb://scan-writer:{{ mongo_users.other_users | selectattr("user", "eq", "scan-writer") | map(attribute="password") | first }}@{{ mongo_host }}:27017/scan
+
+- name: Create a temporary directory to store the orchestrator AWS secrets
+  local_action:
+    module: file
+    path: /tmp/secrets/aws
+    state: directory
+  become: no
+
+- name: Grab the orchestrator AWS credentials from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-bod-18-01-secrets
+    object: "orchestrator_secrets/aws/{{ item }}"
+    dest: "/tmp/secrets/aws/{{ item }}"
+    mode: get
+  become: no
+  loop:
+    - config
+    - credentials
+
+- name: Copy the orchestrator AWS secrets
+  copy:
+    src: /tmp/secrets/aws
     dest: /var/cyhy/orchestrator/secrets
     owner: admin
     group: admin
-    mode: 0644
+    mode: 0750
 
-- name: Pull the orchestrator docker images but do not start docker-compose
-  docker_service:
-    project_src: /var/cyhy/orchestrator
-    pull: yes
-    stopped: yes
+- name: Delete local copy of orchestrator secrets
+  local_action:
+    module: file
+    path: /tmp/secrets
+    state: absent
+  become: no
 
-- name: Create the /var/cyhy/cyhy-mailer directory
-  file:
-    path: /var/cyhy/cyhy-mailer
-    state: directory
-    mode: 0755
-    owner: admin
-    group: admin
 
-- name: Download and untar the cyhy-mailer tarball
-  unarchive:
-    src: https://api.github.com/repos/dhs-ncats/cyhy-mailer/tarball/develop
-    dest: /var/cyhy/cyhy-mailer
-    remote_src: yes
-    owner: admin
-    group: admin
-    extra_opts:
-      - "--strip-components=1"
-
-- name: Copying cyhy-mailer secrets
+#
+# cyhy-mailer secrets
+#
+- name: Copy the cyhy-mailer secrets
   copy:
-    src: cyhy-mailer_secrets/
-    dest: /var/cyhy/cyhy-mailer/secrets
+    src: /var/cyhy/orchestrator/secrets/cyhy_read_creds.yml
+    remote_src: yes
+    dest: /var/cyhy/cyhy-mailer/secrets/database_creds.yml
     owner: admin
     group: admin
-    mode: 0644
-
-- name: Pull the cyhy-mailer docker image but do not start docker-compose
-  docker_service:
-    project_src: /var/cyhy/cyhy-mailer
-    pull: yes
-    stopped: yes
+    mode: 0440

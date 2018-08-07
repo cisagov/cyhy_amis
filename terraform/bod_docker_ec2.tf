@@ -1,5 +1,5 @@
 # The docker AMI
-data "aws_ami" "docker" {
+data "aws_ami" "bod_docker" {
   filter {
     name = "name"
     values = [
@@ -22,8 +22,8 @@ data "aws_ami" "docker" {
 }
 
 # The docker EC2 instance
-resource "aws_instance" "docker" {
-  ami = "${data.aws_ami.docker.id}"
+resource "aws_instance" "bod_docker" {
+  ami = "${data.aws_ami.bod_docker.id}"
   instance_type = "t2.micro"
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
@@ -44,4 +44,22 @@ resource "aws_instance" "docker" {
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
+}
+
+# Provision the Docker EC2 instance via Ansible
+module "bod_docker_ansible_provisioner" {
+  source = "github.com/cloudposse/tf_ansible"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.bod_docker.private_ip}",
+    "bastion_host=${aws_instance.bod_bastion.public_ip}",
+    "host_groups=bod_docker",
+    "mongo_host=${aws_instance.cyhy_mongo.private_ip}"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
 }

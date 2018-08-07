@@ -36,3 +36,7 @@ variable "trusted_ingress_networks_ipv6" {
   description = "IPv6 CIDR blocks from which to allow ingress to the bastion server"
   default = [ "::/0" ]
 }
+
+variable "remote_ssh_user" {
+  description = "The username to use when sshing to the EC2 instances"
+}

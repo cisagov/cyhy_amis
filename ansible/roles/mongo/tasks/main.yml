@@ -1,54 +1,63 @@
 ---
 # tasks file for mongo
-- name: Get mongodb-org GPG key
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: EA312927
+- name: Grab mongo users and paswords from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: mongo_users.yml
+    dest: /tmp/mongo_users.yml
+    mode: get
+  become: no
 
-- name: Copy sources list for mongodb-org (official MongoDB package repo)
-  copy:
-    src: mongodb-org-3.2.list
-    dest: /etc/apt/sources.list.d
-    mode: 0644
+- name: Load mongo uses and passwords from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/mongo_users.yml
+    name: mongo_users
+  become: no
 
-- name: Update the cache with the mongodb-org goodness
-  apt:
-    update_cache: yes
+- name: Check if any mongo users already exist
+  shell: mongo --eval 'db.getUsers()' admin
+  ignore_errors: true
+  register: checkifmongousers
+  changed_when: false
 
-- name: Install mongo
-  apt:
-    name: mongodb-org=3.2.20
-  notify:
-    - Enable mongo
-
-- name: Configure mongo service to run after cloud-config
-  lineinfile:
-    dest: /lib/systemd/system/mongod.service
-    regexp: ^After=
+- name: Create admin user in admin db (first user, no authentication)
+  mongodb_user:
+    database: admin
+    name: "{{ mongo_users.admin_user.user }}"
+    password: "{{ mongo_users.admin_user.password }}"
+    roles: userAdminAnyDatabase
     state: present
-    line: After=network.target cloud-config.service
+  when: checkifmongousers.rc == 0
 
-- name: Configure mongo service to use wired tiger
-  lineinfile:
-    dest: /etc/mongod.conf
-    regexp: 'engine:'
+- name: Update admin user in admin db (authenticate as admin)
+  mongodb_user:
+    login_database: admin
+    login_user: "{{ mongo_users.admin_user.user }}"
+    login_password: "{{ mongo_users.admin_user.old_password }}"
+    database: "{{ mongo_users.admin_user.database }}"
+    name: "{{ mongo_users.admin_user.user }}"
+    password: "{{ mongo_users.admin_user.password }}"
+    roles: "{{ mongo_users.admin_user.roles }}"
     state: present
-    line: '  engine: wiredTiger'
+  when: checkifmongousers.rc == 1
 
-- name: Configure mongo service to listen on all interfaces
-  blockinfile:
-    path: /etc/mongod.conf
-    block: |
-      net:
-        port: 27017
-      # bindIp: 127.0.0.1
-      # ssl:
-      #   mode: disabled
-      # http:
-      #   enabled: true
-      #   RESTInterfaceEnabled: true
+- name: Update other users (authenticate as admin)
+  mongodb_user:
+    login_database: admin
+    login_user: "{{ mongo_users.admin_user.user }}"
+    login_password: "{{ mongo_users.admin_user.password }}"
+    database: "{{ item.database }}"
+    name: "{{ item.user }}"
+    password: "{{ item.password }}"
+    roles: "{{ item.roles }}"
+    state: present
+  loop: "{{ mongo_users.other_users }}"
 
-# Mongo performs best with XFS filesystems
-- name: Install xfsprogs
-  apt:
-    name: xfsprogs
+- name: Delete local copy of mongo user file
+  local_action:
+    module: file
+    path: /tmp/mongo_users.yml
+    state: absent
+  become: no

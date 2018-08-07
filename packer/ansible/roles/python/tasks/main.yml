@@ -1,0 +1,13 @@
+---
+# tasks file for python
+- name: Install python (debian group only)
+  when: "'debian' in group_names"
+  apt:
+    name: python
+    state: latest
+
+- name: Install python (amazon-linux group only)
+  when: "'amazon-linux' in group_names"
+  yum:
+    name: python
+    state: latest

@@ -17,7 +17,9 @@
         "ssh_username": "ec2-user",
         "ami_name": "cyhy-nessus-hvm-{{timestamp}}-x86_64-ebs",
         "ami_regions": [
-            "us-east-1"
+            "us-east-1",
+            "us-west-1",
+            "us-west-2"
         ],
 
         "tags": {
@@ -32,10 +34,10 @@
     "provisioners": [
         {
             "type": "ansible",
-            "playbook_file": "ansible/playbook.yml",
+            "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
-                "nessus",
-                "amazon-linux"
+                "amazon-linux",
+                "nessus"
             ]
         }
     ]

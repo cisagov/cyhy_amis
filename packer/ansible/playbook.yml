@@ -1,0 +1,44 @@
+---
+- hosts: all
+  name: Update the base image and install python
+  become: yes
+  become_method: sudo
+  roles:
+    - upgrade
+    - python
+
+- hosts: nmap
+  name: Install nmap
+  become: yes
+  become_method: sudo
+  roles:
+    - nmap
+
+- hosts: mongo
+  name: Install and configure MongoDB and xfsprogs
+  become: yes
+  become_method: sudo
+  roles:
+    - xfs
+    - mongo
+
+- hosts: nessus
+  name: Install and configure Nessus
+  become: yes
+  become_method: sudo
+  roles:
+    - nessus
+
+- hosts: docker
+  name: Install Docker
+  become: yes
+  become_method: sudo
+  roles:
+    - docker
+
+- hosts: bod_docker
+  name: Configure Docker host for BOD 18-01 scanning
+  become: yes
+  become_method: sudo
+  roles:
+    - bod_docker

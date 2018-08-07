@@ -1,4 +1,4 @@
-data "aws_ami" "mongo" {
+data "aws_ami" "cyhy_mongo" {
   filter {
     name = "name"
     values = [
@@ -20,8 +20,8 @@ data "aws_ami" "mongo" {
   most_recent = true
 }
 
-resource "aws_instance" "mongo" {
-  ami = "${data.aws_ami.mongo.id}"
+resource "aws_instance" "cyhy_mongo" {
+  ami = "${data.aws_ami.cyhy_mongo.id}"
   instance_type = "${terraform.workspace == "production" ? "m4.large" : "t2.micro"}"
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
@@ -44,6 +44,23 @@ resource "aws_instance" "mongo" {
   tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
 }
 
+# Provision the mongo EC2 instance via Ansible
+module "cyhy_mongo_ansible_provisioner" {
+  source = "github.com/cloudposse/tf_ansible"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_mongo.private_ip}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=mongo"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
 # Note that the EBS volumes contain production data. Therefore we need
 # these resources to be immortal in the "production" workspace, and so
 # I am using the prevent_destroy lifecycle element to disallow the
@@ -54,60 +71,108 @@ resource "aws_instance" "mongo" {
 # workspace, but it appears that interpolations are not supported
 # inside of the lifecycle block
 # (https://github.com/hashicorp/terraform/issues/3116).
-resource "aws_ebs_volume" "mongo_data" {
+resource "aws_ebs_volume" "cyhy_mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
   size = "${terraform.workspace == "production" ? 200 : 20}"
   iops = 1000
   encrypted = true
 
-  tags = "${merge(var.tags, map("Name", "Mongo Data"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Mongo Data"))}"
 
   lifecycle {
     prevent_destroy = true
   }
 }
-resource "aws_ebs_volume" "mongo_journal" {
+resource "aws_ebs_volume" "cyhy_mongo_journal" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
   size = 8
   iops = 250
   encrypted = true
 
-  tags = "${merge(var.tags, map("Name", "Mongo Journal"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Mongo Journal"))}"
 
   lifecycle {
     prevent_destroy = true
   }
 }
-resource "aws_ebs_volume" "mongo_log" {
+resource "aws_ebs_volume" "cyhy_mongo_log" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
   size = 8
   iops = 100
   encrypted = true
 
-  tags = "${merge(var.tags, map("Name", "Mongo Log"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Mongo Log"))}"
 
   lifecycle {
     prevent_destroy = true
   }
 }
 
-resource "aws_volume_attachment" "mongo_data_attachment" {
+resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   device_name = "${var.mongo_disks["data"]}"
-  volume_id = "${aws_ebs_volume.mongo_data.id}"
-  instance_id = "${aws_instance.mongo.id}"
+  volume_id = "${aws_ebs_volume.cyhy_mongo_data.id}"
+  instance_id = "${aws_instance.cyhy_mongo.id}"
+
+  # Terraform attempts to destroy the volume attachments before it attempts to
+  # destroy the EC2 instance they are attached to.  EC2 does not like that and
+  # it results in the failed destruction of the volume attachments.  To get
+  # around this, we explicitly terminate the cyhy_mongo volume via the AWS CLI
+  # in a destroy provisioner; this gracefully shuts down the instance and
+  # allows terraform to successfully destroy the volume attachments.
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    on_failure = "continue"
+  }
+
+  # Wait until cyhy_mongo instance is terminated before continuing on
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+  }
+
+  skip_destroy = true
 }
 
-resource "aws_volume_attachment" "mongo_journal_attachment" {
+resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
   device_name = "${var.mongo_disks["journal"]}"
-  volume_id = "${aws_ebs_volume.mongo_journal.id}"
-  instance_id = "${aws_instance.mongo.id}"
+  volume_id = "${aws_ebs_volume.cyhy_mongo_journal.id}"
+  instance_id = "${aws_instance.cyhy_mongo.id}"
+
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    on_failure = "continue"
+  }
+
+  # Wait until cyhy_mongo instance is terminated before continuing on
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+  }
+
+  skip_destroy = true
 }
 
-resource "aws_volume_attachment" "mongo_log_attachment" {
+resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   device_name = "${var.mongo_disks["log"]}"
-  volume_id = "${aws_ebs_volume.mongo_log.id}"
-  instance_id = "${aws_instance.mongo.id}"
+  volume_id = "${aws_ebs_volume.cyhy_mongo_log.id}"
+  instance_id = "${aws_instance.cyhy_mongo.id}"
+
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo.id}"
+    on_failure = "continue"
+  }
+
+  # Wait until cyhy_mongo instance is terminated before continuing on
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo.id}"
+  }
+
+  skip_destroy = true
 }
