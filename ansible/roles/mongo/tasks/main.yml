@@ -54,6 +54,8 @@
     roles: "{{ item.roles }}"
     state: present
   loop: "{{ mongo_users.other_users }}"
+  loop_control:
+    label: "{{ item.user }}"
 
 - name: Delete local copy of mongo user file
   local_action:
