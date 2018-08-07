@@ -1,13 +1,5 @@
 ---
 # tasks file for bod_docker
-- name: Create the /var/cyhy directory
-  file:
-    path: /var/cyhy
-    state: directory
-    mode: 0755
-    owner: admin
-    group: admin
-
 - name: Create the /var/cyhy/orchestrator directory
   file:
     path: /var/cyhy/orchestrator
@@ -26,12 +18,6 @@
     extra_opts:
       - "--strip-components=1"
 
-- name: Pull the orchestrator docker images but do not start docker-compose
-  docker_service:
-    project_src: /var/cyhy/orchestrator
-    pull: yes
-    stopped: yes
-
 - name: Create the /var/cyhy/cyhy-mailer directory
   file:
     path: /var/cyhy/cyhy-mailer
@@ -49,9 +35,3 @@
     group: admin
     extra_opts:
       - "--strip-components=1"
-
-- name: Pull the cyhy-mailer docker image but do not start docker-compose
-  docker_service:
-    project_src: /var/cyhy/cyhy-mailer
-    pull: yes
-    stopped: yes
