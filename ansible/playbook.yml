@@ -3,23 +3,23 @@
   gather_facts: yes
   check_mode: no
   tasks:
-  - name: Add public ip addresses to an dynamic inventory
-    add_host:
-      name: "{{ host }}"
-      groups: "{{ host_groups.split(',') }}"
+    - name: Add public ip addresses to an dynamic inventory
+      add_host:
+        name: "{{ host }}"
+        groups: "{{ host_groups.split(',') }}"
 
-  - wait_for:
-      port: 22
-      host: "{{ host }}"
-      search_regex: OpenSSH
-    delegate_to: "{{ bastion_host }}"
-    when: bastion_host is defined
+    - wait_for:
+        port: 22
+        host: "{{ host }}"
+        search_regex: OpenSSH
+      delegate_to: "{{ bastion_host }}"
+      when: bastion_host is defined
 
-  - wait_for:
-      port: 22
-      host: "{{ host }}"
-      search_regex: OpenSSH
-    when: bastion_host is not defined
+    - wait_for:
+        port: 22
+        host: "{{ host }}"
+        search_regex: OpenSSH
+      when: bastion_host is not defined
 
 - hosts: mongo
   name: Configure MongoDB
