@@ -45,3 +45,20 @@ resource "aws_instance" "bod_docker" {
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
 }
+
+# Provision the Docker EC2 instance via Ansible
+module "bod_docker_ansible_provisioner" {
+  source = "github.com/cloudposse/tf_ansible"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.bod_docker.private_ip}",
+    "bastion_host=${aws_instance.bod_bastion.public_ip}",
+    "host_groups=bod_docker"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}

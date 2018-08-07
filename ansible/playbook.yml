@@ -27,3 +27,10 @@
   become_method: sudo
   roles:
     - mongo
+
+- hosts: bod_docker
+  name: Configure Docker hosts for BOD 18-01 scanning
+  become: yes
+  become_method: sudo
+  roles:
+    - bod_docker
