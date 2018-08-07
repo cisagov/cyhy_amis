@@ -8,17 +8,7 @@ resource "aws_security_group_rule" "docker_ssh_ingress_from_bastion" {
   to_port = 22
 }
 
-# Allow HTTP and HTTPS egress anywhere
-resource "aws_security_group_rule" "docker_http_anywhere" {
-  security_group_id = "${aws_security_group.bod_docker_sg.id}"
-  type = "egress"
-  protocol = "tcp"
-  cidr_blocks = [
-    "0.0.0.0/0"
-  ]
-  from_port = 80
-  to_port = 80
-}
+# Allow HTTPS egress anywhere
 resource "aws_security_group_rule" "docker_https_anywhere" {
   security_group_id = "${aws_security_group.bod_docker_sg.id}"
   type = "egress"
@@ -31,26 +21,6 @@ resource "aws_security_group_rule" "docker_https_anywhere" {
 }
 
 # Allow SMTP egress anywhere
-resource "aws_security_group_rule" "docker_port_25_anywhere" {
-  security_group_id = "${aws_security_group.bod_docker_sg.id}"
-  type = "egress"
-  protocol = "tcp"
-  cidr_blocks = [
-    "0.0.0.0/0"
-  ]
-  from_port = 25
-  to_port = 25
-}
-resource "aws_security_group_rule" "docker_port_465_anywhere" {
-  security_group_id = "${aws_security_group.bod_docker_sg.id}"
-  type = "egress"
-  protocol = "tcp"
-  cidr_blocks = [
-    "0.0.0.0/0"
-  ]
-  from_port = 465
-  to_port = 465
-}
 resource "aws_security_group_rule" "docker_port_587_anywhere" {
   security_group_id = "${aws_security_group.bod_docker_sg.id}"
   type = "egress"
@@ -60,28 +30,6 @@ resource "aws_security_group_rule" "docker_port_587_anywhere" {
   ]
   from_port = 587
   to_port = 587
-}
-
-# Allow DNS egress anywhere
-resource "aws_security_group_rule" "docker_dns_anywhere_tcp" {
-  security_group_id = "${aws_security_group.bod_docker_sg.id}"
-  type = "egress"
-  protocol = "tcp"
-  cidr_blocks = [
-    "0.0.0.0/0"
-  ]
-  from_port = 53
-  to_port = 53
-}
-resource "aws_security_group_rule" "docker_dns_anywhere_udp" {
-  security_group_id = "${aws_security_group.bod_docker_sg.id}"
-  type = "egress"
-  protocol = "udp"
-  cidr_blocks = [
-    "0.0.0.0/0"
-  ]
-  from_port = 53
-  to_port = 53
 }
 
 # Allow egress via the MongoDB port to the "CyHy Private" security

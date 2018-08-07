@@ -1,22 +1,33 @@
-# Allow ingress from anywhere via the Nessus UI port
-resource "aws_security_group_rule" "scanner_ingress_anywhere_via_nessus" {
+# Allow ingress from trusted networks via the Nessus UI port
+resource "aws_security_group_rule" "scanner_ingress_from_trusted_via_nessus" {
   security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
   type = "ingress"
   protocol = "tcp"
-  cidr_blocks = [
-    "0.0.0.0/0"
-  ]
+  cidr_blocks = "${var.trusted_ingress_networks_ipv4}"
+  # ipv6_cidr_blocks = "${var.trusted_ingress_networks_ipv6}"
   from_port = 8834
   to_port = 8834
 }
 
-# Allow ingress from anywhere via ssh
-resource "aws_security_group_rule" "scanner_ingress_anywhere_via_ssh" {
+# Allow ingress from trusted networks via ssh
+resource "aws_security_group_rule" "scanner_ingress_from_trusted_via_ssh" {
+  security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = "${var.trusted_ingress_networks_ipv4}"
+  # ipv6_cidr_blocks = "${var.trusted_ingress_networks_ipv6}"
+  from_port = 22
+  to_port = 22
+}
+
+# Allow ingress from bastion via ssh.  This is necessary because
+# Ansible applies the ssh proxy even when sshing to the bastion.
+resource "aws_security_group_rule" "scanner_ingress_from_self_via_ssh" {
   security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
   type = "ingress"
   protocol = "tcp"
   cidr_blocks = [
-    "0.0.0.0/0"
+    "${aws_instance.cyhy_bastion.public_ip}/32"
   ]
   from_port = 22
   to_port = 22
@@ -54,7 +65,8 @@ resource "aws_security_group_rule" "scanner_ingress_from_private_sg_via_ssh" {
   to_port = 22
 }
 
-# Allow egress anywhere via all ports and protocols
+# Allow egress anywhere via all ports and protocols, since we're
+# scanning
 resource "aws_security_group_rule" "scanner_egress_anywhere" {
   security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
   type = "egress"
