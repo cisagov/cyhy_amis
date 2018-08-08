@@ -24,7 +24,7 @@ data "aws_ami" "bod_docker" {
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
-  instance_type = "m5.large"
+  instance_type = "r4.4xlarge"
   ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
@@ -33,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 20
+    volume_size = 100
     delete_on_termination = true
   }
 
