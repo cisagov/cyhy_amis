@@ -22,7 +22,7 @@ data "aws_ami" "cyhy_mongo" {
 
 resource "aws_instance" "cyhy_mongo" {
   ami = "${data.aws_ami.cyhy_mongo.id}"
-  instance_type = "${terraform.workspace == "production" ? "m4.large" : "t2.micro"}"
+  instance_type = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? "m4.large" : "t2.micro"}"
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
@@ -74,7 +74,7 @@ module "cyhy_mongo_ansible_provisioner" {
 resource "aws_ebs_volume" "cyhy_mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
-  size = "${terraform.workspace == "production" ? 200 : 20}"
+  size = "${terraform.workspace == "production"  || terraform.workspace == "planet_piss" ? 200 : 20}"
   iops = 1000
   encrypted = true
 
