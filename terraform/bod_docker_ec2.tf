@@ -24,7 +24,7 @@ data "aws_ami" "bod_docker" {
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
-  instance_type = "r4.4xlarge"
+  instance_type = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? "r4.4xlarge" : "t2.micro"}"
   ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
@@ -33,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 100
+    volume_size = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? 100 : 10}"
     delete_on_termination = true
   }
 
