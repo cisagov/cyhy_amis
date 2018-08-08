@@ -25,7 +25,7 @@ data "aws_ami" "bod_docker" {
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
   instance_type = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? "r4.4xlarge" : "t2.micro"}"
-  ebs_optimized = true
+  ebs_optimized = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? true : false}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
