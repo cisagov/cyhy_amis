@@ -20,13 +20,21 @@ data "aws_ami" "nessus" {
   most_recent = true
 }
 
+# Security group for the Nessus scanner
+resource "aws_security_group" "nessus_scanner_sg" {
+  # Use the default VPC
+  
+  tags = "${merge(var.tags, map("Name", "CyHy Nessus Scanners"))}"
+}
+
 resource "aws_instance" "nessus" {
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "m4.large"
   ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  subnet_id = "${aws_subnet.nessus_scanner_subnet.id}"
+  # Use a subnet in the default VPC
+  subnet_id = "${var.default_aws_subnet_id}"
   associate_public_ip_address = true
 
   root_block_device {

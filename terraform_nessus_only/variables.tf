@@ -1,6 +1,8 @@
 variable "aws_region" {
   description = "The AWS region to deploy into (e.g. us-east-1)."
-  default = "us-east-2"
+  default = "us-east-1"
+  # Currently we need to use us-east-1a because we are using a subnet in the
+  # default VPC, and that subnet resides in us-east-1a
 }
 
 variable "aws_availability_zone" {
@@ -15,6 +17,11 @@ variable "tags" {
     Application = "Manual Cyber Hygiene"
   }
   description = "Tags to apply to all AWS resources created"
+}
+
+variable "default_aws_subnet_id" {
+  description = "The id of one of the subnets in the default AWS VPC"
+  default = ""
 }
 
 # This should be overridden by a production.tfvars file,
