@@ -24,8 +24,8 @@ data "aws_ami" "bod_docker" {
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
-  instance_type = "t2.micro"
-  # ebs_optimized = true
+  instance_type = "m5.large"
+  ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
@@ -33,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 10
+    volume_size = 20
     delete_on_termination = true
   }
 
