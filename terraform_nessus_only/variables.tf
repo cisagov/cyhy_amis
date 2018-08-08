@@ -19,11 +19,6 @@ variable "tags" {
   description = "Tags to apply to all AWS resources created"
 }
 
-variable "default_aws_subnet_id" {
-  description = "The id of one of the subnets in the default AWS VPC"
-  default = ""
-}
-
 # This should be overridden by a production.tfvars file,
 # most-likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {
