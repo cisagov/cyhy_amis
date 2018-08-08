@@ -39,7 +39,7 @@ resource "aws_instance" "nessus" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 8
+    volume_size = 100
     delete_on_termination = true
   }
 
