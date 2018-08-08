@@ -2,7 +2,7 @@
 # tasks file for bod_docker
 
 #
-# Load mongo uses and passwords into a variable
+# Load mongo users and passwords into a variable
 #
 - name: Grab mongo users and passwords from S3
   local_action:
@@ -116,3 +116,22 @@
     owner: admin
     group: admin
     mode: 0440
+
+
+#
+# Add users to the docker group
+#
+- name: Load users from YML file
+  local_action:
+    module: include_vars
+    file: ../../../../terraform/scripts/user_ssh_setup.yml
+    name: ssh_users
+  become: no
+
+- name: Add known users to the docker group
+  user:
+    name: "{{ item }}"
+    groups:
+      - docker
+    append: yes
+  loop: "{{ ssh_users.users | map(attribute='name') | list }}"
