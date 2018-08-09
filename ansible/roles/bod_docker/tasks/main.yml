@@ -128,10 +128,11 @@
     name: ssh_users
   become: no
 
-- name: Add known users to the docker group
+- name: Add known users to the docker and admin groups
   user:
     name: "{{ item }}"
     groups:
       - docker
+      - admin
     append: yes
   loop: "{{ ssh_users.users | map(attribute='name') | list }}"
