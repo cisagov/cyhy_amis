@@ -1,0 +1,2 @@
+- src: https://github.com/GekoCloud/ansible-role-disable-thp
+  name: disable_thp

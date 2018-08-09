@@ -14,6 +14,8 @@
   roles:
     - nmap
 
+# MongoDB doesn't like transparent huge pages:
+# https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
 - hosts: mongo
   name: Install and configure MongoDB and xfsprogs
   become: yes
@@ -21,6 +23,10 @@
   roles:
     - xfs
     - mongo
+    - {
+        role: disable_thp,
+        disable_thp_before_service: mongod
+      }
 
 - hosts: nessus
   name: Install and configure Nessus
@@ -36,9 +42,15 @@
   roles:
     - docker
 
+# Redis doesn't like transparent huge pages:
+# https://redis.io/topics/latency
 - hosts: bod_docker
   name: Configure Docker host for BOD 18-01 scanning
   become: yes
   become_method: sudo
   roles:
     - bod_docker
+    - {
+        role: disable_thp,
+        disable_thp_before_service: docker
+      }
