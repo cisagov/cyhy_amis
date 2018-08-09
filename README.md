@@ -13,15 +13,15 @@ packer build packer/docker.json
 Build Terraform-based infrastructure with:
 ```
 cd terraform
-terraform workspace select <your\_workspace>
-terraform apply -vars-file=<your\_workspace>.yml
+terraform workspace select <your_workspace>
+terraform apply -vars-file=<your_workspace>.yml
 ```
 
 Tear down Terraform-based infrastructure with:
 ```
 cd terraform
-terraform workspace select <your\_workspace>
-terraform destroy -vars-file=<your\_workspace>.yml
+terraform workspace select <your_workspace>
+terraform destroy -vars-file=<your_workspace>.yml
 ```
 
 ## License ##
