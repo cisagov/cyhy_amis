@@ -157,7 +157,7 @@
 
 
 #
-# Add users to the docker and admin groups
+# Add users to the admin group
 #
 - name: Load users from YML file
   local_action:
@@ -171,6 +171,5 @@
     name: "{{ item }}"
     groups:
       - docker
-      - admin
     append: yes
   loop: "{{ ssh_users.users | map(attribute='name') | list }}"
