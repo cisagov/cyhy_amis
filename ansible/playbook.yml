@@ -28,6 +28,13 @@
   roles:
     - mongo
 
+- hosts: docker
+  name: Configure Docker hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - docker
+
 - hosts: bod_docker
   name: Configure Docker hosts for BOD 18-01 scanning
   become: yes

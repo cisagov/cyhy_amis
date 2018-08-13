@@ -1,12 +1,27 @@
 # NCATS AWS AMIs :dvd: #
 
-Build with:
+Build AMIs with:
 ```
+ansible-galaxy install -r packer/ansible/requirements.yml
 packer build packer/nmap.json
 packer build packer/nessus.json
 packer build packer/mongo.json
 packer build packer/bastion.json
 packer build packer/docker.json
+```
+
+Build Terraform-based infrastructure with:
+```
+cd terraform
+terraform workspace select <your_workspace>
+terraform apply -vars-file=<your_workspace>.yml
+```
+
+Tear down Terraform-based infrastructure with:
+```
+cd terraform
+terraform workspace select <your_workspace>
+terraform destroy -vars-file=<your_workspace>.yml
 ```
 
 ## License ##

@@ -9,7 +9,7 @@
     mode: get
   become: no
 
-- name: Load mongo uses and passwords from YML file
+- name: Load mongo users and passwords from YML file
   local_action:
     module: include_vars
     file: /tmp/mongo_users.yml
@@ -54,6 +54,8 @@
     roles: "{{ item.roles }}"
     state: present
   loop: "{{ mongo_users.other_users }}"
+  loop_control:
+    label: "{{ item.user }}"
 
 - name: Delete local copy of mongo user file
   local_action:

@@ -24,8 +24,8 @@ data "aws_ami" "bod_docker" {
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
-  instance_type = "t2.micro"
-  # ebs_optimized = true
+  instance_type = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? "r4.4xlarge" : "t2.micro"}"
+  ebs_optimized = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? true : false}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
@@ -33,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 10
+    volume_size = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? 100 : 10}"
     delete_on_termination = true
   }
 
@@ -57,7 +57,7 @@ module "bod_docker_ansible_provisioner" {
   envs = [
     "host=${aws_instance.bod_docker.private_ip}",
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
-    "host_groups=bod_docker",
+    "host_groups=docker,bod_docker",
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}"
   ]
   playbook = "../ansible/playbook.yml"
