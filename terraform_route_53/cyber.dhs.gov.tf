@@ -226,5 +226,5 @@ resource "aws_route53_record" "mail_SPF" {
   name    = "mail.${aws_route53_zone.cyber_zone.name}"
   type    = "TXT"
   ttl     = 300
-  records = [ "v=spf1 include:amazonses.com ~all" ]
+  records = [ "v=spf1 include:amazonses.com -all" ]
 }
