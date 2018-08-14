@@ -21,6 +21,9 @@ data "aws_ami" "nessus" {
 }
 
 resource "aws_instance" "nessus" {
+  # Number of Nessus instances to create
+  count = "${terraform.workspace == "production" ? 3 : 1}"
+
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "m4.large"
   ebs_optimized = true
@@ -31,7 +34,7 @@ resource "aws_instance" "nessus" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 8
+    volume_size = 100
     delete_on_termination = true
   }
 
@@ -41,5 +44,5 @@ resource "aws_instance" "nessus" {
 
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
-  tags = "${merge(var.tags, map("Name", "Manual CyHy Nessus"))}"
+  tags = "${merge(var.tags, map("Name", format("Manual CyHy Nessus %02d", count.index+1)))}"
 }
