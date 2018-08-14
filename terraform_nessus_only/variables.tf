@@ -24,9 +24,11 @@ variable "tags" {
 variable "trusted_ingress_networks_ipv4" {
   type = "list"
   default = [ "0.0.0.0/0" ]
+  description = "Trusted IPv4 ingress networks"
 }
 
 variable "trusted_ingress_networks_ipv6" {
   type = "list"
   default = [ "::/0" ]
+  description = "Trusted IPv6 ingress networks"
 }
