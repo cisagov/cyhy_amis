@@ -196,3 +196,27 @@ resource "aws_route53_record" "rr_CNAME" {
   ttl     = 60
   records = [ "rr.cyber.dhs.gov.s3-website-us-east-1.amazonaws.com" ]
 }
+
+resource "aws_route53_record" "rules_ncats_A" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "rules.ncats.${aws_route53_zone.cyber_zone.name}"
+  type    = "A"
+
+  alias {
+    name                   = "d35iq78wt3hgdh.cloudfront.net."
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "rules_ncats_AAAA" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "rules.ncats.${aws_route53_zone.cyber_zone.name}"
+  type    = "AAAA"
+
+  alias {
+    name                   = "d35iq78wt3hgdh.cloudfront.net."
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = false
+  }
+}
