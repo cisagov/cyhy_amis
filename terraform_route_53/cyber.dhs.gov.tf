@@ -90,7 +90,7 @@ resource "aws_route53_record" "_dmarc_TXT" {
   name    = "_dmarc.${aws_route53_zone.cyber_zone.name}"
   type    = "TXT"
   ttl     = 3600
-  records = [ "v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s; rua=mailto:reports@dmarc.cyber.dhs.gov; rf=afrf; pct=100; ri=86400" ]
+  records = [ "v=DMARC1; p=reject; sp=reject; adkim=s; aspf=r; rua=mailto:reports@dmarc.cyber.dhs.gov; rf=afrf; pct=100; ri=86400" ]
 }
 
 resource "aws_route53_record" "dmarc_MX" {
