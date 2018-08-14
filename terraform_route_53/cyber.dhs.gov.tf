@@ -89,7 +89,7 @@ resource "aws_route53_record" "_dmarc_TXT" {
   zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
   name    = "_dmarc.${aws_route53_zone.cyber_zone.name}"
   type    = "TXT"
-  ttl     = 3600
+  ttl     = 1800
   records = [ "v=DMARC1; p=reject; sp=reject; adkim=s; aspf=r; rua=mailto:reports@dmarc.cyber.dhs.gov; rf=afrf; pct=100; ri=86400" ]
 }
 
@@ -219,4 +219,20 @@ resource "aws_route53_record" "rules_ncats_AAAA" {
     zone_id                = "Z2FDTNDATAQYW2"
     evaluate_target_health = false
   }
+}
+
+resource "aws_route53_record" "mail_MX" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "mail.${aws_route53_zone.cyber_zone.name}"
+  type    = "MX"
+  ttl     = 300
+  records = [ "10 feedback-smtp.us-east-1.amazonses.com" ]
+}
+
+resource "aws_route53_record" "mail_SPF" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "mail.${aws_route53_zone.cyber_zone.name}"
+  type    = "TXT"
+  ttl     = 300
+  records = [ "v=spf1 include:amazonses.com ~all" ]
 }
