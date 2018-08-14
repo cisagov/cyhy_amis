@@ -69,7 +69,7 @@ resource "aws_route53_record" "root_MX" {
 #   records = [ "ns-1930.awsdns-49.co.uk. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400" ]
 # }
 
-resource "aws_route53_record" "root_TXT" {
+resource "aws_route53_record" "root_SPF" {
   zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
   name    = "${aws_route53_zone.cyber_zone.name}"
   type    = "TXT"
