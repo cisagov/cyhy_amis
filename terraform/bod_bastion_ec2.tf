@@ -22,4 +22,5 @@ resource "aws_instance" "bod_bastion" {
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Bastion"))}"
+  volume_tags = "${merge(var.tags, map("Name", "BOD 18-01 Bastion"))}"
 }

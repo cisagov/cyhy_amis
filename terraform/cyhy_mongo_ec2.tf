@@ -22,8 +22,8 @@ data "aws_ami" "cyhy_mongo" {
 
 resource "aws_instance" "cyhy_mongo" {
   ami = "${data.aws_ami.cyhy_mongo.id}"
-  instance_type = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? "m4.large" : "t2.micro"}"
-  # ebs_optimized = true
+  instance_type = "${local.production_workspace ? "m4.large" : "t2.micro"}"
+  ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
@@ -42,6 +42,7 @@ resource "aws_instance" "cyhy_mongo" {
   user_data = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
+  volume_tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
 }
 
 # Provision the mongo EC2 instance via Ansible
@@ -74,7 +75,7 @@ module "cyhy_mongo_ansible_provisioner" {
 resource "aws_ebs_volume" "cyhy_mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type = "io1"
-  size = "${terraform.workspace == "production"  || terraform.workspace == "planet_piss" ? 200 : 20}"
+  size = "${local.production_workspace ? 200 : 20}"
   iops = 1000
   encrypted = true
 
