@@ -69,7 +69,7 @@ resource "aws_route53_record" "root_MX" {
 #   records = [ "ns-1930.awsdns-49.co.uk. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400" ]
 # }
 
-resource "aws_route53_record" "root_TXT" {
+resource "aws_route53_record" "root_SPF" {
   zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
   name    = "${aws_route53_zone.cyber_zone.name}"
   type    = "TXT"
@@ -89,8 +89,8 @@ resource "aws_route53_record" "_dmarc_TXT" {
   zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
   name    = "_dmarc.${aws_route53_zone.cyber_zone.name}"
   type    = "TXT"
-  ttl     = 3600
-  records = [ "v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s; rua=mailto:reports@dmarc.cyber.dhs.gov; rf=afrf; pct=100; ri=86400" ]
+  ttl     = 1800
+  records = [ "v=DMARC1; p=reject; sp=reject; adkim=s; aspf=r; rua=mailto:reports@dmarc.cyber.dhs.gov; rf=afrf; pct=100; ri=86400" ]
 }
 
 resource "aws_route53_record" "dmarc_MX" {
@@ -165,14 +165,6 @@ resource "aws_route53_record" "fw02_ncats_A" {
   records = [ "64.69.57.4" ]
 }
 
-resource "aws_route53_record" "rules_ncats_CNAME" {
-  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
-  name    = "rules.ncats.${aws_route53_zone.cyber_zone.name}"
-  type    = "CNAME"
-  ttl     = 300
-  records = [ "rules.ncats.cyber.dhs.gov.s3-website-us-east-1.amazonaws.com" ]
-}
-
 resource "aws_route53_record" "vip_ncats_A" {
   zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
   name    = "vip.ncats.${aws_route53_zone.cyber_zone.name}"
@@ -195,4 +187,44 @@ resource "aws_route53_record" "rr_CNAME" {
   type    = "CNAME"
   ttl     = 60
   records = [ "rr.cyber.dhs.gov.s3-website-us-east-1.amazonaws.com" ]
+}
+
+resource "aws_route53_record" "rules_ncats_A" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "rules.ncats.${aws_route53_zone.cyber_zone.name}"
+  type    = "A"
+
+  alias {
+    name                   = "d35iq78wt3hgdh.cloudfront.net."
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "rules_ncats_AAAA" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "rules.ncats.${aws_route53_zone.cyber_zone.name}"
+  type    = "AAAA"
+
+  alias {
+    name                   = "d35iq78wt3hgdh.cloudfront.net."
+    zone_id                = "Z2FDTNDATAQYW2"
+    evaluate_target_health = false
+  }
+}
+
+resource "aws_route53_record" "mail_MX" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "mail.${aws_route53_zone.cyber_zone.name}"
+  type    = "MX"
+  ttl     = 300
+  records = [ "10 feedback-smtp.us-east-1.amazonses.com" ]
+}
+
+resource "aws_route53_record" "mail_SPF" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name    = "mail.${aws_route53_zone.cyber_zone.name}"
+  type    = "TXT"
+  ttl     = 300
+  records = [ "v=spf1 include:amazonses.com -all" ]
 }
