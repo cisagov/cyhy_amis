@@ -165,14 +165,6 @@ resource "aws_route53_record" "fw02_ncats_A" {
   records = [ "64.69.57.4" ]
 }
 
-resource "aws_route53_record" "rules_ncats_CNAME" {
-  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
-  name    = "rules.ncats.${aws_route53_zone.cyber_zone.name}"
-  type    = "CNAME"
-  ttl     = 300
-  records = [ "rules.ncats.cyber.dhs.gov.s3-website-us-east-1.amazonaws.com" ]
-}
-
 resource "aws_route53_record" "vip_ncats_A" {
   zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
   name    = "vip.ncats.${aws_route53_zone.cyber_zone.name}"
