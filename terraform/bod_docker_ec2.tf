@@ -22,14 +22,10 @@ data "aws_ami" "bod_docker" {
 }
 
 # The docker EC2 instance
-locals {
-  production_instance = "${terraform.workspace == "production" || terraform.workspace == "planet_piss" ? true : false}"
-}
-
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
-  instance_type = "${local.production_instance ? "r4.xlarge" : "t2.micro"}"
-  ebs_optimized = "${local.production_instance}"
+  instance_type = "${local.production_workspace ? "r4.xlarge" : "t2.micro"}"
+  ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
@@ -37,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_instance ? 100 : 10}"
+    volume_size = "${local.production_workspace ? 100 : 10}"
     delete_on_termination = true
   }
 
@@ -48,6 +44,7 @@ resource "aws_instance" "bod_docker" {
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
+  volume_tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
 }
 
 # Provision the Docker EC2 instance via Ansible

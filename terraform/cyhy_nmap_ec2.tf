@@ -42,4 +42,5 @@ resource "aws_instance" "nmap" {
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
+  volume_tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
 }
