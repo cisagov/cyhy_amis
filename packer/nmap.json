@@ -36,8 +36,8 @@
             "type": "ansible",
             "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
-                "nmap",
-                "debian"
+                "debian",
+                "nmap"
             ]
         }
     ]

@@ -16,9 +16,9 @@
     file: /tmp/github_oauth_token.yml
   become: no
 
-- name: Create the /var/cyhy/cyhy-runner directory
+- name: Create the /tmp/cyhy-runner directory
   file:
-    path: /var/cyhy/cyhy-runner
+    path: /tmp/cyhy-runner
     state: directory
     owner: root
     group: root
@@ -27,12 +27,62 @@
 - name: Download and untar the cyhy-runner tarball
   unarchive:
     src: "https://api.github.com/repos/jsf9k/cyhy-runner/tarball/develop?access_token={{ github_oauth_token }}"
-    dest: /var/cyhy/cyhy-runner
+    dest: /tmp/cyhy-runner
     remote_src: yes
     owner: root
     group: root
     extra_opts:
       - "--strip-components=1"
+
+#
+# Now we need to install the cyhy-runner dependencies
+#
+- name: Install pip
+  apt:
+    name: python-pip
+    state: latest
+
+- name: Install docutils, since cyhy-runner needs it
+  pip:
+    name:
+      - docutils
+
+# Thanks to https://github.com/ansible/ansible/issues/37912 I have to
+# do some chicanery here instead of just using pip 
+# - name: Install python dependencies for cyhy-runner
+#   pip:
+#     chdir: /var/cyhy/cyhy-runner
+#     requirements: requirements.txt
+- name: Install python dependencies for cyhy-runner
+  command: pip install -r requirements.txt
+  args:
+    chdir: /tmp/cyhy-runner
+
+# The runner directory is created in this directory
+- name: Create the /var/cyhy directory
+  file:
+    path: /var/cyhy
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+# Create the log directory
+- name: Create the /var/log/cyhy directory
+  file:
+    path: /var/log/cyhy
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+#
+# Cleanup
+#
+- name: Delete /tmp/cyhy-runner
+  file:
+    path: /tmp/cyhy-runner
+    state: absent
 
 - name: Delete local copy of GitHub OAuth token
   local_action:
