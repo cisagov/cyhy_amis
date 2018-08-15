@@ -19,7 +19,7 @@
 - name: Copy ssh private key for cyhy user
   copy:
     src: /tmp/id_ed25519
-    dest: /home/cyhy/.ssh/id_ed25519
+    dest: /var/cyhy/.ssh/id_ed25519
     owner: cyhy
     group: cyhy
     mode: 0600  
