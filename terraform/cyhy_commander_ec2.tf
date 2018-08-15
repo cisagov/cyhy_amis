@@ -52,7 +52,7 @@ module "cyhy_commander_ansible_provisioner" {
 
   arguments = [
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no'"
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
     "host=${aws_instance.cyhy_commander.private_ip}",
