@@ -55,7 +55,8 @@ module "cyhy_commander_ansible_provisioner" {
     "--ssh-common-args='-o StrictHostKeyChecking=no'"
   ]
   envs = [
-    "host=${aws_instance.cyhy_bastion.public_ip}",
+    "host=${aws_instance.cyhy_commander.private_ip}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_commander"
   ]
   playbook = "../ansible/playbook.yml"
