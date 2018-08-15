@@ -8,6 +8,7 @@ packer build packer/nessus.json
 packer build packer/mongo.json
 packer build packer/bastion.json
 packer build packer/docker.json
+packer build packer/commander.json
 ```
 
 Build Terraform-based infrastructure with:

@@ -22,7 +22,6 @@ resource "aws_instance" "cyhy_bastion" {
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
-  volume_tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
 }
 
 # Provision the bastion EC2 instance via Ansible
