@@ -1,0 +1,13 @@
+---
+# tasks file for chown_cyhy_dirs
+
+- name: chown the cyhy directories
+  file:
+    path: "{{ item }}"
+    owner: cyhy
+    group: cyhy
+    state: directory
+    recurse: yes
+  loop:
+    - /var/cyhy
+    - /var/log/cyhy

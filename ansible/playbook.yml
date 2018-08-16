@@ -47,5 +47,12 @@
   become: yes
   become_method: sudo
   roles:
+    - chown_cyhy_dirs
     - cyhy_commander
 
+- hosts: cyhy_runner
+  name: Configure cyhy-runner hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - chown_cyhy_dirs
