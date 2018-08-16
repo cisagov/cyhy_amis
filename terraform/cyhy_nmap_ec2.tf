@@ -20,7 +20,7 @@ data "aws_ami" "nmap" {
   most_recent = true
 }
 
-resource "aws_instance" "nmap" {
+resource "aws_instance" "cyhy_nmap" {
   ami = "${data.aws_ami.nmap.id}"
   instance_type = "t2.micro"
   # ebs_optimized = true
@@ -43,4 +43,20 @@ resource "aws_instance" "nmap" {
 
   tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
+}
+
+# Provision the nmap EC2 instance via Ansible
+module "cyhy_nmap_ansible_provisioner" {
+  source = "github.com/cloudposse/tf_ansible"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
 }
