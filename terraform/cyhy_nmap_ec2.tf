@@ -39,7 +39,7 @@ resource "aws_instance" "nmap" {
     "${aws_security_group.cyhy_scanner_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
+  user_data = "${data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
