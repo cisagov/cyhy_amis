@@ -44,6 +44,19 @@ resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ephemeral_por
   to_port = 65535
 }
 
+# Allow all ICMP traffic to ingress, since we're scanning and will
+# want ping responses, etc.
+resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_icmp" {
+  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  egress = false
+  protocol = "icmp"
+  rule_number = 135
+  rule_action = "allow"
+  cidr_block = "0.0.0.0/0"
+  icmp_type = -1
+  icmp_code = -1
+}
+
 # Allow egress to anywhere via any protocol and port, since we're
 # scanning
 resource "aws_network_acl_rule" "scanner_egress_to_anywhere_via_any_port" {
