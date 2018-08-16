@@ -42,7 +42,9 @@ resource "aws_instance" "cyhy_mongo" {
   user_data = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
-  volume_tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
+  # We add some explicit tags to the Mongo volumes below, so we don't
+  # want to use volume_tags here
+  # volume_tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
 }
 
 # Provision the mongo EC2 instance via Ansible
