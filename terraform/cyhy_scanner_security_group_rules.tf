@@ -12,6 +12,9 @@ resource "aws_security_group_rule" "scanner_ingress_from_trusted" {
 }
 
 # Allow ingress from the bastion via ssh
+#
+# We have to include the public IP because Ansible uses the ssh proxy
+# even when connecting to the bastion.
 resource "aws_security_group_rule" "scanner_ingress_from_bastion_via_ssh" {
   security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
   type = "ingress"
