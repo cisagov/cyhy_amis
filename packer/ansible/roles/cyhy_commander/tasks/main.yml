@@ -1,0 +1,86 @@
+---
+# tasks file for cyhy_commander
+
+- name: Grab GitHub OAuth token from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: github_oauth_token.yml
+    dest: /tmp/github_oauth_token.yml
+    mode: get
+  become: no
+
+ - name: Load GitHub OAuth token from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/github_oauth_token.yml
+  become: no
+
+ - name: Create the /tmp/cyhy-commander directory
+  file:
+    path: /tmp/cyhy-commander
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+ - name: Download and untar the cyhy-commander tarball
+  unarchive:
+    src: "https://api.github.com/repos/jsf9k/cyhy-commander/tarball/develop?access_token={{ github_oauth_token }}"
+    dest: /tmp/cyhy-commander
+    remote_src: yes
+    owner: root
+    group: root
+    extra_opts:
+      - "--strip-components=1"
+#
+# Now we need to install the cyhy-commander dependencies
+#
+- name: Install pip
+  apt:
+    name: python-pip
+    state: latest
+ - name: Install docutils, since cyhy-commander needs it
+  pip:
+    name:
+      - docutils
+
+# Thanks to https://github.com/ansible/ansible/issues/37912 I have to
+# do some chicanery here instead of just using pip 
+# - name: Install python dependencies for cyhy-commander
+#   pip:
+#     chdir: /var/cyhy/cyhy-commander
+#     requirements: requirements.txt
+- name: Install python dependencies for cyhy-commander
+  command: pip install -r requirements.txt
+  args:
+    chdir: /tmp/cyhy-commander
+ # The commander directory is created in this directory
+- name: Create the /var/cyhy directory
+  file:
+    path: /var/cyhy
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+ # Create the log directory
+- name: Create the /var/log/cyhy directory
+  file:
+    path: /var/log/cyhy
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+#
+# Cleanup
+#
+- name: Delete /tmp/cyhy-commander
+  file:
+    path: /tmp/cyhy-commander
+    state: absent
+- name: Delete local copy of GitHub OAuth token
+  local_action:
+    module: file
+    path: /tmp/github_oauth_token.yml
+    state: absent
+  become: no
