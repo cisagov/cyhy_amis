@@ -2,7 +2,7 @@
 # tasks file for cyhy_commander
 
 #
-# Copy ssh private key to local tmp dir
+# Copy ssh private key to local temp dir
 #
 - name: Grab ssh private key from S3 for cyhy user
   local_action:
@@ -25,7 +25,7 @@
     mode: 0600  
 
 #
-# Delete local tmp private key
+# Delete local copy of private key
 #
 - name: Delete local copy of ssh private key for cyhy user
   local_action:

@@ -43,7 +43,7 @@
     - bod_docker
 
 - hosts: cyhy_commander
-  name: Configure CyHy Commander hosts
+  name: Configure cyhy-commander hosts
   become: yes
   become_method: sudo
   roles:
