@@ -12,6 +12,7 @@
   become: yes
   become_method: sudo
   roles:
+    - cyhy_runner
     - nmap
 
 # MongoDB doesn't like transparent huge pages:
@@ -33,6 +34,7 @@
   become: yes
   become_method: sudo
   roles:
+    - cyhy_runner
     - nessus
 
 - hosts: docker
