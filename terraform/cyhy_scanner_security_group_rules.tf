@@ -17,7 +17,8 @@ resource "aws_security_group_rule" "scanner_ingress_from_bastion_via_ssh" {
   type = "ingress"
   protocol = "tcp"
   cidr_blocks = [
-    "${aws_instance.cyhy_bastion.public_ip}/32"
+    "${aws_instance.cyhy_bastion.public_ip}/32",
+    "${aws_instance.cyhy_bastion.private_ip}/32"
   ]
   from_port = 22
   to_port = 22

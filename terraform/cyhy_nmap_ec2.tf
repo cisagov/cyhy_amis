@@ -51,10 +51,11 @@ module "cyhy_nmap_ansible_provisioner" {
 
   arguments = [
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no'"
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
-    "host=${aws_instance.cyhy_nmap.public_ip}",
+    "host=${aws_instance.cyhy_nmap.private_ip}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_runner"
   ]
   playbook = "../ansible/playbook.yml"
