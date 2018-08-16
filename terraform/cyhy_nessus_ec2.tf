@@ -20,7 +20,7 @@ data "aws_ami" "nessus" {
   most_recent = true
 }
 
-resource "aws_instance" "nessus" {
+resource "aws_instance" "cyhy_nessus" {
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "m4.large"
   ebs_optimized = true
@@ -39,8 +39,24 @@ resource "aws_instance" "nessus" {
     "${aws_security_group.cyhy_scanner_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
+  user_data = "${data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
+}
+
+# Provision the Nessus EC2 instance via Ansible
+module "cyhy_nessus_ansible_provisioner" {
+  source = "github.com/cloudposse/tf_ansible"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nessus.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
 }

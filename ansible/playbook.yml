@@ -41,3 +41,18 @@
   become_method: sudo
   roles:
     - bod_docker
+
+- hosts: cyhy_commander
+  name: Configure cyhy-commander hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - chown_cyhy_dirs
+    - cyhy_commander
+
+- hosts: cyhy_runner
+  name: Configure cyhy-runner hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - chown_cyhy_dirs

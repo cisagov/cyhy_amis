@@ -8,20 +8,21 @@ packer build packer/nessus.json
 packer build packer/mongo.json
 packer build packer/bastion.json
 packer build packer/docker.json
+packer build packer/commander.json
 ```
 
 Build Terraform-based infrastructure with:
 ```
 cd terraform
 terraform workspace select <your_workspace>
-terraform apply -vars-file=<your_workspace>.yml
+terraform apply -var-file=<your_workspace>.yml
 ```
 
 Tear down Terraform-based infrastructure with:
 ```
 cd terraform
 terraform workspace select <your_workspace>
-terraform destroy -vars-file=<your_workspace>.yml
+terraform destroy -var-file=<your_workspace>.yml
 ```
 
 ## License ##
