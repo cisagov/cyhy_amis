@@ -8,6 +8,18 @@ resource "aws_security_group_rule" "private_ssh_egress_to_scanner" {
   to_port = 22
 }
 
+# Allow SSH ingress from the bastion
+resource "aws_security_group_rule" "private_ssh_ingress_from_bastion" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_bastion.private_ip}/32"
+  ]
+  from_port = 22
+  to_port = 22
+}
+
 # Allow MongoDB ingress from the BOD private security group
 resource "aws_security_group_rule" "private_mongodb_ingress_from_bod_private" {
   security_group_id = "${aws_security_group.cyhy_private_sg.id}"
