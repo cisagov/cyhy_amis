@@ -37,7 +37,7 @@
             "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
                 "debian",
-                "commander"
+                "cyhy_commander"
             ]
         }
     ]

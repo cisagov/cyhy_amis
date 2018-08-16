@@ -58,3 +58,11 @@
         role: disable_thp,
         disable_thp_before_service: docker
       }
+
+- hosts: cyhy_commander
+  name: Install and configure cyhy-commander
+  become: yes
+  become_method: sudo
+  roles:
+    - pip
+    - cyhy_commander

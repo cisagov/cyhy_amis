@@ -16,21 +16,54 @@
     file: /tmp/github_oauth_token.yml
   become: no
 
+#
+# Grab the cyhy-core code
+#
+- name: Create the /tmp/cyhy-core directory
+  file:
+    path: /tmp/cyhy-core
+    state: directory
+
+- name: Download and untar the cyhy-core tarball
+  unarchive:
+    src: "https://api.github.com/repos/jsf9k/cyhy-core/tarball/develop?access_token={{ github_oauth_token }}"
+    dest: /tmp/cyhy-core
+    remote_src: yes
+    extra_opts:
+      - "--strip-components=1"
+
+#
+# Now we need to install the cyhy-core dependencies
+#
+# - name: Install docutils, since cyhy-commander needs it
+#   pip:
+#     name:
+#       - docutils
+
+# Thanks to https://github.com/ansible/ansible/issues/37912 I have to
+# do some chicanery here instead of just using pip 
+# - name: Install python dependencies for cyhy-core
+#   pip:
+#     chdir: /var/cyhy/cyhy-core
+#     requirements: requirements.txt
+- name: Install python dependencies for cyhy-core
+  command: pip install -r requirements.txt
+  args:
+    chdir: /tmp/cyhy-core
+
+#
+# Grab the cyhy-commander code
+#
 - name: Create the /tmp/cyhy-commander directory
   file:
     path: /tmp/cyhy-commander
     state: directory
-    owner: root
-    group: root
-    mode: 0755
 
 - name: Download and untar the cyhy-commander tarball
   unarchive:
     src: "https://api.github.com/repos/jsf9k/cyhy-commander/tarball/develop?access_token={{ github_oauth_token }}"
     dest: /tmp/cyhy-commander
     remote_src: yes
-    owner: root
-    group: root
     extra_opts:
       - "--strip-components=1"
 
@@ -58,22 +91,21 @@
   file:
     path: /var/cyhy
     state: directory
-    owner: root
-    group: root
-    mode: 0755
 
 # Create the log directory
 - name: Create the /var/log/cyhy directory
   file:
     path: /var/log/cyhy
     state: directory
-    owner: root
-    group: root
-    mode: 0755
 
 #
 # Cleanup
 #
+- name: Delete /tmp/cyhy-core
+  file:
+    path: /tmp/cyhy-core
+    state: absent
+
 - name: Delete /tmp/cyhy-commander
   file:
     path: /tmp/cyhy-commander
