@@ -37,11 +37,6 @@
 #
 # Now we need to install the cyhy-commander dependencies
 #
-- name: Install pip
-  apt:
-    name: python-pip
-    state: latest
-
 - name: Install docutils, since cyhy-commander needs it
   pip:
     name:

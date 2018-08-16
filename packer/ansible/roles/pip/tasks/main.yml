@@ -1,0 +1,16 @@
+---
+# tasks file for pip
+
+- name: Install pip (debian group only)
+  when: "'debian' in group_names"
+  apt:
+    name: 'python-pip'
+    state: latest
+
+# pip is already installed on Amazon Linux by default, so there is
+# nothing to be done in that case
+# - name: Install pip (amazon-linux group only)
+#   when: "'amazon-linux' in group_names"
+#   yum:
+#     name: 'python-pip'
+#     state: latest
