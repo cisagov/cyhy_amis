@@ -15,14 +15,14 @@ Build Terraform-based infrastructure with:
 ```
 cd terraform
 terraform workspace select <your_workspace>
-terraform apply -vars-file=<your_workspace>.yml
+terraform apply -var-file=<your_workspace>.yml
 ```
 
 Tear down Terraform-based infrastructure with:
 ```
 cd terraform
 terraform workspace select <your_workspace>
-terraform destroy -vars-file=<your_workspace>.yml
+terraform destroy -var-file=<your_workspace>.yml
 ```
 
 ## License ##
