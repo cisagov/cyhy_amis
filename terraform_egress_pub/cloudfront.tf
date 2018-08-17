@@ -10,7 +10,7 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  comment             = ""
+  comment             = "terraform egress site"
   default_root_object = "all.txt"
 
   aliases = ["rules.ncats.cyber.dhs.gov"]
