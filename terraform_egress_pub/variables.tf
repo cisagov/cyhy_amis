@@ -18,3 +18,13 @@ variable "rules_bucket_name" {
   description = "The name of the bucket to store egress IP addresses"
   default = "s3-cdn.rules.ncats.cyber.dhs.gov"
 }
+
+variable "distribution_domain" {
+  description = "The domain name of the cloudfront distribution and certificate."
+  default = "rules.ncats.cyber.dhs.gov"
+}
+
+variable "root_object" {
+  description = "The root object to serve when no path is provided, or an error occurs"
+  default = "all.txt"
+}
