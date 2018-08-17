@@ -35,10 +35,6 @@
 #
 # Now we need to install the cyhy-core dependencies
 #
-# - name: Install docutils, since cyhy-commander needs it
-#   pip:
-#     name:
-#       - docutils
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
 # do some chicanery here instead of just using pip 
@@ -83,9 +79,9 @@
   command: pip install /tmp/cyhy-commander
 
 # The commander directory is created in this directory
-- name: Create the /var/cyhy directory
+- name: Create the /var/cyhy/commander directory
   file:
-    path: /var/cyhy
+    path: /var/cyhy/commander
     state: directory
 
 # Create the log directory
