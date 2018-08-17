@@ -153,3 +153,10 @@ resource "aws_security_group" "cyhy_scanner_sg" {
 
   tags = "${merge(var.tags, map("Name", "CyHy Scanners"))}"
 }
+
+# Security group for the bastion host
+resource "aws_security_group" "cyhy_bastion_sg" {
+  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+
+  tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
+}

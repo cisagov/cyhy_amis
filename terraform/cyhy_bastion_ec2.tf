@@ -16,7 +16,7 @@ resource "aws_instance" "cyhy_bastion" {
   }
 
   vpc_security_group_ids = [
-    "${aws_security_group.cyhy_scanner_sg.id}"
+    "${aws_security_group.cyhy_bastion_sg.id}"
   ]
 
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
