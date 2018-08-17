@@ -1,0 +1,13 @@
+[Unit]
+Description=cyhy-commander service
+After=network.target
+
+[Service]
+Type=simple
+User=cyhy
+WorkingDirectory=/var/cyhy
+ExecStart=/usr/local/bin/cyhy-commander --stdout-log /var/cyhy/commander &>> /var/log/cyhy/cyhy-commander.log
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

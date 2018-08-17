@@ -98,6 +98,19 @@
     path: /var/log/cyhy
     state: directory
 
+# Copy the systemd unit file
+- name: Copy the systemd unit file for cyhy-commander
+  copy:
+    src: cyhy-commander.service
+    dest: /lib/systemd/system/cyhy-commander.service
+    mode: 0644
+
+# Enable cyhy-commander
+- name: Enable cyhy-commander
+  service:
+    name: cyhy-commander
+    enabled: yes
+
 #
 # Cleanup
 #
