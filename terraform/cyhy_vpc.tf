@@ -4,21 +4,6 @@ resource "aws_vpc" "cyhy_vpc" {
   enable_dns_hostnames = true
 
   tags = "${merge(var.tags, map("Name", "CyHy"))}"
-
-  # Note that this VPC's ID is flagged by AWS as one from which we are
-  # allowed to perform penetration scanning.  Therefore we need this
-  # resource to be immortal in the "production" workspace, and so I am
-  # using the prevent_destroy lifecycle element to disallow the
-  # destruction of it via terraform in that case.
-  #
-  # I'd like to use "${terraform.workspace == "production" ? true :
-  # false}" here, so the prevent_destroy only applies to the
-  # production workspace, but it appears that interpolations are not
-  # supported inside of the lifecycle block
-  # (https://github.com/hashicorp/terraform/issues/3116).
-  lifecycle {
-    prevent_destroy = true
-  }
 }
 
 # Private subnet of the VPC, for database and CyHy commander
