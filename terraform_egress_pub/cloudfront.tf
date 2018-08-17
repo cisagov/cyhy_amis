@@ -1,9 +1,14 @@
 locals {
+  # bucket origin id
   s3_origin_id = "S3-${aws_s3_bucket.rules_bucket.id}"
+  # domain name to use for certificate and distribution alias
+  dist_domain = "rules.ncats.cyber.dhs.gov"
+  # root object to serve and redirect errors at
+  root_object = "all.txt"
 }
 
 data "aws_acm_certificate" "rules_cert" {
-  domain   = "rules.ncats.cyber.dhs.gov"
+  domain   = "${local.dist_domain}"
   most_recent = true
   statuses = ["ISSUED"]
   types = ["IMPORTED"]
@@ -19,9 +24,9 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   comment             = "terraform egress site"
-  default_root_object = "all.txt"
+  default_root_object = "${local.root_object}"
 
-  aliases = ["rules.ncats.cyber.dhs.gov"]
+  aliases = ["${local.dist_domain}"]
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
@@ -55,14 +60,14 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
     error_code = 403
     error_caching_min_ttl = 30
     response_code = 200
-    response_page_path = "/all.txt"
+    response_page_path = "/${local.root_object}"
   }
 
   custom_error_response {
     error_code = 404
     error_caching_min_ttl = 30
     response_code = 200
-    response_page_path = "/all.txt"
+    response_page_path = "/${local.root_object}"
   }
 
   viewer_certificate {
