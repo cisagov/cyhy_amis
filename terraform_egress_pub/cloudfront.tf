@@ -1,11 +1,11 @@
 locals {
-  s3_origin_id = "S3-s3-cdn.rules.ncats.cyber.dhs.gov" #TODO get this from bucket resource
+  s3_origin_id = "S3-${aws_s3_bucket.rules_bucket.id}"
 }
 
 resource "aws_cloudfront_distribution" "rules_s3_distribution" {
   origin {
     domain_name = "${aws_s3_bucket.rules_bucket.bucket_regional_domain_name}"
-    origin_id   = "${local.s3_origin_id}" #TODO
+    origin_id   = "${local.s3_origin_id}"
 
     # s3_origin_config {
     #   origin_access_identity = ""
