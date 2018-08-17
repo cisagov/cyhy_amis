@@ -47,9 +47,7 @@
 #     chdir: /var/cyhy/cyhy-core
 #     requirements: requirements.txt
 - name: Install python dependencies for cyhy-core
-  command: pip install -r requirements.txt
-  args:
-    chdir: /tmp/cyhy-core
+  command: pip install /tmp/cyhy-core
 
 #
 # Grab the cyhy-commander code
@@ -82,9 +80,7 @@
 #     chdir: /var/cyhy/cyhy-commander
 #     requirements: requirements.txt
 - name: Install python dependencies for cyhy-commander
-  command: pip install -r requirements.txt
-  args:
-    chdir: /tmp/cyhy-commander
+  command: pip install /tmp/cyhy-commander
 
 # The commander directory is created in this directory
 - name: Create the /var/cyhy directory

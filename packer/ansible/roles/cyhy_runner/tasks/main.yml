@@ -49,9 +49,7 @@
 #     chdir: /var/cyhy/cyhy-runner
 #     requirements: requirements.txt
 - name: Install python dependencies for cyhy-runner
-  command: pip install -r requirements.txt
-  args:
-    chdir: /tmp/cyhy-runner
+  command: pip install /tmp/cyhy-runner
 
 # The runner directory is created in this directory
 - name: Create the /var/cyhy directory
@@ -73,9 +71,18 @@
 
 # Copy the systemd unit file
 - name: Copy the systemd unit file for cyhy-runner
+  when: "'debian' in group_names"
   copy:
     src: cyhy-runner.service
     dest: /lib/systemd/system/cyhy-runner.service
+    mode: 0644
+
+# Copy the upstart init file
+- name: Copy the upstart init file for cyhy-runner
+  when: "'amazon-linux' in group_names"
+  copy:
+    src: cyhy-runner.conf
+    dest: /etc/init/cyhy-runner.conf
     mode: 0644
 
 # Enable cyhy-runner
