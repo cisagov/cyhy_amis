@@ -52,9 +52,9 @@
   command: pip install /tmp/cyhy-runner
 
 # The runner directory is created in this directory
-- name: Create the /var/cyhy directory
+- name: Create the /var/cyhy/runner directory
   file:
-    path: /var/cyhy
+    path: /var/cyhy/runner
     state: directory
     owner: root
     group: root
