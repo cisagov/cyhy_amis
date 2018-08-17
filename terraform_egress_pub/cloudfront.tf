@@ -2,6 +2,14 @@ locals {
   s3_origin_id = "S3-${aws_s3_bucket.rules_bucket.id}"
 }
 
+data "aws_acm_certificate" "rules_cert" {
+  domain   = "rules.ncats.cyber.dhs.gov"
+  most_recent = true
+  statuses = ["ISSUED"]
+  types = ["IMPORTED"]
+}
+
+
 resource "aws_cloudfront_distribution" "rules_s3_distribution" {
   origin {
     domain_name = "${aws_s3_bucket.rules_bucket.bucket_regional_domain_name}"
@@ -58,7 +66,7 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = "arn:aws:acm:us-east-1:344440683180:certificate/5ca9f52c-5c2c-4759-ad41-be9e4a662c61" #TODO
+    acm_certificate_arn = "${data.aws_acm_certificate.rules_cert.arn}"
     minimum_protocol_version = "TLSv1_2016"
     ssl_support_method = "sni-only"
   }
