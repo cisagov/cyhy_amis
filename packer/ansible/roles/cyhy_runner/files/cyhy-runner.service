@@ -4,7 +4,8 @@ After=network.target
 
 [Service]
 Type=simple
-User=cyhy
+User=root
+Group=root
 WorkingDirectory=/var/cyhy
 ExecStart=/usr/local/bin/cyhy-runner --stdout-log /var/cyhy/runner
 Restart=on-failure
