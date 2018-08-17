@@ -9,9 +9,9 @@ resource "aws_security_group_rule" "bastion_ssh_from_trusted" {
   to_port = 22
 }
 
-# Allow ingress to and from the bastion via ssh.  This is necessary
-# because Ansible applies the ssh proxy even when sshing to the
-# bastion.
+# Allow ingress from and egress to the bastion via ssh.  This is
+# necessary because Ansible applies the ssh proxy even when sshing to
+# the bastion.
 resource "aws_security_group_rule" "bastion_ssh_from_self" {
   security_group_id = "${aws_security_group.bod_bastion_sg.id}"
   type = "ingress"
