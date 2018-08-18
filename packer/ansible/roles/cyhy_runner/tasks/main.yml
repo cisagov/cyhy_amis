@@ -77,13 +77,13 @@
     dest: /lib/systemd/system/cyhy-runner.service
     mode: 0644
 
-# Copy the upstart init file
-- name: Copy the upstart init file for cyhy-runner
+# Copy the SysV init file
+- name: Copy the SysV init file for cyhy-runner
   when: "'amazon-linux' in group_names"
   copy:
-    src: cyhy-runner.conf
-    dest: /etc/init/cyhy-runner.conf
-    mode: 0644
+    src: cyhy-runner
+    dest: /etc/init.d/cyhy-runner
+    mode: 0755
 
 # Enable cyhy-runner
 - name: Enable cyhy-runner
