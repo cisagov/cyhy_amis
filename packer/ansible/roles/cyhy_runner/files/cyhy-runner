@@ -27,7 +27,8 @@ start() {
     # Start daemon
     ret=0
     echo -n $"Starting $prog: "
-    daemon /usr/local/bin/cyhy-runner --stdout-log /var/cyhy/runner &>> /var/log/cyhy/cyhy-runner.log
+    /usr/local/bin/cyhy-runner /var/cyhy/runner &
+    echo $! > /var/run/cyhy-runner.pid
     RETVAL=$?
     echo
 
@@ -43,7 +44,7 @@ stop() {
     return $RETVAL
 }
 
-status -p /var/run/cyhy-runner.pid >/dev/null
+status -p /var/run/cyhy-runner.pid > /dev/null
 running=$?
 
 # See how we were called.
