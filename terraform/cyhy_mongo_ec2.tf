@@ -89,7 +89,7 @@ resource "aws_ebs_volume" "cyhy_mongo_data" {
   tags = "${merge(var.tags, map("Name", "CyHy Mongo Data"))}"
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 resource "aws_ebs_volume" "cyhy_mongo_journal" {
@@ -102,7 +102,7 @@ resource "aws_ebs_volume" "cyhy_mongo_journal" {
   tags = "${merge(var.tags, map("Name", "CyHy Mongo Journal"))}"
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 resource "aws_ebs_volume" "cyhy_mongo_log" {
@@ -115,7 +115,7 @@ resource "aws_ebs_volume" "cyhy_mongo_log" {
   tags = "${merge(var.tags, map("Name", "CyHy Mongo Log"))}"
 
   lifecycle {
-    prevent_destroy = true
+    prevent_destroy = false
   }
 }
 
