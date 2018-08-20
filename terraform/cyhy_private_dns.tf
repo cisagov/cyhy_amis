@@ -4,6 +4,8 @@ locals {
 
 resource "aws_route53_zone" "private_zone" {
   name = "${local.private_domain}"
+  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+  tags = "${merge(var.tags, map("Name", "CyHy Private Zone"))}"
 }
 
 resource "aws_route53_record" "router_A" {
@@ -11,8 +13,8 @@ resource "aws_route53_record" "router_A" {
   name    = "router.${aws_route53_zone.private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 2)}",
-              "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 2)}"]
+  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 1)}",
+              "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 1)}"]
 }
 
 resource "aws_route53_record" "ns_A" {
@@ -20,8 +22,8 @@ resource "aws_route53_record" "ns_A" {
   name    = "ns.${aws_route53_zone.private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 3)}",
-              "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 3)}"]
+  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 2)}",
+              "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 2)}"]
 }
 
 resource "aws_route53_record" "reserved_A" {
@@ -29,8 +31,8 @@ resource "aws_route53_record" "reserved_A" {
   name    = "reserved.${aws_route53_zone.private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 4)}",
-              "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 4)}"]
+  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 3)}",
+              "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 3)}"]
 }
 
 resource "aws_route53_record" "bastion_A" {
@@ -89,6 +91,7 @@ resource "aws_route53_zone" "scanner_zone_reverse" {
   )}"
 
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
+  tags = "${merge(var.tags, map("Name", "CyHy Scanner Reverse Zone"))}"
 }
 
 resource "aws_route53_record" "rev_1_PTR" {
@@ -116,7 +119,7 @@ resource "aws_route53_record" "rev_3_PTR" {
 }
 
 resource "aws_route53_record" "rev_bastion_PTR" {
-  zone_id = "${aws_route53_zone.private_zone_reverse.zone_id}"
+  zone_id = "${aws_route53_zone.scanner_zone_reverse.zone_id}"
   name    = "${local.the_bastion}.${aws_route53_zone.scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
@@ -154,6 +157,7 @@ resource "aws_route53_zone" "private_zone_reverse" {
   )}"
 
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
+  tags = "${merge(var.tags, map("Name", "CyHy Private Reverse Zone"))}"
 }
 
 resource "aws_route53_record" "rev_commander_PTR" {
