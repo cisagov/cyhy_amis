@@ -35,7 +35,7 @@ resource "aws_instance" "nessus" {
   root_block_device {
     volume_type = "gp2"
     volume_size = 100
-    delete_on_termination = true
+    delete_on_termination = false
   }
 
   vpc_security_group_ids = [
@@ -45,4 +45,8 @@ resource "aws_instance" "nessus" {
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", format("Manual CyHy Nessus %02d", count.index+1)))}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
