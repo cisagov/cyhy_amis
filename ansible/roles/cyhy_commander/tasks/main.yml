@@ -22,7 +22,7 @@
     dest: /var/cyhy/.ssh/id_ed25519
     owner: cyhy
     group: cyhy
-    mode: 0600  
+    mode: 0600
 
 #
 # Delete local copy of private key
@@ -71,15 +71,20 @@
     name: mongo_users
   become: no
 
-- name: Configure commander conf to us commander as mongo user
+- name: Configure commander.conf to use commander as mongo user
   lineinfile:
     dest: /etc/cyhy/commander.conf
     regexp: 'database-uri ='
     state: present
     line: 'database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@{{ mongo_host }}:27017/cyhy'
 
+- name: Enable and start cyhy-commander
+  service:
+    name: cyhy-commander
+    enabled: yes
+    state: started
+
 - name: Delete /tmp/mongo_users.yml
   file:
     path: /tmp/mongo_users.yml
     state: absent
-
