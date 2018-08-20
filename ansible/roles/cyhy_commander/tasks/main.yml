@@ -45,7 +45,7 @@
 #
 # Copy the cyhy-commander conf file
 #
-- name: Copy the config unit file for cyhy-commander
+- name: Copy the configuration file for cyhy-commander
   copy:
     src: cyhy-commander.conf  
     dest: /etc/cyhy/cyhy-commander.conf
