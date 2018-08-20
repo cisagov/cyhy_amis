@@ -34,7 +34,7 @@ resource "aws_instance" "cyhy_nmap" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
-  private_ip = "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, count.index+1)}"
+  private_ip = "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, count.index + local.first_port_scanner)}"
 
   associate_public_ip_address = true
 

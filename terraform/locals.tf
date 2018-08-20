@@ -15,4 +15,8 @@ locals {
     "tcp",
     "udp"
   ]
+
+  # first IP of the nmap instance in the scanner subnet
+  first_port_scanner = 11
+  count_port_scanner = 100
 }
