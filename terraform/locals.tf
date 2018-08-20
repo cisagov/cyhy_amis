@@ -6,7 +6,7 @@ locals {
   # TODO no dynamic workspace until we can loop modules (see below)
   nmap_instance_count = "2"   #"${local.production_workspace ? 32 : 1}"
   nessus_instance_count = "2" #"${local.production_workspace ? 4 : 1}"
-
+  mongo_instance_count = "1"
 
   # These are the ports via which trusted networks are allowed to
   # access the public-facing CyHy hosts
