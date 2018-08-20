@@ -23,10 +23,12 @@ data "aws_ami" "nessus" {
 resource "aws_instance" "cyhy_nessus" {
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "m4.large"
+  count = "${local.nessus_instance_count}"
   ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
+  private_ip = "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, count.index + local.first_vuln_scanner)}"
   associate_public_ip_address = true
 
   root_block_device {
@@ -45,8 +47,12 @@ resource "aws_instance" "cyhy_nessus" {
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
 }
 
+# TODO: until we figure out how to loop a module, a copy needs to be made for
+# each instance.  This also prevents us from differentiating production from
+# development.
+
 # Provision the Nessus EC2 instance via Ansible
-module "cyhy_nessus_ansible_provisioner" {
+module "cyhy_nessus_ansible_provisioner_0" {
   source = "github.com/cloudposse/tf_ansible"
 
   arguments = [
@@ -54,7 +60,24 @@ module "cyhy_nessus_ansible_provisioner" {
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
-    "host=${aws_instance.cyhy_nessus.private_ip}",
+    "host=${aws_instance.cyhy_nessus.0.private_ip}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+# Provision the Nessus EC2 instance via Ansible
+module "cyhy_nessus_ansible_provisioner_1" {
+  source = "github.com/cloudposse/tf_ansible"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nessus.1.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_runner"
   ]

@@ -1,8 +1,3 @@
-locals {
-  # TODO no dynamic workspace until we can loop modules (see below)
-  nmap_instance_count = "${local.production_workspace ? 2 : 2}"
-}
-
 data "aws_ami" "nmap" {
   filter {
     name = "name"
