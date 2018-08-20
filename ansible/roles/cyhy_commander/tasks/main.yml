@@ -33,3 +33,20 @@
     path: /tmp/id_ed25519
     state: absent
   become: no
+
+#
+# Create the cyhy directory in etc for commander conf
+#
+- name: Create the /etc/cyhy directory
+  file:
+    path: /etc/cyhy
+    state: directory
+
+#
+# Copy the cyhy-commander conf file
+#
+- name: Copy the configuration file for cyhy-commander
+  copy:
+    src: cyhy-commander.conf  
+    dest: /etc/cyhy/cyhy-commander.conf
+    mode: 0644
