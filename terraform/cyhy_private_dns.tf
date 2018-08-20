@@ -6,6 +6,7 @@ resource "aws_route53_zone" "private_zone" {
   name = "${local.private_domain}"
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
   tags = "${merge(var.tags, map("Name", "CyHy Private Zone"))}"
+  comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
 resource "aws_route53_record" "router_A" {
@@ -92,6 +93,7 @@ resource "aws_route53_zone" "scanner_zone_reverse" {
 
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
   tags = "${merge(var.tags, map("Name", "CyHy Scanner Reverse Zone"))}"
+  comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
 resource "aws_route53_record" "rev_1_PTR" {
@@ -158,6 +160,7 @@ resource "aws_route53_zone" "private_zone_reverse" {
 
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
   tags = "${merge(var.tags, map("Name", "CyHy Private Reverse Zone"))}"
+  comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
 resource "aws_route53_record" "rev_commander_PTR" {
