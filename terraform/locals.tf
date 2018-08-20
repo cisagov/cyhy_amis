@@ -16,7 +16,14 @@ locals {
     "udp"
   ]
 
-  # first IP of the nmap instance in the scanner subnet
+  # divy up the subnets
+  # NOTE: there is an assumption that they are /24
   first_port_scanner = 11
   count_port_scanner = 100
+  first_vuln_scanner = 201
+  count_vuln_scanner = 10
+  first_database = 11
+  count_database = 4
+  the_commander = 5 # there can be only one
+  the_bastion = 254 # there can be only one
 }
