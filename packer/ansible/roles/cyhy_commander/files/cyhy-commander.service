@@ -5,8 +5,9 @@ After=network.target
 [Service]
 Type=simple
 User=cyhy
+Group=cyhy
 WorkingDirectory=/var/cyhy
-ExecStart=/usr/local/bin/cyhy-commander --stdout-log /var/cyhy/commander &>> /var/log/cyhy/cyhy-commander.log
+ExecStart=/usr/local/bin/cyhy-commander /var/cyhy/commander
 Restart=on-failure
 
 [Install]
