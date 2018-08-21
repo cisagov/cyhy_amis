@@ -58,3 +58,15 @@ resource "aws_security_group_rule" "bastion_egress_to_scanner_sg_via_ssh" {
   from_port = 22
   to_port = 22
 }
+
+# Allow egress via the mongodb port to the mongo host
+resource "aws_security_group_rule" "bastion_egress_to_mongo_via_mongo" {
+  security_group_id = "${aws_security_group.cyhy_bastion_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_mongo.private_ip}/32"
+  ]
+  from_port = 27017
+  to_port = 27017
+}

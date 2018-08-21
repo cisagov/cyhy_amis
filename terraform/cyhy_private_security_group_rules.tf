@@ -30,6 +30,16 @@ resource "aws_security_group_rule" "private_mongodb_ingress_from_bod_private" {
   to_port = 27017
 }
 
+# Allow MongoDB ingress from the bastion security group
+resource "aws_security_group_rule" "private_mongodb_ingress_from_bastion" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  source_security_group_id = "${aws_security_group.cyhy_bastion_sg.id}"
+  from_port = 27017
+  to_port = 27017
+}
+
 # Allow MongoDB ingress from commander
 resource "aws_security_group_rule" "private_mongodb_ingress_from_commander" {
   security_group_id = "${aws_security_group.cyhy_private_sg.id}"

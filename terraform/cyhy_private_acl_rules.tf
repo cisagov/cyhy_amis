@@ -10,12 +10,24 @@ resource "aws_network_acl_rule" "private_egress_to_scanner_via_ssh" {
   to_port = 22
 }
 
+# Allow egress to the mongo host via the MongoDB port
+resource "aws_network_acl_rule" "private_egress_to_mongo_via_mongo" {
+  network_acl_id = "${aws_network_acl.cyhy_private_acl.id}"
+  egress = true
+  protocol = "tcp"
+  rule_number = 101
+  rule_action = "allow"
+  cidr_block = "${aws_instance.cyhy_mongo.private_ip}/32"
+  from_port = 27017
+  to_port = 27017
+}
+
 # Allow ingress from scanner subnet via ephemeral ports
 resource "aws_network_acl_rule" "private_ingress_from_scanner_via_ephemeral_ports" {
   network_acl_id = "${aws_network_acl.cyhy_private_acl.id}"
   egress = false
   protocol = "tcp"
-  rule_number = 101
+  rule_number = 102
   rule_action = "allow"
   cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
   from_port = 1024
