@@ -54,7 +54,6 @@
 #
 # Replace commander.conf password
 #
-
 - name: Grab mongo users from S3
   local_action:
     module: aws_s3
