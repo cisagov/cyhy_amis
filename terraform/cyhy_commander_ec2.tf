@@ -45,6 +45,10 @@ resource "aws_instance" "cyhy_commander" {
   user_data = "${data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Commander"))}"
+
+  # When the commander starts up, it looks for a database,
+  # so make this instance dependent on cyhy_mongo
+  depends_on = ["aws_instance.cyhy_mongo"]
 }
 
 # Provision the commander EC2 instance via Ansible
