@@ -9,6 +9,7 @@ resource "aws_vpc" "cyhy_vpc" {
 # Setup DHCP so we can resolve our private domain
 resource "aws_vpc_dhcp_options" "cyhy_dhcp_options" {
   domain_name = "${local.private_domain}"
+  domain_name_servers = ["AmazonProvidedDNS"]
   tags = "${merge(var.tags, map("Name", "CyHy"))}"
 }
 
