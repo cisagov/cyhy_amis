@@ -1,5 +1,9 @@
 resource "aws_route53_zone" "cyber_zone" {
   name = "cyber.dhs.gov."
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_route53_record" "root_A" {
