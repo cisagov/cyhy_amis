@@ -3,7 +3,7 @@ data "aws_route53_zone" "public_zone" {
 }
 
 resource "aws_route53_record" "bastion_pub_A" {
-  zone_id = "${aws_route53_zone.private_zone.zone_id}"
+  zone_id = "${data.aws_route53_zone.public_zone.zone_id}"
   name    = "bastion.${terraform.workspace}.${local.public_subdomain}${data.aws_route53_zone.public_zone.name}"
   type    = "A"
   ttl     = 30
