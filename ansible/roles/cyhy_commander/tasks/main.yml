@@ -73,9 +73,9 @@
 - name: Configure commander.conf to use commander as mongo user
   lineinfile:
     dest: /etc/cyhy/commander.conf
-    regexp: 'database-uri ='
+    regexp: "database-uri ="
     state: present
-    line: 'database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@{{ mongo_host }}:27017/cyhy'
+    line: "database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr('user', 'eq', 'commander') | map(attribute='password') | first }}@database1:27017/cyhy"
 
 - name: Enable and start cyhy-commander
   service:
@@ -136,22 +136,42 @@
   shell: "curl -o /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt https://{{ github_oauth_token }}@raw.githubusercontent.com/jsf9k/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
 
 #
+# Set up /etc/cyhy/cyhy.conf with commander creds
+#
+- name: Create /etc/cyhy/cyhy.conf with commander credentials
+  copy:
+    dest: /etc/cyhy/cyhy.conf
+    owner: cyhy
+    group: cyhy
+    mode: 0660
+    content: |
+      [DEFAULT]
+      default-section = production
+      database-uri = mongodb://localhost:27017/
+      report-key =
+
+      [production]
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-name = cyhy
+
+#
 # Run script to create the "places" collection
 #
-- name: Load data to places collection
-  shell: /tmp/cyhy-places/scripts/load_places.sh
+- name: Load data to places collection as the cyhy user
+  shell: sudo -u cyhy /tmp/cyhy-places/scripts/load_places.sh
+  # TODO: Figure out why "become_user: cyhy" isn't working for this block
 
 #
 # Cleanup
 #
-# - name: Delete /tmp/cyhy-places
-#   file:
-#     path: /tmp/cyhy-places
-#     state: absent
-#
-# - name: Delete local copy of GitHub OAuth token
-#   local_action:
-#     module: file
-#     path: /tmp/github_oauth_token.yml
-#     state: absent
-#   become: no
+- name: Delete /tmp/cyhy-places
+  file:
+    path: /tmp/cyhy-places
+    state: absent
+
+- name: Delete local copy of GitHub OAuth token
+  local_action:
+    module: file
+    path: /tmp/github_oauth_token.yml
+    state: absent
+  become: no
