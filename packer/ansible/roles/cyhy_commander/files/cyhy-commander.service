@@ -7,7 +7,7 @@ Type=simple
 User=cyhy
 Group=cyhy
 WorkingDirectory=/var/cyhy
-ExecStart=/usr/local/bin/cyhy-commander /var/cyhy/commander
+ExecStart=/usr/local/bin/cyhy-commander -d /var/cyhy/commander
 Restart=on-failure
 
 [Install]
