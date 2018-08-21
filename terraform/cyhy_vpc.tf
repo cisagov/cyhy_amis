@@ -13,7 +13,7 @@ resource "aws_vpc_dhcp_options" "cyhy_dhcp_options" {
   tags = "${merge(var.tags, map("Name", "CyHy"))}"
 }
 
-# Assoicate the DHCP options above with the CyHy VPC
+# Associate the DHCP options above with the CyHy VPC
 resource "aws_vpc_dhcp_options_association" "cyhy_vpc_dhcp" {
   vpc_id          = "${aws_vpc.cyhy_vpc.id}"
   dhcp_options_id = "${aws_vpc_dhcp_options.cyhy_dhcp_options.id}"
