@@ -29,6 +29,7 @@ resource "aws_instance" "cyhy_commander" {
 
   # This is the private subnet
   subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
+  private_ip = "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, local.the_commander)}"
   associate_public_ip_address = false
 
   root_block_device {
