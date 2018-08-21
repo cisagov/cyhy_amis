@@ -50,6 +50,17 @@
     src: commander.conf
     dest: /etc/cyhy/commander.conf
     mode: 0644
+#
+# Create empty cyhy ssh config with cyhy as owner and group
+#
+- name: Create empty ssh config file
+  command: touch /var/cyhy/.ssh/config
+
+- name: chown the cyhy ssh config
+  file:
+    path: /var/cyhy/.ssh/config
+    owner: cyhy
+    group: cyhy
 
 #
 # Replace commander.conf password

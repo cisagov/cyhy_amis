@@ -6,6 +6,7 @@
   roles:
     - upgrade
     - python
+    - banner
 
 - hosts: nmap
   name: Install nmap

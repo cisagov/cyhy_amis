@@ -62,7 +62,6 @@ module "cyhy_commander_ansible_provisioner" {
   envs = [
     "host=${aws_instance.cyhy_commander.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
     "host_groups=cyhy_commander"
   ]
   playbook = "../ansible/playbook.yml"
