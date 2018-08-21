@@ -29,3 +29,28 @@ resource "aws_security_group_rule" "private_mongodb_ingress_from_bod_private" {
   from_port = 27017
   to_port = 27017
 }
+
+# Allow MongoDB ingress from commander
+resource "aws_security_group_rule" "private_mongodb_ingress_from_commander" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_commander.private_ip}/32"
+  ]
+  from_port = 27017
+  to_port = 27017
+}
+
+# Allow MongoDB egress to Mongo host
+resource "aws_security_group_rule" "private_mongodb_egress_to_mongo_host" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_mongo.private_ip}/32"
+  ]
+  from_port = 27017
+  to_port = 27017
+}
+

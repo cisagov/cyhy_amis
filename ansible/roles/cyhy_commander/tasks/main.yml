@@ -22,7 +22,7 @@
     dest: /var/cyhy/.ssh/id_ed25519
     owner: cyhy
     group: cyhy
-    mode: 0600  
+    mode: 0600
 
 #
 # Delete local copy of private key
@@ -47,6 +47,43 @@
 #
 - name: Copy the configuration file for cyhy-commander
   copy:
-    src: cyhy-commander.conf  
-    dest: /etc/cyhy/cyhy-commander.conf
+    src: commander.conf
+    dest: /etc/cyhy/commander.conf
     mode: 0644
+
+#
+# Replace commander.conf password
+#
+- name: Grab mongo users from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: mongo_users.yml
+    dest: /tmp/mongo_users.yml
+    mode: get
+  become: no
+
+- name: Load mongo users token from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/mongo_users.yml
+    name: mongo_users
+  become: no
+
+- name: Configure commander.conf to use commander as mongo user
+  lineinfile:
+    dest: /etc/cyhy/commander.conf
+    regexp: 'database-uri ='
+    state: present
+    line: 'database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@{{ mongo_host }}:27017/cyhy'
+
+- name: Enable and start cyhy-commander
+  service:
+    name: cyhy-commander
+    enabled: yes
+    state: started
+
+- name: Delete /tmp/mongo_users.yml
+  file:
+    path: /tmp/mongo_users.yml
+    state: absent

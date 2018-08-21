@@ -37,7 +37,7 @@
 #
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
-# do some chicanery here instead of just using pip 
+# do some chicanery here instead of just using pip
 # - name: Install python dependencies for cyhy-core
 #   pip:
 #     chdir: /var/cyhy/cyhy-core
@@ -70,7 +70,7 @@
       - docutils
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
-# do some chicanery here instead of just using pip 
+# do some chicanery here instead of just using pip
 # - name: Install python dependencies for cyhy-commander
 #   pip:
 #     chdir: /var/cyhy/cyhy-commander
@@ -97,11 +97,8 @@
     dest: /lib/systemd/system/cyhy-commander.service
     mode: 0644
 
-# Enable cyhy-commander
-- name: Enable cyhy-commander
-  service:
-    name: cyhy-commander
-    enabled: yes
+# Don't enable cyhy-commander here; we do that when we spin up an instance
+# so remaining setup tasks can be completed first
 
 #
 # Cleanup
