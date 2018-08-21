@@ -8,6 +8,16 @@ resource "aws_security_group_rule" "private_ssh_egress_to_scanner" {
   to_port = 22
 }
 
+# Allow HTTPS egress anywhere
+resource "aws_security_group_rule" "private_https_egress_to_anywhere" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port = 443
+  to_port = 443
+}
+
 # Allow SSH ingress from the bastion
 resource "aws_security_group_rule" "private_ssh_ingress_from_bastion" {
   security_group_id = "${aws_security_group.cyhy_private_sg.id}"
@@ -63,4 +73,3 @@ resource "aws_security_group_rule" "private_mongodb_egress_to_mongo_host" {
   from_port = 27017
   to_port = 27017
 }
-
