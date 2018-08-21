@@ -1,5 +1,9 @@
 resource "aws_route53_zone" "reverse_zone" {
   name = "57.69.64.in-addr.arpa."
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # NS and SOA records are assigned at zone creation and should not be modified
