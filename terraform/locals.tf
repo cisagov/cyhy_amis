@@ -21,6 +21,9 @@ locals {
     "udp"
   ]
 
+  # domain name to use for internal DNS
+  private_domain = "local"
+
   # DNS zone calculations based on requested instances
   # The numbers represent the count of IP addresses in a subnet
   # and are used by the cidrhost() function.
