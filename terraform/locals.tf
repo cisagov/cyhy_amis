@@ -24,6 +24,14 @@ locals {
   # domain name to use for internal DNS
   private_domain = "local"
 
+  # zone to use for public DNS
+  public_zone  = "cyber.dhs.gov"
+
+  # subdomains to use in the public_zone.
+  # to create records directly in the public_zone set to ""
+  # otherwise it must end in a period
+  public_subdomain = "cyhy."
+
   # DNS zone calculations based on requested instances
   # The numbers represent the count of IP addresses in a subnet
   # and are used by the cidrhost() function.
