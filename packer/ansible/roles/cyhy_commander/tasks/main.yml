@@ -1,6 +1,14 @@
 ---
 # tasks file for cyhy_commander
 
+#
+# Install unzip; it is needed by cyhy_core/var/load_places.sh
+#
+- name: Install unzip
+  apt:
+    name: unzip
+    state: latest
+
 - name: Grab GitHub OAuth token from S3
   local_action:
     module: aws_s3
