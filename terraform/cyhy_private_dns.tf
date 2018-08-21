@@ -1,9 +1,5 @@
-locals {
-  private_domain = "local."
-}
-
 resource "aws_route53_zone" "private_zone" {
-  name = "${local.private_domain}"
+  name = "${local.private_domain}."
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
   tags = "${merge(var.tags, map("Name", "CyHy Private Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
@@ -101,7 +97,7 @@ resource "aws_route53_record" "rev_1_PTR" {
   name    = "1.${aws_route53_zone.scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "router.${local.private_domain}" ]
+  records = [ "router.${local.private_domain}." ]
 }
 
 resource "aws_route53_record" "rev_2_PTR" {
@@ -109,7 +105,7 @@ resource "aws_route53_record" "rev_2_PTR" {
   name    = "2.${aws_route53_zone.scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "ns.${local.private_domain}" ]
+  records = [ "ns.${local.private_domain}." ]
 }
 
 resource "aws_route53_record" "rev_3_PTR" {
@@ -117,7 +113,7 @@ resource "aws_route53_record" "rev_3_PTR" {
   name    = "3.${aws_route53_zone.scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "reserved.${local.private_domain}" ]
+  records = [ "reserved.${local.private_domain}." ]
 }
 
 resource "aws_route53_record" "rev_bastion_PTR" {
@@ -125,7 +121,7 @@ resource "aws_route53_record" "rev_bastion_PTR" {
   name    = "${local.the_bastion}.${aws_route53_zone.scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "bastion.${local.private_domain}" ]
+  records = [ "bastion.${local.private_domain}." ]
 }
 
 resource "aws_route53_record" "rev_portscan_PTR" {
@@ -134,7 +130,7 @@ resource "aws_route53_record" "rev_portscan_PTR" {
   name    = "${local.first_port_scanner + count.index}.${aws_route53_zone.scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "portscan${count.index + 1}.${local.private_domain}" ]
+  records = [ "portscan${count.index + 1}.${local.private_domain}." ]
 }
 
 resource "aws_route53_record" "rev_vulnscan_PTR" {
@@ -143,7 +139,7 @@ resource "aws_route53_record" "rev_vulnscan_PTR" {
   name    = "${local.first_vuln_scanner + count.index}.${aws_route53_zone.scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "vulnscan${count.index + 1}.${local.private_domain}" ]
+  records = [ "vulnscan${count.index + 1}.${local.private_domain}." ]
 }
 
 ##################################
@@ -168,7 +164,7 @@ resource "aws_route53_record" "rev_commander_PTR" {
   name    = "${local.the_commander}.${aws_route53_zone.private_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "commander.${local.private_domain}" ]
+  records = [ "commander.${local.private_domain}." ]
 }
 
 resource "aws_route53_record" "rev_database_PTR" {
@@ -177,5 +173,5 @@ resource "aws_route53_record" "rev_database_PTR" {
   name    = "${local.first_database + count.index}.${aws_route53_zone.private_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "database${count.index + 1}.${local.private_domain}" ]
+  records = [ "database${count.index + 1}.${local.private_domain}." ]
 }
