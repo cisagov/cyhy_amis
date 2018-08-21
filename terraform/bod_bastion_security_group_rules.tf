@@ -12,19 +12,11 @@ resource "aws_security_group_rule" "bastion_ssh_from_trusted" {
 # Allow ingress from and egress to the bastion via ssh.  This is
 # necessary because Ansible applies the ssh proxy even when sshing to
 # the bastion.
-resource "aws_security_group_rule" "bastion_ssh_from_self" {
+resource "aws_security_group_rule" "bastion_self_ssh" {
+  count = "${length(local.ingress_and_egress)}"
+
   security_group_id = "${aws_security_group.bod_bastion_sg.id}"
-  type = "ingress"
-  protocol = "tcp"
-  cidr_blocks = [
-    "${aws_instance.bod_bastion.public_ip}/32"
-  ]
-  from_port = 22
-  to_port = 22
-}
-resource "aws_security_group_rule" "bastion_ssh_to_self" {
-  security_group_id = "${aws_security_group.bod_bastion_sg.id}"
-  type = "egress"
+  type = "${local.ingress_and_egress[count.index]}"
   protocol = "tcp"
   cidr_blocks = [
     "${aws_instance.bod_bastion.public_ip}/32"

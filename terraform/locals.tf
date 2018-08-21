@@ -15,10 +15,22 @@ locals {
     8834
   ]
 
-  # Pretty obvious what this is
+  # These are the ports on which the BOD Docker security group is
+  # allowed to egress anywhere
+  bod_docker_egress_anywhere_ports = [
+    80,
+    443,
+    587
+  ]
+
+  # Pretty obvious what these are
   tcp_and_udp = [
     "tcp",
     "udp"
+  ]
+  ingress_and_egress = [
+    "ingress",
+    "egress"
   ]
 
   # domain name to use for internal DNS

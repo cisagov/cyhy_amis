@@ -44,78 +44,40 @@ resource "aws_network_acl_rule" "private_ingress_from_google_dns_via_ephemeral_p
   to_port = 65535
 }
 
-# Allow outbound HTTP
-resource "aws_network_acl_rule" "private_egress_anywhere_via_http" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
-  egress = true
-  protocol = "tcp"
-  rule_number = 119
-  rule_action = "allow"
-  cidr_block = "0.0.0.0/0"
-  from_port = 80
-  to_port = 80
-}
+# Allow outbound HTTP, HTTPS, and SMTP (587) anywhere
+resource "aws_network_acl_rule" "private_egress_anywhere" {
+  count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
-# Allow outbound HTTPS
-resource "aws_network_acl_rule" "private_egress_anywhere_via_https" {
   network_acl_id = "${aws_network_acl.bod_private_acl.id}"
   egress = true
   protocol = "tcp"
-  rule_number = 120
+  rule_number = "${120 + count.index}"
   rule_action = "allow"
   cidr_block = "0.0.0.0/0"
-  from_port = 443
-  to_port = 443
-}
-
-# Allow outbound SMTP
-resource "aws_network_acl_rule" "private_egress_anywhere_via_port_587" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
-  egress = true
-  protocol = "tcp"
-  rule_number = 130
-  rule_action = "allow"
-  cidr_block = "0.0.0.0/0"
-  from_port = 587
-  to_port = 587
+  from_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
+  to_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
 }
 
 # Allow egress to Google DNS
-resource "aws_network_acl_rule" "private_egress_to_google_dns_tcp_1" {
+resource "aws_network_acl_rule" "private_egress_to_google_dns_1" {
+  count = "${length(local.tcp_and_udp)}"
+
   network_acl_id = "${aws_network_acl.bod_private_acl.id}"
   egress = true
-  protocol = "tcp"
-  rule_number = 135
+  protocol = "${local.tcp_and_udp[count.index]}"
+  rule_number = "${135 + count.index}"
   rule_action = "allow"
   cidr_block = "8.8.8.8/32"
   from_port = 53
   to_port = 53
 }
-resource "aws_network_acl_rule" "private_egress_to_google_dns_tcp_2" {
+resource "aws_network_acl_rule" "private_egress_to_google_dns_2" {
+  count = "${length(local.tcp_and_udp)}"
+
   network_acl_id = "${aws_network_acl.bod_private_acl.id}"
   egress = true
-  protocol = "tcp"
-  rule_number = 136
-  rule_action = "allow"
-  cidr_block = "8.8.4.4/32"
-  from_port = 53
-  to_port = 53
-}
-resource "aws_network_acl_rule" "private_egress_to_google_dns_udp_1" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
-  egress = true
-  protocol = "udp"
-  rule_number = 137
-  rule_action = "allow"
-  cidr_block = "8.8.8.8/32"
-  from_port = 53
-  to_port = 53
-}
-resource "aws_network_acl_rule" "private_egress_to_google_dns_udp_2" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
-  egress = true
-  protocol = "udp"
-  rule_number = 138
+  protocol = "${local.tcp_and_udp[count.index]}"
+  rule_number = "${137 + count.index}"
   rule_action = "allow"
   cidr_block = "8.8.4.4/32"
   from_port = 53

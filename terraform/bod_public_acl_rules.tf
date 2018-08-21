@@ -3,51 +3,25 @@
 # and DNS (for Google DNS).  This allows EC2 instances in the private
 # subnet to send the traffic they want via the NAT gateway, subject to
 # their own security group and network ACL restrictions.
-resource "aws_network_acl_rule" "public_ingress_from_private_via_http" {
+resource "aws_network_acl_rule" "public_ingress_from_private" {
+  count = "${length(local.bod_docker_egress_anywhere_ports)}"
+
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = false
   protocol = "tcp"
-  rule_number = 79
+  rule_number = "${80 + count.index}"
   rule_action = "allow"
   cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
-  from_port = 80
-  to_port = 80
+  from_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
+  to_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
 }
-resource "aws_network_acl_rule" "public_ingress_from_private_via_https" {
+resource "aws_network_acl_rule" "public_ingress_from_private_via_port_53" {
+  count = "${length(local.tcp_and_udp)}"
+
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = false
-  protocol = "tcp"
-  rule_number = 80
-  rule_action = "allow"
-  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
-  from_port = 443
-  to_port = 443
-}
-resource "aws_network_acl_rule" "public_ingress_from_private_via_port_587" {
-  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
-  egress = false
-  protocol = "tcp"
-  rule_number = 81
-  rule_action = "allow"
-  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
-  from_port = 587
-  to_port = 587
-}
-resource "aws_network_acl_rule" "public_ingress_from_private_via_port_53_tcp" {
-  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
-  egress = false
-  protocol = "tcp"
-  rule_number = 82
-  rule_action = "allow"
-  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
-  from_port = 53
-  to_port = 53
-}
-resource "aws_network_acl_rule" "public_ingress_from_private_via_port_53_udp" {
-  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
-  egress = false
-  protocol = "udp"
-  rule_number = 83
+  protocol = "${local.tcp_and_udp[count.index]}"
+  rule_number = "${85 + count.index}"
   rule_action = "allow"
   cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
   from_port = 53
@@ -93,10 +67,6 @@ resource "aws_network_acl_rule" "public_ingress_from_google_dns_via_ephemeral_po
 }
 
 # Allow ingress from anywhere via ssh
-#
-# TODO - This should be locked down using
-# var/trusted_ingress_networks_ipv4 and
-# var/trusted_ingress_networks_ipv6
 resource "aws_network_acl_rule" "public_ingress_from_anywhere_via_ssh" {
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = false
@@ -137,74 +107,40 @@ resource "aws_network_acl_rule" "public_egress_to_bastion_via_ssh" {
 # list), HTTPS (for AWS CLI) and SMTP (for sending emails).  This is
 # so the NAT gateway can relay the corresponding requests from the
 # private subnet.
-resource "aws_network_acl_rule" "public_egress_anywhere_via_http" {
+resource "aws_network_acl_rule" "public_egress_anywhere" {
+  count = "${length(local.bod_docker_egress_anywhere_ports)}"
+
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = true
   protocol = "tcp"
-  rule_number = 129
+  rule_number = "${129 + count.index}"
   rule_action = "allow"
   cidr_block = "0.0.0.0/0"
-  from_port = 80
-  to_port = 80
-}
-resource "aws_network_acl_rule" "public_egress_anywhere_via_https" {
-  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
-  egress = true
-  protocol = "tcp"
-  rule_number = 130
-  rule_action = "allow"
-  cidr_block = "0.0.0.0/0"
-  from_port = 443
-  to_port = 443
-}
-resource "aws_network_acl_rule" "public_egress_anywhere_via_port_587" {
-  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
-  egress = true
-  protocol = "tcp"
-  rule_number = 131
-  rule_action = "allow"
-  cidr_block = "0.0.0.0/0"
-  from_port = 587
-  to_port = 587
+  from_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
+  to_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
 }
 
 # Allow egress to Google DNS.  This is so the NAT gateway can relay
 # the corresponding requests from the private subnet.
-resource "aws_network_acl_rule" "public_egress_to_google_dns_tcp_1" {
+resource "aws_network_acl_rule" "public_egress_to_google_dns_1" {
+  count = "${length(local.tcp_and_udp)}"
+
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = true
-  protocol = "tcp"
-  rule_number = 135
+  protocol = "${local.tcp_and_udp[count.index]}"
+  rule_number = "${135 + count.index}"
   rule_action = "allow"
   cidr_block = "8.8.8.8/32"
   from_port = 53
   to_port = 53
 }
-resource "aws_network_acl_rule" "public_egress_to_google_dns_tcp_2" {
+resource "aws_network_acl_rule" "public_egress_to_google_dns_2" {
+  count = "${length(local.tcp_and_udp)}"
+
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = true
-  protocol = "tcp"
-  rule_number = 136
-  rule_action = "allow"
-  cidr_block = "8.8.4.4/32"
-  from_port = 53
-  to_port = 53
-}
-resource "aws_network_acl_rule" "public_egress_to_google_dns_udp_1" {
-  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
-  egress = true
-  protocol = "udp"
-  rule_number = 137
-  rule_action = "allow"
-  cidr_block = "8.8.8.8/32"
-  from_port = 53
-  to_port = 53
-}
-resource "aws_network_acl_rule" "public_egress_to_google_dns_udp_2" {
-  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
-  egress = true
-  protocol = "udp"
-  rule_number = 138
+  protocol = "${local.tcp_and_udp[count.index]}"
+  rule_number = "${137 + count.index}"
   rule_action = "allow"
   cidr_block = "8.8.4.4/32"
   from_port = 53
