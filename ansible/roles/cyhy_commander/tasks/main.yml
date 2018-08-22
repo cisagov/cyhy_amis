@@ -126,23 +126,27 @@
     state: directory
 
 - name: Download load_places.sh from GitHub
-  shell: "curl -o /tmp/cyhy-places/scripts/load_places.sh https://{{ github_oauth_token }}@raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/load_places.sh"
-
-- name: Download GNIS_data_import.py from GitHub
-  shell: "curl -o /tmp/cyhy-places/scripts/GNIS_data_import.py https://{{ github_oauth_token }}@raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/GNIS_data_import.py"
-
-- name: Make load_places.sh script executable
-  file:
-    path: /tmp/cyhy-places/scripts/load_places.sh
+  get_url:
+    url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/load_places.sh"
+    headers:
+      Authorization: "token {{ github_oauth_token }}"
+    dest: /tmp/cyhy-places/scripts/load_places.sh
     mode: 0755
 
-- name: Make GNIS_data_import.py script executable
-  file:
-    path: /tmp/cyhy-places/scripts/GNIS_data_import.py
+- name: Download GNIS_data_import.py from GitHub
+  get_url:
+    url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/GNIS_data_import.py"
+    headers:
+      Authorization: "token {{ github_oauth_token }}"
+    dest: /tmp/cyhy-places/scripts/GNIS_data_import.py
     mode: 0755
 
 - name: Download ADDL_CYHY_PLACES.txt from GitHub
-  shell: "curl -o /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt https://{{ github_oauth_token }}@raw.githubusercontent.com/jsf9k/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
+  get_url:
+    url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
+    headers:
+      Authorization: "token {{ github_oauth_token }}"
+    dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
 
 #
 # Set up /etc/cyhy/cyhy.conf with commander creds
