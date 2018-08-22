@@ -23,6 +23,10 @@ bootcmd:
   - 'mkdir --verbose --parents /var/lib/mongodb/journal'
   - 'mount --verbose --types ext4 ${mongo_disk_journal} /var/lib/mongodb/journal'
   - 'mount --verbose --types ext4 ${mongo_disk_log} /var/log/mongodb'
+  # Create mongodb keyFile (if one was not already there)
+  - 'stat /var/lib/mongodb/keyFile || openssl rand -base64 741 > /var/lib/mongodb/keyFile'
+  - 'chmod 600 /var/lib/mongodb/keyFile'
+  # Make mongodb owner of directories
   - 'chown --verbose --recursive mongodb:mongodb /var/log/mongodb'
   - 'chown --verbose --recursive mongodb:mongodb /var/lib/mongodb'
 
