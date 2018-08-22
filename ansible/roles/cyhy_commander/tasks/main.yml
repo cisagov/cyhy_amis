@@ -170,9 +170,14 @@
 #
 # Run script to create the "places" collection
 #
+# Note that we have to turn on pipelining, as described here:
+# https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
+#
 - name: Load data to places collection as the cyhy user
-  shell: sudo -u cyhy /tmp/cyhy-places/scripts/load_places.sh
-  # TODO: Figure out why "become_user: cyhy" isn't working for this block
+  shell: /tmp/cyhy-places/scripts/load_places.sh
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
 
 #
 # Cleanup
