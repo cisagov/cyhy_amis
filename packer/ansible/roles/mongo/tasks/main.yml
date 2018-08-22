@@ -28,20 +28,11 @@
     state: present
     line: After=network.target cloud-config.service
 
-- name: Configure mongo service to use wired tiger
-  lineinfile:
+- name: Copy mongo configuration file
+  template:
+    src: mongod.conf
     dest: /etc/mongod.conf
-    regexp: 'engine:'
-    state: present
-    line: '  engine: wiredTiger'
-
-- name: Configure mongo service to listen on all interfaces
-  lineinfile:
-    path: /etc/mongod.conf
-    regexp: '^([ \t]*bindIp:.*)$'
-    state: present
-    line: '#\1'
-    backrefs: yes
+    mode: 644
 
 - name: Install pip
   apt:
