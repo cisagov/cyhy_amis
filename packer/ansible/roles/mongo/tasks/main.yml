@@ -37,12 +37,6 @@
     state: present
     line: ExecStart=/usr/bin/mongod --config /etc/mongod.conf
 
-- name: Copy mongo configuration file
-  template:
-    src: mongod.conf
-    dest: /etc/mongod.conf
-    mode: 644
-
 - name: Install pip
   apt:
     name: python-pip

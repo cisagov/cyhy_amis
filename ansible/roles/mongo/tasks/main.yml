@@ -63,3 +63,14 @@
     path: /tmp/mongo_users.yml
     state: absent
   become: no
+
+- name: Copy mongo configuration file
+  template:
+    src: mongod.conf
+    dest: /etc/mongod.conf
+    mode: 644
+
+- name: Restart mongod service to use new configuration
+  service:
+    name: mongod
+    state: restarted

@@ -1,2 +1,3 @@
 ---
 # defaults file for mongo
+mongodb_data_root: /var/lib/mongodb
