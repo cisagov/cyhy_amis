@@ -28,11 +28,14 @@
     state: present
     line: After=network.target cloud-config.service
 
-- name: Copy mongo configuration file
-  template:
-    src: mongod.conf
-    dest: /etc/mongod.conf
-    mode: 644
+# Mongo docs recommend disabling --quiet flag in Production
+# https://docs.mongodb.com/manual/reference/configuration-options/#systemLog.quiet
+- name: Remove --quiet mongo command line option
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    regexp: ^ExecStart=/usr/bin/mongod --quiet
+    state: present
+    line: ExecStart=/usr/bin/mongod --config /etc/mongod.conf
 
 - name: Install pip
   apt:
