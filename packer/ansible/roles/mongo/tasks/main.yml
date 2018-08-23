@@ -28,6 +28,15 @@
     state: present
     line: After=network.target cloud-config.service
 
+# Mongo docs recommend disabling --quiet flag in Production
+# https://docs.mongodb.com/manual/reference/configuration-options/#systemLog.quiet
+- name: Remove --quiet mongo command line option
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    regexp: ^ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
+    state: present
+    line: ExecStart=/usr/bin/mongod --config /etc/mongod.conf
+
 - name: Copy mongo configuration file
   template:
     src: mongod.conf
