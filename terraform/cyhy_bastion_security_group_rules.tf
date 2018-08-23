@@ -49,14 +49,16 @@ resource "aws_security_group_rule" "bastion_egress_to_private_sg_via_ssh" {
   to_port = 22
 }
 
-# Allow egress via ssh to the scanner security group
-resource "aws_security_group_rule" "bastion_egress_to_scanner_sg_via_ssh" {
+# Allow egress via ssh and Nessus to the scanner security group
+resource "aws_security_group_rule" "bastion_egress_to_scanner_sg_via_trusted_ports" {
+  count = "${length(local.cyhy_trusted_ingress_ports)}"
+
   security_group_id = "${aws_security_group.cyhy_bastion_sg.id}"
   type = "egress"
   protocol = "tcp"
   source_security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
-  from_port = 22
-  to_port = 22
+  from_port = "${local.cyhy_trusted_ingress_ports[count.index]}"
+  to_port = "${local.cyhy_trusted_ingress_ports[count.index]}"
 }
 
 # Allow egress via the mongodb port to the mongo host
