@@ -33,7 +33,7 @@
 - name: Remove --quiet mongo command line option
   lineinfile:
     dest: /lib/systemd/system/mongod.service
-    regexp: ^ExecStart=/usr/bin/mongod --quiet --config /etc/mongod.conf
+    regexp: ^ExecStart=/usr/bin/mongod --quiet
     state: present
     line: ExecStart=/usr/bin/mongod --config /etc/mongod.conf
 
