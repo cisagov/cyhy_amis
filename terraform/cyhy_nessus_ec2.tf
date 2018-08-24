@@ -33,7 +33,7 @@ resource "aws_instance" "cyhy_nessus" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_workspace ? 100 : 8}"
+    volume_size = "${local.production_workspace ? 100 : 16}"
     delete_on_termination = true
   }
 
