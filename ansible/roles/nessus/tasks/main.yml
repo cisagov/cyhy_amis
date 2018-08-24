@@ -14,9 +14,9 @@
   register: registered
   failed_when: registered.rc not in [0, 1]
 
-# - name: Register a license key if necessary
-#   command: /opt/nessus/sbin/nessuscli fetch --register-only <activationcode>
-#   when: registered.rc != 0
+- name: Register a license key if necessary
+  command: "/opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}"
+  when: registered.rc != 0
 
 #
 # Create the Nessus scanner user
@@ -64,11 +64,15 @@
     state: absent
   become: no
 
-# - name: Update plugins
-#   command: /opt/nessus/sbin/nessuscli update --plugins-only
+- name: Update plugins
+  command: /opt/nessus/sbin/nessuscli update --plugins-only
+  async: 300
+  poll: 5
 
 - name: Rebuild the plugin database
   command: /opt/nessus/sbin/nessusd -R
+  async: 1200
+  poll: 30
 
 - name: Start Nessus service
   service:
