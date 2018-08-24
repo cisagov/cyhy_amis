@@ -90,7 +90,7 @@
   service:
     name: cyhy-commander
     enabled: yes
-    state: started
+    state: restarted
 
 - name: Delete /tmp/mongo_users.yml
   file:
