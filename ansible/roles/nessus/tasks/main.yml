@@ -1,0 +1,76 @@
+---
+# tasks file for nessus
+
+- name: Stop the Nessus service
+  service:
+    name: nessusd
+    state: stopped
+
+#
+# Check if a license key is registered and if not register one
+#
+- name: Check if a license key is registered
+  command: /opt/nessus/sbin/nessuscli fetch --check
+  register: registered
+  failed_when: registered.rc not in [0, 1]
+
+# - name: Register a license key if necessary
+#   command: /opt/nessus/sbin/nessuscli fetch --register-only <activationcode>
+#   when: registered.rc != 0
+
+#
+# Create the Nessus scanner user
+#
+- name: Grab Nessus credentials from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: nessus_scanner_user.yml
+    dest: /tmp/nessus_scanner_user.yml
+    mode: get
+  become: no
+
+- name: Load Nessus credentials from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/nessus_scanner_user.yml
+    name: nessus
+  become: no
+
+- name: Grab the existing Nessus users
+  command: /opt/nessus/sbin/nessuscli lsuser
+  register: users
+
+# The expect Ansible module requires pexpect
+- name: Install pexpect
+  pip:
+    name:
+      - pexpect
+  when: nessus.username not in users.stdout
+
+- name: Create scanner user if necessary
+  expect:
+    command: "/opt/nessus/sbin/nessuscli adduser {{ nessus.username }}"
+    responses:
+      password: "{{ nessus.password }}"
+      administrator: y
+      BLANK: ""
+  when: nessus.username not in users.stdout
+
+- name: Delete local copy of Nessus credentials
+  local_action:
+    module: file
+    path: /tmp/nessus_scanner_user.yml
+    state: absent
+  become: no
+
+# - name: Update plugins
+#   command: /opt/nessus/sbin/nessuscli update --plugins-only
+
+- name: Rebuild the plugin database
+  command: /opt/nessus/sbin/nessusd -R
+
+- name: Start Nessus service
+  service:
+    name: nessusd
+    state: started
