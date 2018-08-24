@@ -1,5 +1,5 @@
 docker
-=========
+======
 
 A role for installing Docker.
 
