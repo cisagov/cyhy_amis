@@ -22,7 +22,7 @@ data "aws_ami" "nmap" {
 
 resource "aws_instance" "cyhy_nmap" {
   ami = "${data.aws_ami.nmap.id}"
-  instance_type = "t2.micro"
+  instance_type = "${local.production_workspace ? "t2.large" : "t2.micro"}"
   count = "${local.nmap_instance_count}"
 
   # ebs_optimized = true
@@ -35,7 +35,7 @@ resource "aws_instance" "cyhy_nmap" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 8
+    volume_size = "${local.production_workspace ? 50 : 8}"
     delete_on_termination = true
   }
 
@@ -70,19 +70,19 @@ module "cyhy_nmap_ansible_provisioner_0" {
   dry_run = false
 }
 
-module "cyhy_nmap_ansible_provisioner_1" {
-  source = "github.com/cloudposse/tf_ansible"
-  #count = "${local.nmap_instance_count}"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
-  ]
-  envs = [
-    "host=${aws_instance.cyhy_nmap.1.private_ip}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
-}
+# module "cyhy_nmap_ansible_provisioner_1" {
+#   source = "github.com/cloudposse/tf_ansible"
+#   #count = "${local.nmap_instance_count}"
+#
+#   arguments = [
+#     "--user=${var.remote_ssh_user}",
+#     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+#   ]
+#   envs = [
+#     "host=${aws_instance.cyhy_nmap.1.private_ip}",
+#     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+#     "host_groups=cyhy_runner"
+#   ]
+#   playbook = "../ansible/playbook.yml"
+#   dry_run = false
+# }

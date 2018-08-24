@@ -22,7 +22,7 @@ data "aws_ami" "nessus" {
 
 resource "aws_instance" "cyhy_nessus" {
   ami = "${data.aws_ami.nessus.id}"
-  instance_type = "m4.large"
+  instance_type = "${local.production_workspace ? "m4.2xlarge" : "m4.large"}"
   count = "${local.nessus_instance_count}"
   ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
@@ -33,7 +33,7 @@ resource "aws_instance" "cyhy_nessus" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 8
+    volume_size = "${local.production_workspace ? 100 : 8}"
     delete_on_termination = true
   }
 
@@ -45,6 +45,11 @@ resource "aws_instance" "cyhy_nessus" {
 
   tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
+
+  # If the instance is destroyed we will have to reset the license to nessus
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # TODO: until we figure out how to loop a module, a copy needs to be made for
@@ -70,19 +75,19 @@ module "cyhy_nessus_ansible_provisioner_0" {
 }
 
 # Provision the Nessus EC2 instance via Ansible
-module "cyhy_nessus_ansible_provisioner_1" {
-  source = "github.com/cloudposse/tf_ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
-  ]
-  envs = [
-    "host=${aws_instance.cyhy_nessus.1.private_ip}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nessus",
-    "nessus_activation_code=${var.nessus_activation_codes[1]}"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
-}
+# module "cyhy_nessus_ansible_provisioner_1" {
+#   source = "github.com/cloudposse/tf_ansible"
+#
+#   arguments = [
+#     "--user=${var.remote_ssh_user}",
+#     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+#   ]
+#   envs = [
+#     "host=${aws_instance.cyhy_nessus.1.private_ip}",
+#     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+#     "host_groups=cyhy_runner,nessus",
+#     "nessus_activation_code=${var.nessus_activation_codes[1]}"
+#   ]
+#   playbook = "../ansible/playbook.yml"
+#   dry_run = false
+# }
