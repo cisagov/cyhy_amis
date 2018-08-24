@@ -22,7 +22,7 @@ data "aws_ami" "nmap" {
 
 resource "aws_instance" "cyhy_nmap" {
   ami = "${data.aws_ami.nmap.id}"
-  instance_type = "t2.micro"
+  instance_type = "${local.production_workspace ? "t2.large" : "t2.micro"}"
   count = "${local.nmap_instance_count}"
 
   # ebs_optimized = true
