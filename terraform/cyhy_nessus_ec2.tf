@@ -45,6 +45,11 @@ resource "aws_instance" "cyhy_nessus" {
 
   tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
+
+  # If the instance is destroyed we will have to reset the license to nessus
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 # TODO: until we figure out how to loop a module, a copy needs to be made for
