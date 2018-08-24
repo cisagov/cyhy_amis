@@ -34,7 +34,7 @@ resource "aws_instance" "cyhy_commander" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 8
+    volume_size = "${local.production_workspace ? 200 : 8}"
     delete_on_termination = true
   }
 
