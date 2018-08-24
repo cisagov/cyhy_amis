@@ -68,11 +68,13 @@
   command: /opt/nessus/sbin/nessuscli update --plugins-only
   async: 300
   poll: 5
+  when: registered.rc != 0
 
 - name: Rebuild the plugin database
   command: /opt/nessus/sbin/nessusd -R
   async: 1200
   poll: 30
+  when: registered.rc != 0
 
 - name: Start Nessus service
   service:
