@@ -1,7 +1,7 @@
-docker
+nessus
 ======
 
-A role for installing Docker.
+A role for configuring Nessus hosts.
 
 Requirements
 ------------
@@ -23,11 +23,11 @@ Example Playbook
 
 Here's how to use it in a playbook:
 
-    - hosts: docker
+    - hosts: nessus
       become: yes
       become_method: sudo
       roles:
-         - docker
+         - nessus
 
 License
 -------

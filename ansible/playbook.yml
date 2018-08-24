@@ -56,3 +56,10 @@
   become_method: sudo
   roles:
     - chown_cyhy_dirs
+
+- hosts: nessus
+  name: Configure Nessus hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - nessus

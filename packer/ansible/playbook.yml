@@ -38,7 +38,6 @@
   roles:
     - pip
     - cyhy_runner
-    - nessus
 
 - hosts: docker
   name: Install Docker
