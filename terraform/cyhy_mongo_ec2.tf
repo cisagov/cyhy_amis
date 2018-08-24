@@ -22,7 +22,8 @@ data "aws_ami" "cyhy_mongo" {
 
 resource "aws_instance" "cyhy_mongo" {
   ami = "${data.aws_ami.cyhy_mongo.id}"
-  instance_type = "${local.production_workspace ? "m4.10xlarge" : "t2.micro"}"
+  # Temp change from m4.2xlarge to m4.10xlarge when our AWS limit is increased
+  instance_type = "${local.production_workspace ? "m4.2xlarge" : "t2.micro"}"
   #count = "${local.mongo_instance_count}"
   ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
