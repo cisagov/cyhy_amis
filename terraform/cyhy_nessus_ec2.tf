@@ -62,7 +62,8 @@ module "cyhy_nessus_ansible_provisioner_0" {
   envs = [
     "host=${aws_instance.cyhy_nessus.0.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nessus"
+    "host_groups=cyhy_runner,nessus",
+    "nessus_activation_code=${var.nessus_activation_codes[0]}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -79,7 +80,8 @@ module "cyhy_nessus_ansible_provisioner_1" {
   envs = [
     "host=${aws_instance.cyhy_nessus.1.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nessus"
+    "host_groups=cyhy_runner,nessus",
+    "nessus_activation_code=${var.nessus_activation_codes[1]}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
