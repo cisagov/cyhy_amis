@@ -7,6 +7,7 @@
     - upgrade
     - python
     - banner
+    - htop
 
 - hosts: nmap
   name: Install nmap
