@@ -1,12 +1,21 @@
 ---
 - hosts: all
-  name: Update the base image and install python
+  name: Update the base image, install python, add banner
   become: yes
   become_method: sudo
   roles:
     - upgrade
     - python
     - banner
+
+# The bastion should have as little installed as possible, since it's
+# exposed to the cruel world
+- hosts: all:!bastion
+  name: Install htop
+  become: yes
+  become_method: sudo
+  roles:
+    - htop
 
 - hosts: nmap
   name: Install nmap
