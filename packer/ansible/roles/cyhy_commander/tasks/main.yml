@@ -48,8 +48,7 @@
 # do some chicanery here instead of just using pip
 # - name: Install python dependencies for cyhy-core
 #   pip:
-#     chdir: /var/cyhy/cyhy-core
-#     requirements: requirements.txt
+#     name: file:///tmp/cyhy-core
 - name: Install python dependencies for cyhy-core
   command: pip install /tmp/cyhy-core
 
@@ -81,8 +80,7 @@
 # do some chicanery here instead of just using pip
 # - name: Install python dependencies for cyhy-commander
 #   pip:
-#     chdir: /var/cyhy/cyhy-commander
-#     requirements: requirements.txt
+#     name: file:///tmp/cyhy-commander
 - name: Install python dependencies for cyhy-commander
   command: pip install /tmp/cyhy-commander
 
