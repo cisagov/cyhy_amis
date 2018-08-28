@@ -38,10 +38,10 @@
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
 # do some chicanery here instead of just using pip
-# - name: Install python dependencies for cyhy-core
+# - name: Install cyhy-core
 #   pip:
 #     name: file:///var/cyhy/cyhy-core
-- name: Install python dependencies for cyhy-core
+- name: Install cyhy-core
   command: pip install /tmp/cyhy-core
 
 #
@@ -70,10 +70,10 @@
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
 # do some chicanery here instead of just using pip
-# - name: Install python dependencies for cyhy-commander
+# - name: Install cyhy-reports
 #   pip:
 #     name: file:///tmp/cyhy-reports
-- name: Install python dependencies for cyhy-reports
+- name: Install cyhy-reports
   command: pip install /tmp/cyhy-reports
 
 
