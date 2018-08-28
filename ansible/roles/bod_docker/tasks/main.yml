@@ -21,13 +21,35 @@
   become: no
 
 #
+# Chown the /var/cyhy directory so it is owned by the cyhy user
+#
+- name: chown the /var/cyhy directory
+  file:
+    path: /var/cyhy
+    owner: cyhy
+    group: cyhy
+    state: directory
+    recurse: yes
+
+#
+# Add the cyhy user to the docker group
+#
+- name: Add the cyhy user to the docker group
+  user:
+    name: cyhy
+    groups:
+      - docker
+    append: yes
+
+
+#
 # orchestrator secrets
 #
 - name: Create the secrets directories for orchestrator and cyhy-mailer
   file:
     path: "{{ item }}"
-    owner: admin
-    group: admin
+    owner: cyhy
+    group: cyhy
     state: directory
   loop:
     - /var/cyhy/orchestrator/secrets
@@ -36,8 +58,8 @@
 - name: Create the orchestrator credentials file to allow reading the cyhy database
   copy:
     dest: /var/cyhy/orchestrator/secrets/cyhy_read_creds.yml
-    owner: admin
-    group: admin
+    owner: cyhy
+    group: cyhy
     mode: 0440
     content: |
       version: '1'
@@ -49,8 +71,8 @@
 - name: Create the orchestrator credentials file to allow reading the scan database
   copy:
     dest: /var/cyhy/orchestrator/secrets/scan_read_creds.yml
-    owner: admin
-    group: admin
+    owner: cyhy
+    group: cyhy
     mode: 0440
     content: |
       version: '1'
@@ -62,8 +84,8 @@
 - name: Create the orchestrator credentials file to allow writing to the scan database
   copy:
     dest: /var/cyhy/orchestrator/secrets/scan_write_creds.yml
-    owner: admin
-    group: admin
+    owner: cyhy
+    group: cyhy
     mode: 0440
     content: |
       version: '1'
@@ -95,8 +117,8 @@
   copy:
     src: /tmp/secrets/aws
     dest: /var/cyhy/orchestrator/secrets
-    owner: admin
-    group: admin
+    owner: cyhy
+    group: cyhy
     mode: 0750
 
 - name: Delete local copy of orchestrator secrets
@@ -120,8 +142,8 @@
     src: /var/cyhy/orchestrator/secrets/cyhy_read_creds.yml
     remote_src: yes
     dest: /var/cyhy/cyhy-mailer/secrets/database_creds.yml
-    owner: admin
-    group: admin
+    owner: cyhy
+    group: cyhy
     mode: 0444
 
 - name: Create a temporary directory to store the cyhy-mailer AWS SMTP credentials
@@ -144,8 +166,8 @@
   copy:
     src: /tmp/secrets/smtp/smtp_creds.yml
     dest: /var/cyhy/cyhy-mailer/secrets/smtp_creds.yml
-    owner: admin
-    group: admin
+    owner: cyhy
+    group: cyhy
     mode: 0444
 
 - name: Delete local copy of cyhy-mailer secrets
@@ -154,6 +176,28 @@
     path: /tmp/secrets
     state: absent
   become: no
+
+
+#
+# Create cron jobs for scanning and the sending of reports
+#
+- name: Create a cron job for BOD 18-01 scanning
+  cron:
+    name: "BOD 18-01 scanning"
+    minute: 0
+    hour: 0
+    weekday: 6
+    user: cyhy
+    job: "/var/cyhy/orchestrator/start.sh"
+
+- name: Create a cron job for sending BOD 18-01 reports
+  cron:
+    name: "Sending BOD 18-01 reports"
+    minute: 0
+    hour: 8
+    weekday: 1
+    user: cyhy
+    job: "/var/cyhy/cyhy-mailer/start.sh"
 
 
 #
@@ -166,10 +210,10 @@
     name: ssh_users
   become: no
 
-- name: Add known users to the admin group
+- name: Add known users to the cyhy group
   user:
     name: "{{ item }}"
     groups:
-      - admin
+      - cyhy
     append: yes
   loop: "{{ ssh_users.users | map(attribute='name') | list }}"
