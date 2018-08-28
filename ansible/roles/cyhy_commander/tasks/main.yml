@@ -93,9 +93,11 @@
     state: restarted
 
 - name: Delete /tmp/mongo_users.yml
-  file:
+  local_action:
+    module: file
     path: /tmp/mongo_users.yml
     state: absent
+  become: no
 
 #
 # Grab the files we need to create the "places" collection from cyhy-core
