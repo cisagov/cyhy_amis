@@ -63,5 +63,6 @@ locals {
 
   # Singleton DNS entries
   the_commander = 5 # there can be only one
+  the_reporter = 6  # there can be only one
   the_bastion = 254 # there can be only one
 }
