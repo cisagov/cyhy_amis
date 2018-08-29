@@ -15,6 +15,14 @@ locals {
     8834
   ]
 
+  # These are the port ranges via which anyone is allowed to
+  # access the public-facing CyHy hosts
+  cyhy_untrusted_ingress_port_ranges = [
+    {start = 1, end = 21},
+    {start = 23, end = 8833},
+    {start = 8835, end = 65535}
+  ]
+
   # These are the ports on which the BOD Docker security group is
   # allowed to egress anywhere
   bod_docker_egress_anywhere_ports = [
