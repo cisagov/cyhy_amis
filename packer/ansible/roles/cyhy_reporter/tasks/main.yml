@@ -33,7 +33,7 @@
       - "--strip-components=1"
 
 #
-# Now we need to install the cyhy-core dependencies
+# Install cyhy-core
 #
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
@@ -61,12 +61,27 @@
       - "--strip-components=1"
 
 #
-# Now we need to install the cyhy-reports dependencies
+# Install cyhy-reports
 #
-# - name: Install docutils, since cyhy-reports needs it
-#   pip:
-#     name:
-#       - docutils
+- name: Install libgeos-dev, since basemap needs it and cyhy-reports needs basemap
+  apt:
+    name:
+      - libgeos-dev
+    state: latest
+
+- name: Install basemap, since cyhy-reports needs it
+  pip:
+    name:
+      - https://github.com/matplotlib/basemap/archive/master.zip
+
+- name: Install some LaTeX packages that cyhy-reports needs
+  apt:
+    name:
+      - texlive
+      - texlive-fonts-extra
+      - texlive-latex-extra
+      - texlive-xetex
+    state: latest
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
 # do some chicanery here instead of just using pip
@@ -76,6 +91,17 @@
 - name: Install cyhy-reports
   command: pip install /tmp/cyhy-reports
 
+- name: Create the /var/cyhy/reports directory
+  file:
+    path: /var/cyhy/reports
+    state: directory
+
+- name: Copy the reporting script
+  copy:
+    src: /tmp/cyhy-reports/extras/create_snapshots_reports_scorecard.py
+    dest: /var/cyhy/reports/create_snapshots_reports_scorecard.py
+    mode: 755
+    remote_src: yes
 
 #
 # Cleanup
