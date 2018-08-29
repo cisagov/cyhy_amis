@@ -45,3 +45,8 @@ variable "nessus_activation_codes" {
   type = "list"
   description = "A list of strings containing Nessus activation codes"
 }
+
+variable "create_flow_logs" {
+  description = "Whether or not to create flow logs.  Zero means no and one means yes"
+  default = 0
+}
