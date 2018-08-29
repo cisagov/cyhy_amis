@@ -13,7 +13,7 @@
             ],
             "most_recent": true
         },
-        "instance_type": "t2.micro",
+        "instance_type": "t2.medium",
         "ssh_username": "admin",
         "ami_name": "cyhy-reporter-hvm-{{timestamp}}-x86_64-ebs",
         "ami_regions": [
