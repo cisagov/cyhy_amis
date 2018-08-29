@@ -53,3 +53,21 @@
     path: /tmp/mongo_users.yml
     state: absent
   become: no
+
+#
+# Add users to the cyhy group
+#
+- name: Load users from YML file
+  local_action:
+    module: include_vars
+    file: ../../../../terraform/scripts/user_ssh_setup.yml
+    name: ssh_users
+  become: no
+
+- name: Add known users to the cyhy group
+  user:
+    name: "{{ item }}"
+    groups:
+      - cyhy
+    append: yes
+  loop: "{{ ssh_users.users | map(attribute='name') | list }}"
