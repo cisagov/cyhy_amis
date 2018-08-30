@@ -36,13 +36,17 @@
     mode: 0660
     content: |
       [DEFAULT]
-      default-section = production
+      default-section = cyhy
       database-uri = mongodb://localhost:27017/
       report-key =
 
-      [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      [cyhy]
+      database-uri = mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
+
+      [scan]
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
+      database-name = scan
 
 #
 # Cleanup
