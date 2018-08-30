@@ -83,7 +83,8 @@ class NessusController(object):
                 response = requests.get(self.url + target, headers=headers, params=payload, verify=VERIFY_SSL)
             elif method == 'POST':
                 if files:
-                    headers = ['X-Cookie'] = 'token={!s}'.format(self.token)
+                    # This reassigning of headers is to remove the content type assignment in line 71
+                    headers = {'X-Cookie':'token={!s}'.format(self.token)}
                     response = requests.post(self.url + target, headers=headers, files=files, verify=VERIFY_SSL)
                 else:
                     response = requests.post(self.url + target, headers=headers, data=payload, verify=VERIFY_SSL)
@@ -122,8 +123,8 @@ class NessusController(object):
         else:
             return None
 
-    def import_policy(self, upload_response):
-        response = self.__make_request(POLICY_IMPORT, 'POST', payload={'file':upload_response['fileuploaded']})
+    def import_policy(self, filename):
+        response = self.__make_request(POLICY_IMPORT, 'POST', payload={'file':filename})
         if response.status_code == OK_STATUS:
             return response.json()
         else:
@@ -164,7 +165,7 @@ def main():
         upload_response = controller.upload_file(files)
         assert upload_response, 'Response empty, upload failed'
         LOGGER.info('Policy Uploaded to Nessus Server')
-        import_response = controller.import_policy(upload_response)
+        import_response = controller.import_policy(upload_response['fileuploaded'])
         assert import_response, 'Response empty, policy upload failed'
         LOGGER.info('Base Policy Imported to Nessus Server Policies')
     else:
