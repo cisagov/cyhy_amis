@@ -80,15 +80,6 @@ class NessusController(object):
             if self.token:
                 headers['X-Cookie'] = 'token={!s}'.format(self.token)
 
-            # if target == FILE_UPLOAD:
-            #     headers = {}
-            #     headers['X-Cookie'] = 'token={!s}'.format(self.token)
-            #     files = {'Filedata': (BASE_POLICY_FILE_NAME, open(BASE_POLICY_FILE_NAME, 'rb'), 'text/xml')}
-            #     response = requests.post(self.url + target, headers=headers, files=files, verify=VERIFY_SSL)
-            #     LOGGER.info('Policy Uploaded to Nessus Server')
-            #     resp_dict = json.loads(response.text)
-            #     response = requests.post(self.url + POLICY_IMPORT, headers=headers, data={'file':resp_dict['fileuploaded']}, verify=VERIFY_SSL)
-            #     LOGGER.info('Base Policy Imported to Nessus Server Policies')
             if method == 'GET':
                 response = requests.get(self.url + target, headers=headers, params=payload, verify=VERIFY_SSL)
             elif method == 'POST':
