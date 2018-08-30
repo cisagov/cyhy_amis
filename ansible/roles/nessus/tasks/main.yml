@@ -57,13 +57,6 @@
       BLANK: ""
   when: nessus.username not in users.stdout
 
-- name: Delete local copy of Nessus credentials
-  local_action:
-    module: file
-    path: /tmp/nessus_scanner_user.yml
-    state: absent
-  become: no
-
 - name: Update plugins
   command: /opt/nessus/sbin/nessuscli update --plugins-only
   async: 300
@@ -80,3 +73,69 @@
   service:
     name: nessusd
     state: started
+
+# Copy the nessus_base.py to tmp
+- name: Copy the nessus_base python file for importing the base nessus policy
+  copy:
+    src: nessus_base.py
+    dest: /tmp/nessus_base.py
+    mode: 0744
+
+- name: Configure nessus base policy to import nessus username
+  lineinfile:
+    dest: /tmp/nessus_base.py
+    regexp: "USER = ''"
+    state: present
+    line: "USER = '{{ nessus.username }}'"
+
+- name: Configure nessus base policy to import nessus password
+  lineinfile:
+    dest: /tmp/nessus_base.py
+    regexp: "PASSWORD = ''"
+    state: present
+    line: "PASSWORD = '{{ nessus.password }}'"
+
+- name: Grab Nessus base scan policy
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: cyhy-base-nessus-policy.xml
+    dest: /tmp/cyhy-base-nessus-policy.xml
+    mode: get
+  become: no
+
+- name: Copy base nessus scan to instance tmp
+  copy:
+    src: /tmp/cyhy-base-nessus-policy.xml
+    dest: /tmp/cyhy-base-nessus-policy.xml
+
+
+- name: Run nessus base policy import script
+  command: python /tmp/nessus_base.py
+
+#
+# Clean up
+#
+- name: Delete  /tmp/cyhy-base-nessus-policy.xml
+  file:
+    path: /tmp/cyhy-base-nessus-policy.xml
+    state: absent
+
+- name: Delete /tmp/nessus_base.py
+  file:
+    path: /tmp/nessus_base.py
+    state: absent
+
+- name: Delete local copy of Nessus credentials
+  local_action:
+    module: file
+    path: /tmp/nessus_scanner_user.yml
+    state: absent
+  become: no
+
+# - name: Delete local copy of Nessus scan policy
+#   local_action:
+#     module: file
+#     path: /tmp/cyhy-base-nessus-policy.xml
+#     state: absent
+#   become: no
