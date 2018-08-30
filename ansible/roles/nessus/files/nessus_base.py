@@ -161,13 +161,13 @@ def main():
 
     # create new policy
     LOGGER.info('Creating new policy based on base policy')
-    if(not controller.find_policy('cyhy-base')):
+    if not controller.find_policy('cyhy-base'):
         files = {'Filedata': (BASE_POLICY_FILE_NAME, open(BASE_POLICY_FILE_NAME, 'rb'), 'text/xml')}
-        upload_reponse = controller.upload_file(files)
-        assert upload_reponse, 'Response empty, upload failed'
+        upload_response = controller.upload_file(files)
+        assert upload_response, 'Response empty, upload failed'
         LOGGER.info('Policy Uploaded to Nessus Server')
-        import_reponse = controller.import_policy(upload_reponse)
-        assert import_reponse, 'Response empty, policy upload failed'
+        import_response = controller.import_policy(upload_response)
+        assert import_response, 'Response empty, policy upload failed'
         LOGGER.info('Base Policy Imported to Nessus Server Policies')
     else:
         LOGGER.info('Policy already exists')
