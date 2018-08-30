@@ -59,7 +59,7 @@ class NessusController(object):
         self.url = nessus_url
         self.token = None
 
-    def __make_request(self, target, method, payload=None):
+    def __make_request(self, target, method, payload=None, files=None):
         num_retries = 0
         if payload:
             payload = json.dumps(payload)
@@ -80,19 +80,24 @@ class NessusController(object):
             if self.token:
                 headers['X-Cookie'] = 'token={!s}'.format(self.token)
 
-            if target == FILE_UPLOAD:
-                headers = {}
-                headers['X-Cookie'] = 'token={!s}'.format(self.token)
-                files = {'Filedata': (BASE_POLICY_FILE_NAME, open(BASE_POLICY_FILE_NAME, 'rb'), 'text/xml')}
-                response = requests.post(self.url + target, headers=headers, files=files, verify=VERIFY_SSL)
-                LOGGER.info('Policy Uploaded to Nessus Server')
-                resp_dict = json.loads(response.text)
-                response = requests.post(self.url + POLICY_IMPORT, headers=headers, data={'file':resp_dict['fileuploaded']}, verify=VERIFY_SSL)
-                LOGGER.info('Base Policy Imported to Nessus Server Policies')
-            elif method == 'GET':
+            # if target == FILE_UPLOAD:
+            #     headers = {}
+            #     headers['X-Cookie'] = 'token={!s}'.format(self.token)
+            #     files = {'Filedata': (BASE_POLICY_FILE_NAME, open(BASE_POLICY_FILE_NAME, 'rb'), 'text/xml')}
+            #     response = requests.post(self.url + target, headers=headers, files=files, verify=VERIFY_SSL)
+            #     LOGGER.info('Policy Uploaded to Nessus Server')
+            #     resp_dict = json.loads(response.text)
+            #     response = requests.post(self.url + POLICY_IMPORT, headers=headers, data={'file':resp_dict['fileuploaded']}, verify=VERIFY_SSL)
+            #     LOGGER.info('Base Policy Imported to Nessus Server Policies')
+            if method == 'GET':
                 response = requests.get(self.url + target, headers=headers, params=payload, verify=VERIFY_SSL)
             elif method == 'POST':
-                response = requests.post(self.url + target, headers=headers, data=payload, verify=VERIFY_SSL)
+                if files:
+                    headers = {}
+                    headers['X-Cookie'] = 'token={!s}'.format(self.token)
+                    response = requests.post(self.url + target, headers=headers, files=files, verify=VERIFY_SSL)
+                else:
+                    response = requests.post(self.url + target, headers=headers, data=payload, verify=VERIFY_SSL)
             elif method == 'PUT':
                 response = requests.put(self.url + target, headers=headers, data=payload, verify=VERIFY_SSL)
             elif method == 'DELETE':
@@ -128,12 +133,19 @@ class NessusController(object):
         else:
             return None
 
-    def import_base_policy(self):
-        response = self.__make_request(FILE_UPLOAD, 'POST')
+    def import_policy(self, upload_response):
+        response = self.__make_request(POLICY_IMPORT, 'POST', payload={'file':upload_response['fileuploaded']})
         if response.status_code == OK_STATUS:
             return response.json()
         else:
             raise Warning('Policy import failed; response={!r}'.format(response.text))
+
+    def upload_file(self, files):
+        response = self.__make_request(FILE_UPLOAD, 'POST', files=files)
+        if response.status_code == OK_STATUS:
+            return response.json()
+        else:
+            raise Warning('File upload failed; response={!r}'.format(response.text))
 
     def policy_list(self):
         response = self.__make_request(POLICY_BASE, 'GET')
@@ -159,7 +171,13 @@ def main():
     # create new policy
     LOGGER.info('Creating new policy based on base policy')
     if(not controller.find_policy('cyhy-base')):
-        controller.import_base_policy()
+        files = {'Filedata': (BASE_POLICY_FILE_NAME, open(BASE_POLICY_FILE_NAME, 'rb'), 'text/xml')}
+        upload_reponse = controller.upload_file(files)
+        assert upload_reponse, 'Response empty, upload failed'
+        LOGGER.info('Policy Uploaded to Nessus Server')
+        import_reponse = controller.import_policy(upload_reponse)
+        assert import_reponse, 'Response empty, policy upload failed'
+        LOGGER.info('Base Policy Imported to Nessus Server Policies')
     else:
         LOGGER.info('Policy already exists')
 
