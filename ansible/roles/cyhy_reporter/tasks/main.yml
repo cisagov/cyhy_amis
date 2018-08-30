@@ -41,7 +41,7 @@
       report-key =
 
       [cyhy]
-      database-uri = mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
 
       [scan]
