@@ -20,7 +20,7 @@ BASE_POLICY_FILE_NAME = '/tmp/cyhy-base-nessus-policy.xml'
 DEBUG = False
 LOGIN = '/session'
 POLICY_BASE = '/policies'
-POLICY_UPLOAD = '/file/upload'
+FILE_UPLOAD = '/file/upload'
 POLICY_IMPORT = '/policies/import'
 OK_STATUS = 200
 NOT_FOUND_STATUS = 404
@@ -80,7 +80,7 @@ class NessusController(object):
             if self.token:
                 headers['X-Cookie'] = 'token={!s}'.format(self.token)
 
-            if target == POLICY_UPLOAD:
+            if target == FILE_UPLOAD:
                 headers = {}
                 headers['X-Cookie'] = 'token={!s}'.format(self.token)
                 files = {'Filedata': (BASE_POLICY_FILE_NAME, open(BASE_POLICY_FILE_NAME, 'rb'), 'text/xml')}
@@ -129,7 +129,7 @@ class NessusController(object):
             return None
 
     def import_base_policy(self):
-        response = self.__make_request(POLICY_UPLOAD, 'POST')
+        response = self.__make_request(FILE_UPLOAD, 'POST')
         if response.status_code == OK_STATUS:
             return response.json()
         else:
