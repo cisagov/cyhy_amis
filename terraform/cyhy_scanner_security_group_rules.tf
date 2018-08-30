@@ -22,6 +22,18 @@ resource "aws_security_group_rule" "scanner_ingress_from_private_sg_via_ssh" {
 }
 
 # Allow ingress from anywhere via all other tcp ports
+#
+# IMPORTANT NOTE: The reason we allow this ingress is to avoid connection
+# tracking in the stateful AWS security group for these ports.  Otherwise, our
+# scan (nmap and Nessus) volume quickly causes the connection tracking table to
+# fill up and our scans do not give valid results.
+# "If a security group rule permits TCP or UDP flows for all traffic
+# (0.0.0.0/0) and there is a corresponding rule in the other direction that
+# permits all response traffic (0.0.0.0/0) for all ports (0-65535), then that
+# flow of traffic is not tracked."
+# "ICMP traffic is always tracked, regardless of rules."
+# Above quotes from: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-network-security.html#security-group-connection-tracking
+# See also:  https://aerissecure.com/blog/vulnerability-scanning-from-aws/
 resource "aws_security_group_rule" "scanner_ingress_anywhere_tcp" {
   count = "${length(local.cyhy_untrusted_ingress_port_ranges)}"
 
@@ -36,6 +48,7 @@ resource "aws_security_group_rule" "scanner_ingress_anywhere_tcp" {
 }
 
 # Allow ingress from anywhere via all udp ports
+# See IMPORTANT NOTE above for explanation
 resource "aws_security_group_rule" "scanner_ingress_anywhere_udp" {
   security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
   type = "ingress"
@@ -48,6 +61,7 @@ resource "aws_security_group_rule" "scanner_ingress_anywhere_udp" {
 }
 
 # Allow ingress from anywhere via all icmp ports
+# See IMPORTANT NOTE above for explanation
 resource "aws_security_group_rule" "scanner_ingress_anywhere_icmp" {
   security_group_id = "${aws_security_group.cyhy_scanner_sg.id}"
   type = "ingress"
