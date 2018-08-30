@@ -63,20 +63,27 @@
 #
 # Install cyhy-reports
 #
-- name: Install libgeos-dev, since basemap needs it and cyhy-reports needs basemap
+
+# These dependencies are from here:
+# https://github.com/jsf9k/cal-overlay/blob/develop/net-analyzer/cyhy-reports/cyhy-reports-1.0.12.ebuild#L31-L49
+#
+# I'd prefer to install the python dependencies via pip, but then I
+# get errors about modules being built with a different version of
+# numpy than what is on the host.  Doing it this way seems to work
+# much better.
+- name: Install cyhy-reports dependencies
   apt:
     name:
-      - libgeos-dev
-    state: latest
-
-- name: Install basemap, since cyhy-reports needs it
-  pip:
-    name:
-      - https://github.com/matplotlib/basemap/archive/master.zip
-
-- name: Install some LaTeX packages that cyhy-reports needs
-  apt:
-    name:
+      - python-mpltoolkits.basemap
+      - python-numpy
+      - python-dateutil
+      - python-netaddr
+      - python-pystache
+      - python-pandas
+      - python-progressbar
+      - python-docopt
+      - python-unicodecsv
+      - python-pypdf2
       - texlive
       - texlive-fonts-extra
       - texlive-latex-extra
@@ -102,6 +109,22 @@
     dest: /var/cyhy/reports/create_snapshots_reports_scorecard.py
     mode: 755
     remote_src: yes
+
+# rsync is required by synchronize
+- name: Install rsync
+  apt:
+    name:
+      - rsync
+    state: latest
+
+- name: Copy the cyhy-reports fonts
+  synchronize:
+    src: /tmp/cyhy-reports/cyhy_report/assets/Fonts/
+    dest: /usr/local/share/fonts
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Install the cyhy-reports fonts
+  command: fc-cache --system-only
 
 #
 # Cleanup
