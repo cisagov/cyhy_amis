@@ -107,7 +107,7 @@
   copy:
     src: /tmp/cyhy-reports/extras/create_snapshots_reports_scorecard.py
     dest: /var/cyhy/reports/create_snapshots_reports_scorecard.py
-    mode: 755
+    mode: 0755
     remote_src: yes
 
 # rsync is required by synchronize
