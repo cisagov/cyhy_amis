@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 
-import sys
+import copy
 import datetime
-import copy
 import glob
-import time
-import logging
-import ssl
 import json
-import requests
-import copy
+import logging
 import os
+import requests
+import ssl
+import sys
+import time
 
 USER = ''
 PASSWORD = ''
