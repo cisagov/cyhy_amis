@@ -62,7 +62,9 @@ module "cyhy_reporter_ansible_provisioner" {
   envs = [
     "host=${aws_instance.cyhy_reporter.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_reporter"
+    "host_groups=cyhy_reporter",
+    # We want to force ansible to rerun when the instance id recreated
+    "instance_arn=${aws_instance.cyhy_reporter.arn}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
