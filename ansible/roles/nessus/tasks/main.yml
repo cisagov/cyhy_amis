@@ -133,9 +133,9 @@
     state: absent
   become: no
 
-# - name: Delete local copy of Nessus scan policy
-#   local_action:
-#     module: file
-#     path: /tmp/cyhy-base-nessus-policy.xml
-#     state: absent
-#   become: no
+- name: Delete local copy of Nessus scan policy
+  local_action:
+    module: file
+    path: /tmp/cyhy-base-nessus-policy.xml
+    state: absent
+  become: no
