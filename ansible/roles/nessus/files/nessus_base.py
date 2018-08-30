@@ -83,7 +83,7 @@ class NessusController(object):
                 response = requests.get(self.url + target, headers=headers, params=payload, verify=VERIFY_SSL)
             elif method == 'POST':
                 if files:
-                    # This reassigning of headers is to remove the content type assignment in line 71
+                    # This reassigning of headers is to remove the content type assignment
                     headers = {'X-Cookie':'token={!s}'.format(self.token)}
                     response = requests.post(self.url + target, headers=headers, files=files, verify=VERIFY_SSL)
                 else:
