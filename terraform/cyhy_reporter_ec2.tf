@@ -23,8 +23,8 @@ data "aws_ami" "reporter" {
 
 resource "aws_instance" "cyhy_reporter" {
   ami = "${data.aws_ami.reporter.id}"
-  instance_type = "t2.micro"
-  # ebs_optimized = true
+  instance_type = "${local.production_workspace ? "c5.xlarge" : "t2.micro"}"
+  ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
@@ -63,7 +63,7 @@ module "cyhy_reporter_ansible_provisioner" {
     "host=${aws_instance.cyhy_reporter.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_reporter",
-    # We want to force ansible to rerun when the instance id recreated
+    # We want to force ansible to rerun when the instance is recreated
     "instance_arn=${aws_instance.cyhy_reporter.arn}"
   ]
   playbook = "../ansible/playbook.yml"
