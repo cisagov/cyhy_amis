@@ -23,6 +23,11 @@ variable "mongo_disks" {
   }
 }
 
+variable "cyhy_runner_disk" {
+  description = "The cyhy-runner data volume"
+  default = "/dev/xvdb"
+}
+
 # This should be overridden by a production.tfvars file,
 # most-likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {
