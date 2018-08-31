@@ -205,4 +205,4 @@
     hour: 23
     minute: 15
     user: cyhy
-    job: cyhy-nvdsync --use-network
+    job: cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger -t cyhy-nvdsync
