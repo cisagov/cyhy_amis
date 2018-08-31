@@ -77,3 +77,11 @@
   roles:
     - pip
     - cyhy_commander
+
+- hosts: cyhy_reporter
+  name: Install and configure cyhy-reports
+  become: yes
+  become_method: sudo
+  roles:
+    - pip
+    - cyhy_reporter

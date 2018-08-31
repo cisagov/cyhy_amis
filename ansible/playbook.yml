@@ -63,3 +63,11 @@
   become_method: sudo
   roles:
     - nessus
+
+- hosts: cyhy_reporter
+  name: Configure cyhy-reports hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - chown_cyhy_dirs
+    - cyhy_reporter

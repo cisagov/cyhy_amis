@@ -9,7 +9,12 @@ packer build packer/mongo.json
 packer build packer/bastion.json
 packer build packer/docker.json
 packer build packer/commander.json
+AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/reporter.json
 ```
+
+Note that the `cyhy-reports` AMI is large and needs extra time to be
+copied, as discussed
+[here](https://github.com/hashicorp/packer/issues/6536#issuecomment-407925535).
 
 Build Terraform-based infrastructure with:
 ```

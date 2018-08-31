@@ -48,6 +48,14 @@ resource "aws_route53_record" "commander_A" {
   records = [ "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, local.the_commander)}" ]
 }
 
+resource "aws_route53_record" "reporter_A" {
+  zone_id = "${aws_route53_zone.private_zone.zone_id}"
+  name    = "reporter.${aws_route53_zone.private_zone.name}"
+  type    = "A"
+  ttl     = 300
+  records = [ "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, local.the_reporter)}" ]
+}
+
 resource "aws_route53_record" "database_A" {
   count = "${local.count_database}"
   zone_id = "${aws_route53_zone.private_zone.zone_id}"
@@ -165,6 +173,14 @@ resource "aws_route53_record" "rev_commander_PTR" {
   type    = "PTR"
   ttl     = 300
   records = [ "commander.${local.private_domain}." ]
+}
+
+resource "aws_route53_record" "rev_reporter_PTR" {
+  zone_id = "${aws_route53_zone.private_zone_reverse.zone_id}"
+  name    = "${local.the_reporter}.${aws_route53_zone.private_zone_reverse.name}"
+  type    = "PTR"
+  ttl     = 300
+  records = [ "reporter.${local.private_domain}." ]
 }
 
 resource "aws_route53_record" "rev_database_PTR" {
