@@ -23,6 +23,11 @@ variable "mongo_disks" {
   }
 }
 
+variable "cyhy_runner_disk" {
+  description = "The cyhy-runner data volume"
+  default = "/dev/xvdb"
+}
+
 # This should be overridden by a production.tfvars file,
 # most-likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {
@@ -44,4 +49,9 @@ variable "remote_ssh_user" {
 variable "nessus_activation_codes" {
   type = "list"
   description = "A list of strings containing Nessus activation codes"
+}
+
+variable "create_flow_logs" {
+  description = "Whether or not to create flow logs.  Zero means no and one means yes"
+  default = 0
 }

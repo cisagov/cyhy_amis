@@ -201,7 +201,7 @@
 
 
 #
-# Add users to the admin group
+# Add users to the cyhy group
 #
 - name: Load users from YML file
   local_action:

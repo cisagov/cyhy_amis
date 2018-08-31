@@ -1,0 +1,20 @@
+#cloud-config
+
+mounts:
+  # Add new mount to /etc/fstab, but don't automatically mount them
+  - [ ${cyhy_runner_disk}, /var/cyhy/runner, ext4, 'defaults,noauto', '0', '2' ]
+
+bootcmd:
+  # Wait for EBS disk to be attached
+  - 'while [ `lsblk | grep -c " disk"` -lt 2 ]; do echo Waiting for disk to attach...; sleep 5; done'
+  # Format filesystem on the EBS volume (if one was not already there)
+  # fs_setup does not honor the overwrite argument.  Always in full-cowboy mode. (v0.7.9)
+  - 'blkid -c /dev/null ${cyhy_runner_disk} || mkfs.ext4 -v ${cyhy_runner_disk} -L cyhy_runner'
+  # Mount volume and set ownership
+  # Due to funky timing of mounts vs. bootcmd, specify the full mount commands
+  - 'mount --verbose --types ext4 ${cyhy_runner_disk} /var/cyhy/runner'
+  # Make cyhy owner of runner directory
+  - 'chown --verbose --recursive cyhy:cyhy /var/cyhy/runner'
+
+output:
+  - all: '| tee -a /var/log/cloud-init-output.log'

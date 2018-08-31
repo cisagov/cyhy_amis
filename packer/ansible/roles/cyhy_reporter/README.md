@@ -1,7 +1,7 @@
-cyhy_runner
-===========
+cyhy_reporter
+=============
 
-A role for installing cyhy-runner.
+A role for installing cyhy-reports.
 
 Requirements
 ------------
@@ -23,11 +23,11 @@ Example Playbook
 
 Here's how to use it in a playbook:
 
-    - hosts: cyhy_runner
+    - hosts: reporters
       become: yes
       become_method: sudo
       roles:
-         - cyhy_runner
+         - cyhy_reporter
 
 License
 -------

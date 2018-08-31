@@ -46,11 +46,10 @@
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
 # do some chicanery here instead of just using pip
-# - name: Install python dependencies for cyhy-core
+# - name: Install cyhy-core
 #   pip:
-#     chdir: /var/cyhy/cyhy-core
-#     requirements: requirements.txt
-- name: Install python dependencies for cyhy-core
+#     name: file:///tmp/cyhy-core
+- name: Install cyhy-core
   command: pip install /tmp/cyhy-core
 
 #
@@ -79,11 +78,10 @@
 
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
 # do some chicanery here instead of just using pip
-# - name: Install python dependencies for cyhy-commander
+# - name: Install cyhy-commander
 #   pip:
-#     chdir: /var/cyhy/cyhy-commander
-#     requirements: requirements.txt
-- name: Install python dependencies for cyhy-commander
+#     name: file:///tmp/cyhy-commander
+- name: Install cyhy-commander
   command: pip install /tmp/cyhy-commander
 
 # The commander directory is created in this directory
