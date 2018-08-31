@@ -87,6 +87,7 @@
       - texlive
       - texlive-fonts-extra
       - texlive-latex-extra
+      - texlive-science
       - texlive-xetex
     state: latest
 
