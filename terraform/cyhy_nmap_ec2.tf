@@ -22,7 +22,7 @@ data "aws_ami" "nmap" {
 
 resource "aws_instance" "cyhy_nmap" {
   ami = "${data.aws_ami.nmap.id}"
-  instance_type = "${local.production_workspace ? "t2.medium" : "t2.micro"}"
+  instance_type = "${local.production_workspace ? "t2.micro" : "t2.micro"}"
   count = "${local.nmap_instance_count}"
 
   # ebs_optimized = true
@@ -66,7 +66,7 @@ resource "aws_ebs_volume" "cyhy_runner_data" {
   size = "${local.production_workspace ? 2 : 1}"
   encrypted = true
 
-  tags = "${merge(var.tags, map("Name", "cyhy-runner data"))}"
+  tags = "${merge(var.tags, map("Name", "cyhy-runner (CyHy Nmap)"))}"
 
   lifecycle {
     prevent_destroy = true
@@ -76,8 +76,8 @@ resource "aws_ebs_volume" "cyhy_runner_data" {
 resource "aws_volume_attachment" "cyhy_runner_data_attachment" {
   count = "${local.nmap_instance_count}"
   device_name = "${var.cyhy_runner_disk}"
-  volume_id = "${aws_ebs_volume.cyhy_runner_data.id}"
-  instance_id = "${aws_instance.cyhy_nmap.id}"
+  volume_id = "${aws_ebs_volume.cyhy_runner_data.*.id[count.index]}"
+  instance_id = "${aws_instance.cyhy_nmap.*.id[count.index]}"
 
   # Terraform attempts to destroy the volume attachment before it attempts to
   # destroy the EC2 instance it is attached to.  EC2 does not like that and it
@@ -98,6 +98,7 @@ resource "aws_volume_attachment" "cyhy_runner_data_attachment" {
   }
 
   skip_destroy = true
+  depends_on = ["aws_ebs_volume.cyhy_runner_data"]
 }
 
 # TODO: until we figure out how to loop a module, a copy needs to be made for
@@ -113,7 +114,7 @@ module "cyhy_nmap_ansible_provisioner_0" {
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
-    "host=${aws_instance.cyhy_nmap.0.private_ip}",
+    "host=${aws_instance.cyhy_nmap.*.private_ip[0]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_runner"
   ]
@@ -121,19 +122,53 @@ module "cyhy_nmap_ansible_provisioner_0" {
   dry_run = false
 }
 
-# module "cyhy_nmap_ansible_provisioner_1" {
-#   source = "github.com/cloudposse/tf_ansible"
-#   #count = "${local.nmap_instance_count}"
-#
-#   arguments = [
-#     "--user=${var.remote_ssh_user}",
-#     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
-#   ]
-#   envs = [
-#     "host=${aws_instance.cyhy_nmap.1.private_ip}",
-#     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-#     "host_groups=cyhy_runner"
-#   ]
-#   playbook = "../ansible/playbook.yml"
-#   dry_run = false
-# }
+module "cyhy_nmap_ansible_provisioner_1" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[1]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_2" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[2]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_3" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[3]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
