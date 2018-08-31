@@ -23,7 +23,7 @@ data "aws_ami" "reporter" {
 
 resource "aws_instance" "cyhy_reporter" {
   ami = "${data.aws_ami.reporter.id}"
-  instance_type = "${local.production_workspace ? "c5.xlarge" : "t2.micro"}"
+  instance_type = "${local.production_workspace ? "c5.2xlarge" : "t2.micro"}"
   ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
@@ -34,7 +34,7 @@ resource "aws_instance" "cyhy_reporter" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_workspace ? 200 : 8}"
+    volume_size = "${local.production_workspace ? 100 : 8}"
     delete_on_termination = true
   }
 
