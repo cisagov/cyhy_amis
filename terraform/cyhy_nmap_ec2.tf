@@ -45,8 +45,8 @@ resource "aws_instance" "cyhy_nmap" {
 
   user_data = "${data.template_cloudinit_config.ssh_and_cyhy_runner_cloud_init_tasks.rendered}"
 
-  tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
-  volume_tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
+  tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
+  volume_tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
 }
 
 # Note that the EBS volume contains production data. Therefore we need
@@ -66,7 +66,7 @@ resource "aws_ebs_volume" "cyhy_runner_data" {
   size = "${local.production_workspace ? 2 : 1}"
   encrypted = true
 
-  tags = "${merge(var.tags, map("Name", "cyhy-runner (CyHy Nmap)"))}"
+  tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
 
   lifecycle {
     prevent_destroy = true
@@ -166,6 +166,108 @@ module "cyhy_nmap_ansible_provisioner_3" {
   ]
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[3]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_4" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[4]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_5" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[5]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_6" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[6]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_7" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[7]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_8" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[8]}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}
+
+module "cyhy_nmap_ansible_provisioner_9" {
+  source = "github.com/cloudposse/tf_ansible"
+  #count = "${local.nmap_instance_count}"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_nmap.*.private_ip[9]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_runner"
   ]
