@@ -13,7 +13,6 @@
   subversion:
     repo: https://svn.nmap.org/nmap
     dest: /tmp/nmap
-    switch: no
 
 - name: Configure nmap
   command: ./configure
