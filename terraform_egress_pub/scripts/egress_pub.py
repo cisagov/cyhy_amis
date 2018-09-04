@@ -61,11 +61,11 @@ FILE_CONFIGS = \
     ]
 
 
-def get_ec2_regions():
+def get_ec2_regions(filter=None):
     '''get a filtered list of all the regions with ec2 support'''
 
     ec2 = boto3.client('ec2')
-    response = ec2.describe_regions(Filters=REGION_FILTERS)
+    response = ec2.describe_regions(Filters=filter)
     result = [x['RegionName'] for x in response['Regions']]
     return result
 
@@ -114,17 +114,17 @@ def update_bucket(bucket_name, filename, bucket_contents):
 
 def main():
     # get a list of all the regions
-    all_regions = get_ec2_regions()
+    regions = get_ec2_regions(REGION_FILTERS)
 
     # start up message
-    print('gathering public ips from %d regions' % len(all_regions))
+    print('gathering public ips from %d regions' % len(regions))
 
     # initialize a set to accumulate ips for each file
     for config in FILE_CONFIGS:
         config['ip_set'] = set(config['static_ips'])
 
     # loop through the region list and fetch the public ec2 ips
-    for region in all_regions:
+    for region in regions:
         print('querying region: %s' % region)
         # get the public ips of instances that are tagged to be published
         for application_tag, public_ip in get_ec2_ips(region):
