@@ -91,7 +91,7 @@ def get_ec2_ips(region):
 
 def update_bucket(bucket_name, filename, bucket_contents):
     '''update the s3 bucket with the new contents'''
-    return #DEBUG
+
     s3 = boto3.resource('s3')
 
     # get the bucket
