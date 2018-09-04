@@ -45,7 +45,7 @@ resource "aws_instance" "cyhy_nmap" {
 
   user_data = "${data.template_cloudinit_config.ssh_and_cyhy_runner_cloud_init_tasks.rendered}"
 
-  tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
+  tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1), "Publish Egress", "True"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
 }
 
