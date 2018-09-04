@@ -23,7 +23,6 @@ PUBLISH_EGRESS_TAG = 'Publish Egress'
 # the instance tag that will contain the application associated with an instance
 APPLICATION_TAG = 'Application'
 
-
 # the header template for each file
 HEADER = '''###
 # https://{domain}/{filename}
@@ -110,7 +109,6 @@ def update_bucket(bucket_name, filename, bucket_contents):
     # by default new objects cannot be read by public
     # allow public reads of this object
     b_object.Acl().put(ACL='public-read')
-
 
 def main():
     # get a list of all the regions
