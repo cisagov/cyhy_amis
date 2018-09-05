@@ -4,7 +4,7 @@ locals {
   production_workspace = "${replace(terraform.workspace, "production", "") != terraform.workspace}"
 
   # TODO no dynamic workspace until we can loop modules (see below)
-  nmap_instance_count = "1"   #"${local.production_workspace ? 32 : 1}"
+  nmap_instance_count = "24"  #"${local.production_workspace ? 32 : 1}"
   nessus_instance_count = "1" #"${local.production_workspace ? 4 : 1}"
   mongo_instance_count = "1"  # TODO: stuck at one until we can scale mongo_ec2
 
@@ -13,6 +13,14 @@ locals {
   cyhy_trusted_ingress_ports = [
     22,
     8834
+  ]
+
+  # These are the port ranges via which anyone is allowed to
+  # access the public-facing CyHy hosts
+  cyhy_untrusted_ingress_port_ranges = [
+    {start = 1, end = 21},
+    {start = 23, end = 8833},
+    {start = 8835, end = 65535}
   ]
 
   # These are the ports on which the BOD Docker security group is
