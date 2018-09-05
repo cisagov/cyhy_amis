@@ -44,7 +44,7 @@ resource "aws_instance" "nessus" {
 
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
-  tags = "${merge(var.tags, map("Name", format("Manual CyHy Nessus %02d", count.index+1)))}"
+  tags = "${merge(var.tags, map("Name", format("Manual CyHy Nessus %02d", count.index+1), "Publish Egress", "True"))}"
 
   lifecycle {
     prevent_destroy = true
