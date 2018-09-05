@@ -43,7 +43,7 @@ resource "aws_instance" "cyhy_nessus" {
 
   user_data = "${data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered}"
 
-  tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
+  tags = "${merge(var.tags, map("Name", format("CyHy Nessus - vulnscan%d", count.index+1), "Publish Egress", "True"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Nessus"))}"
 
   # If the instance is destroyed we will have to reset the license to nessus
