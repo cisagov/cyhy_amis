@@ -1,0 +1,17 @@
+---
+# tasks file for swap
+
+- name: Allocate swapfile
+  command: fallocate --length {{ swapfile_size }} {{ swapfile_location }} creates={{ swapfile_location }}
+
+- name: Set swapfile permissions
+  file: path={{ swapfile_location }} mode=600
+
+- name: Create swapfile
+  command: mkswap {{ swapfile_location }}
+
+- name: Enable swapfile
+  command: swapon {{ swapfile_location }}
+
+- name: Add swapfile to /etc/fstab
+  lineinfile: dest=/etc/fstab line="{{ swapfile_location }}   none    swap    sw    0   0" state=present

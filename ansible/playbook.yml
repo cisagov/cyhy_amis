@@ -49,6 +49,14 @@
   roles:
     - chown_cyhy_dirs
     - cyhy_commander
+    - { role: swap, swapfile_size: 2GiB}
+
+- hosts: nmap
+  name: Configure nmap scanning hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - { role: swap, swapfile_size: 2GiB}
 
 - hosts: cyhy_runner
   name: Configure cyhy-runner hosts

@@ -120,7 +120,7 @@ module "cyhy_nmap_ansible_provisioner_0" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[0]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -137,7 +137,7 @@ module "cyhy_nmap_ansible_provisioner_1" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[1]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -154,7 +154,7 @@ module "cyhy_nmap_ansible_provisioner_2" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[2]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -171,7 +171,7 @@ module "cyhy_nmap_ansible_provisioner_3" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[3]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -188,7 +188,7 @@ module "cyhy_nmap_ansible_provisioner_4" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[4]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -205,7 +205,7 @@ module "cyhy_nmap_ansible_provisioner_5" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[5]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -222,7 +222,7 @@ module "cyhy_nmap_ansible_provisioner_6" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[6]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -239,7 +239,7 @@ module "cyhy_nmap_ansible_provisioner_7" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[7]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -256,7 +256,7 @@ module "cyhy_nmap_ansible_provisioner_8" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[8]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -273,7 +273,7 @@ module "cyhy_nmap_ansible_provisioner_9" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[9]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -290,7 +290,7 @@ module "cyhy_nmap_ansible_provisioner_10" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[10]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -307,7 +307,7 @@ module "cyhy_nmap_ansible_provisioner_11" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[11]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -324,7 +324,7 @@ module "cyhy_nmap_ansible_provisioner_12" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[12]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -341,7 +341,7 @@ module "cyhy_nmap_ansible_provisioner_13" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[13]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -358,7 +358,7 @@ module "cyhy_nmap_ansible_provisioner_14" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[14]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -375,7 +375,7 @@ module "cyhy_nmap_ansible_provisioner_15" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[15]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -392,7 +392,7 @@ module "cyhy_nmap_ansible_provisioner_16" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[16]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -409,7 +409,7 @@ module "cyhy_nmap_ansible_provisioner_17" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[17]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -426,7 +426,7 @@ module "cyhy_nmap_ansible_provisioner_18" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[18]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -443,7 +443,7 @@ module "cyhy_nmap_ansible_provisioner_19" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[19]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -460,7 +460,7 @@ module "cyhy_nmap_ansible_provisioner_20" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[20]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -477,7 +477,7 @@ module "cyhy_nmap_ansible_provisioner_21" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[21]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -494,7 +494,7 @@ module "cyhy_nmap_ansible_provisioner_22" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[22]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
@@ -511,7 +511,7 @@ module "cyhy_nmap_ansible_provisioner_23" {
   envs = [
     "host=${aws_instance.cyhy_nmap.*.private_ip[23]}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner"
+    "host_groups=cyhy_runner,nmap"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
