@@ -29,12 +29,16 @@
 
 # MongoDB doesn't like transparent huge pages:
 # https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
+# Disable NUMA since we are deploying Mongo on a NUMA instance in Production
+# https://docs.mongodb.com/v3.2/administration/production-notes/#mongodb-and-numa-hardware
 - hosts: mongo
   name: Install and configure MongoDB and xfsprogs
   become: yes
   become_method: sudo
   roles:
     - xfs
+    - numactl
+    - disable_numa
     - mongo
     - {
         role: disable_thp,
