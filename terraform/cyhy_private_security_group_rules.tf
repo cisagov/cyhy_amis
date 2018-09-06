@@ -50,17 +50,7 @@ resource "aws_security_group_rule" "private_mongodb_ingress_from_bastion" {
   to_port = 27017
 }
 
-# Allow MongoDB ingress from commander and reporter
-resource "aws_security_group_rule" "private_mongodb_ingress_from_commander" {
-  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
-  type = "ingress"
-  protocol = "tcp"
-  cidr_blocks = [
-    "${aws_instance.cyhy_commander.private_ip}/32"
-  ]
-  from_port = 27017
-  to_port = 27017
-}
+# Allow MongoDB ingress from the reporter
 resource "aws_security_group_rule" "private_mongodb_ingress_from_reporter" {
   security_group_id = "${aws_security_group.cyhy_private_sg.id}"
   type = "ingress"
