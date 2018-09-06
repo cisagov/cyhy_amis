@@ -46,7 +46,7 @@ resource "aws_instance" "cyhy_mongo" {
 
   user_data = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
 
-  tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Mongo, Commander"))}"
   # We add some explicit tags to the Mongo volumes below, so we don't
   # want to use volume_tags here
   # volume_tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
@@ -63,7 +63,7 @@ module "cyhy_mongo_ansible_provisioner" {
   envs = [
     "host=${aws_instance.cyhy_mongo.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=mongo"
+    "host_groups=mongo,cyhy_commander"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
