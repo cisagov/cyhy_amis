@@ -22,6 +22,12 @@
   register: checkifmongousers
   changed_when: false
 
+# HACK ALERT - Part 1: Install latest pymongo in order to use ansible mongodb_user
+- name: Install latest pymongo
+  pip:
+    name: pymongo
+    state: latest
+
 - name: Create admin user in admin db (first user, no authentication)
   mongodb_user:
     database: admin
@@ -56,6 +62,12 @@
   loop: "{{ mongo_users.other_users }}"
   loop_control:
     label: "{{ item.user }}"
+
+# HACK ALERT - Part 2: Revert to older pymongo, needed for cyhy-core
+- name: Downgrade to pymongo 2.9.5
+  pip:
+    name: pymongo
+    version: 2.9.5
 
 - name: Delete local copy of mongo user file
   local_action:
