@@ -1,0 +1,8 @@
+---
+# tasks file for disable_numa
+
+- name: Disable NUMA
+  copy:
+    dest: /etc/sysctl.d/99-disable-numa.conf
+    mode: 0644
+    content: vm.zone_reclaim_mode=0
