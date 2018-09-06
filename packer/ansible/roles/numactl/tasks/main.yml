@@ -1,0 +1,8 @@
+---
+# tasks file for numactl
+
+- name: Install numactl
+  apt:
+    name:
+      - numactl
+    state: latest
