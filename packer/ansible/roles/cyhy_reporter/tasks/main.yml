@@ -45,6 +45,57 @@
   command: pip install /tmp/cyhy-core
 
 #
+# Grab the ncats-webd code
+#
+- name: Create the /tmp/ncats-webd directory
+  file:
+    path: /tmp/ncats-webd
+    state: directory
+
+- name: Download and untar the ncats-webd tarball
+  unarchive:
+    src: "https://api.github.com/repos/jsf9k/ncats-webd/tarball/develop?access_token={{ github_oauth_token }}"
+    dest: /tmp/ncats-webd
+    remote_src: yes
+    extra_opts:
+      - "--strip-components=1"
+
+#
+# Install ncats-webd
+#
+
+# These dependencies are from here:
+# https://github.com/jsf9k/cal-overlay/blob/develop/net-analyzer/ncats-webd/ncats-webd-2.0.2.ebuild#L31-L47
+#
+# I'd prefer to install the python dependencies via pip, but then I
+# get errors about modules being built with a different version of
+# numpy than what is on the host.  Doing it this way seems to work
+# much better.
+- name: Install cyhy-webd dependencies
+  apt:
+    name:
+      - python-numpy
+      - python-dateutil
+      - python-netaddr
+      - python-pandas
+      - python-docopt
+      - python-flask
+      - python-flask-sockets
+      - python-apscheduler
+      - python-eventlet
+      - python-schedule
+      - python-gunicorn
+    state: latest
+
+# Thanks to https://github.com/ansible/ansible/issues/37912 I have to
+# do some chicanery here instead of just using pip
+# - name: Install ncats-webd
+#   pip:
+#     name: file:///var/cyhy/ncats-webd
+- name: Install ncats-webd
+  command: pip install /tmp/ncats-webd
+
+#
 # Grab the cyhy-reports code
 #
 - name: Create the /tmp/cyhy-reports directory
