@@ -40,10 +40,6 @@
     extra_opts:
       - "--strip-components=1"
 
-#
-# Now we need to install the cyhy-core dependencies
-#
-
 # Thanks to https://github.com/ansible/ansible/issues/37912 I have to
 # do some chicanery here instead of just using pip
 # - name: Install cyhy-core
@@ -71,6 +67,7 @@
 #
 # Now we need to install the cyhy-commander dependencies
 #
+# TODO: Figure out why we can't just put docutils in cyhy-commander/setup.py
 - name: Install docutils, since cyhy-commander needs it
   pip:
     name:

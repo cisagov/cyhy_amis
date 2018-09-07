@@ -1,11 +1,33 @@
 ---
 # tasks file for pip
 
-- name: Install pip (debian group only)
-  when: "'debian' in group_names"
+# Debian, but not mongo because mongo AMI is based on Debian Jessie
+- name: Install pip
   apt:
     name: 'python-pip'
     state: latest
+  when:
+    - "'debian' in group_names"
+    - "'mongo' not in group_names"
+
+# Debian and mongo because mongo AMI is based on Debian Jessie
+- name: Install pip
+  easy_install:
+    name: pip
+    state: latest
+  when:
+    - "'debian' in group_names"
+    - "'mongo' in group_names"
+
+# python-dev is usually needed with pip to build the wheels
+- name: Install python-dev
+  apt:
+    name:
+      - python-dev
+    state: latest
+  when:
+    - "'debian' in group_names"
+    - "'mongo' in group_names"
 
 # pip is already installed on Amazon Linux by default, so there is
 # nothing to be done in that case

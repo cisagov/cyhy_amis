@@ -30,12 +30,14 @@
 
 # Mongo docs recommend disabling --quiet flag in Production
 # https://docs.mongodb.com/manual/reference/configuration-options/#systemLog.quiet
+# Mongo docs recommend running via numactl on NUMA hosts
+# https://docs.mongodb.com/v3.2/administration/production-notes/#mongodb-and-numa-hardware
 - name: Remove --quiet mongo command line option
   lineinfile:
     dest: /lib/systemd/system/mongod.service
     regexp: ^ExecStart=/usr/bin/mongod --quiet
     state: present
-    line: ExecStart=/usr/bin/mongod --config /etc/mongod.conf
+    line: ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config /etc/mongod.conf
 
 - name: Install pip
   apt:
