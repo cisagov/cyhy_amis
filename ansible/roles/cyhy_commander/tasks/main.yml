@@ -197,12 +197,12 @@
   become: no
 
 #
-# Run cyhy-nvdsync daily at 2315 (UTC) as cyhy user
+# Run cyhy-nvdsync daily at 0815 (UTC) as cyhy user
 #
 - name: Set up nightly cron job to sync NVD data
   cron:
     name: Nightly cyhy-nvdsync
-    hour: 23
+    hour: 08
     minute: 15
     user: cyhy
-    job: cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger -t cyhy-nvdsync
+    job: /usr/local/bin/cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger -t cyhy-nvdsync
