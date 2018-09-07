@@ -49,7 +49,7 @@ resource "aws_instance" "cyhy_nmap" {
   user_data = "${data.template_cloudinit_config.ssh_and_cyhy_runner_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1), "Publish Egress", "True"))}"
-  volume_tags = "${merge(var.tags, map("Name", "CyHy Nmap"))}"
+  volume_tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
 }
 
 # Note that the EBS volume contains production data. Therefore we need
@@ -62,7 +62,7 @@ resource "aws_instance" "cyhy_nmap" {
 # workspace, but it appears that interpolations are not supported
 # inside of the lifecycle block
 # (https://github.com/hashicorp/terraform/issues/3116).
-resource "aws_ebs_volume" "cyhy_runner_data" {
+resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
   count = "${local.nmap_instance_count}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   # availability_zone = "${element(data.aws_availability_zones.all.names, count.index)}"
@@ -77,16 +77,16 @@ resource "aws_ebs_volume" "cyhy_runner_data" {
   }
 }
 
-resource "aws_volume_attachment" "cyhy_runner_data_attachment" {
+resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   count = "${local.nmap_instance_count}"
   device_name = "${var.cyhy_runner_disk}"
-  volume_id = "${aws_ebs_volume.cyhy_runner_data.*.id[count.index]}"
+  volume_id = "${aws_ebs_volume.nmap_cyhy_runner_data.*.id[count.index]}"
   instance_id = "${aws_instance.cyhy_nmap.*.id[count.index]}"
 
   # Terraform attempts to destroy the volume attachment before it attempts to
   # destroy the EC2 instance it is attached to.  EC2 does not like that and it
   # results in the failed destruction of the volume attachment.  To get around
-  # this, we explicitly terminate the cyhy_runner_data volume via the AWS CLI
+  # this, we explicitly terminate the cyhy_nmap instance via the AWS CLI
   # in a destroy provisioner; this gracefully shuts down the instance and
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
@@ -102,7 +102,7 @@ resource "aws_volume_attachment" "cyhy_runner_data_attachment" {
   }
 
   skip_destroy = true
-  depends_on = ["aws_ebs_volume.cyhy_runner_data"]
+  depends_on = ["aws_ebs_volume.nmap_cyhy_runner_data"]
 }
 
 # TODO: until we figure out how to loop a module, a copy needs to be made for
