@@ -79,3 +79,10 @@
   roles:
     - chown_cyhy_dirs
     - cyhy_reporter
+
+- hosts: cyhy_bastion
+  name: Configure cyhy bastion hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_ops
