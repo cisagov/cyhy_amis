@@ -4,8 +4,8 @@ locals {
   production_workspace = "${replace(terraform.workspace, "production", "") != terraform.workspace}"
 
   # TODO no dynamic workspace until we can loop modules (see below)
-  nmap_instance_count = "${local.production_workspace ? 24 : 1}"
-  nessus_instance_count = "${local.production_workspace ? 1 : 1}"
+  nmap_instance_count = "${local.production_workspace ? 64 : 1}"
+  nessus_instance_count = "${local.production_workspace ? 3 : 1}"
   mongo_instance_count = "1"  # TODO: stuck at one until we can scale mongo_ec2
 
   # These are the ports via which trusted networks are allowed to
