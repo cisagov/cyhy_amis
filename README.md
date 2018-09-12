@@ -20,6 +20,8 @@ Build Terraform-based infrastructure with:
 ```
 cd terraform
 terraform workspace select <your_workspace>
+./configure.py
+terraform init
 terraform apply -var-file=<your_workspace>.yml
 ```
 
@@ -27,6 +29,8 @@ Tear down Terraform-based infrastructure with:
 ```
 cd terraform
 terraform workspace select <your_workspace>
+./configure.py
+terraform init
 terraform destroy -var-file=<your_workspace>.yml
 ```
 

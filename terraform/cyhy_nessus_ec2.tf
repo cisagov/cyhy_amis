@@ -105,24 +105,11 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   depends_on = ["aws_ebs_volume.nessus_cyhy_runner_data"]
 }
 
-# TODO: until we figure out how to loop a module, a copy needs to be made for
-# each instance.  This also prevents us from differentiating production from
-# development.
-
-# Provision the Nessus EC2 instance via Ansible
-module "cyhy_nessus_ansible_provisioner_0" {
-  source = "github.com/cloudposse/tf_ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
-  ]
-  envs = [
-    "host=${aws_instance.cyhy_nessus.*.private_ip[0]}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nessus",
-    "nessus_activation_code=${var.nessus_activation_codes[0]}"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
+# load in the dynamically created provisioner modules
+module "dyn_nessus" {
+  source = "./dyn_nessus"
+  bastion_public_ip = "${aws_instance.cyhy_bastion.public_ip}"
+  nessus_private_ips = "${aws_instance.cyhy_nessus.*.private_ip}"
+  nessus_activation_codes = "${var.nessus_activation_codes}"
+  remote_ssh_user = "${var.remote_ssh_user}"
 }
