@@ -26,7 +26,7 @@ from string import Template
 
 # for each workspace, set the number of instances to create for each template
 WORKSPACE_CONFIGS = {
-                        'production':   {'nmap':64, 'nessus':4, 'mongo':1},
+                        'production':   {'nmap':64, 'nessus':3, 'mongo':1},
                         'felddy':       {'nmap':4, 'nessus':1, 'mongo':1},
                     }
 
