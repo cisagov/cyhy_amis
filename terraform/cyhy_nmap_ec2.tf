@@ -81,7 +81,7 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   count = "${local.nmap_instance_count}"
   device_name = "${var.cyhy_runner_disk}"
   volume_id = "${aws_ebs_volume.nmap_cyhy_runner_data.*.id[count.index]}"
-  instance_id = "${element(aws_instance.cyhy_nmap.*.id, count.index)}"
+  instance_id = "${aws_instance.cyhy_nmap.*.id[count.index]}"
 
   # Terraform attempts to destroy the volume attachment before it attempts to
   # destroy the EC2 instance it is attached to.  EC2 does not like that and it
@@ -91,14 +91,18 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${self.instance_id}"
+    # Use element(aws_instance.cyhy_nmap.*.id, count.index) rather than
+    # aws_instance.cyhy_nmap.*.id[count.index] to avoid Terraform 'index out of
+    # range' error, similar to the one documented here:
+    # https://github.com/hashicorp/terraform/issues/14536#issue-228958605
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${element(aws_instance.cyhy_nmap.*.id, count.index)}"
     on_failure = "continue"
   }
 
   # Wait until cyhy_nmap instance is terminated before continuing on
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${self.instance_id}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${element(aws_instance.cyhy_nmap.*.id, count.index)}"
   }
 
   skip_destroy = true
