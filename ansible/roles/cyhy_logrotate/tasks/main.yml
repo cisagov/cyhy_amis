@@ -1,0 +1,15 @@
+---
+# tasks file for cyhy_logrotate
+
+- name: Turn on compression globally for rotated logs
+  lineinfile:
+    dest: /etc/logrotate.conf
+    regexp: '^#compress'
+    state: present
+    line: compress
+
+- name: Install cyhy logrotate configuration
+  copy:
+    src: cyhy
+    dest: /etc/logrotate.d/cyhy
+    mode: 0644

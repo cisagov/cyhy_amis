@@ -50,6 +50,7 @@
     - chown_cyhy_dirs
     - cyhy_commander
     - { role: swap, swapfile_size: 2GiB}
+    - cyhy_logrotate
 
 - hosts: nmap
   name: Configure nmap scanning hosts
@@ -64,6 +65,7 @@
   become_method: sudo
   roles:
     - chown_cyhy_dirs
+    - cyhy_logrotate
 
 - hosts: nessus
   name: Configure Nessus hosts
@@ -79,6 +81,7 @@
   roles:
     - chown_cyhy_dirs
     - cyhy_reporter
+    - cyhy_logrotate
 
 - hosts: cyhy_bastion
   name: Configure cyhy bastion hosts
