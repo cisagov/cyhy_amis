@@ -1,0 +1,8 @@
+---
+# tasks file for cyhy_logrotate
+
+- name: Install cyhy logrotate configuration
+  copy:
+    src: cyhy
+    dest: /etc/logrotate.d/cyhy
+    mode: 0644
