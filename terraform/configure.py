@@ -6,7 +6,7 @@ workspace.
 
 Due to a terraform limitation, modules can not be scaled with the "count"
 keyword the same way resource can.  This leads to a great deal of copying and
-pasting in order to get provisioners and other modules to execute correctlyself.
+pasting in order to get provisioners and other modules to execute correctly.
 
 This script can be retired once this limitation is removed from Terraform.
 See: https://github.com/hashicorp/terraform/issues/953
@@ -15,14 +15,14 @@ To create a unique configuration for your own workspace edit the
 WORKSPACE_CONFIGS constant below.
 '''
 
-import sys
-# This script uses a subprocess feature added in python 3.7
-assert sys.version_info >= (3,7), 'This script requires Python version 3.7 or newer'
-
-import os
 import glob
+import os
 import subprocess
 from string import Template
+import sys
+
+# This script uses a subprocess feature added in python 3.7
+assert sys.version_info >= (3,7), 'This script requires Python version 3.7 or newer'
 
 # for each workspace, set the number of instances to create for each template
 WORKSPACE_CONFIGS = {
