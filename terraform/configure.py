@@ -20,6 +20,7 @@ import os
 import subprocess
 from string import Template
 import sys
+
 # This script uses a subprocess feature added in python 3.7
 assert sys.version_info >= (3,7), 'This script requires Python version 3.7 or newer'
 
