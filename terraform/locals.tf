@@ -3,10 +3,9 @@ locals {
   # terraform.workspace contains the substring "production"
   production_workspace = "${replace(terraform.workspace, "production", "") != terraform.workspace}"
 
-  # TODO no dynamic workspace until we can loop modules (see below)
-  nmap_instance_count = "${local.production_workspace ? 64 : 1}"
-  nessus_instance_count = "${local.production_workspace ? 3 : 1}"
-  mongo_instance_count = "1"  # TODO: stuck at one until we can scale mongo_ec2
+  # Note: some locals are generated dynamically by the configure.py script and
+  # are not part of this file.  e.g.; *_instance_count  Please run configure.py
+  # to generate these in a separate file.
 
   # These are the ports via which trusted networks are allowed to
   # access the public-facing CyHy hosts

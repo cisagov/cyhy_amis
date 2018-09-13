@@ -53,6 +53,8 @@ resource "aws_instance" "cyhy_mongo" {
 }
 
 # Provision the mongo EC2 instance via Ansible
+# TODO when we start using multiple mongo, move this to a dyn_mongo module
+# TODO see pattern of nmap and nessus 
 module "cyhy_mongo_ansible_provisioner" {
   source = "github.com/cloudposse/tf_ansible"
 

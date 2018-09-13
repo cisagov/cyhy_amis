@@ -91,72 +91,29 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_nessus.id}"
+    # Use element(aws_instance.cyhy_nessus.*.id, count.index) rather than
+    # aws_instance.cyhy_nessus.*.id[count.index] to avoid Terraform 'index out
+    # of range' error, similar to the one documented here:
+    # https://github.com/hashicorp/terraform/issues/14536#issue-228958605
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${element(aws_instance.cyhy_nessus.*.id, count.index)}"
     on_failure = "continue"
   }
 
   # Wait until cyhy_nessus instance is terminated before continuing on
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_nessus.id}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${element(aws_instance.cyhy_nessus.*.id, count.index)}"
   }
 
   skip_destroy = true
   depends_on = ["aws_ebs_volume.nessus_cyhy_runner_data"]
 }
 
-# TODO: until we figure out how to loop a module, a copy needs to be made for
-# each instance.  This also prevents us from differentiating production from
-# development.
-
-# Provision the Nessus EC2 instance via Ansible
-module "cyhy_nessus_ansible_provisioner_0" {
-  source = "github.com/cloudposse/tf_ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
-  ]
-  envs = [
-    "host=${aws_instance.cyhy_nessus.*.private_ip[0]}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nessus",
-    "nessus_activation_code=${var.nessus_activation_codes[0]}"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
-}
-
-module "cyhy_nessus_ansible_provisioner_1" {
-  source = "github.com/cloudposse/tf_ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
-  ]
-  envs = [
-    "host=${aws_instance.cyhy_nessus.*.private_ip[1]}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nessus",
-    "nessus_activation_code=${var.nessus_activation_codes[1]}"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
-}
-
-module "cyhy_nessus_ansible_provisioner_2" {
-  source = "github.com/cloudposse/tf_ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
-  ]
-  envs = [
-    "host=${aws_instance.cyhy_nessus.*.private_ip[2]}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nessus",
-    "nessus_activation_code=${var.nessus_activation_codes[2]}"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
+# load in the dynamically created provisioner modules
+module "dyn_nessus" {
+  source = "./dyn_nessus"
+  bastion_public_ip = "${aws_instance.cyhy_bastion.public_ip}"
+  nessus_private_ips = "${aws_instance.cyhy_nessus.*.private_ip}"
+  nessus_activation_codes = "${var.nessus_activation_codes}"
+  remote_ssh_user = "${var.remote_ssh_user}"
 }
