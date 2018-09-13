@@ -81,7 +81,7 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   count = "${local.nmap_instance_count}"
   device_name = "${var.cyhy_runner_disk}"
   volume_id = "${aws_ebs_volume.nmap_cyhy_runner_data.*.id[count.index]}"
-  instance_id = "${aws_instance.cyhy_nmap.*.id[count.index]}"
+  instance_id = "${element(aws_instance.cyhy_nmap.*.id, count.index)}"
 
   # Terraform attempts to destroy the volume attachment before it attempts to
   # destroy the EC2 instance it is attached to.  EC2 does not like that and it
@@ -91,14 +91,14 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_nmap.id}"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${self.instance_id}"
     on_failure = "continue"
   }
 
   # Wait until cyhy_nmap instance is terminated before continuing on
   provisioner "local-exec" {
     when = "destroy"
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_nmap.id}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${self.instance_id}"
   }
 
   skip_destroy = true

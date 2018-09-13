@@ -7,7 +7,7 @@ module "cyhy_nessus_ansible_provisioner_$index" {
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q $${var.remote_ssh_user}@$${var.bastion_public_ip}\"'"
   ]
   envs = [
-    "host=$${var.nessus_private_ips[$index]}",
+    "host=$${element(var.nessus_private_ips, $index)}",
     "bastion_host=$${var.bastion_public_ip}",
     "host_groups=cyhy_runner,nessus",
     "nessus_activation_code=$${var.nessus_activation_codes[$index]}"
