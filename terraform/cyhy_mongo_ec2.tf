@@ -46,6 +46,9 @@ resource "aws_instance" "cyhy_mongo" {
 
   user_data = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
 
+  # Give this instance access needed to run cyhy-archive
+  iam_instance_profile = "${aws_iam_instance_profile.cyhy_archive.name}"
+
   tags = "${merge(var.tags, map("Name", "CyHy Mongo, Commander"))}"
   # We add some explicit tags to the Mongo volumes below, so we don't
   # want to use volume_tags here
