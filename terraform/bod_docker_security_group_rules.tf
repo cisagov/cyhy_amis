@@ -22,6 +22,19 @@ resource "aws_security_group_rule" "docker_anywhere" {
   to_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
 }
 
+# Allow ephemeral port egress to anywhere.  This is necessary for
+# passive FTP to function.
+resource "aws_security_group_rule" "ephemeral_port_egress_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 1024
+  to_port = 65535
+}
+
 # Allow DNS egress to Google
 resource "aws_security_group_rule" "docker_dns_to_google" {
   count = "${length(local.tcp_and_udp)}"
