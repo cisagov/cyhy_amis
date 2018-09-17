@@ -68,7 +68,9 @@ module "cyhy_mongo_ansible_provisioner" {
   envs = [
     "host=${aws_instance.cyhy_mongo.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=mongo,cyhy_commander"
+    "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
+    "cyhy_archive_s3_bucket_region=${var.aws_region}",
+    "host_groups=mongo,cyhy_commander,cyhy_archive"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
