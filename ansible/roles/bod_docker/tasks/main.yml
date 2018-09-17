@@ -185,19 +185,19 @@
   cron:
     name: "BOD 18-01 scanning"
     minute: 0
-    hour: 0
+    hour: 4
     weekday: 6
     user: cyhy
-    job: "/var/cyhy/orchestrator/start.sh"
+    job: "cd /var/cyhy/orchestrator && /usr/local/bin/docker-compose up -d"
 
 - name: Create a cron job for sending BOD 18-01 reports
   cron:
     name: "Sending BOD 18-01 reports"
     minute: 0
-    hour: 8
+    hour: 12
     weekday: 1
     user: cyhy
-    job: "/var/cyhy/cyhy-mailer/start.sh"
+    job: "cd /var/cyhy/cyhy-mailer && /usr/local/bin/docker-compose up -d"
 
 
 #

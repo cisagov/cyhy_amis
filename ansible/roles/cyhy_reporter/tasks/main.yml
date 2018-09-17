@@ -68,6 +68,18 @@
     - /tmp/master_report_password.yml
 
 #
+# Create cron job for snapshot, CyHy report, and CybEx scorecard generation
+#
+- name: Create a cron job for report generation
+  cron:
+    name: "Snapshot, CyHy report, and CybEx scorecard generation"
+    minute: 0
+    hour: 4
+    weekday: 6
+    user: cyhy
+    job: "cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan"
+
+#
 # Add users to the cyhy group
 #
 - name: Load users from YML file
