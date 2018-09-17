@@ -58,6 +58,6 @@ resource "aws_iam_role_policy" "s3_cyhy_archive_policy" {
 
 # The instance profile to be used by any instances that need the cyhy-archive role
 resource "aws_iam_instance_profile" "cyhy_archive" {
-  name = "cyhy_archive"
+  name = "cyhy_archive_${terraform.workspace}"
   role = "${aws_iam_role.cyhy_archive_role.name}"
 }
