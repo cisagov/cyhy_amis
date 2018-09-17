@@ -25,6 +25,7 @@ locals {
   # These are the ports on which the BOD Docker security group is
   # allowed to egress anywhere
   bod_docker_egress_anywhere_ports = [
+    21,
     80,
     443,
     587

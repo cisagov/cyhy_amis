@@ -8,7 +8,7 @@ resource "aws_security_group_rule" "docker_ssh_ingress_from_bastion" {
   to_port = 22
 }
 
-# Allow HTTP, HTTPS, and SMTP (587) egress anywhere
+# Allow HTTP, HTTPS, SMTP (587), and FTP egress anywhere
 resource "aws_security_group_rule" "docker_anywhere" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
