@@ -89,3 +89,10 @@
   become_method: sudo
   roles:
     - cyhy_ops
+
+- hosts: cyhy_archive
+  name: Configure cyhy-archive hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_archive
