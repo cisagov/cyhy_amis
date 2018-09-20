@@ -44,7 +44,7 @@ resource "aws_network_acl_rule" "private_ingress_from_google_dns_via_ephemeral_p
   to_port = 65535
 }
 
-# Allow outbound HTTP, HTTPS, and SMTP (587) anywhere
+# Allow outbound HTTP, HTTPS, SMTP (587), and FTP anywhere
 resource "aws_network_acl_rule" "private_egress_anywhere" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
@@ -84,14 +84,16 @@ resource "aws_network_acl_rule" "private_egress_to_google_dns_2" {
   to_port = 53
 }
 
-# Allow egress to the public subnet via ephemeral ports
+# Allow egress anywhere via ephemeral ports.  We could get away with
+# restricting this to the public subnet, except that FTP in passive
+# mode needs to be able to reach out anywhere.
 resource "aws_network_acl_rule" "private_egress_to_public_via_ephemeral_ports" {
   network_acl_id = "${aws_network_acl.bod_private_acl.id}"
   egress = true
   protocol = "tcp"
   rule_number = 140
   rule_action = "allow"
-  cidr_block = "${aws_subnet.bod_public_subnet.cidr_block}"
+  cidr_block = "0.0.0.0/0"
   from_port = 1024
   to_port = 65535
 }

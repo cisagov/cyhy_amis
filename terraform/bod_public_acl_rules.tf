@@ -1,8 +1,9 @@
 # Allow ingress from the private subnet via HTTP (for downloading the
 # public suffix list), HTTPS (for AWS CLI), SMTP (for sending emails),
-# and DNS (for Google DNS).  This allows EC2 instances in the private
-# subnet to send the traffic they want via the NAT gateway, subject to
-# their own security group and network ACL restrictions.
+# FTP (for downloading ASN information), and DNS (for Google DNS).
+# This allows EC2 instances in the private subnet to send the traffic
+# they want via the NAT gateway, subject to their own security group
+# and network ACL restrictions.
 resource "aws_network_acl_rule" "public_ingress_from_private" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
@@ -104,9 +105,9 @@ resource "aws_network_acl_rule" "public_egress_to_bastion_via_ssh" {
 }
 
 # Allow egress anywhere via HTTP (for downloading the public suffix
-# list), HTTPS (for AWS CLI) and SMTP (for sending emails).  This is
-# so the NAT gateway can relay the corresponding requests from the
-# private subnet.
+# list), HTTPS (for AWS CLI), SMTP (for sending emails), and FTP (for
+# downloading ASN information).  This is so the NAT gateway can relay
+# the corresponding requests from the private subnet.
 resource "aws_network_acl_rule" "public_egress_anywhere" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
