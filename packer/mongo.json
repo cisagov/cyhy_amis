@@ -38,7 +38,8 @@
             "groups": [
                 "debian",
                 "mongo",
-                "cyhy_commander"
+                "cyhy_commander",
+                "cyhy_archive"
             ]
         }
     ]

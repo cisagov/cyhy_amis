@@ -46,6 +46,9 @@ resource "aws_instance" "cyhy_mongo" {
 
   user_data = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
 
+  # Give this instance access needed to run cyhy-archive
+  iam_instance_profile = "${aws_iam_instance_profile.cyhy_archive.name}"
+
   tags = "${merge(var.tags, map("Name", "CyHy Mongo, Commander"))}"
   # We add some explicit tags to the Mongo volumes below, so we don't
   # want to use volume_tags here
@@ -53,6 +56,8 @@ resource "aws_instance" "cyhy_mongo" {
 }
 
 # Provision the mongo EC2 instance via Ansible
+# TODO when we start using multiple mongo, move this to a dyn_mongo module
+# TODO see pattern of nmap and nessus 
 module "cyhy_mongo_ansible_provisioner" {
   source = "github.com/cloudposse/tf_ansible"
 
@@ -63,7 +68,9 @@ module "cyhy_mongo_ansible_provisioner" {
   envs = [
     "host=${aws_instance.cyhy_mongo.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=mongo,cyhy_commander"
+    "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
+    "cyhy_archive_s3_bucket_region=${var.aws_region}",
+    "host_groups=mongo,cyhy_commander,cyhy_archive"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

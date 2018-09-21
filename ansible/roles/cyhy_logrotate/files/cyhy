@@ -1,0 +1,14 @@
+# Default log rotation / compression keeps 1 year of logs.
+/var/log/cyhy/*.log {
+    su cyhy cyhy
+    daily
+    rotate 365
+    dateext
+    copytruncate
+    delaycompress
+    compress
+    notifempty
+    extension gz
+    sharedscripts
+    missingok
+}

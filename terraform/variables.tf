@@ -55,3 +55,8 @@ variable "create_flow_logs" {
   description = "Whether or not to create flow logs.  Zero means no and one means yes"
   default = 0
 }
+
+variable "cyhy_archive_bucket_name" {
+  description = "S3 bucket for storing compressed archive files created by cyhy-archive"
+  default = "ncats-cyhy-archive"
+}

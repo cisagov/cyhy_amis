@@ -1,0 +1,16 @@
+# Provision an nmap EC2 instance via Ansible
+module "cyhy_nmap_ansible_provisioner_$index" {
+  source = "github.com/cloudposse/tf_ansible"
+
+  arguments = [
+    "--user=$${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q $${var.remote_ssh_user}@$${var.bastion_public_ip}\"'"
+  ]
+  envs = [
+    "host=$${element(var.nmap_private_ips, $index)}",
+    "bastion_host=$${var.bastion_public_ip}",
+    "host_groups=cyhy_runner,nmap"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run = false
+}

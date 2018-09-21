@@ -97,3 +97,10 @@
   roles:
     - pip
     - cyhy_feeds
+
+- hosts: cyhy_archive
+  name: Install cyhy-archive helper script
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_archive

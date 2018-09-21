@@ -8,7 +8,7 @@ resource "aws_security_group_rule" "docker_ssh_ingress_from_bastion" {
   to_port = 22
 }
 
-# Allow HTTP, HTTPS, and SMTP (587) egress anywhere
+# Allow HTTP, HTTPS, SMTP (587), and FTP egress anywhere
 resource "aws_security_group_rule" "docker_anywhere" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
@@ -20,6 +20,19 @@ resource "aws_security_group_rule" "docker_anywhere" {
   ]
   from_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
   to_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
+}
+
+# Allow ephemeral port egress to anywhere.  This is necessary for
+# passive FTP to function.
+resource "aws_security_group_rule" "ephemeral_port_egress_anywhere" {
+  security_group_id = "${aws_security_group.bod_docker_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "0.0.0.0/0"
+  ]
+  from_port = 1024
+  to_port = 65535
 }
 
 # Allow DNS egress to Google
