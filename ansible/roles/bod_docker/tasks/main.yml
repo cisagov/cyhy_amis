@@ -94,19 +94,34 @@
         name: scan
         uri: mongodb://scan-writer:{{ mongo_users.other_users | selectattr("user", "eq", "scan-writer") | map(attribute="password") | first }}@{{ mongo_host }}:27017/scan
 
-- name: Create a temporary directory to store the orchestrator AWS secrets
+- name: Create directories to store the orchestrator AWS secrets
   local_action:
     module: file
-    path: /tmp/secrets/aws
+    path: "/tmp/secrets/{{ item }}"
     state: directory
   become: no
+  loop:
+    - aws_elasticsearch
+    - aws_lambda
 
-- name: Grab the orchestrator AWS credentials from S3
+- name: Grab the orchestrator AWS Elasticsearch credentials from S3
   local_action:
     module: aws_s3
     bucket: ncats-bod-18-01-secrets
-    object: "orchestrator_secrets/aws/{{ item }}"
-    dest: "/tmp/secrets/aws/{{ item }}"
+    object: "orchestrator_secrets/aws_elasticsearch/{{ item }}"
+    dest: "/tmp/secrets/aws_lambda/{{ item }}"
+    mode: get
+  become: no
+  loop:
+    - config
+    - credentials
+
+- name: Grab the orchestrator AWS Lambda credentials from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-bod-18-01-secrets
+    object: "orchestrator_secrets/aws_lambda/{{ item }}"
+    dest: "/tmp/secrets/aws_lambda/{{ item }}"
     mode: get
   become: no
   loop:
@@ -115,11 +130,14 @@
 
 - name: Copy the orchestrator AWS secrets
   copy:
-    src: /tmp/secrets/aws
+    src: "/tmp/secrets/{{ item }}"
     dest: /var/cyhy/orchestrator/secrets
     owner: cyhy
     group: cyhy
     mode: 0750
+  loop:
+    - aws_elasticsearch
+    - aws_lambda
 
 - name: Delete local copy of orchestrator secrets
   local_action:
