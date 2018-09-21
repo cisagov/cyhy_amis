@@ -3,11 +3,11 @@
 - name: Get mongodb-org GPG key
   apt_key:
     keyserver: keyserver.ubuntu.com
-    id: EA312927
+    id: 0C49F3730359A14518585931BC711F9BA15703C6
 
 - name: Copy sources list for mongodb-org (official MongoDB package repo)
   copy:
-    src: mongodb-org-3.2.list
+    src: mongodb-org-3.4.list
     dest: /etc/apt/sources.list.d
     mode: 0644
 
@@ -17,7 +17,7 @@
 
 - name: Install mongo
   apt:
-    name: mongodb-org=3.2.20
+    name: mongodb-org=3.4.17
   notify:
     - Enable mongo
 
@@ -28,14 +28,12 @@
     state: present
     line: After=network.target cloud-config.service
 
-# Mongo docs recommend disabling --quiet flag in Production
-# https://docs.mongodb.com/manual/reference/configuration-options/#systemLog.quiet
 # Mongo docs recommend running via numactl on NUMA hosts
-# https://docs.mongodb.com/v3.2/administration/production-notes/#mongodb-and-numa-hardware
-- name: Remove --quiet mongo command line option
+# https://docs.mongodb.com/manual/administration/production-notes/#mongodb-and-numa-hardware
+- name: Start mongod via numactl
   lineinfile:
     dest: /lib/systemd/system/mongod.service
-    regexp: ^ExecStart=/usr/bin/mongod --quiet
+    regexp: ^ExecStart=/usr/bin/mongod
     state: present
     line: ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config /etc/mongod.conf
 

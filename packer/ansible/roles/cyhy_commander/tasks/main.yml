@@ -2,11 +2,13 @@
 # tasks file for cyhy_commander
 
 #
-# Install unzip; it is needed by cyhy_core/var/load_places.sh
+# Install curl and unzip; they are needed by cyhy_core/var/load_places.sh
 #
-- name: Install unzip
+- name: Install curl and unzip
   apt:
-    name: unzip
+    name:
+      - curl
+      - unzip
     state: latest
 
 - name: Grab GitHub OAuth token from S3
