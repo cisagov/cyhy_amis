@@ -62,6 +62,18 @@ resource "aws_security_group_rule" "private_mongodb_ingress_from_reporter" {
   to_port = 27017
 }
 
+# Allow MongoDB ingress from the cyhy feeds
+resource "aws_security_group_rule" "private_mongodb_ingress_from_feeds" {
+  security_group_id = "${aws_security_group.cyhy_private_sg.id}"
+  type = "ingress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_feeds.private_ip}/32"
+  ]
+  from_port = 27017
+  to_port = 27017
+}
+
 # Allow MongoDB egress to Mongo host
 resource "aws_security_group_rule" "private_mongodb_egress_to_mongo_host" {
   security_group_id = "${aws_security_group.cyhy_private_sg.id}"

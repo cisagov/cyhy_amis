@@ -89,3 +89,11 @@
   roles:
     - pip
     - cyhy_reporter
+
+- hosts: cyhy_feeds
+  name: Install and configure cyhy-feeds
+  become: yes
+  become_method: sudo
+  roles:
+    - pip
+    - cyhy_feeds

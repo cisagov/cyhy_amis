@@ -1,0 +1,121 @@
+---
+# tasks file for cyhy_feeds
+- name: Grab GitHub OAuth token from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: github_oauth_token.yml
+    dest: /tmp/github_oauth_token.yml
+    mode: get
+  become: no
+
+- name: Load GitHub OAuth token from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/github_oauth_token.yml
+  become: no
+
+- name: Grab mongo users from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: mongo_users.yml
+    dest: /tmp/mongo_users.yml
+    mode: get
+  become: no
+
+- name: Load mongo users token from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/mongo_users.yml
+    name: mongo_users
+  become: no
+
+- name: Create the /var/cyhy/scripts/cyhy-feeds/
+  file:
+    path: /var/cyhy/scripts/cyhy-feeds/cyhy_extracts
+    state: directory
+
+- name: Create /etc/cyhy dir
+  file:
+    path: /etc/cyhy
+    state: directory
+
+- name: Download cyhy extract from GitHub
+  get_url:
+    url: "https://raw.githubusercontent.com/jsf9k/cyhy-feeds/develop/aws_jobs/cyhy-data-extract.py"
+    headers:
+      Authorization: "token {{ github_oauth_token }}"
+    dest: /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py
+    mode: 0755
+
+- name: Grab cyhy extract config file from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: cyhy-data-extract.cfg
+    dest: /tmp/cyhy-data-extract.cfg
+    mode: get
+  become: no
+
+- name: Grab gpg public key from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: ncats_lab_public_gpg.key
+    dest: /tmp/ncats_lab_public_gpg.key
+    mode: get
+  become: no
+
+#
+# Copy extract config to new instance
+#
+- name: Copy config file for moe data extractor
+  copy:
+    src: /tmp/cyhy-data-extract.cfg
+    dest: /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
+    mode: 0644
+
+- name: Copy gpg public key for moe data extract
+  copy:
+    src: /tmp/ncats_lab_public_gpg.key
+    dest: /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key
+    mode: 0644
+
+- name: Create the /var/cyhy/scripts/cyhy-feeds/cyhy_extracts directory
+  file:
+    path: /var/cyhy/scripts/cyhy-feeds/cyhy_extracts
+    state: directory
+
+- name: Add ncats public key to gpg key ring
+  shell: gpg2 --allow-non-selfsigned-uid --import /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key
+
+- name: Delete local copy config file for moe data extractor
+  local_action:
+    module: file
+    path: /tmp/cyhy-data-extract.cfg
+    state: absent
+  become: no
+
+- name: Delete local copy gpg public key for moe data extract
+  local_action:
+    module: file
+    path: /tmp/ncats_lab_public_gpg.key
+    state: absent
+  become: no
+
+- name: Create /etc/cyhy/cyhy.conf with commander credentials
+  copy:
+    dest: /etc/cyhy/cyhy.conf
+    owner: cyhy
+    group: cyhy
+    mode: 0660
+    content: |
+      [DEFAULT]
+      default-section = production
+      database-uri = mongodb://localhost:27017/
+      report-key =
+
+      [production]
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-name = cyhy

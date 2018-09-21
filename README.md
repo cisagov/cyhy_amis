@@ -9,6 +9,7 @@ packer build packer/mongo.json
 packer build packer/bastion.json
 packer build packer/docker.json
 packer build packer/commander.json
+packer build packer/feeds.json
 AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/reporter.json
 ```
 
