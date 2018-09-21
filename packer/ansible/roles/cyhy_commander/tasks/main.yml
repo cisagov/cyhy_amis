@@ -2,8 +2,13 @@
 # tasks file for cyhy_commander
 
 #
-# Install unzip; it is needed by cyhy_core/var/load_places.sh
+# Install curl and unzip; it is needed by cyhy_core/var/load_places.sh
 #
+- name: Install curl
+  apt:
+    name: curl
+    state: latest
+
 - name: Install unzip
   apt:
     name: unzip
