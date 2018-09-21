@@ -109,7 +109,7 @@
     module: aws_s3
     bucket: ncats-bod-18-01-secrets
     object: "orchestrator_secrets/aws_elasticsearch/{{ item }}"
-    dest: "/tmp/secrets/aws_lambda/{{ item }}"
+    dest: "/tmp/secrets/aws_elasticsearch/{{ item }}"
     mode: get
   become: no
   loop:
