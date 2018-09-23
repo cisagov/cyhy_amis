@@ -6,6 +6,21 @@ resource "aws_vpc" "bod_vpc" {
   tags = "${merge(var.tags, map("Name", "BOD 18-01"))}"
 }
 
+# Setup DHCP so we can resolve our private domain
+resource "aws_vpc_dhcp_options" "bod_dhcp_options" {
+  domain_name = "${local.bod_private_domain}"
+  domain_name_servers = [
+    "AmazonProvidedDNS"
+  ]
+  tags = "${merge(var.tags, map("Name", "BOD"))}"
+}
+
+# Associate the DHCP options above with the VPC
+resource "aws_vpc_dhcp_options_association" "bod_vpc_dhcp" {
+  vpc_id = "${aws_vpc.bod_vpc.id}"
+  dhcp_options_id = "${aws_vpc_dhcp_options.bod_dhcp_options.id}"
+}
+
 # Private subnet of the VPC
 resource "aws_subnet" "bod_private_subnet" {
  vpc_id = "${aws_vpc.bod_vpc.id}"
