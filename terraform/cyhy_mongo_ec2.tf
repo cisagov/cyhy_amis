@@ -66,6 +66,7 @@ module "cyhy_mongo_ansible_provisioner" {
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
+    "ANSIBLE_SSH_RETRIES=5",
     "host=${aws_instance.cyhy_mongo.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
