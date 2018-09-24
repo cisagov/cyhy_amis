@@ -70,14 +70,23 @@
 #
 # Create cron job for snapshot, CyHy report, and CybEx scorecard generation
 #
+- name: Add /usr/local/bin to cron's path
+  cron:
+    name: "Add /usr/local/bin to the cron path"
+    env: yes
+    name: PATH
+    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+    user: cyhy
+# This cron job runs at midnight UTC on Sunday mornings.  The BOD
+# scanning is long cince completed by that time.
 - name: Create a cron job for report generation
   cron:
     name: "Snapshot, CyHy report, and CybEx scorecard generation"
     minute: 0
-    hour: 4
-    weekday: 6
+    hour: 0
+    weekday: 0
     user: cyhy
-    job: "cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan"
+    job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
 
 #
 # Add users to the cyhy group
