@@ -2,10 +2,8 @@
 # tasks file for htop
 
 - name: Install htop
-  {{ ansible_pkg_mgr }}:
-    name:
-      - htop
-    state: latest
+  action: >
+    {{ ansible_pkg_mgr }} name=htop state=latest
 
 - name: Copy over the htop configuration file
   copy:
