@@ -42,15 +42,26 @@ locals {
   ]
 
   # domain name to use for internal DNS
-  private_domain = "local"
+  cyhy_private_domain = "local"
+
+  # domain name to use for internal DNS
+  bod_private_domain = "local"
 
   # zone to use for public DNS
-  public_zone  = "cyber.dhs.gov"
+  cyhy_public_zone  = "cyber.dhs.gov"
+
+  # zone to use for public DNS
+  bod_public_zone  = "cyber.dhs.gov"
 
   # subdomains to use in the public_zone.
   # to create records directly in the public_zone set to ""
   # otherwise it must end in a period
-  public_subdomain = "cyhy."
+  cyhy_public_subdomain = "cyhy."
+
+  # subdomains to use in the public_zone.
+  # to create records directly in the public_zone set to ""
+  # otherwise it must end in a period
+  bod_public_subdomain = "bod."
 
   # DNS zone calculations based on requested instances
   # The numbers represent the count of IP addresses in a subnet
