@@ -3,11 +3,11 @@
 - name: Get mongodb-org GPG key
   apt_key:
     keyserver: keyserver.ubuntu.com
-    id: 0C49F3730359A14518585931BC711F9BA15703C6
+    id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
 
 - name: Copy sources list for mongodb-org (official MongoDB package repo)
   copy:
-    src: mongodb-org-3.4.list
+    src: mongodb-org-3.6.list
     dest: /etc/apt/sources.list.d
     mode: 0644
 
@@ -17,7 +17,7 @@
 
 - name: Install mongo
   apt:
-    name: mongodb-org=3.4.17
+    name: mongodb-org=3.6.8
   notify:
     - Enable mongo
 
