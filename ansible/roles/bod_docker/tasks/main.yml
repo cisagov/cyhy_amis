@@ -199,15 +199,25 @@
 #
 # Create cron jobs for scanning and the sending of reports
 #
+- name: Add /usr/local/bin to cron's path
+  cron:
+    name: "Add /usr/local/bin to the cron path"
+    env: yes
+    name: PATH
+    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+    user: cyhy
+# This cron job runs at midnight UTC on Saturday mornings, so it
+# should be done by 2PM on Saturday.
 - name: Create a cron job for BOD 18-01 scanning
   cron:
     name: "BOD 18-01 scanning"
     minute: 0
-    hour: 4
+    hour: 0
     weekday: 6
     user: cyhy
-    job: "cd /var/cyhy/orchestrator && /usr/local/bin/docker-compose up -d"
-
+    job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
+# This cron job runs at noon UTC on Mondays.  The BOD reports are long
+# since completed by that time.
 - name: Create a cron job for sending BOD 18-01 reports
   cron:
     name: "Sending BOD 18-01 reports"
@@ -215,7 +225,7 @@
     hour: 12
     weekday: 1
     user: cyhy
-    job: "cd /var/cyhy/cyhy-mailer && /usr/local/bin/docker-compose up -d"
+    job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
 
 
 #
