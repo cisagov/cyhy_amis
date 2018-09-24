@@ -87,6 +87,9 @@ resource "aws_network_acl_rule" "private_egress_to_google_dns_2" {
 # Allow egress anywhere via ephemeral ports.  We could get away with
 # restricting this to the public subnet, except that FTP in passive
 # mode needs to be able to reach out anywhere.
+#
+# Note that this rule allows egress to the CyHy private subnet as
+# well.
 resource "aws_network_acl_rule" "private_egress_to_public_via_ephemeral_ports" {
   network_acl_id = "${aws_network_acl.bod_private_acl.id}"
   egress = true
@@ -96,16 +99,4 @@ resource "aws_network_acl_rule" "private_egress_to_public_via_ephemeral_ports" {
   cidr_block = "0.0.0.0/0"
   from_port = 1024
   to_port = 65535
-}
-
-# Allow MongoDB egress to the CyHy private subnet
-resource "aws_network_acl_rule" "private_egress_to_cyhy_private_via_mongodb" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
-  egress = true
-  protocol = "tcp"
-  rule_number = 150
-  rule_action = "allow"
-  cidr_block = "${aws_subnet.cyhy_private_subnet.cidr_block}"
-  from_port = 27017
-  to_port = 27017
 }
