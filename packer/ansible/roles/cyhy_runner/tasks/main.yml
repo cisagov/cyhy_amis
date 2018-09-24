@@ -71,19 +71,19 @@
 
 # Copy the systemd unit file
 - name: Copy the systemd unit file for cyhy-runner
-  when: "'debian' in group_names"
   copy:
     src: cyhy-runner.service
     dest: /lib/systemd/system/cyhy-runner.service
     mode: 0644
+  when: ansible_os_family == "Debian"
 
 # Copy the SysV init file
 - name: Copy the SysV init file for cyhy-runner
-  when: "'amazon-linux' in group_names"
   copy:
     src: cyhy-runner
     dest: /etc/init.d/cyhy-runner
     mode: 0755
+  when: ansible_os_family == "RedHat"
 
 # Enable cyhy-runner
 - name: Enable cyhy-runner

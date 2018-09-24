@@ -1,18 +1,9 @@
 ---
 # tasks file for htop
 
-- name: Install htop (debian group only)
-  apt:
-    name:
-      - htop
-    state: latest
-  when: "'debian' in group_names"
-
-- name: Install htop (amazon-linux group only)
-  yum:
-    name: htop
-    state: latest
-  when: "'amazon-linux' in group_names"
+- name: Install htop
+  action: >
+    {{ ansible_pkg_mgr }} name=htop state=latest
 
 - name: Copy over the htop configuration file
   copy:

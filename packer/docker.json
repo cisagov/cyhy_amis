@@ -50,7 +50,6 @@
             "type": "ansible",
             "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
-                "debian",
                 "docker",
                 "bod_docker"
             ]
