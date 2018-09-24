@@ -44,7 +44,7 @@ resource "aws_route53_record" "bod_bastion_A" {
   type = "A"
   ttl = 300
   records = [
-    "${aws_instance.bod_bastion.public_ip}"
+    "${aws_instance.bod_bastion.private_ip}"
   ]
 }
 
