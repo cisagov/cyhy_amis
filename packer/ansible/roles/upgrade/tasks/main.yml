@@ -1,22 +1,16 @@
 ---
 # tasks file for upgrade
-- name: Install aptitude (debian group only)
-  when: "'debian' in group_names"
+- name: Install aptitude
   apt:
     name: 'aptitude'
     state: latest
     update_cache: yes
     force_apt_get: yes
+  when: ansible_os_family == "Debian"
 
-- name: Upgrade the instance (debian group only)
-  when: "'debian' in group_names"
-  apt:
-    name: '*'
-    state: latest
-
-- name: Upgrade all packages (amazon-linux group only)
-  when: "'amazon-linux' in group_names"
-  yum:
+- name: Upgrade all packages
+  package:
     name: '*'
     state: latest
     update_cache: yes
+

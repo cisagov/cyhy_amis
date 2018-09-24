@@ -7,7 +7,7 @@
     name: 'python-pip'
     state: latest
   when:
-    - "'debian' in group_names"
+    - ansible_os_family == "Debian"
     - "'mongo' not in group_names"
 
 # Debian and mongo because mongo AMI is based on Debian Jessie
@@ -16,7 +16,7 @@
     name: pip
     state: latest
   when:
-    - "'debian' in group_names"
+    - ansible_os_family == "Debian"
     - "'mongo' in group_names"
 
 # python-dev is usually needed with pip to build the wheels
@@ -26,13 +26,13 @@
       - python-dev
     state: latest
   when:
-    - "'debian' in group_names"
+    - ansible_os_family == "Debian"
     - "'mongo' in group_names"
 
 # pip is already installed on Amazon Linux by default, so there is
 # nothing to be done in that case
 # - name: Install pip (amazon-linux group only)
-#   when: "'amazon-linux' in group_names"
 #   yum:
 #     name: 'python-pip'
 #     state: latest
+#   when: ansible_os_family == "RedHat"
