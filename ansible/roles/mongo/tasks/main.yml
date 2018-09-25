@@ -22,7 +22,8 @@
   register: checkifmongousers
   changed_when: false
 
-# HACK ALERT - Part 1: Install latest pymongo in order to use ansible mongodb_user
+# HACK ALERT - Part 1: Install pymongo 3.5 in order to use the Ansible
+# mongodb_user module
 #
 # Note that pymongo > 3.5 will fail right now, so we have to enforce
 # an old version:
