@@ -1,35 +1,7 @@
 ---
 # tasks file for nmap
 
-- name: Install svn, essential build tools, and nmap dependencies
-  apt:
-    name:
-      - build-essential
-      - subversion
-      - libssl-dev
-    state: latest
-
-- name: Checkout the latest nmap source code
-  subversion:
-    repo: https://svn.nmap.org/nmap
-    dest: /tmp/nmap
-
-- name: Configure nmap
-  command: ./configure
-  args:
-    chdir: /tmp/nmap
-
-- name: Build nmap
-  command: make -j4
-  args:
-    chdir: /tmp/nmap
-
 - name: Install nmap
-  command: make install
-  args:
-    chdir: /tmp/nmap
-
-- name: Remove nmap source code
-  file:
-    path: /tmp/nmap
-    state: absent
+  package:
+    name: nmap
+    state: latest
