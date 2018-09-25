@@ -32,7 +32,7 @@
 #
 # The forced installation of 3.5 should be removed once this issue
 # gets resolved.
-- name: Install latest pymongo
+- name: Install pymongo 3.5.  This should be changed to install the latest once that is possible.
   pip:
     name: pymongo
     version: 3.5
