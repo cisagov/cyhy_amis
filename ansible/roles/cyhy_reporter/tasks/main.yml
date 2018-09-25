@@ -72,7 +72,6 @@
 #
 - name: Add /usr/local/bin to cron's path
   cron:
-    name: "Add /usr/local/bin to the cron path"
     env: yes
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
