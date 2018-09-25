@@ -47,7 +47,7 @@
     password: "{{ mongo_users.admin_user.password }}"
     roles: "{{ mongo_users.admin_user.roles }}"
     state: present
-  when: checkifmongousers.rc == 1
+  when: checkifmongousers.rc != 0
 
 - name: Update other users (authenticate as admin)
   mongodb_user:
