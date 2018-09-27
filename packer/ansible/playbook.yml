@@ -68,6 +68,7 @@
   become: yes
   become_method: sudo
   roles:
+    - xfs
     - bod_docker
     - {
         role: disable_thp,
@@ -87,6 +88,7 @@
   become: yes
   become_method: sudo
   roles:
+    - xfs
     - pip
     - cyhy_reporter
 

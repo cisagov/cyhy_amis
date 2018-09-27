@@ -33,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_workspace ? 100 : 10}"
+    volume_size = 10
     delete_on_termination = true
   }
 
@@ -41,7 +41,7 @@ resource "aws_instance" "bod_docker" {
     "${aws_security_group.bod_docker_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered}"
+  user_data = "${data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
   volume_tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
@@ -64,4 +64,55 @@ module "bod_docker_ansible_provisioner" {
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
+}
+
+# Note that the EBS volumes contain production data. Therefore we need
+# these resources to be immortal in the "production" workspace, and so
+# I am using the prevent_destroy lifecycle element to disallow the
+# destruction of it via terraform in that case.
+#
+# I'd like to use "${terraform.workspace == "production" ? true :
+# false}", so the prevent_destroy only applies to the production
+# workspace, but it appears that interpolations are not supported
+# inside of the lifecycle block
+# (https://github.com/hashicorp/terraform/issues/3116).
+resource "aws_ebs_volume" "bod_report_data" {
+  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
+  type = "io1"
+  size = "${local.production_workspace ? 200 : 5}"
+  iops = 100
+  encrypted = true
+
+  tags = "${merge(var.tags, map("Name", "BOD Report Data"))}"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_volume_attachment" "bod_report_data_attachment" {
+  device_name = "/dev/xvdb"
+  volume_id = "${aws_ebs_volume.bod_report_data.id}"
+  instance_id = "${aws_instance.bod_docker.id}"
+
+  # Terraform attempts to destroy the volume attachments before it
+  # attempts to destroy the EC2 instance they are attached to.  EC2
+  # does not like that and it results in the failed destruction of the
+  # volume attachments.  To get around this, we explicitly terminate
+  # the bod_report volume via the AWS CLI in a destroy provisioner;
+  # this gracefully shuts down the instance and allows terraform to
+  # successfully destroy the volume attachments.
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.bod_docker.id}"
+    on_failure = "continue"
+  }
+
+  # Wait until bod_report instance is terminated before continuing on
+  provisioner "local-exec" {
+    when = "destroy"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.bod_docker.id}"
+  }
+
+  skip_destroy = true
 }
