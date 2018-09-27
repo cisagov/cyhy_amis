@@ -28,6 +28,7 @@ assert sys.version_info >= (3,7), 'This script requires Python version 3.7 or ne
 WORKSPACE_CONFIGS = {
                         'production':   {'nmap':64, 'nessus':3, 'mongo':1},
                         'felddy':       {'nmap':4, 'nessus':1, 'mongo':1},
+                        'jsf9k':        {'nmap':0, 'nessus':0, 'mongo':1},
                     }
 
 # the default configuration if a workspace is not defined above
