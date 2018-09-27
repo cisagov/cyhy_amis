@@ -59,7 +59,8 @@ module "bod_docker_ansible_provisioner" {
     "host=${aws_instance.bod_docker.private_ip}",
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
     "host_groups=docker,bod_docker",
-    "mongo_host=${aws_instance.cyhy_mongo.private_ip}"
+    "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
+    "production_workspace=${local.production_workspace}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

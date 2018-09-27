@@ -63,6 +63,7 @@ module "cyhy_reporter_ansible_provisioner" {
     "host=${aws_instance.cyhy_reporter.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_reporter",
+    "production_workspace=${local.production_workspace}",
     # We want to force ansible to rerun when the instance is recreated
     "instance_arn=${aws_instance.cyhy_reporter.arn}"
   ]

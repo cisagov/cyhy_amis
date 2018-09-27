@@ -205,6 +205,7 @@
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
     user: cyhy
+  when: production_workspace
 # This cron job runs at midnight UTC on Saturday mornings, so it
 # should be done by 2PM on Saturday.
 - name: Create a cron job for BOD 18-01 scanning
@@ -215,6 +216,7 @@
     weekday: 6
     user: cyhy
     job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
+  when: production_workspace
 # This cron job runs at noon UTC on Mondays.  The BOD reports are long
 # since completed by that time.
 - name: Create a cron job for sending BOD 18-01 reports
@@ -225,6 +227,7 @@
     weekday: 1
     user: cyhy
     job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
+  when: production_workspace
 
 
 #
