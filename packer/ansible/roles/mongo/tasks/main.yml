@@ -12,11 +12,11 @@
     mode: 0644
 
 - name: Update the cache with the mongodb-org goodness
-  apt:
+  package:
     update_cache: yes
 
 - name: Install mongo
-  apt:
+  package:
     name: mongodb-org=3.6.8
   notify:
     - Enable mongo
@@ -38,7 +38,7 @@
     line: ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config /etc/mongod.conf
 
 - name: Install pip
-  apt:
+  package:
     name: python-pip
     state: latest
 

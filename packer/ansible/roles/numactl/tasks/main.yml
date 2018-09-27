@@ -2,7 +2,7 @@
 # tasks file for numactl
 
 - name: Install numactl
-  apt:
+  package:
     name:
       - numactl
     state: latest

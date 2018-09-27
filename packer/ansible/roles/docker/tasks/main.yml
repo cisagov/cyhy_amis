@@ -1,7 +1,7 @@
 ---
 # tasks file for docker
 - name: Install prerequisites so apt can use a repo over HTTPS
-  apt:
+  package:
     name:
       - apt-transport-https
       - ca-certificates
@@ -21,22 +21,22 @@
     mode: 0644
 
 - name: Update the cache with the Docker goodness
-  apt:
+  package:
     update_cache: yes
 
 - name: Install docker
-  apt:
+  package:
     name:
       - docker-ce
   notify:
     - Enable docker
 
 - name: Install pip
-  apt:
+  package:
     name:
       - python-pip
 
 - name: Install docker-compose
-  pip:
+  package:
     name:
      - docker-compose

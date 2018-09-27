@@ -3,7 +3,7 @@
 
 # Debian, but not mongo because mongo AMI is based on Debian Jessie
 - name: Install pip
-  apt:
+  package:
     name: 'python-pip'
     state: latest
   when:
@@ -21,7 +21,7 @@
 
 # python-dev is usually needed with pip to build the wheels
 - name: Install python-dev
-  apt:
+  package:
     name:
       - python-dev
     state: latest
@@ -32,7 +32,7 @@
 # pip is already installed on Amazon Linux by default, so there is
 # nothing to be done in that case
 # - name: Install pip (amazon-linux group only)
-#   yum:
+#   package:
 #     name: 'python-pip'
 #     state: latest
 #   when: ansible_os_family == "RedHat"
