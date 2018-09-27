@@ -1,6 +1,6 @@
 ---
 # tasks file for xfs
 - name: Install xfsprogs
-  apt:
+  package:
     name: xfsprogs
     state: latest
