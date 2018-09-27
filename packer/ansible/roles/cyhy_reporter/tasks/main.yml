@@ -72,7 +72,7 @@
 # numpy than what is on the host.  Doing it this way seems to work
 # much better.
 - name: Install cyhy-webd dependencies
-  apt:
+  package:
     name:
       - python-numpy
       - python-dateutil
@@ -123,7 +123,7 @@
 # numpy than what is on the host.  Doing it this way seems to work
 # much better.
 - name: Install cyhy-reports dependencies
-  apt:
+  package:
     name:
       - python-mpltoolkits.basemap
       - python-numpy
@@ -164,7 +164,7 @@
 
 # rsync is required by synchronize
 - name: Install rsync
-  apt:
+  package:
     name:
       - rsync
     state: latest
@@ -177,6 +177,11 @@
 
 - name: Install the cyhy-reports fonts
   command: fc-cache --system-only
+
+- name: Create the mount point for the reports volume
+  file:
+    path: /var/cyhy/reports/output
+    state: directory
 
 #
 # Cleanup

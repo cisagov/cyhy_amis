@@ -1,7 +1,5 @@
 #cloud-config
 
-#device_aliases: {'mongo_data': '/dev/xvdb'}
-
 mounts:
   # Add new mounts to /etc/fstab, but don't automatically mount them
   # We must handle nested mounts in bootcmd section below
