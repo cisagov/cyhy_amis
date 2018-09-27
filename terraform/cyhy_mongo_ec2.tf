@@ -2,7 +2,7 @@ data "aws_ami" "cyhy_mongo" {
   filter {
     name = "name"
     values = [
-      "cyhy-mongo-hvm-*-amd64-ebs"
+      "cyhy-mongo-hvm-*-x86_64-ebs"
     ]
   }
 
@@ -57,7 +57,7 @@ resource "aws_instance" "cyhy_mongo" {
 
 # Provision the mongo EC2 instance via Ansible
 # TODO when we start using multiple mongo, move this to a dyn_mongo module
-# TODO see pattern of nmap and nessus 
+# TODO see pattern of nmap and nessus
 module "cyhy_mongo_ansible_provisioner" {
   source = "github.com/cloudposse/tf_ansible"
 
