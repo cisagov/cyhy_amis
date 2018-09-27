@@ -1,6 +1,6 @@
 ---
 # tasks file for mongo
-- name: Grab mongo users and paswords from S3
+- name: Grab mongo users and passwords from S3
   local_action:
     module: aws_s3
     bucket: ncats-cyhy-secrets
