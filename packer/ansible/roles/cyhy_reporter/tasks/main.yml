@@ -165,8 +165,7 @@
 # rsync is required by synchronize
 - name: Install rsync
   package:
-    name:
-      - rsync
+    name: rsync
     state: latest
 
 - name: Copy the cyhy-reports fonts
@@ -182,6 +181,13 @@
   file:
     path: /var/cyhy/reports/output
     state: directory
+
+# In production, the CyHy reporter instance is a c5 instance type.
+# These instance types expose EBS volumes as NVMe blovck devices.
+- name: Install nvme-cli
+  package:
+    name: nvme-cli
+    state: latest
 
 #
 # Cleanup
