@@ -219,15 +219,15 @@
   when: production_workspace
 # This cron job runs at noon UTC on Mondays.  The BOD reports are long
 # since completed by that time.
-- name: Create a cron job for sending BOD 18-01 reports
-  cron:
-    name: "Sending BOD 18-01 reports"
-    minute: 0
-    hour: 12
-    weekday: 1
-    user: cyhy
-    job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
-  when: production_workspace
+# - name: Create a cron job for sending BOD 18-01 reports
+#   cron:
+#     name: "Sending BOD 18-01 reports"
+#     minute: 0
+#     hour: 12
+#     weekday: 1
+#     user: cyhy
+#     job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
+#   when: production_workspace
 
 
 #
