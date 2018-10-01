@@ -83,11 +83,14 @@
     - pip
     - cyhy_commander
 
+# In production, the CyHy reporter instance is a c5 instance type.
+# These instance types expose EBS volumes as NVMe block devices.
 - hosts: cyhy_reporter
   name: Install and configure cyhy-reports
   become: yes
   become_method: sudo
   roles:
+    - nvme
     - xfs
     - pip
     - cyhy_reporter

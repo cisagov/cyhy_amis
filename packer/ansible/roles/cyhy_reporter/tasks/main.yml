@@ -165,8 +165,7 @@
 # rsync is required by synchronize
 - name: Install rsync
   package:
-    name:
-      - rsync
+    name: rsync
     state: latest
 
 - name: Copy the cyhy-reports fonts
