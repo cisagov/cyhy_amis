@@ -29,7 +29,7 @@ resource "aws_instance" "cyhy_nessus" {
 
   subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
   private_ip = "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, count.index + local.first_vuln_scanner)}"
-  associate_public_ip_address = true
+  associate_public_ip_address = false
 
   root_block_device {
     volume_type = "gp2"
