@@ -22,7 +22,7 @@ resource "aws_vpc_dhcp_options_association" "cyhy_vpc_dhcp" {
 # Private subnet of the VPC, for database and CyHy commander
 resource "aws_subnet" "cyhy_private_subnet" {
  vpc_id = "${aws_vpc.cyhy_vpc.id}"
- cidr_block = "10.10.10.0/24"
+ cidr_block = "10.10.10.0/25"
  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
  depends_on = [
@@ -38,28 +38,36 @@ resource "aws_subnet" "cyhy_scanner_subnet" {
   cidr_block = "10.10.11.0/24"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  depends_on = [
-    "aws_internet_gateway.cyhy_igw"
-  ]
-
   tags = "${merge(var.tags, map("Name", "CyHy Scanners"))}"
 }
 
-# Elastic IP for the NAT gateway
-resource "aws_eip" "cyhy_eip" {
-  vpc = true
+# Public subnet of the VPC
+# All traffic from scanner and private subnets will route through here
+resource "aws_subnet" "cyhy_public_subnet" {
+  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+  # TODO: Maybe make this subnet smaller?
+  cidr_block = "10.10.10.128/25"
+  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   depends_on = [
     "aws_internet_gateway.cyhy_igw"
   ]
 
-  tags = "${merge(var.tags, map("Name", "CyHy NATGW IP"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Public"))}"
+}
+
+# The Elastic IP to use for the CyHy NAT gateway
+# Defined in dhs-ncats/elastic-ips-terraform
+data "aws_eip" "cyhy_nat_gw_eip" {
+  # TODO: Maybe use IP (or list of IPs) here?
+  id = "eipalloc-02ead9a905b89b110"
 }
 
 # The NAT gateway for the VPC
+# Resides in public subnet; used by scanner and private subnets
 resource "aws_nat_gateway" "cyhy_nat_gw" {
-  allocation_id = "${aws_eip.cyhy_eip.id}"
-  subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
+  allocation_id = "${data.aws_eip.cyhy_nat_gw_eip.id}"
+  subnet_id = "${aws_subnet.cyhy_public_subnet.id}"
 
   depends_on = [
     "aws_internet_gateway.cyhy_igw"
@@ -75,7 +83,7 @@ resource "aws_internet_gateway" "cyhy_igw" {
   tags = "${merge(var.tags, map("Name", "CyHy IGW"))}"
 }
 
-# Default route table, which routes all external traffic through the
+# Default route table for VPC, which routes all external traffic through the
 # NAT gateway
 resource "aws_default_route_table" "cyhy_default_route_table" {
   default_route_table_id = "${aws_vpc.cyhy_vpc.default_route_table_id}"
@@ -83,39 +91,55 @@ resource "aws_default_route_table" "cyhy_default_route_table" {
   tags = "${merge(var.tags, map("Name", "CyHy NATGW"))}"
 }
 
-# Route all BOD traffic through the VPC peering connection
-resource "aws_route" "cyhy_route_external_traffic_through_vpc_peering_connection" {
-  route_table_id = "${aws_default_route_table.cyhy_default_route_table.id}"
-  destination_cidr_block = "${aws_vpc.bod_vpc.cidr_block}"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection.id}"
-}
-
-# Route all external traffic through the NAT gateway
-resource "aws_route" "cyhy_route_external_traffic_through_nat_gateway" {
+# Default route: Route all external traffic through the NAT gateway
+resource "aws_route" "cyhy_default_route_external_traffic_through_nat_gateway" {
   route_table_id = "${aws_default_route_table.cyhy_default_route_table.id}"
   destination_cidr_block = "0.0.0.0/0"
   nat_gateway_id = "${aws_nat_gateway.cyhy_nat_gw.id}"
 }
 
-# Route table for our scanner subnet, which routes all external traffic
-# through the internet gateway
-resource "aws_route_table" "cyhy_scanner_route_table" {
+# Route table for our private subnet, which routes:
+# - all BOD traffic through the VPC peering connection
+# - all other external traffic through the NAT gateway
+resource "aws_route_table" "cyhy_private_route_table" {
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
 
-  tags = "${merge(var.tags, map("Name", "CyHy Scanners IGW"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Private"))}"
 }
 
-# Route all external traffic through the internet gateway
-resource "aws_route" "cyhy_route_external_traffic_through_internet_gateway" {
-  route_table_id = "${aws_route_table.cyhy_scanner_route_table.id}"
+# Private route: Route all BOD traffic through the VPC peering connection
+resource "aws_route" "cyhy_private_route_external_traffic_through_vpc_peering_connection" {
+  route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
+  destination_cidr_block = "${aws_vpc.bod_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection.id}"
+}
+
+# Private route: Route all (non-BOD) external traffic through the NAT gateway
+resource "aws_route" "cyhy_private_route_external_traffic_through_nat_gateway" {
+  route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = "${aws_nat_gateway.cyhy_nat_gw.id}"
+}
+
+# Route table for our public subnet, which routes all external traffic
+# through the internet gateway
+resource "aws_route_table" "cyhy_public_route_table" {
+  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+
+  tags = "${merge(var.tags, map("Name", "CyHy Public"))}"
+}
+
+# Public route: Route all external traffic through the internet gateway
+resource "aws_route" "cyhy_public_route_external_traffic_through_internet_gateway" {
+  route_table_id = "${aws_route_table.cyhy_public_route_table.id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id = "${aws_internet_gateway.cyhy_igw.id}"
 }
 
-# Associate the route table with the scanner subnet
+# Associate the route table with the public subnet
 resource "aws_route_table_association" "cyhy_association" {
-  subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
-  route_table_id = "${aws_route_table.cyhy_scanner_route_table.id}"
+  subnet_id = "${aws_subnet.cyhy_public_subnet.id}"
+  route_table_id = "${aws_route_table.cyhy_public_route_table.id}"
 }
 
 # ACL for the private subnet of the VPC
@@ -136,6 +160,16 @@ resource "aws_network_acl" "cyhy_scanner_acl" {
   ]
 
   tags = "${merge(var.tags, map("Name", "CyHy Scanners"))}"
+}
+
+# ACL for the public subnet of the VPC
+resource "aws_network_acl" "cyhy_public_acl" {
+  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+  subnet_ids = [
+    "${aws_subnet.cyhy_public_subnet.id}"
+  ]
+
+  tags = "${merge(var.tags, map("Name", "CyHy Public"))}"
 }
 
 # Security group for the private portion of the VPC
