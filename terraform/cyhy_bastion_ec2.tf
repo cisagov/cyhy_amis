@@ -6,8 +6,8 @@ resource "aws_instance" "cyhy_bastion" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the public subnet
-  subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
-  private_ip = "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, local.the_bastion)}"
+  subnet_id = "${aws_subnet.cyhy_public_subnet.id}"
+  private_ip = "${cidrhost(aws_subnet.cyhy_public_subnet.cidr_block, local.the_bastion)}"
   associate_public_ip_address = true
 
   root_block_device {

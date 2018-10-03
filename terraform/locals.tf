@@ -82,5 +82,5 @@ locals {
 
   # Singleton DNS entries
   the_reporter = 6  # there can be only one
-  the_bastion = 254 # there can be only one
+  the_bastion = 126 # there can be only one
 }

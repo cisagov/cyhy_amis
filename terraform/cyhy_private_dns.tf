@@ -37,7 +37,7 @@ resource "aws_route53_record" "cyhy_bastion_A" {
   name    = "bastion.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, local.the_bastion)}" ]
+  records = [ "${cidrhost(aws_subnet.cyhy_public_subnet.cidr_block, local.the_bastion)}" ]
 }
 
 resource "aws_route53_record" "cyhy_reporter_A" {
