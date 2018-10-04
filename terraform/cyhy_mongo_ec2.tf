@@ -26,13 +26,8 @@ resource "aws_instance" "cyhy_mongo" {
   #count = "${local.mongo_instance_count}"
   ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
-
   subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
-  # TODO when we start using multiple mongo, change private_ip calculation below
-  #private_ip = "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, count.index + local.first_database)}"
-  private_ip = "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, local.first_database)}"
-
-  # associate_public_ip_address = true
+  associate_public_ip_address = false
 
   root_block_device {
     volume_type = "gp2"
