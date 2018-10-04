@@ -88,8 +88,6 @@ resource "aws_ebs_volume" "cyhy_reporter_data" {
   iops = 100
   encrypted = true
 
-  tags = "${merge(var.tags, map("Name", "CyHy Reporter Data"))}"
-
   lifecycle {
     prevent_destroy = true
   }
