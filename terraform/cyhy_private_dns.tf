@@ -188,6 +188,7 @@ resource "aws_route53_record" "cyhy_rev_reporter_PTR" {
 }
 
 resource "aws_route53_record" "cyhy_rev_database_PTR" {
+  count = "${local.count_database}"
   zone_id = "${aws_route53_zone.cyhy_private_zone_reverse.zone_id}"
   name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
     element(split(".", aws_instance.cyhy_mongo.private_ip), 3),
@@ -197,5 +198,5 @@ resource "aws_route53_record" "cyhy_rev_database_PTR" {
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "database1.${local.cyhy_private_domain}." ]
+  records = [ "database${count.index + 1}.${local.cyhy_private_domain}." ]
 }
