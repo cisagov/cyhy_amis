@@ -33,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 10
+    volume_size = 200
     delete_on_termination = true
   }
 
