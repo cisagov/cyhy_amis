@@ -83,8 +83,6 @@ resource "aws_ebs_volume" "bod_report_data" {
   iops = 100
   encrypted = true
 
-  tags = "${merge(var.tags, map("Name", "BOD Report Data"))}"
-
   lifecycle {
     prevent_destroy = true
   }
