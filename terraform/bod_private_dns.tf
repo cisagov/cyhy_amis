@@ -65,9 +65,9 @@ resource "aws_route53_record" "bod_docker_A" {
 resource "aws_route53_zone" "bod_public_zone_reverse" {
   # NOTE:  This assumes that we are using /24 blocks
   name = "${format("%s.%s.%s.in-addr.arpa.",
-    element( split(".", aws_subnet.bod_public_subnet.cidr_block) ,2),
-    element( split(".", aws_subnet.bod_public_subnet.cidr_block) ,1),
-    element( split(".", aws_subnet.bod_public_subnet.cidr_block) ,0),
+    element( split(".", aws_subnet.bod_public_subnet.cidr_block), 2),
+    element( split(".", aws_subnet.bod_public_subnet.cidr_block), 1),
+    element( split(".", aws_subnet.bod_public_subnet.cidr_block), 0),
   )}"
 
   vpc_id = "${aws_vpc.bod_vpc.id}"
@@ -108,10 +108,10 @@ resource "aws_route53_record" "bod_rev_3_PTR" {
 resource "aws_route53_record" "bod_rev_bastion_PTR" {
   zone_id = "${aws_route53_zone.bod_public_zone_reverse.zone_id}"
   name = "${format("%s.%s.%s.%s.in-addr.arpa.",
-    element( split(".", aws_instance.bod_bastion.private_ip) ,3),
-    element( split(".", aws_instance.bod_bastion.private_ip) ,2),
-    element( split(".", aws_instance.bod_bastion.private_ip) ,1),
-    element( split(".", aws_instance.bod_bastion.private_ip) ,0),
+    element( split(".", aws_instance.bod_bastion.private_ip), 3),
+    element( split(".", aws_instance.bod_bastion.private_ip), 2),
+    element( split(".", aws_instance.bod_bastion.private_ip), 1),
+    element( split(".", aws_instance.bod_bastion.private_ip), 0),
   )}"
   type = "PTR"
   ttl = 300
@@ -127,9 +127,9 @@ resource "aws_route53_record" "bod_rev_bastion_PTR" {
 resource "aws_route53_zone" "bod_private_zone_reverse" {
   # NOTE:  This assumes that we are using /24 blocks
   name = "${format("%s.%s.%s.in-addr.arpa.",
-    element( split(".", aws_subnet.bod_private_subnet.cidr_block) ,2),
-    element( split(".", aws_subnet.bod_private_subnet.cidr_block) ,1),
-    element( split(".", aws_subnet.bod_private_subnet.cidr_block) ,0),
+    element( split(".", aws_subnet.bod_private_subnet.cidr_block), 2),
+    element( split(".", aws_subnet.bod_private_subnet.cidr_block), 1),
+    element( split(".", aws_subnet.bod_private_subnet.cidr_block), 0),
   )}"
 
   vpc_id = "${aws_vpc.bod_vpc.id}"
@@ -140,10 +140,10 @@ resource "aws_route53_zone" "bod_private_zone_reverse" {
 resource "aws_route53_record" "bod_rev_docker_PTR" {
   zone_id = "${aws_route53_zone.bod_private_zone_reverse.zone_id}"
   name = "${format("%s.%s.%s.%s.in-addr.arpa.",
-    element( split(".", aws_instance.bod_docker.private_ip) ,3),
-    element( split(".", aws_instance.bod_docker.private_ip) ,2),
-    element( split(".", aws_instance.bod_docker.private_ip) ,1),
-    element( split(".", aws_instance.bod_docker.private_ip) ,0),
+    element( split(".", aws_instance.bod_docker.private_ip), 3),
+    element( split(".", aws_instance.bod_docker.private_ip), 2),
+    element( split(".", aws_instance.bod_docker.private_ip), 1),
+    element( split(".", aws_instance.bod_docker.private_ip), 0),
   )}"
   type = "PTR"
   ttl = 300
