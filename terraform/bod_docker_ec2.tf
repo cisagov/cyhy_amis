@@ -33,7 +33,7 @@ resource "aws_instance" "bod_docker" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 10
+    volume_size = 200
     delete_on_termination = true
   }
 
@@ -82,8 +82,6 @@ resource "aws_ebs_volume" "bod_report_data" {
   size = "${local.production_workspace ? 200 : 5}"
   iops = 100
   encrypted = true
-
-  tags = "${merge(var.tags, map("Name", "BOD Report Data"))}"
 
   lifecycle {
     prevent_destroy = true

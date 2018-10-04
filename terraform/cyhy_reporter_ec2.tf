@@ -29,7 +29,6 @@ resource "aws_instance" "cyhy_reporter" {
 
   # This is the private subnet
   subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
-  private_ip = "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, local.the_reporter)}"
   associate_public_ip_address = false
 
   root_block_device {
@@ -87,8 +86,6 @@ resource "aws_ebs_volume" "cyhy_reporter_data" {
   size = "${local.production_workspace ? 200 : 5}"
   iops = 100
   encrypted = true
-
-  tags = "${merge(var.tags, map("Name", "CyHy Reporter Data"))}"
 
   lifecycle {
     prevent_destroy = true

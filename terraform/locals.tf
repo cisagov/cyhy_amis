@@ -63,24 +63,18 @@ locals {
   # otherwise it must end in a period
   bod_public_subdomain = "bod."
 
-  # DNS zone calculations based on requested instances
-  # The numbers represent the count of IP addresses in a subnet
-  # and are used by the cidrhost() function.
-  # NOTE: there is an assumption that subnets are /24 in the reverse zone names
+  # DNS zone calculations based on requested instances.  The numbers
+  # represent the count of IP addresses in a subnet.
+  #
+  # NOTE: there is an assumption that subnets are /24 in the reverse
+  # zone names.
 
   # Port Scanners DNS entries
-  first_port_scanner = 11
   count_port_scanner = "${local.nmap_instance_count}"
 
   # Vulnerability Scanners DNS entries
-  first_vuln_scanner = 201
   count_vuln_scanner = "${local.nessus_instance_count}"
 
   # Database DNS entries
-  first_database = 11
   count_database = "${local.mongo_instance_count}"
-
-  # Singleton DNS entries
-  the_reporter = 6  # there can be only one
-  the_bastion = 126 # there can be only one
 }
