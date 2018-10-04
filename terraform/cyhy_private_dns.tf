@@ -37,7 +37,7 @@ resource "aws_route53_record" "cyhy_bastion_A" {
   name    = "bastion.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, local.the_bastion)}" ]
+  records = [ "${aws_instance.cyhy_bastion.private_ip}" ]
 }
 
 resource "aws_route53_record" "cyhy_reporter_A" {
@@ -45,7 +45,7 @@ resource "aws_route53_record" "cyhy_reporter_A" {
   name    = "reporter.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, local.the_reporter)}" ]
+  records = [ "${aws_instance.cyhy_reporter.private_ip}"]
 }
 
 resource "aws_route53_record" "cyhy_database_A" {
@@ -54,7 +54,7 @@ resource "aws_route53_record" "cyhy_database_A" {
   name    = "database${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, count.index + local.first_database)}" ]
+  records = [ "${aws_instance.cyhy_mongo.private_ip}" ]
 }
 
 resource "aws_route53_record" "cyhy_portscan_A" {
@@ -63,7 +63,7 @@ resource "aws_route53_record" "cyhy_portscan_A" {
   name    = "portscan${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, count.index + local.first_port_scanner)}" ]
+  records = [ "${aws_instance.cyhy_nmap.*.private_ip[count.index]}" ]
 }
 
 resource "aws_route53_record" "cyhy_vulnscan_A" {
@@ -72,7 +72,7 @@ resource "aws_route53_record" "cyhy_vulnscan_A" {
   name    = "vulnscan${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, count.index + local.first_vuln_scanner)}" ]
+  records = [ "${aws_instance.cyhy_nessus.*.private_ip[count.index]}" ]
 }
 
 ##################################
@@ -82,9 +82,9 @@ resource "aws_route53_record" "cyhy_vulnscan_A" {
 resource "aws_route53_zone" "cyhy_scanner_zone_reverse" {
   # NOTE:  This assumes that we are using /24 blocks
   name = "${format("%s.%s.%s.in-addr.arpa.",
-    element( split(".", aws_subnet.cyhy_scanner_subnet.cidr_block) ,2),
-    element( split(".", aws_subnet.cyhy_scanner_subnet.cidr_block) ,1),
-    element( split(".", aws_subnet.cyhy_scanner_subnet.cidr_block) ,0),
+    element(split(".", aws_subnet.cyhy_scanner_subnet.cidr_block) ,2),
+    element(split(".", aws_subnet.cyhy_scanner_subnet.cidr_block) ,1),
+    element(split(".", aws_subnet.cyhy_scanner_subnet.cidr_block) ,0),
   )}"
 
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
@@ -118,7 +118,12 @@ resource "aws_route53_record" "cyhy_rev_3_PTR" {
 
 resource "aws_route53_record" "cyhy_rev_bastion_PTR" {
   zone_id = "${aws_route53_zone.cyhy_scanner_zone_reverse.zone_id}"
-  name    = "${local.the_bastion}.${aws_route53_zone.cyhy_scanner_zone_reverse.name}"
+  name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
+    element(split(".", aws_instance.cyhy_bastion.private_ip) ,3),
+    element(split(".", aws_instance.cyhy_bastion.private_ip) ,2),
+    element(split(".", aws_instance.cyhy_bastion.private_ip) ,1),
+    element(split(".", aws_instance.cyhy_bastion.private_ip) ,0),
+  )}"
   type    = "PTR"
   ttl     = 300
   records = [ "bastion.${local.cyhy_private_domain}." ]
@@ -127,7 +132,12 @@ resource "aws_route53_record" "cyhy_rev_bastion_PTR" {
 resource "aws_route53_record" "cyhy_rev_portscan_PTR" {
   count = "${local.count_port_scanner}"
   zone_id = "${aws_route53_zone.cyhy_scanner_zone_reverse.zone_id}"
-  name    = "${local.first_port_scanner + count.index}.${aws_route53_zone.cyhy_scanner_zone_reverse.name}"
+  name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
+    element(split(".", element(aws_instance.cyhy_nmap.*.private_ip, count.index)) ,3),
+    element(split(".", element(aws_instance.cyhy_nmap.*.private_ip, count.index)) ,2),
+    element(split(".", element(aws_instance.cyhy_nmap.*.private_ip, count.index)) ,1),
+    element(split(".", element(aws_instance.cyhy_nmap.*.private_ip, count.index)) ,0),
+  )}"
   type    = "PTR"
   ttl     = 300
   records = [ "portscan${count.index + 1}.${local.cyhy_private_domain}." ]
@@ -136,7 +146,12 @@ resource "aws_route53_record" "cyhy_rev_portscan_PTR" {
 resource "aws_route53_record" "cyhy_rev_vulnscan_PTR" {
   count = "${local.count_vuln_scanner}"
   zone_id = "${aws_route53_zone.cyhy_scanner_zone_reverse.zone_id}"
-  name    = "${local.first_vuln_scanner + count.index}.${aws_route53_zone.cyhy_scanner_zone_reverse.name}"
+  name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
+    element(split(".", element(aws_instance.cyhy_nessus.*.private_ip, count.index)) ,3),
+    element(split(".", element(aws_instance.cyhy_nessus.*.private_ip, count.index)) ,2),
+    element(split(".", element(aws_instance.cyhy_nessus.*.private_ip, count.index)) ,1),
+    element(split(".", element(aws_instance.cyhy_nessus.*.private_ip, count.index)) ,0),
+  )}"
   type    = "PTR"
   ttl     = 300
   records = [ "vulnscan${count.index + 1}.${local.cyhy_private_domain}." ]
@@ -149,9 +164,9 @@ resource "aws_route53_record" "cyhy_rev_vulnscan_PTR" {
 resource "aws_route53_zone" "cyhy_private_zone_reverse" {
   # NOTE:  This assumes that we are using /24 blocks
   name = "${format("%s.%s.%s.in-addr.arpa.",
-    element( split(".", aws_subnet.cyhy_private_subnet.cidr_block) ,2),
-    element( split(".", aws_subnet.cyhy_private_subnet.cidr_block) ,1),
-    element( split(".", aws_subnet.cyhy_private_subnet.cidr_block) ,0),
+    element(split(".", aws_subnet.cyhy_private_subnet.cidr_block) ,2),
+    element(split(".", aws_subnet.cyhy_private_subnet.cidr_block) ,1),
+    element(split(".", aws_subnet.cyhy_private_subnet.cidr_block) ,0),
   )}"
 
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
@@ -161,17 +176,26 @@ resource "aws_route53_zone" "cyhy_private_zone_reverse" {
 
 resource "aws_route53_record" "cyhy_rev_reporter_PTR" {
   zone_id = "${aws_route53_zone.cyhy_private_zone_reverse.zone_id}"
-  name    = "${local.the_reporter}.${aws_route53_zone.cyhy_private_zone_reverse.name}"
+  name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
+    element(split(".", aws_instance.cyhy_reporter.private_ip) ,3),
+    element(split(".", aws_instance.cyhy_reporter.private_ip) ,2),
+    element(split(".", aws_instance.cyhy_reporter.private_ip) ,1),
+    element(split(".", aws_instance.cyhy_reporter.private_ip) ,0),
+  )}"
   type    = "PTR"
   ttl     = 300
   records = [ "reporter.${local.cyhy_private_domain}." ]
 }
 
 resource "aws_route53_record" "cyhy_rev_database_PTR" {
-  count = "${local.count_database}"
   zone_id = "${aws_route53_zone.cyhy_private_zone_reverse.zone_id}"
-  name    = "${local.first_database + count.index}.${aws_route53_zone.cyhy_private_zone_reverse.name}"
+  name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
+    element(split(".", aws_instance.cyhy_mongo.private_ip) ,3),
+    element(split(".", aws_instance.cyhy_mongo.private_ip) ,2),
+    element(split(".", aws_instance.cyhy_mongo.private_ip) ,1),
+    element(split(".", aws_instance.cyhy_mongo.private_ip) ,0),
+  )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "database${count.index + 1}.${local.cyhy_private_domain}." ]
+  records = [ "database1.${local.cyhy_private_domain}." ]
 }
