@@ -30,6 +30,8 @@
     group: cyhy
     state: directory
     recurse: yes
+  async: 180
+  poll: 10
 
 #
 # Add the cyhy user to the docker group
