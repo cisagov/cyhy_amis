@@ -7,3 +7,5 @@
     regexp: ^#Storage=
     state: present
     line: Storage=persistent
+  when:
+    - ansible_service_mgr == "systemd"
