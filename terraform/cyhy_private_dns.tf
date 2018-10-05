@@ -10,7 +10,7 @@ resource "aws_route53_record" "cyhy_router_A" {
   name    = "router.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 1)}",
+  records = [ "${cidrhost(aws_subnet.cyhy_portscanner_subnet.cidr_block, 1)}",
               "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 1)}"]
 }
 
@@ -19,7 +19,7 @@ resource "aws_route53_record" "cyhy_ns_A" {
   name    = "ns.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 2)}",
+  records = [ "${cidrhost(aws_subnet.cyhy_portscanner_subnet.cidr_block, 2)}",
               "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 2)}"]
 }
 
@@ -28,7 +28,7 @@ resource "aws_route53_record" "cyhy_reserved_A" {
   name    = "reserved.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${cidrhost(aws_subnet.cyhy_scanner_subnet.cidr_block, 3)}",
+  records = [ "${cidrhost(aws_subnet.cyhy_portscanner_subnet.cidr_block, 3)}",
               "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, 3)}"]
 }
 
@@ -82,9 +82,9 @@ resource "aws_route53_record" "cyhy_vulnscan_A" {
 resource "aws_route53_zone" "cyhy_scanner_zone_reverse" {
   # NOTE:  This assumes that we are using /24 blocks
   name = "${format("%s.%s.%s.in-addr.arpa.",
-    element(split(".", aws_subnet.cyhy_scanner_subnet.cidr_block), 2),
-    element(split(".", aws_subnet.cyhy_scanner_subnet.cidr_block), 1),
-    element(split(".", aws_subnet.cyhy_scanner_subnet.cidr_block), 0),
+    element(split(".", aws_subnet.cyhy_portscanner_subnet.cidr_block), 2),
+    element(split(".", aws_subnet.cyhy_portscanner_subnet.cidr_block), 1),
+    element(split(".", aws_subnet.cyhy_portscanner_subnet.cidr_block), 0),
   )}"
 
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
