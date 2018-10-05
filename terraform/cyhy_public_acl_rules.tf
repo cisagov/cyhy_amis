@@ -65,16 +65,27 @@ resource "aws_network_acl_rule" "public_ingress_from_private_via_https" {
   to_port = 443
 }
 
-# Allow ingress from scanner subnet on any protocol and port, needed for
-# outbound scans from scanner subnet, which go through the
+# Allow ingress from both scanner subnets on any protocol and port, needed for
+# outbound scans from scanner subnets, which go through the
 # NAT GW (resides in public subnet)
-resource "aws_network_acl_rule" "public_ingress_from_scanner_via_any_port" {
+resource "aws_network_acl_rule" "public_ingress_from_portscanner_via_any_port" {
   network_acl_id = "${aws_network_acl.cyhy_public_acl.id}"
   egress = false
   protocol = "-1"
   rule_number = 160
   rule_action = "allow"
-  cidr_block = "${aws_subnet.cyhy_scanner_subnet.cidr_block}"
+  cidr_block = "${aws_subnet.cyhy_portscanner_subnet.cidr_block}"
+  from_port = 0
+  to_port = 0
+}
+
+resource "aws_network_acl_rule" "public_ingress_from_vulncanner_via_any_port" {
+  network_acl_id = "${aws_network_acl.cyhy_public_acl.id}"
+  egress = false
+  protocol = "-1"
+  rule_number = 170
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.cyhy_vulnscanner_subnet.cidr_block}"
   from_port = 0
   to_port = 0
 }
