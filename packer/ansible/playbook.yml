@@ -1,12 +1,13 @@
 ---
 - hosts: all
-  name: Update the base image, install python, add banner
+  name: Update the base image, install python, add banner, persist journald
   become: yes
   become_method: sudo
   roles:
     - upgrade
     - python
     - banner
+    - journald
 
 # The bastion should have as little installed as possible, since it's
 # exposed to the cruel world

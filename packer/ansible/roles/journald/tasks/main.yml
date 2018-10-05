@@ -1,0 +1,9 @@
+---
+# tasks file for journald
+
+- name: Configure journald to persist storage
+  lineinfile:
+    dest: /etc/systemd/journald.conf
+    regexp: ^#Storage=
+    state: present
+    line: Storage=persistent
