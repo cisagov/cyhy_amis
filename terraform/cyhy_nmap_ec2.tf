@@ -31,7 +31,7 @@ resource "aws_instance" "cyhy_nmap" {
   # this will also require creating a scanner subnet in each availability zone
   # availability_zone = "${element(data.aws_availability_zones.all.names, count.index)}"
 
-  subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
+  subnet_id = "${aws_subnet.cyhy_portscanner_subnet.id}"
   associate_public_ip_address = false
 
   root_block_device {
