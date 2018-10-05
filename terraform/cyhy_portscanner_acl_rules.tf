@@ -1,8 +1,8 @@
 # Allow ingress from public subnet (NAT gateway) via the Nessus UI and ssh ports
-resource "aws_network_acl_rule" "scanner_ingress_from_public_via_nessus_and_ssh" {
+resource "aws_network_acl_rule" "portscanner_ingress_from_public_via_nessus_and_ssh" {
   count = "${length(local.cyhy_trusted_ingress_ports)}"
 
-  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  network_acl_id = "${aws_network_acl.cyhy_portscanner_acl.id}"
   egress = false
   protocol = "tcp"
   rule_number = "${100 + count.index}"
@@ -13,10 +13,10 @@ resource "aws_network_acl_rule" "scanner_ingress_from_public_via_nessus_and_ssh"
 }
 
 # Allow ingress from anywhere via ephemeral ports
-resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ephemeral_ports" {
+resource "aws_network_acl_rule" "portscanner_ingress_from_anywhere_via_ephemeral_ports" {
   count = "${length(local.tcp_and_udp)}"
 
-  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+  network_acl_id = "${aws_network_acl.cyhy_portscanner_acl.id}"
   egress = false
   protocol = "${local.tcp_and_udp[count.index]}"
   rule_number = "${120 + count.index}"
@@ -28,8 +28,8 @@ resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_ephemeral_por
 
 # Allow all ICMP traffic to ingress, since we're scanning and will
 # want ping responses, etc.
-resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_icmp" {
-  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+resource "aws_network_acl_rule" "portscanner_ingress_from_anywhere_via_icmp" {
+  network_acl_id = "${aws_network_acl.cyhy_portscanner_acl.id}"
   egress = false
   protocol = "icmp"
   rule_number = 135
@@ -40,8 +40,8 @@ resource "aws_network_acl_rule" "scanner_ingress_from_anywhere_via_icmp" {
 }
 
 # Allow ssh ingress from private subnet, needed for commander ssh to scanners
-resource "aws_network_acl_rule" "scanner_ingress_from_private_via_ssh" {
-  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+resource "aws_network_acl_rule" "portscanner_ingress_from_private_via_ssh" {
+  network_acl_id = "${aws_network_acl.cyhy_portscanner_acl.id}"
   egress = false
   protocol = "tcp"
   rule_number = 140
@@ -53,8 +53,8 @@ resource "aws_network_acl_rule" "scanner_ingress_from_private_via_ssh" {
 
 # Allow egress to anywhere via any protocol and port, since we're
 # scanning
-resource "aws_network_acl_rule" "scanner_egress_to_anywhere_via_any_port" {
-  network_acl_id = "${aws_network_acl.cyhy_scanner_acl.id}"
+resource "aws_network_acl_rule" "portscanner_egress_to_anywhere_via_any_port" {
+  network_acl_id = "${aws_network_acl.cyhy_portscanner_acl.id}"
   egress = true
   protocol = "-1"
   rule_number = 150
