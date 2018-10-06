@@ -66,22 +66,52 @@ resource "aws_subnet" "cyhy_public_subnet" {
   tags = "${merge(var.tags, map("Name", "CyHy Public"))}"
 }
 
-# The Elastic IP to use for the CyHy Port Scanner NAT gateway
-# Created via dhs-ncats/elastic-ips-terraform
+# The Elastic IPs for the *Production* CyHy Port/Vuln Scanner NAT gateways
+# Can be created via dhs-ncats/elastic-ips-terraform or manually
+# Intended to be public IP addresses that rarely change
 data "aws_eip" "cyhy_portscan_nat_gw_eip" {
+  count = "${local.production_workspace ? 1 : 0}"
   public_ip = "${var.cyhy_portscan_nat_gw_elastic_ip}"
 }
 
-# The Elastic IP to use for the CyHy Vuln Scanner NAT gateway
-# Created via dhs-ncats/elastic-ips-terraform
 data "aws_eip" "cyhy_vulnscan_nat_gw_eip" {
+  count = "${local.production_workspace ? 1 : 0}"
   public_ip = "${var.cyhy_vulnscan_nat_gw_elastic_ip}"
+}
+
+# The Elastic IPs for the *Non-Production* CyHy Port/Vuln Scanner NAT gateways
+# Only created in *non-production* workspaces
+# This are randomly-assigned public IP addresses for temporary use
+resource "aws_eip" "cyhy_portscan_nat_gw_random_eip" {
+  count = "${local.production_workspace ? 0 : 1}"
+  vpc = true
+  tags = "${merge(var.tags, map("Name", "CyHy Port Scanner NATGW EIP", "Publish Egress", "True"))}"
+}
+
+resource "aws_eip" "cyhy_vulnscan_nat_gw_random_eip" {
+  count = "${local.production_workspace ? 0 : 1}"
+  vpc = true
+  tags = "${merge(var.tags, map("Name", "CyHy Vuln Scanner NATGW EIP", "Publish Egress", "True"))}"
 }
 
 # The Port Scanner NAT gateway for the VPC
 # Resides in public subnet; used by portscanner and private subnets
 resource "aws_nat_gateway" "cyhy_portscanner_nat_gw" {
-  allocation_id = "${data.aws_eip.cyhy_portscan_nat_gw_eip.id}"
+  # Since our elastic IPs are handled differently in production vs.
+  # non-production workspaces, their corresponding terraform resources
+  # (data.aws_eip.cyhy_portscan_nat_gw_eip,
+  #  data.aws_eip.cyhy_vulnscan_nat_gw_eip,
+  #  aws_eip.cyhy_portscan_nat_gw_random_eip,
+  #  aws_eip.cyhy_vulncan_nat_gw_random_eip)
+  # may or may not be created.  To handle that, we use "splat syntax" (the *),
+  # which resolves to either an empty list (if the resource is not present in
+  # the current workspace) or a valid list (if the resource is present).  Then
+  # we use coalescelist() to choose the (non-empty) list containing the valid
+  # eip.id. Finally, we use element() to choose the first element in that
+  # non-empty list, which is the allocation_id of our elastic IP.
+  # See https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
+  # VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
+  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_portscan_nat_gw_eip.*.id, aws_eip.cyhy_portscan_nat_gw_random_eip.*.id), 0)}"
   subnet_id = "${aws_subnet.cyhy_public_subnet.id}"
 
   depends_on = [
@@ -94,7 +124,9 @@ resource "aws_nat_gateway" "cyhy_portscanner_nat_gw" {
 # The Vuln Scanner NAT gateway for the VPC
 # Resides in public subnet; used by vulnscanner subnet
 resource "aws_nat_gateway" "cyhy_vulnscanner_nat_gw" {
-  allocation_id = "${data.aws_eip.cyhy_vulnscan_nat_gw_eip.id}"
+  # See comment above (aws_nat_gateway.cyhy_portscanner_nat_gw) explaining
+  # the next trainwreck of a line
+  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_vulnscan_nat_gw_eip.*.id, aws_eip.cyhy_vulnscan_nat_gw_random_eip.*.id), 0)}"
   subnet_id = "${aws_subnet.cyhy_public_subnet.id}"
 
   depends_on = [
