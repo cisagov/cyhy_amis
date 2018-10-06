@@ -1,15 +1,13 @@
-# Allow ingress from public subnet (NAT gateway) via the Nessus UI and ssh ports
-resource "aws_network_acl_rule" "portscanner_ingress_from_public_via_nessus_and_ssh" {
-  count = "${length(local.cyhy_trusted_ingress_ports)}"
-
+# Allow ingress from public subnet (bastion) via ssh
+resource "aws_network_acl_rule" "portscanner_ingress_from_public_via_ssh" {
   network_acl_id = "${aws_network_acl.cyhy_portscanner_acl.id}"
   egress = false
   protocol = "tcp"
-  rule_number = "${100 + count.index}"
+  rule_number = "100"
   rule_action = "allow"
   cidr_block = "${aws_subnet.cyhy_public_subnet.cidr_block}"
-  from_port = "${local.cyhy_trusted_ingress_ports[count.index]}"
-  to_port = "${local.cyhy_trusted_ingress_ports[count.index]}"
+  from_port = 22
+  to_port = 22
 }
 
 # Allow ingress from anywhere via ephemeral ports
