@@ -1,4 +1,4 @@
-# Allow ingress from public subnet (NAT gateway) via the Nessus UI and ssh ports
+# Allow ingress from public subnet (bastion) via the Nessus UI and ssh ports
 resource "aws_network_acl_rule" "vulnscanner_ingress_from_public_via_nessus_and_ssh" {
   count = "${length(local.cyhy_trusted_ingress_ports)}"
 
