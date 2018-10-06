@@ -33,7 +33,7 @@ resource "aws_instance" "cyhy_reporter" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 8
+    volume_size = 12
     delete_on_termination = true
   }
 
