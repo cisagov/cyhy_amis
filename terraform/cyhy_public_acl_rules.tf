@@ -1,15 +1,13 @@
-# Allow ingress from anywhere via the Nessus UI and ssh ports
-resource "aws_network_acl_rule" "public_ingress_from_anywhere_via_nessus_and_ssh" {
-  count = "${length(local.cyhy_trusted_ingress_ports)}"
-
+# Allow ingress from anywhere via ssh
+resource "aws_network_acl_rule" "cyhy_public_ingress_from_anywhere_via_ssh" {
   network_acl_id = "${aws_network_acl.cyhy_public_acl.id}"
   egress = false
   protocol = "tcp"
-  rule_number = "${100 + count.index}"
+  rule_number = "100"
   rule_action = "allow"
   cidr_block = "0.0.0.0/0"
-  from_port = "${local.cyhy_trusted_ingress_ports[count.index]}"
-  to_port = "${local.cyhy_trusted_ingress_ports[count.index]}"
+  from_port = 22
+  to_port = 22
 }
 
 # Allow ingress from anywhere via ephemeral ports
