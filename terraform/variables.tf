@@ -60,3 +60,13 @@ variable "cyhy_archive_bucket_name" {
   description = "S3 bucket for storing compressed archive files created by cyhy-archive"
   default = "ncats-cyhy-archive"
 }
+
+variable "cyhy_portscan_nat_gw_elastic_ip" {
+  description = "The IP address of the elastic IP to be assigned to the CyHy Portscan NAT gateway"
+  default = ""
+}
+
+variable "cyhy_vulnscan_nat_gw_elastic_ip" {
+  description = "The IP address of the elastic IP to be assigned to the CyHy Vulnscan NAT gateway"
+  default = ""
+}

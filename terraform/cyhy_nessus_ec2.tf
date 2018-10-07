@@ -27,8 +27,8 @@ resource "aws_instance" "cyhy_nessus" {
   ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  subnet_id = "${aws_subnet.cyhy_scanner_subnet.id}"
-  associate_public_ip_address = true
+  subnet_id = "${aws_subnet.cyhy_vulnscanner_subnet.id}"
+  associate_public_ip_address = false
 
   root_block_device {
     volume_type = "gp2"
