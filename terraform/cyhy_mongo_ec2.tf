@@ -31,7 +31,7 @@ resource "aws_instance" "cyhy_mongo" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 10
+    volume_size = 20
     delete_on_termination = true
   }
 
