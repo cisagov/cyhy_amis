@@ -37,7 +37,7 @@ resource "aws_instance" "cyhy_nmap" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_workspace ? 16 : 8}"
+    volume_size = "${local.production_workspace ? 20 : 8}"
     delete_on_termination = true
   }
 
