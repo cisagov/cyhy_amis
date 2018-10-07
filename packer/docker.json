@@ -15,12 +15,7 @@
         },
         "instance_type": "t2.micro",
         "ssh_username": "admin",
-        "ami_name": "cyhy-docker-hvm-{{timestamp}}-x86_64-ebs",
-        "ami_regions": [
-            "us-east-1",
-            "us-west-1",
-            "us-west-2"
-        ],
+        "ami_name": "jsf9k-cyhy-docker-hvm-{{timestamp}}-x86_64-ebs",
 
         "ami_block_device_mappings": [{
             "device_name": "xvda",
