@@ -1,5 +1,5 @@
 ---
-# tasks file for bod_docker
+# tasks file for orchestrator
 
 #
 # Load mongo users and passwords into a variable
@@ -20,18 +20,13 @@
     name: mongo_users
   become: no
 
-#
-# Chown the /var/cyhy directory so it is owned by the cyhy user
-#
-- name: chown the /var/cyhy directory
-  file:
-    path: /var/cyhy
-    owner: cyhy
-    group: cyhy
-    state: directory
-    recurse: yes
-  async: 180
-  poll: 10
+- name: Delete local copy of mongo users
+  local_action:
+    module: file
+    path: /tmp/mongo_users.yml
+    state: absent
+  become: no
+
 
 #
 # Add the cyhy user to the docker group
@@ -47,15 +42,12 @@
 #
 # orchestrator secrets
 #
-- name: Create the secrets directories for orchestrator and cyhy-mailer
+- name: Create the secrets directory for orchestrator
   file:
-    path: "{{ item }}"
+    path: /var/cyhy/orchestrator/secrets
     owner: cyhy
     group: cyhy
     state: directory
-  loop:
-    - /var/cyhy/orchestrator/secrets
-    - /var/cyhy/cyhy-mailer/secrets
 
 - name: Create the orchestrator credentials file to allow reading the cyhy database
   copy:
@@ -150,56 +142,7 @@
 
 
 #
-# cyhy-mailer secrets
-#
-# The cyhy-mailer container does not run as root, so the creds files
-# need to be globally readable.  docker-compose does allow one to
-# specify the uid, gid, and mode of the secrets files, but that only
-# works in swarm mode.
-#
-- name: Copy the cyhy-mailer database credentials
-  copy:
-    src: /var/cyhy/orchestrator/secrets/cyhy_read_creds.yml
-    remote_src: yes
-    dest: /var/cyhy/cyhy-mailer/secrets/database_creds.yml
-    owner: cyhy
-    group: cyhy
-    mode: 0444
-
-- name: Create a temporary directory to store the cyhy-mailer AWS SMTP credentials
-  local_action:
-    module: file
-    path: /tmp/secrets/smtp
-    state: directory
-  become: no
-
-- name: Grab the cyhy-mailer AWS SMTP credentials from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-bod-18-01-secrets
-    object: cyhy-mailer_secrets/smtp_creds.yml
-    dest: /tmp/secrets/smtp/smtp_creds.yml
-    mode: get
-  become: no
-
-- name: Copy the cyhy-mailer AWS SMTP credentials
-  copy:
-    src: /tmp/secrets/smtp/smtp_creds.yml
-    dest: /var/cyhy/cyhy-mailer/secrets/smtp_creds.yml
-    owner: cyhy
-    group: cyhy
-    mode: 0444
-
-- name: Delete local copy of cyhy-mailer secrets
-  local_action:
-    module: file
-    path: /tmp/secrets
-    state: absent
-  become: no
-
-
-#
-# Create cron jobs for scanning and the sending of reports
+# Create a cron job for scanning
 #
 - name: Add /usr/local/bin to cron's path
   cron:
@@ -219,17 +162,6 @@
     user: cyhy
     job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
   when: production_workspace
-# This cron job runs at noon UTC on Mondays.  The BOD reports are long
-# since completed by that time.
-# - name: Create a cron job for sending BOD 18-01 reports
-#   cron:
-#     name: "Sending BOD 18-01 reports"
-#     minute: 0
-#     hour: 12
-#     weekday: 1
-#     user: cyhy
-#     job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
-#   when: production_workspace
 
 
 #

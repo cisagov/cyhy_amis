@@ -1,8 +1,8 @@
-bod_docker
-=========
+orchestrator
+============
 
 An Ansible role for configuring a host to perform BOD 18-01 (HTTPS and
-Trustworthy Email) scanning, reporting, and emailing.
+Trustworthy Email) scanning and reporting.
 
 Requirements
 ------------
@@ -28,7 +28,7 @@ Here's how to use it in a playbook:
       become: yes
       become_method: sudo
       roles:
-         - bod_docker
+         - orchestrator
 
 License
 -------
