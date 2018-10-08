@@ -1,38 +1,24 @@
 ---
 # tasks file for pip
 
-# Debian, but not mongo because mongo AMI is based on Debian Jessie
-- name: Install pip
-  package:
-    name: 'python-pip'
-    state: latest
-  when:
-    - ansible_os_family == "Debian"
-    - "'mongo' not in group_names"
-
-# Debian and mongo because mongo AMI is based on Debian Jessie
-- name: Install pip
-  easy_install:
-    name: pip
-    state: latest
-  when:
-    - ansible_os_family == "Debian"
-    - "'mongo' in group_names"
-
 # python-dev is usually needed with pip to build the wheels
-- name: Install python-dev
+- name: Install pip
   package:
     name:
+      - python-pip
       - python-dev
+      - python3-pip
+      - python3-dev
     state: latest
   when:
     - ansible_os_family == "Debian"
-    - "'mongo' in group_names"
 
-# pip is already installed on Amazon Linux by default, so there is
-# nothing to be done in that case
-# - name: Install pip (amazon-linux group only)
-#   package:
-#     name: 'python-pip'
-#     state: latest
-#   when: ansible_os_family == "RedHat"
+- name: Install pip
+  package:
+    name:
+      - python27-pip
+      - python27-devel
+      - python36-pip
+      - python36-devel
+    state: latest
+  when: ansible_os_family == "RedHat"

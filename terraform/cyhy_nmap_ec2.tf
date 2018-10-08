@@ -71,7 +71,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
   tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
 
   lifecycle {
-    prevent_destroy = false
+    prevent_destroy = true
   }
 }
 

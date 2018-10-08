@@ -1,0 +1,28 @@
+#!/bin/sh
+
+before=false
+after=true
+
+while getopts ":htf" opt
+do
+    case ${opt} in
+        h)
+            echo "Usage:"
+            echo "    toggle_prevent_destroy -h        Display this help message."
+            echo "    toggle_prevent_destroy -t        Set prevent_destroy true everywhere."
+            echo "    toggle_prevent_destroy -f        Set prevent_destroy false everywhere."
+            exit 0
+            ;;
+        f)
+            before=true
+            after=false
+            ;;
+        \?)
+            echo "Invalid Option: -$OPTARG" 1>&2
+            exit 1
+            ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+find . -maxdepth 1 -name "*.tf" -exec sed -i "s/\(prevent_destroy\s*=\s*\)$before/\1$after/g" {} \;

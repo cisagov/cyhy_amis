@@ -26,17 +26,11 @@
 
 - name: Install docker
   package:
-    name:
-      - docker-ce
+    name: docker-ce
   notify:
     - Enable docker
 
-- name: Install pip
-  package:
-    name:
-      - python-pip
-
 - name: Install docker-compose
-  package:
-    name:
-     - docker-compose
+  pip:
+    executable: pip3
+    name: docker-compose
