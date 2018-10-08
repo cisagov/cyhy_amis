@@ -66,12 +66,13 @@
 # Redis doesn't like transparent huge pages:
 # https://redis.io/topics/latency
 - hosts: bod_docker
-  name: Configure Docker host for BOD 18-01 scanning
+  name: Configure Docker host for BOD 18-01 scanning and reporting
   become: yes
   become_method: sudo
   roles:
     - xfs
-    - bod_docker
+    - orchestrator
+    - cyhy_mailer
     - {
         role: disable_thp,
         disable_thp_before_service: docker
@@ -96,6 +97,7 @@
     - xfs
     - pip
     - cyhy_reporter
+    - cyhy_mailer
 
 - hosts: cyhy_archive
   name: Install cyhy-archive helper script
