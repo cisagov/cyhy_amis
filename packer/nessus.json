@@ -15,7 +15,12 @@
         },
         "instance_type": "m4.large",
         "ssh_username": "ec2-user",
-        "ami_name": "jsf9k-cyhy-nessus-hvm-{{timestamp}}-x86_64-ebs",
+        "ami_name": "cyhy-nessus-hvm-{{timestamp}}-x86_64-ebs",
+        "ami_regions": [
+            "us-east-1",
+            "us-west-1",
+            "us-west-2"
+        ],
 
         "tags": {
             "Team": "NCATS OIS - Development",
