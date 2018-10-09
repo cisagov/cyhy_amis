@@ -36,6 +36,7 @@
             "type": "ansible",
             "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
+                "docker",
                 "cyhy_reporter"
             ]
         }

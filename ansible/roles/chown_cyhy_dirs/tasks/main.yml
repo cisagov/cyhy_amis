@@ -11,3 +11,5 @@
   loop:
     - /var/cyhy
     - /var/log/cyhy
+  async: 180
+  poll: 10

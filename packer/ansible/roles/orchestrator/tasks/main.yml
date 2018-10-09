@@ -1,5 +1,5 @@
 ---
-# tasks file for bod_docker
+# tasks file for orchestrator
 - name: Create the /var/cyhy/orchestrator directory
   file:
     path: /var/cyhy/orchestrator
@@ -10,20 +10,6 @@
   unarchive:
     src: https://api.github.com/repos/dhs-ncats/orchestrator/tarball/develop
     dest: /var/cyhy/orchestrator
-    remote_src: yes
-    extra_opts:
-      - "--strip-components=1"
-
-- name: Create the /var/cyhy/cyhy-mailer directory
-  file:
-    path: /var/cyhy/cyhy-mailer
-    state: directory
-    mode: 0755
-
-- name: Download and untar the cyhy-mailer tarball
-  unarchive:
-    src: https://api.github.com/repos/dhs-ncats/cyhy-mailer/tarball/develop
-    dest: /var/cyhy/cyhy-mailer
     remote_src: yes
     extra_opts:
       - "--strip-components=1"

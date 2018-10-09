@@ -1,0 +1,50 @@
+---
+# tasks file for groups
+
+# Grab the existing users and groups
+- name: Grab the existing users
+  getent:
+    database: passwd
+    fail_key: no
+- name: Grab the existing groups
+  getent:
+    database: group
+    fail_key: no
+
+
+#
+# Add the cyhy user to the docker group, if they both exist
+#
+- name: Add the cyhy user to the docker group
+  user:
+    name: cyhy
+    groups: docker
+    append: yes
+  when: (getent_passwd.cyhy is defined) and (getent_group.docker is defined)
+
+
+#
+# Add dev known users to the cyhy and docker groups, if they exist
+#
+- name: Load dev users from YML file
+  local_action:
+    module: include_vars
+    file: ../../../../terraform/scripts/user_ssh_setup.yml
+    name: ssh_users
+  become: no
+
+- name: Add dev users to the cyhy group
+  user:
+    name: "{{ item }}"
+    groups: cyhy
+    append: yes
+  loop: "{{ ssh_users.users | map(attribute='name') | list }}"
+  when: getent_group.cyhy is defined
+
+- name: Add dev users to the docker group
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  loop: "{{ ssh_users.users | map(attribute='name') | list }}"
+  when: getent_group.docker is defined
