@@ -151,22 +151,3 @@
     user: cyhy
     job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
   when: production_workspace
-
-
-#
-# Add users to the cyhy group
-#
-- name: Load users from YML file
-  local_action:
-    module: include_vars
-    file: ../../../../terraform/scripts/user_ssh_setup.yml
-    name: ssh_users
-  become: no
-
-- name: Add known users to the cyhy group
-  user:
-    name: "{{ item }}"
-    groups:
-      - cyhy
-    append: yes
-  loop: "{{ ssh_users.users | map(attribute='name') | list }}"

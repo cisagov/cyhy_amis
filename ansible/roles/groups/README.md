@@ -1,7 +1,8 @@
-docker
+groups
 ======
 
-A role for configuring Docker servers.
+An Ansible role for adding users to groups after now that cloud-init
+has run.
 
 Requirements
 ------------
@@ -23,11 +24,11 @@ Example Playbook
 
 Here's how to use it in a playbook:
 
-    - hosts: docker
+    - hosts: all
       become: yes
       become_method: sudo
       roles:
-         - docker
+         - groups
 
 License
 -------

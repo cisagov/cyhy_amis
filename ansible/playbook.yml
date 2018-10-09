@@ -21,19 +21,19 @@
         search_regex: OpenSSH
       when: bastion_host is not defined
 
+- hosts: all
+  name: Configure groups now that cloud-init has run
+  become: yes
+  become_method: sudo
+  roles:
+    - groups
+
 - hosts: mongo
   name: Configure MongoDB
   become: yes
   become_method: sudo
   roles:
     - mongo
-
-- hosts: docker
-  name: Configure Docker hosts
-  become: yes
-  become_method: sudo
-  roles:
-    - docker
 
 - hosts: bod_docker
   name: Configure Docker hosts for BOD 18-01 scanning and reporting
