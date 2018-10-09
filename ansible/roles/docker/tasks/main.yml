@@ -2,7 +2,23 @@
 # tasks file for docker
 
 #
-# Add users to the docker group
+# Add the cyhy user to the docker group, if it exists
+#
+- name: Check if the cyhy user exists
+  getent:
+    database: passwd
+    key: cyhy
+    fail_key: no
+
+- name: Add the cyhy user to the docker group
+  user:
+    name: cyhy
+    groups: docker
+    append: yes
+  when: getent_passwd["cyhy"] != None
+
+#
+# Add dev users to the docker group
 #
 - name: Load users from YML file
   local_action:
@@ -11,10 +27,9 @@
     name: ssh_users
   become: no
 
-- name: Add known users to the docker group
+- name: Add dev users to the docker group
   user:
     name: "{{ item }}"
-    groups:
-      - docker
+    groups: docker
     append: yes
   loop: "{{ ssh_users.users | map(attribute='name') | list }}"

@@ -27,16 +27,6 @@
     state: absent
   become: no
 
-#
-# Add the cyhy user to the docker group
-#
-- name: Add the cyhy user to the docker group
-  user:
-    name: cyhy
-    groups:
-      - docker
-    append: yes
-
 
 #
 # cyhy-mailer secrets

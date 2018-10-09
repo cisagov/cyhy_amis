@@ -29,17 +29,6 @@
 
 
 #
-# Add the cyhy user to the docker group
-#
-- name: Add the cyhy user to the docker group
-  user:
-    name: cyhy
-    groups:
-      - docker
-    append: yes
-
-
-#
 # orchestrator secrets
 #
 - name: Create the secrets directory for orchestrator
