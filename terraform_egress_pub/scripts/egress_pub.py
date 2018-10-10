@@ -74,6 +74,7 @@ def get_ec2_ips(region):
 
     ec2 = boto3.resource('ec2', region_name=region)
     instances = ec2.instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
+    vpc_addresses = ec2.vpc_addresses.all()    # the list of elastic IPs
 
     for instance in instances:
         # if the instance doesn't have a public ip we can skip
@@ -87,6 +88,16 @@ def get_ec2_ips(region):
         # send back a tuple associating the public ip to an application
         # if application is unset use '', because we still want it in our "all" list
         yield (tags.get(APPLICATION_TAG, ''), instance.public_ip_address)
+
+    for vpc_address in vpc_addresses:
+        # convert tags from aws dict into a real dictionary
+        tags = {x['Key']:x['Value'] for x in vpc_address.tags}
+        # if the publish egress tag isn't set to True we can skip
+        if tags.get(PUBLISH_EGRESS_TAG, str(False)) != str(True):
+            continue
+        # send back a tuple associating the public ip to an application
+        # if application is unset use '', because we still want it in our "all" list
+        yield (tags.get(APPLICATION_TAG, ''), vpc_address.public_ip)
 
 def update_bucket(bucket_name, filename, bucket_contents):
     '''update the s3 bucket with the new contents'''
