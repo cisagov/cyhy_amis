@@ -1,7 +1,7 @@
 locals {
   # This is a goofy but necessary way to determine if
-  # terraform.workspace contains the substring "production"
-  production_workspace = "${replace(terraform.workspace, "production", "") != terraform.workspace}"
+  # terraform.workspace contains the substring "prod"
+  production_workspace = "${replace(terraform.workspace, "prod", "") != terraform.workspace}"
 
   # Note: some locals are generated dynamically by the configure.py script and
   # are not part of this file.  e.g.; *_instance_count  Please run configure.py
