@@ -1,7 +1,7 @@
 cyhy_feeds
 =====
 
-A role for installing and configuring MongoDB servers.
+A role for installing and configuring cyhy_feeds instance.
 
 Requirements
 ------------
@@ -37,4 +37,4 @@ BSD
 Author Information
 ------------------
 
-Shane Frasier <kyle.evers@beta.dhs.gov>
+Kyle Evers <kyle.evers@beta.dhs.gov>
