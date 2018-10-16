@@ -1,0 +1,84 @@
+---
+# tasks file for cyhy_feeds
+- name: Install unzip
+  apt:
+    name: unzip
+    state: latest
+
+- name: Grab GitHub OAuth token from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: github_oauth_token.yml
+    dest: /tmp/github_oauth_token.yml
+    mode: get
+  become: no
+
+- name: Load GitHub OAuth token from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/github_oauth_token.yml
+  become: no
+
+#
+# Grab the cyhy-core code
+#
+- name: Create the /tmp/cyhy-core directory
+  file:
+    path: /tmp/cyhy-core
+    state: directory
+
+- name: Download and untar the cyhy-core tarball
+  unarchive:
+    src: "https://api.github.com/repos/jsf9k/cyhy-core/tarball/develop?access_token={{ github_oauth_token }}"
+    dest: /tmp/cyhy-core
+    remote_src: yes
+    extra_opts:
+      - "--strip-components=1"
+
+# Thanks to https://github.com/ansible/ansible/issues/37912 I have to
+# do some chicanery here instead of just using pip
+# - name: Install cyhy-core
+#   pip:
+#     name: file:///tmp/cyhy-core
+- name: Install cyhy-core
+  command: pip install /tmp/cyhy-core
+
+- name: Install boto3
+  pip:
+    name:
+      - boto3
+
+- name: Install the package "gnupg2"
+  apt:
+    name: gnupg2
+
+- name: Install python-gnupg
+  pip:
+    name:
+      - python-gnupg
+
+- name: Install python requests-aws4auth
+  pip:
+    name:
+      - requests_aws4auth
+
+- name: Install python requests
+  pip:
+    name:
+      - requests
+
+#
+# Cleanup
+#
+- name: Delete /tmp/cyhy-core
+  file:
+    path: /tmp/cyhy-core
+    state: absent
+
+- name: Delete local copy of GitHub OAuth token
+  local_action:
+    module: file
+    path: /tmp/github_oauth_token.yml
+    state: absent
+  become: no

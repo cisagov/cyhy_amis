@@ -105,3 +105,11 @@
   become_method: sudo
   roles:
     - cyhy_archive
+
+- hosts: cyhy_feeds
+  name: Install and configure cyhy-feeds
+  become: yes
+  become_method: sudo
+  roles:
+    - pip
+    - cyhy_feeds

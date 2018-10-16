@@ -10,6 +10,7 @@ packer build packer/bastion.json
 packer build packer/docker.json
 packer build packer/commander.json
 AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/reporter.json
+AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/feeds.json
 ```
 
 Note that the `cyhy-reports` AMI is large and needs extra time to be
