@@ -19,11 +19,19 @@ data "aws_ami" "cyhy_feeds" {
 }
  resource "aws_instance" "cyhy_feeds" {
   ami = "${data.aws_ami.cyhy_feeds.id}"
+<<<<<<< HEAD
   instance_type = "${local.production_workspace ? "r5.large" : "t2.micro"}"
+=======
+  instance_type = "t2.micro"
+>>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
   # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
    # This is the private subnet
   subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
+<<<<<<< HEAD
+=======
+  private_ip = "${cidrhost(aws_subnet.cyhy_private_subnet.cidr_block, local.the_feeds)}"
+>>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
   associate_public_ip_address = false
    root_block_device {
     volume_type = "gp2"

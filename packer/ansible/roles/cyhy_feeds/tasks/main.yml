@@ -58,6 +58,7 @@
     name:
       - python-gnupg
 
+<<<<<<< HEAD
 - name: Install python requests-aws4auth
   pip:
     name:
@@ -68,6 +69,8 @@
     name:
       - requests
 
+=======
+>>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
 #
 # Cleanup
 #
