@@ -49,7 +49,6 @@
     dest: /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py
     mode: 0755
 
-<<<<<<< HEAD
 - name: Download dmarc extract from GitHub
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-feeds/develop/aws_jobs/dmarc.py"
@@ -58,8 +57,6 @@
     dest: /var/cyhy/scripts/cyhy-feeds/dmarc.py
     mode: 0755
 
-=======
->>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
 - name: Grab cyhy extract config file from S3
   local_action:
     module: aws_s3
@@ -78,7 +75,6 @@
     mode: get
   become: no
 
-<<<<<<< HEAD
 - name: Grab cyhy private key from S3
   local_action:
     module: aws_s3
@@ -106,8 +102,6 @@
     mode: get
   become: no
 
-=======
->>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
 #
 # Copy extract config to new instance
 #
@@ -123,7 +117,6 @@
     dest: /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key
     mode: 0644
 
-<<<<<<< HEAD
 - name: Copy john's public key for moe data extract
   copy:
     src: /tmp/john_public.key
@@ -134,7 +127,7 @@
   copy:
     src: /tmp/ncats_lab_private_gpg.key
     dest: /var/cyhy/scripts/cyhy-feeds/ncats_lab_private_gpg.key
-    mode: 0644
+    mode: 0444
 
 - name: Copy gpg trust file
   copy:
@@ -142,17 +135,14 @@
     dest: /var/cyhy/scripts/cyhy-feeds/gpg_keys.trust
     mode: 0644
 
-=======
->>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
 - name: Create the /var/cyhy/scripts/cyhy-feeds/cyhy_extracts directory
   file:
     path: /var/cyhy/scripts/cyhy-feeds/cyhy_extracts
     state: directory
 
-<<<<<<< HEAD
 - name: import lab public key
   shell: "gpg2 --trustdb-name /home/kyle.evers/.gnupg/trustdb.gpg --import /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key"
-  
+
 - name: import john public key
   shell: "gpg2 --trustdb-name /home/kyle.evers/.gnupg/trustdb.gpg --import /var/cyhy/scripts/cyhy-feeds/john_public.key"
 
@@ -168,10 +158,6 @@
     path: /tmp/john_public.key
     state: absent
   become: no
-=======
-- name: Add ncats public key to gpg key ring
-  shell: gpg2 --allow-non-selfsigned-uid --import /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key
->>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
 
 - name: Delete local copy config file for moe data extractor
   local_action:
@@ -187,7 +173,6 @@
     state: absent
   become: no
 
-<<<<<<< HEAD
 - name: Delete local copy gpg public key for moe data extract
   local_action:
     module: file
@@ -202,8 +187,6 @@
     state: absent
   become: no
 
-=======
->>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
 - name: Create /etc/cyhy/cyhy.conf with commander credentials
   copy:
     dest: /etc/cyhy/cyhy.conf
