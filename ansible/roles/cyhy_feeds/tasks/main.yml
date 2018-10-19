@@ -239,7 +239,7 @@
       database-name = cyhy
 
 #
-# Run  nightly at 0815 (UTC) as cyhy
+# Run nightly at 0815 (UTC) as cyhy
 #
 - name: Set up nightly cron job to sync NSD data for moe extract
   cron:
