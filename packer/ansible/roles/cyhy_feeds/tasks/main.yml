@@ -1,7 +1,7 @@
 ---
 # tasks file for cyhy_feeds
 - name: Install unzip
-  apt:
+  package:
     name: unzip
     state: latest
 
@@ -12,13 +12,13 @@
     object: github_oauth_token.yml
     dest: /tmp/github_oauth_token.yml
     mode: get
-  become: no
+
 
 - name: Load GitHub OAuth token from YML file
   local_action:
     module: include_vars
     file: /tmp/github_oauth_token.yml
-  become: no
+
 
 #
 # Grab the cyhy-core code
@@ -58,7 +58,6 @@
     name:
       - python-gnupg
 
-<<<<<<< HEAD
 - name: Install python requests-aws4auth
   pip:
     name:
@@ -69,8 +68,6 @@
     name:
       - requests
 
-=======
->>>>>>> 9eef88aa0b349b80d16b734abe790d3a450606af
 #
 # Cleanup
 #
@@ -84,4 +81,3 @@
     module: file
     path: /tmp/github_oauth_token.yml
     state: absent
-  become: no

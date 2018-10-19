@@ -13,7 +13,6 @@
   local_action:
     module: include_vars
     file: /tmp/github_oauth_token.yml
-  become: no
 
 - name: Grab mongo users from S3
   local_action:
@@ -29,12 +28,20 @@
     module: include_vars
     file: /tmp/mongo_users.yml
     name: mongo_users
-  become: no
 
 - name: Create the /var/cyhy/scripts/cyhy-feeds/
   file:
+    path: /var/cyhy/scripts/cyhy-feeds/
+    state: directory
+    owner: cyhy
+    group: cyhy
+
+- name: Create the /var/cyhy/scripts/cyhy-feeds/extracts
+  file:
     path: /var/cyhy/scripts/cyhy-feeds/cyhy_extracts
     state: directory
+    owner: cyhy
+    group: cyhy
 
 - name: Create /etc/cyhy dir
   file:
@@ -48,6 +55,8 @@
       Authorization: "token {{ github_oauth_token }}"
     dest: /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py
     mode: 0755
+    owner: cyhy
+    group: cyhy
 
 - name: Download dmarc extract from GitHub
   get_url:
@@ -56,6 +65,8 @@
       Authorization: "token {{ github_oauth_token }}"
     dest: /var/cyhy/scripts/cyhy-feeds/dmarc.py
     mode: 0755
+    owner: cyhy
+    group: cyhy
 
 - name: Grab cyhy extract config file from S3
   local_action:
@@ -84,12 +95,12 @@
     mode: get
   become: no
 
-- name: Grab cyhy johns public key from S3
+- name: Grab cyhy nsd public key from S3
   local_action:
     module: aws_s3
     bucket: ncats-cyhy-secrets
-    object: john_public.key
-    dest: /tmp/john_public.key
+    object: nsd_cyhy_daily_extract_public.key
+    dest: /tmp/nsd_cyhy_daily_extract_public.key
     mode: get
   become: no
 
@@ -110,52 +121,76 @@
     src: /tmp/cyhy-data-extract.cfg
     dest: /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
     mode: 0644
+    owner: cyhy
+    group: cyhy
 
 - name: Copy gpg public key for moe data extract
   copy:
     src: /tmp/ncats_lab_public_gpg.key
     dest: /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key
     mode: 0644
+    owner: cyhy
+    group: cyhy
 
-- name: Copy john's public key for moe data extract
+- name: Copy nsd_cyhy_daily public key for moe data extract
   copy:
-    src: /tmp/john_public.key
-    dest: /var/cyhy/scripts/cyhy-feeds/john_public.key
+    src: /tmp/nsd_cyhy_daily_extract_public.key
+    dest: /var/cyhy/scripts/cyhy-feeds/nsd_cyhy_daily_extract_public.key
     mode: 0644
+    owner: cyhy
+    group: cyhy
 
 - name: Copy gpg private key for moe data extract
   copy:
     src: /tmp/ncats_lab_private_gpg.key
     dest: /var/cyhy/scripts/cyhy-feeds/ncats_lab_private_gpg.key
     mode: 0444
+    owner: cyhy
+    group: cyhy
 
 - name: Copy gpg trust file
   copy:
     src: /tmp/gpg_keys.trust
     dest: /var/cyhy/scripts/cyhy-feeds/gpg_keys.trust
     mode: 0644
+    owner: cyhy
+    group: cyhy
 
 - name: Create the /var/cyhy/scripts/cyhy-feeds/cyhy_extracts directory
   file:
     path: /var/cyhy/scripts/cyhy-feeds/cyhy_extracts
     state: directory
+    owner: cyhy
+    group: cyhy
 
 - name: import lab public key
-  shell: "gpg2 --trustdb-name /home/kyle.evers/.gnupg/trustdb.gpg --import /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key"
+  shell: "gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import /var/cyhy/scripts/cyhy-feeds/ncats_lab_public_gpg.key"
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
 
-- name: import john public key
-  shell: "gpg2 --trustdb-name /home/kyle.evers/.gnupg/trustdb.gpg --import /var/cyhy/scripts/cyhy-feeds/john_public.key"
+- name: import nds daily public key
+  shell: "gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import /var/cyhy/scripts/cyhy-feeds/nsd_cyhy_daily_extract_public.key"
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
 
 - name: import lab private key
-  shell: "gpg2 --allow-secret-key-import --import /var/cyhy/scripts/cyhy-feeds/ncats_lab_private_gpg.key"
+  shell: "gpg2 --batch --import /var/cyhy/scripts/cyhy-feeds/ncats_lab_private_gpg.key"
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
 
 - name: Add trust
   shell: "gpg2 --import-ownertrust /var/cyhy/scripts/cyhy-feeds/gpg_keys.trust"
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
 
-- name: Delete johns public key
+- name: Delete nsd public key
   local_action:
     module: file
-    path: /tmp/john_public.key
+    path: /tmp/nsd_cyhy_daily_extract_public.key
     state: absent
   become: no
 
@@ -202,3 +237,14 @@
       [production]
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
+
+#
+# Run  nightly at 0815 (UTC) as cyhy
+#
+- name: Set up nightly cron job to sync NSD data for moe extract
+  cron:
+    name: Nightly cyhy extract
+    hour: 08
+    minute: 15
+    user: cyhy
+    job: python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --section production --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
