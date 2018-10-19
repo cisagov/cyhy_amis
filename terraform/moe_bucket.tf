@@ -1,9 +1,10 @@
 resource "aws_s3_bucket" "create_moe_bucket" {
-  bucket = "ncats-moe-data"
-  acl    = "private"
+  bucket = "${local.production_workspace ? "ncats-moe-data" : format("ncats-moe-data-%s", terraform.workspace)}"
+  acl = "private"
 
-  tags {
-    Name        = "Moe bucket"
-    Environment = "Dev"
+  tags = "${merge(var.tags, map("Name", "MOE bucket"))}"
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
