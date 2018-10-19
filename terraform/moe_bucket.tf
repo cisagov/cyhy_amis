@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "create_moe_bucket" {
+resource "aws_s3_bucket" "moe_bucket" {
   bucket = "${local.production_workspace ? "ncats-moe-data" : format("ncats-moe-data-%s", terraform.workspace)}"
   acl = "private"
 
