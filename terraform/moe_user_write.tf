@@ -1,11 +1,11 @@
 resource "aws_iam_user" "moe_user_write" {
-  # We name the user moe_user_write for production workspaces and
-  # moe_user_write_<workspace_name> for non-production workspaces.
+  # We name the user moe-user-write for production workspaces and
+  # moe-user-write-<workspace_name> for non-production workspaces.
   #
   # The reason is that we want to avoid name conflicts when deploying
   # to test environments but share (via terraform import) the users
   # when working in production environments.
-  name = "${local.production_workspace ? "moe_user_write" : format("moe_user_write_%s", terraform.workspace)}"
+  name = "${local.production_workspace ? "moe-user-write" : format("moe-user-write-%s", terraform.workspace)}"
 
   lifecycle {
     prevent_destroy = true
@@ -27,7 +27,7 @@ data "aws_iam_policy_document" "moe_write_doc" {
     ]
 
     resources = [
-      "arn:aws:s3:::ncats-moe-data"
+      "${aws_s3_bucket.moe_bucket.arn}"
     ]
   }
 
@@ -39,7 +39,7 @@ data "aws_iam_policy_document" "moe_write_doc" {
     ]
 
     resources = [
-      "arn:aws:s3:::ncats-moe-data/*"
+      "${aws_s3_bucket.moe_bucket.arn}/*"
     ]
   }
 }
