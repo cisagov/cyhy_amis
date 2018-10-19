@@ -1,6 +1,6 @@
 resource "aws_iam_user" "moe_user_read" {
-  # We name the user moe_user_write for production workspaces and
-  # moe_user_write_<workspace_name> for non-production workspaces.
+  # We name the user moe_user_read for production workspaces and
+  # moe_user_read_<workspace_name> for non-production workspaces.
   #
   # The reason is that we want to avoid name conflicts when deploying
   # to test environments but share (via terraform import) the users
