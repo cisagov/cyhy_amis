@@ -20,7 +20,7 @@ data "aws_ami" "cyhy_feeds" {
  resource "aws_instance" "cyhy_feeds" {
   ami = "${data.aws_ami.cyhy_feeds.id}"
   instance_type = "${local.production_workspace ? "r5.large" : "t2.micro"}"
-  # ebs_optimized = "${local.production_workspace}"
+  ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
    # This is the private subnet
   subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
