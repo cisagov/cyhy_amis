@@ -93,6 +93,13 @@
   roles:
     - cyhy_ops
 
+- hosts: cyhy_feeds
+  name: Configure cyhy bastion hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_feeds
+
 - hosts: cyhy_archive
   name: Configure cyhy-archive hosts
   become: yes

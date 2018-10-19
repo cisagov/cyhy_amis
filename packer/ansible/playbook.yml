@@ -99,6 +99,14 @@
     - cyhy_reporter
     - cyhy_mailer
 
+- hosts: cyhy_feeds
+  name: Install and configure cyhy-feeds
+  become: yes
+  become_method: sudo
+  roles:
+    - pip
+    - cyhy_feeds
+
 - hosts: cyhy_archive
   name: Install cyhy-archive helper script
   become: yes
