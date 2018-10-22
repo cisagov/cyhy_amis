@@ -24,7 +24,6 @@
   become_method: sudo
   roles:
     - pip
-    - github_oauth
     - cyhy_runner
     - nmap
     - more_ephemeral_ports
@@ -53,7 +52,6 @@
   become_method: sudo
   roles:
     - pip
-    - github_oauth
     - cyhy_runner
     - more_ephemeral_ports
 
@@ -86,7 +84,6 @@
   become_method: sudo
   roles:
     - pip
-    - github_oauth
     - cyhy_core
     - cyhy_commander
 
@@ -100,7 +97,6 @@
     - nvme
     - xfs
     - pip
-    - github_oauth
     - cyhy_core
     - cyhy_reporter
     - cyhy_mailer
@@ -111,7 +107,6 @@
   become_method: sudo
   roles:
     - pip
-    - github_oauth
     - cyhy_core
     - cyhy_feeds
 
@@ -120,5 +115,4 @@
   become: yes
   become_method: sudo
   roles:
-    - github_oauth
     - cyhy_archive
