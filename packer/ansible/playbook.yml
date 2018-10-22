@@ -84,6 +84,7 @@
   become_method: sudo
   roles:
     - pip
+    - cyhy_core
     - cyhy_commander
 
 # In production, the CyHy reporter instance is a c5 instance type.
@@ -96,6 +97,7 @@
     - nvme
     - xfs
     - pip
+    - cyhy_core
     - cyhy_reporter
     - cyhy_mailer
 
@@ -105,6 +107,7 @@
   become_method: sudo
   roles:
     - pip
+    - cyhy_core
     - cyhy_feeds
 
 - hosts: cyhy_archive

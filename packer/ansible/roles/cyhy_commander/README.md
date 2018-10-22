@@ -16,7 +16,8 @@ None
 Dependencies
 ------------
 
-None
+- github_oauth
+- cyhy_core
 
 Example Playbook
 ----------------
@@ -24,9 +25,11 @@ Example Playbook
 Here's how to use it in a playbook:
 
      - hosts: cyhy_commander
-      become: yes
-      become_method: sudo
-      roles:
+       become: yes
+       become_method: sudo
+       roles:
+         - github_oauth
+         - cyhy_core
          - cyhy_commander
 License
 -------

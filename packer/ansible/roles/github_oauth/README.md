@@ -1,7 +1,9 @@
-cyhy_reporter
-=============
+github_oauth
+============
 
-A role for installing cyhy-reports.
+A role for retrieving the GitHub OAuth token and making it available
+to ansible as the variable github_oauth_token.  This token is needed
+to check out some repositories that are currently private.
 
 Requirements
 ------------
@@ -16,8 +18,7 @@ None
 Dependencies
 ------------
 
-- github_oauth
-- cyhy_core
+None
 
 Example Playbook
 ----------------
@@ -28,9 +29,7 @@ Here's how to use it in a playbook:
       become: yes
       become_method: sudo
       roles:
-        - github_oauth
-        - cyhy_core
-        - cyhy_reporter
+         - github_oauth
 
 License
 -------

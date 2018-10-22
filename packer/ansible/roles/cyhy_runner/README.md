@@ -16,18 +16,19 @@ None
 Dependencies
 ------------
 
-None
+- github_oauth
 
 Example Playbook
 ----------------
 
 Here's how to use it in a playbook:
 
-    - hosts: cyhy_runner
+    - hosts: runners
       become: yes
       become_method: sudo
       roles:
-         - cyhy_runner
+        - github_oauth
+        - cyhy_runner
 
 License
 -------
