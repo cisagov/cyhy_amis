@@ -1,5 +1,5 @@
-journald
-========
+persist_journald
+================
 
 A role for configuring journald to persist logs across reboots.
 
@@ -27,7 +27,7 @@ Here's how to use it in a playbook:
       become: yes
       become_method: sudo
       roles:
-         - journald
+         - persist_journald
 
 License
 -------

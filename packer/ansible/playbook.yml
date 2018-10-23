@@ -7,7 +7,7 @@
     - upgrade
     - python
     - banner
-    - journald
+    - persist_journald
 
 # The bastion should have as little installed as possible, since it's
 # exposed to the cruel world
@@ -23,35 +23,23 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
     - cyhy_runner
     - nmap
     - more_ephemeral_ports
 
-# MongoDB doesn't like transparent huge pages:
-# https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
-# Disable NUMA since we are deploying Mongo on a NUMA instance in Production
-# https://docs.mongodb.com/v3.2/administration/production-notes/#mongodb-and-numa-hardware
 - hosts: mongo
   name: Install and configure MongoDB and xfsprogs
   become: yes
   become_method: sudo
   roles:
     - xfs
-    - numactl
-    - disable_numa
     - mongo
-    - {
-        role: disable_thp,
-        disable_thp_before_service: mongod
-      }
 
 - hosts: nessus
   name: Install and configure Nessus
   become: yes
   become_method: sudo
   roles:
-    - pip
     - cyhy_runner
     - more_ephemeral_ports
 
@@ -60,11 +48,8 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
     - docker
 
-# Redis doesn't like transparent huge pages:
-# https://redis.io/topics/latency
 - hosts: bod_docker
   name: Configure Docker host for BOD 18-01 scanning and reporting
   become: yes
@@ -73,18 +58,12 @@
     - xfs
     - orchestrator
     - cyhy_mailer
-    - {
-        role: disable_thp,
-        disable_thp_before_service: docker
-      }
 
 - hosts: cyhy_commander
   name: Install and configure cyhy-commander
   become: yes
   become_method: sudo
   roles:
-    - pip
-    - cyhy_core
     - cyhy_commander
 
 # In production, the CyHy reporter instance is a c5 instance type.
@@ -96,8 +75,6 @@
   roles:
     - nvme
     - xfs
-    - pip
-    - cyhy_core
     - cyhy_reporter
     - cyhy_mailer
 
@@ -106,8 +83,6 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
-    - cyhy_core
     - cyhy_feeds
 
 - hosts: cyhy_archive

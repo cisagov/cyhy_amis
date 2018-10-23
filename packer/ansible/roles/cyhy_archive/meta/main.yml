@@ -53,4 +53,4 @@ galaxy_info:
     #       Maximum 20 tags per role.
 
 dependencies:
-  - {role: github_oauth}
+  - role: github_oauth

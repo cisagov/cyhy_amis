@@ -18,8 +18,19 @@
 - name: Install mongo
   package:
     name: mongodb-org=3.6.8
-  notify:
-    - Enable mongo
+
+# Unless you do this, systemd can sometimes get confused when you try
+# to start a service you just installed
+- name: Systemd daemon-reload
+  systemd:
+    daemon_reload: true
+  when:
+    - ansible_service_mgr == "systemd"
+
+- name: Enable mongo
+  service:
+    name: mongod
+    enabled: yes
 
 - name: Configure mongo service to run after cloud-config
   lineinfile:
@@ -36,11 +47,6 @@
     regexp: ^ExecStart=/usr/bin/mongod
     state: present
     line: ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config /etc/mongod.conf
-
-- name: Install pip
-  package:
-    name: python-pip
-    state: latest
 
 # pymongo is needed for ansible mongodb_user module
 - name: Install pymongo via pip

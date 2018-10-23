@@ -1,6 +1,2 @@
 ---
 # handlers file for docker
-- name: Enable docker
-  service:
-    name: docker
-    enabled: yes
