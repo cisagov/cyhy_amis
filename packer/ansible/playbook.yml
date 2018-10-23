@@ -23,7 +23,6 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
     - cyhy_runner
     - nmap
     - more_ephemeral_ports
@@ -51,7 +50,6 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
     - cyhy_runner
     - more_ephemeral_ports
 

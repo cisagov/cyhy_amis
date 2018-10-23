@@ -54,3 +54,4 @@ galaxy_info:
 
 dependencies:
   - {role: github_oauth}
+  - {role: pip}
