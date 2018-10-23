@@ -50,8 +50,6 @@
   roles:
     - docker
 
-# Redis doesn't like transparent huge pages:
-# https://redis.io/topics/latency
 - hosts: bod_docker
   name: Configure Docker host for BOD 18-01 scanning and reporting
   become: yes
@@ -60,10 +58,6 @@
     - xfs
     - orchestrator
     - cyhy_mailer
-    - {
-        role: disable_thp,
-        disable_thp_before_service: docker
-      }
 
 - hosts: cyhy_commander
   name: Install and configure cyhy-commander
