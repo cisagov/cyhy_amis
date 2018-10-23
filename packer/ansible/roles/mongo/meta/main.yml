@@ -52,6 +52,14 @@ galaxy_info:
     # NOTE: A tag is limited to a single word comprised of alphanumeric characters.
     #       Maximum 20 tags per role.
 
-dependencies: []
-  # List your role dependencies here, one per line. Be sure to remove the '[]' above,
-  # if you add dependencies to this list.
+# Disable NUMA for MongoDB:
+# https://docs.mongodb.com/v3.2/administration/production-notes/#mongodb-and-numa-hardware
+#
+# MongoDB doesn't like transparent huge pages:
+# https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
+dependencies:
+  - role: numactl
+  - role: disable_numa
+  - role: disable_thp
+    vars:
+      disable_thp_before_service: mongod
