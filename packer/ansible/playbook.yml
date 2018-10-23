@@ -92,7 +92,6 @@
   roles:
     - nvme
     - xfs
-    - cyhy_core
     - cyhy_reporter
     - cyhy_mailer
 
@@ -101,7 +100,6 @@
   become: yes
   become_method: sudo
   roles:
-    - cyhy_core
     - cyhy_feeds
 
 - hosts: cyhy_archive
