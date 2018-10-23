@@ -81,7 +81,6 @@
   become: yes
   become_method: sudo
   roles:
-    - cyhy_core
     - cyhy_commander
 
 # In production, the CyHy reporter instance is a c5 instance type.
