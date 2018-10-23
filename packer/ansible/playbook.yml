@@ -81,7 +81,6 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
     - cyhy_core
     - cyhy_commander
 
@@ -94,7 +93,6 @@
   roles:
     - nvme
     - xfs
-    - pip
     - cyhy_core
     - cyhy_reporter
     - cyhy_mailer
@@ -104,7 +102,6 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
     - cyhy_core
     - cyhy_feeds
 
