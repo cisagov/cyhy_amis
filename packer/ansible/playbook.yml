@@ -7,7 +7,7 @@
     - upgrade
     - python
     - banner
-    - journald
+    - persist_journald
 
 # The bastion should have as little installed as possible, since it's
 # exposed to the cruel world

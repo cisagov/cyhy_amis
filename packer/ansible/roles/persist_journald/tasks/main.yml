@@ -1,5 +1,5 @@
 ---
-# tasks file for journald
+# tasks file for persist_journald
 
 - name: Configure journald to persist storage
   lineinfile:
