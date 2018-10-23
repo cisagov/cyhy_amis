@@ -1,6 +1,2 @@
 ---
 # handlers file for mongo
-- name: Enable mongo
-  service:
-    name: mongod
-    enabled: yes

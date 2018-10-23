@@ -27,8 +27,19 @@
 - name: Install docker
   package:
     name: docker-ce
-  notify:
-    - Enable docker
+
+# Unless you do this, systemd can sometimes get confused when you try
+# to start a service you just installed
+- name: Systemd daemon-reload
+  systemd:
+    daemon_reload: true
+  when:
+    - ansible_service_mgr == "systemd"
+
+- name: Enable docker
+  service:
+    name: docker
+    enabled: yes
 
 - name: Install docker-compose
   pip:
