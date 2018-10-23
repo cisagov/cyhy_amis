@@ -58,7 +58,6 @@
   become: yes
   become_method: sudo
   roles:
-    - pip
     - docker
 
 # Redis doesn't like transparent huge pages:
