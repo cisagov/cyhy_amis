@@ -40,7 +40,6 @@
   become: yes
   become_method: sudo
   roles:
-    - chown_cyhy_dirs
     - orchestrator
     - cyhy_mailer
 
@@ -49,9 +48,8 @@
   become: yes
   become_method: sudo
   roles:
-    - chown_cyhy_dirs
     - cyhy_commander
-    - { role: swap, swapfile_size: 2GiB}
+    - {role: swap, swapfile_size: 2GiB}
     - cyhy_logrotate
 
 - hosts: nmap
@@ -81,7 +79,6 @@
   become: yes
   become_method: sudo
   roles:
-    - chown_cyhy_dirs
     - cyhy_reporter
     - cyhy_logrotate
     - cyhy_mailer
@@ -94,7 +91,7 @@
     - cyhy_ops
 
 - hosts: cyhy_feeds
-  name: Configure cyhy bastion hosts
+  name: Configure cyhy-feeds hosts
   become: yes
   become_method: sudo
   roles:
