@@ -37,11 +37,6 @@
     state: present
     line: ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config /etc/mongod.conf
 
-- name: Install pip
-  package:
-    name: python-pip
-    state: latest
-
 # pymongo is needed for ansible mongodb_user module
 - name: Install pymongo via pip
   pip:
