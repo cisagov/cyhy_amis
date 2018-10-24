@@ -36,6 +36,9 @@
 #
 # Import keys and trust
 #
+
+# The --batch flag makes sure that gpg2 doesn't attempt to do anything
+# interactive.
 - name: Import gpg keys
   shell: "gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch /var/cyhy/scripts/cyhy-feeds/{{ item }}"
   become_user: cyhy
