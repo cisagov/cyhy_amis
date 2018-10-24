@@ -1,6 +1,22 @@
 ---
 # tasks file for cyhy_feeds
 
+- name: Create the /var/cyhy/scripts/cyhy-feeds/cyhy_extracts directory
+  file:
+    path: /var/cyhy/scripts/cyhy-feeds/cyhy_extracts
+    state: directory
+
+- name: Download cyhy extract scripts from GitHub
+  get_url:
+    url: "https://raw.githubusercontent.com/jsf9k/cyhy-feeds/develop/aws_jobs/{{ item }}"
+    headers:
+      Authorization: "token {{ github_oauth_token }}"
+    dest: "/var/cyhy/scripts/cyhy-feeds/{{ item }}"
+    mode: 0755
+  loop:
+    - cyhy-data-extract.py
+    - dmarc.py
+
 - name: Install dependencies
   package:
     name:
