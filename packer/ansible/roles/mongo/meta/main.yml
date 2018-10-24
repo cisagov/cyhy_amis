@@ -58,9 +58,9 @@ galaxy_info:
 # MongoDB doesn't like transparent huge pages:
 # https://docs.mongodb.com/manual/tutorial/transparent-huge-pages/
 dependencies:
-  - role: pip
-  - role: numactl
-  - role: disable_numa
+  - pip
+  - numactl
+  - disable_numa
   - role: disable_thp
     vars:
       disable_thp_before_service: mongod
