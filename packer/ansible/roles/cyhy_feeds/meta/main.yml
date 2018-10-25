@@ -53,4 +53,6 @@ galaxy_info:
     #       Maximum 20 tags per role.
 
 dependencies:
+  - pip
+  - github_oauth
   - cyhy_core
