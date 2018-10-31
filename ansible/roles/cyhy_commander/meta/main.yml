@@ -54,3 +54,4 @@ galaxy_info:
 
 dependencies:
   - chown_cyhy_dirs
+  - github_oauth

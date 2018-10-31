@@ -1,24 +1,37 @@
 # NCATS AWS AMIs :dvd: #
 
-Build AMIs with:
+## Building the AMIs ##
+The AMIs are built like so:
 ```
 ansible-galaxy install -r packer/ansible/requirements.yml
-packer build packer/nmap.json
-packer build packer/nessus.json
-packer build packer/mongo.json
 packer build packer/bastion.json
 packer build packer/docker.json
-packer build packer/commander.json
-AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/reporter.json
 AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/feeds.json
+packer build packer/mongo.json
+packer build packer/nessus.json
+packer build packer/nmap.json
+AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/reporter.json
 ```
 
-Note that the `cyhy-reports` AMI is large and needs extra time to be
-copied, as discussed
+Note the environment variables in the `packer` command lines
+corresponding to `feeds.json` and `reporter.json`.  They are present
+because the AMIs produced by those lines are large and need extra time
+to be copied, as discussed
 [here](https://github.com/hashicorp/packer/issues/6536#issuecomment-407925535).
 
-Build Terraform-based infrastructure with:
+Also note that
 ```
+ansible-galaxy install --force -r packer/ansible/requirements.yml
+```
+will update the roles that are being pulled from external sources.  This
+may be required, for example, if a role that is being pulled from a
+GitHub repository has been updated and you want the new changes.  By
+default `ansible-galaxy install` _will not_ upgrade roles.
+
+## Building the Terraform-based infrastructure ##
+The Terraform-based infrastructure is built like so:
+```
+ansible-galaxy install -r ansible/requirements.yml
 cd terraform
 terraform workspace select <your_workspace>
 ./configure.py
@@ -26,7 +39,8 @@ terraform init
 terraform apply -var-file=<your_workspace>.yml
 ```
 
-Tear down Terraform-based infrastructure with:
+## Tearing down the Terraform-based infrastructure ##
+The Terraform-based infrastructure is torn down like so:
 ```
 cd terraform
 terraform workspace select <your_workspace>
