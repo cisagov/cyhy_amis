@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "cyhy_flow_log_assume_role_doc" {
 resource "aws_iam_role" "cyhy_flow_log_role" {
   count = "${var.create_flow_logs}"
 
-  name = "cyhy_flow_log_role"
+  name = "cyhy_flow_log_role_${terraform.workspace}"
 
   assume_role_policy = "${data.aws_iam_policy_document.cyhy_flow_log_assume_role_doc.json}"
 }
@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "cyhy_flow_log_doc" {
 
   statement {
     effect = "Allow"
-    
+
     actions = [
       "logs:CreateLogGroup",
       "logs:CreateLogStream",
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "cyhy_flow_log_doc" {
 resource "aws_iam_role_policy" "cyhy_flow_log_policy" {
   count = "${var.create_flow_logs}"
 
-  name = "cyhy_flow_log_policy"
+  name = "cyhy_flow_log_policy_${terraform.workspace}"
   role = "${aws_iam_role.cyhy_flow_log_role.id}"
 
   policy = "${data.aws_iam_policy_document.cyhy_flow_log_doc.json}"
@@ -59,7 +59,7 @@ resource "aws_iam_role_policy" "cyhy_flow_log_policy" {
 resource "aws_cloudwatch_log_group" "cyhy_flow_log_group" {
   count = "${var.create_flow_logs}"
 
-  name = "cyhy_flow_log_group"
+  name = "cyhy_flow_log_group_${terraform.workspace}"
 }
 
 # The flow logs
