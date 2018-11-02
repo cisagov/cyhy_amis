@@ -2,6 +2,10 @@
 
 before=false
 after=true
+# We need the sed script because the file redirection doesn't play
+# nice with find's exec clause below.  See, for example, here:
+# https://stackoverflow.com/questions/15030563/redirecting-stdout-with-find-exec-and-without-creating-new-shell
+sed_script=scripts/toggle_prevent_destroy_sed_command.sh
 
 while getopts ":htf" opt
 do
@@ -18,11 +22,16 @@ do
             after=false
             ;;
         \?)
-            echo "Invalid Option: -$OPTARG" 1>&2
+            echo "Invalid option: -$OPTARG" 1>&2
             exit 1
             ;;
     esac
 done
 shift $((OPTIND - 1))
 
-find . -maxdepth 1 -name "*.tf" -exec sed -i "s/\(prevent_destroy\s*=\s*\)$before/\1$after/g" {} \;
+regex="s/\(prevent_destroy[[:space:]]*=[[:space:]]*\)$before/\1$after/g"
+tmp_file=$(mktemp)
+find . -maxdepth 1 -name "*.tf" -exec $sed_script $regex {} $tmp_file \;
+
+# Cleanup
+rm $tmp_file
