@@ -1,28 +1,18 @@
 language: python
 
-env:
-  global:
-    - AWS_DEFAULT_REGION=us-east-1
-    - AWS_ACCESS_KEY_ID=AAAAAAAAAAAAAAAAAAAA
-    - AWS_SECRET_ACCESS_KEY=ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
-
 matrix:
   include:
     - python: 3.7
       dist: xenial
       sudo: true
 
-# Install terraform, packer, and ansible
+# Install terraform and ansible
 before_install:
   - echo $(which packer)
   - wget https://releases.hashicorp.com/terraform/0.11.10/terraform_0.11.10_linux_amd64.zip -O terraform.zip
   - sudo unzip terraform.zip -d /opt/terraform
   - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
   - rm -f terraform.zip
-  - wget https://releases.hashicorp.com/packer/1.3.2/packer_1.3.2_linux_amd64.zip -O packer.zip
-  - sudo unzip packer.zip -d /opt/packer
-  - sudo ln -s /opt/packer/packer /usr/bin/packer
-  - rm -f packer.zip
   - sudo apt-get install ansible
 
 # Travis' Xenial builds run on GCE and do not have any AWS
@@ -35,6 +25,6 @@ before_install:
 # We don't check Terraform variables because we don't have a tfvars
 # file to use.
 script:
-  - for f in $(ls packer/*.json); do packer validate $f; done
+  - for f in $(ls packer/*.json); do packer validate -syntax-only $f; done
   - cd terraform && ./configure.py && cd ..
   - for d in terraform terraform_egress_pub terraform_nessus_only terraform_route_53; do terraform init -backend=false $d; terraform validate -check-variables=false $d; done
