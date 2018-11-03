@@ -1,8 +1,4 @@
-language: minimal
-
-# This doesn't work yet on trusty, so we have to use matrix below
-# python:
-#   - '3.7'
+language: python
 
 matrix:
   include:
