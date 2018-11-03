@@ -1,4 +1,4 @@
-language: python
+language: minimal
 
 # This doesn't work yet on trusty, so we have to use matrix below
 # python:
