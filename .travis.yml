@@ -1,5 +1,11 @@
 language: python
 
+env:
+  global:
+    - AWS_DEFAULT_REGION=us-east-1
+    - AWS_ACCESS_KEY_ID=AAAAAAAAAAAAAAAAAAAA
+    - AWS_SECRET_ACCESS_KEY=ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
+
 matrix:
   include:
     - python: 3.7
@@ -8,6 +14,7 @@ matrix:
 
 # Install terraform, packer, and ansible
 before_install:
+  - echo $(which packer)
   - wget https://releases.hashicorp.com/terraform/0.11.10/terraform_0.11.10_linux_amd64.zip -O terraform.zip
   - sudo unzip terraform.zip -d /opt/terraform
   - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
@@ -28,6 +35,6 @@ before_install:
 # We don't check Terraform variables because we don't have a tfvars
 # file to use.
 script:
-  - for f in $(ls packer/*.json); do packer validate -syntax-only $f; done
+  - for f in $(ls packer/*.json); do packer validate $f; done
   - cd terraform && ./configure.py && cd ..
   - for d in terraform terraform_egress_pub terraform_nessus_only terraform_route_53; do terraform init -backend=false $d; terraform validate -check-variables=false $d; done
