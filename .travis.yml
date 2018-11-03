@@ -18,4 +18,5 @@ before_install:
 # file to use.
 script:
   - for f in $(ls packer/*.json); do packer validate $f; done
+  - cd terraform && ./configure.py && cd ..
   - for d in terraform terraform_egress_pub terraform_nessus_only terraform_route_53; do terraform init -backend=false $d; terraform validate -check-variables=false $d; done
