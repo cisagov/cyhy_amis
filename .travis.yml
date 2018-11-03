@@ -1,7 +1,14 @@
 language: python
 
-python:
-  - '3.7'
+# This doesn't work yet on trusty, so we have to use matrix below
+# python:
+#   - '3.7'
+
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
 
 # Install terraform, packer, and ansible
 before_install:
