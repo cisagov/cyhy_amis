@@ -18,6 +18,9 @@ before_install:
   - rm -f packer.zip
   - sudo apt-get install ansible
 
+# Travis' Xenial builds run on GCE and do not have any AWS
+# credentials.  Therefore our packer tests use --syntax-only.
+#
 # We don't initialize the Terraform backend because Travis doesn't
 # have credentials to connect to our AWS S3 bucket where the Terraform
 # state is stored.
@@ -25,6 +28,6 @@ before_install:
 # We don't check Terraform variables because we don't have a tfvars
 # file to use.
 script:
-  - for f in $(ls packer/*.json); do packer validate $f; done
+  - for f in $(ls packer/*.json); do packer validate --syntax-only $f; done
   - cd terraform && ./configure.py && cd ..
   - for d in terraform terraform_egress_pub terraform_nessus_only terraform_route_53; do terraform init -backend=false $d; terraform validate -check-variables=false $d; done
