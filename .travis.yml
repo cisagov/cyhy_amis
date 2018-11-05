@@ -2,6 +2,8 @@ language: python
 
 matrix:
   include:
+    # We need python 3.7 in order to run the configure.py script, and
+    # only the xenial TravisCI images have python 3.7 available.
     - python: 3.7
       dist: xenial
       sudo: true
@@ -16,7 +18,7 @@ before_install:
   - sudo apt-get install ansible
 
 # Travis' Xenial builds run on GCE and do not have any AWS
-# credentials.  Therefore our packer tests use --syntax-only.
+# credentials.  Therefore our packer tests must use --syntax-only.
 #
 # We don't initialize the Terraform backend because Travis doesn't
 # have credentials to connect to our AWS S3 bucket where the Terraform
