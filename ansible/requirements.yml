@@ -1,2 +1,4 @@
 - src: https://github.com/dhs-ncats/ansible-role-github-oauth
   name: github_oauth
+- src: https://github.com/dhs-ncats/ansible-role-cyhy-logrotate
+  name: cyhy_logrotate
