@@ -2,3 +2,5 @@
   name: disable_thp
 - src: https://github.com/dhs-ncats/ansible-role-github-oauth
   name: github_oauth
+- src: https://github.com/dhs-ncats/ansible-role-htop
+  name: htop
