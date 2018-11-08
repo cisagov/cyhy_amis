@@ -4,12 +4,22 @@
 
 Build Terraform-based infrastructure with:
 ```
+ansible-galaxy install -r ansible/requirements.yml
 cd terraform
 terraform workspace select <your_workspace>
 ./configure.py
 terraform init
 terraform apply -var-file=<your_workspace>.yml
 ```
+
+Also note that
+```
+ansible-galaxy install --force -r ansible/requirements.yml
+```
+will update the roles that are being pulled from external sources.  This
+may be required, for example, if a role that is being pulled from a
+GitHub repository has been updated and you want the new changes.  By
+default `ansible-galaxy install` _will not_ upgrade roles.
 
 ## Destroying ##
 

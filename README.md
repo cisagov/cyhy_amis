@@ -39,6 +39,9 @@ terraform init
 terraform apply -var-file=<your_workspace>.yml
 ```
 
+Again, in some cases you may find it useful to add the `--force` flag
+to the `ansible-galaxy` command.
+
 ## Tearing down the Terraform-based infrastructure ##
 The Terraform-based infrastructure is torn down like so:
 ```
