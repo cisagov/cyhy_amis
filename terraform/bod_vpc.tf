@@ -88,7 +88,7 @@ resource "aws_default_route_table" "bod_default_route_table" {
 resource "aws_route" "bod_route_cyhy_traffic_through_peering_connection" {
   route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
   destination_cidr_block = "${aws_vpc.cyhy_vpc.cidr_block}"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection.id}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_bod_peering_connection.id}"
 }
 
 # Route all external traffic through the NAT gateway
@@ -106,7 +106,7 @@ resource "aws_route_table" "bod_public_route_table" {
 }
 
 # Route all external traffic through the internet gateway
-resource "aws_route" "route_external_traffic_through_internet_gateway" {
+resource "aws_route" "bod_public_route_external_traffic_through_internet_gateway" {
   route_table_id = "${aws_route_table.bod_public_route_table.id}"
   destination_cidr_block = "0.0.0.0/0"
   gateway_id = "${aws_internet_gateway.bod_igw.id}"

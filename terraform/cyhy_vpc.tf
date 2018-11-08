@@ -192,7 +192,7 @@ resource "aws_route_table" "cyhy_private_route_table" {
 resource "aws_route" "cyhy_private_route_external_traffic_through_vpc_peering_connection" {
   route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
   destination_cidr_block = "${aws_vpc.bod_vpc.cidr_block}"
-  vpc_peering_connection_id = "${aws_vpc_peering_connection.peering_connection.id}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_bod_peering_connection.id}"
 }
 
 # Private route: Route all (non-BOD) external traffic through the
