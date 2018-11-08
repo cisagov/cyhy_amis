@@ -61,6 +61,11 @@ variable "create_bod_flow_logs" {
   default = 0
 }
 
+variable "create_mgmt_flow_logs" {
+  description = "Whether or not to create flow logs for the Management VPC.  Zero means no and one means yes"
+  default = 0
+}
+
 variable "cyhy_archive_bucket_name" {
   description = "S3 bucket for storing compressed archive files created by cyhy-archive"
   default = "ncats-cyhy-archive"
