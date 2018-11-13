@@ -1,3 +1,5 @@
+- src: https://github.com/dhs-ncats/ansible-role-banner
+  name: banner
 - src: https://github.com/GekoCloud/ansible-role-disable-thp
   name: disable_thp
 - src: https://github.com/dhs-ncats/ansible-role-github-oauth
