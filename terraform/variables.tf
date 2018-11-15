@@ -66,8 +66,8 @@ variable "cyhy_archive_bucket_name" {
   default = "ncats-cyhy-archive"
 }
 
-variable "cyhy_portscan_nat_gw_elastic_ip" {
-  description = "The IP address of the elastic IP to be assigned to the CyHy Portscan NAT gateway"
+variable "cyhy_nmap_elastic_ip" {
+  description = "The IP address of the elastic IP to be assigned to the CyHy nmap instance"
   default = ""
 }
 

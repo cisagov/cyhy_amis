@@ -32,7 +32,6 @@ resource "aws_instance" "cyhy_nmap" {
   # availability_zone = "${element(data.aws_availability_zones.all.names, count.index)}"
 
   subnet_id = "${aws_subnet.cyhy_portscanner_subnet.id}"
-  associate_public_ip_address = false
 
   root_block_device {
     volume_type = "gp2"
@@ -48,6 +47,40 @@ resource "aws_instance" "cyhy_nmap" {
 
   tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1), "Publish Egress", "True"))}"
   volume_tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
+}
+
+# The Elastic IP for the *Production* CyHy nmap scanner instance
+# Can be created via dhs-ncats/elastic-ips-terraform or manually
+# Intended to be a public IP address that rarely changes
+data "aws_eip" "cyhy_nmap_eip" {
+  count = "${local.production_workspace ? 1 : 0}"
+  public_ip = "${var.cyhy_nmap_elastic_ip}"
+}
+
+# The Elastic IP for the *Non-Production* CyHy nmap scanner instance
+# Only created in *non-production* workspaces
+# This is a randomly-assigned public IP address for temporary use
+resource "aws_eip" "cyhy_nmap_random_eip" {
+  count = "${local.production_workspace ? 0 : 1}"
+  vpc = true
+  tags = "${merge(var.tags, map("Name", "CyHy Nmap EIP", "Publish Egress", "True"))}"
+}
+
+# Associate the appropriate Elastic IP above with the CyHy nmap instance
+# Since our elastic IPs are handled differently in production vs.
+# non-production workspaces, their corresponding terraform resources
+# (data.aws_eip.cyhy_nmap_eip, data.aws_eip.cyhy_nmap_random_eip)
+# may or may not be created.  To handle that, we use "splat syntax" (the *),
+# which resolves to either an empty list (if the resource is not present in
+# the current workspace) or a valid list (if the resource is present).  Then
+# we use coalescelist() to choose the (non-empty) list containing the valid
+# eip.id. Finally, we use element() to choose the first element in that
+# non-empty list, which is the allocation_id of our elastic IP.
+# See https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
+# VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
+resource "aws_eip_association" "cyhy_nmap_eip_assoc" {
+  instance_id   = "${aws_instance.cyhy_nmap.id}"
+  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_nmap_eip.*.id, aws_eip.cyhy_nmap_random_eip.*.id), 0)}"
 }
 
 # Note that the EBS volume contains production data. Therefore we need
