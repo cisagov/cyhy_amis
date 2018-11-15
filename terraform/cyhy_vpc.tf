@@ -203,6 +203,12 @@ resource "aws_route" "cyhy_private_route_external_traffic_through_portscanner_na
   nat_gateway_id = "${aws_nat_gateway.cyhy_portscanner_nat_gw.id}"
 }
 
+# Associate the route table with the private subnet
+resource "aws_route_table_association" "cyhy_private_association" {
+  subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
+  route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
+}
+
 # Route table for our public subnet, which routes all external traffic
 # through the internet gateway
 resource "aws_route_table" "cyhy_public_route_table" {
