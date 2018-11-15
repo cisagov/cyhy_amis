@@ -22,7 +22,7 @@ data "aws_ami" "nmap" {
 
 resource "aws_instance" "cyhy_nmap" {
   ami = "${data.aws_ami.nmap.id}"
-  instance_type = "${local.production_workspace ? "t2.micro" : "t2.micro"}"
+  instance_type = "${local.production_workspace ? "r5.12xlarge" : "t3.micro"}"
   count = "${local.nmap_instance_count}"
 
   # ebs_optimized = true
@@ -36,7 +36,7 @@ resource "aws_instance" "cyhy_nmap" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_workspace ? 20 : 8}"
+    volume_size = "${local.production_workspace ? 200 : 8}"
     delete_on_termination = true
   }
 
@@ -65,7 +65,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   # availability_zone = "${element(data.aws_availability_zones.all.names, count.index)}"
   type = "gp2"
-  size = "${local.production_workspace ? 2 : 1}"
+  size = "${local.production_workspace ? 128 : 1}"
   encrypted = true
 
   tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
