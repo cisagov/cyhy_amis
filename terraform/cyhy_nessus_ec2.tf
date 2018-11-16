@@ -85,7 +85,7 @@ resource "aws_eip" "cyhy_nessus_random_eips" {
 resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
   count = "${local.nessus_instance_count}"
   instance_id = "${element(aws_instance.cyhy_nessus.*.id, count.index)}"
-  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_nmap_eips.*.id, aws_eip.cyhy_nmap_random_eips.*.id), count.index)}"
+  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_nessus_eips.*.id, aws_eip.cyhy_nessus_random_eips.*.id), count.index)}"
 }
 
 # Note that the EBS volume contains production data. Therefore we need
