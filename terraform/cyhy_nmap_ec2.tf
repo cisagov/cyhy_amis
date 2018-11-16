@@ -55,7 +55,7 @@ resource "aws_instance" "cyhy_nmap" {
 # changes.
 data "aws_eip" "cyhy_nmap_eips" {
   count = "${local.production_workspace ? local.nmap_instance_count : 0}"
-  public_ip = "${element(var.cyhy_nmap_elastic_ips, count.index)}"
+  public_ip = "${element(var.cyhy_portscan_elastic_ips, count.index)}"
 }
 
 # The Elastic IPs for the *non-production* CyHy nmap scanner
