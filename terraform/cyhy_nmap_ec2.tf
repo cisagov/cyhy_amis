@@ -25,7 +25,7 @@ resource "aws_instance" "cyhy_nmap" {
   instance_type = "${local.production_workspace ? "r5.12xlarge" : "t3.micro"}"
   count = "${local.nmap_instance_count}"
 
-  # ebs_optimized = true
+  ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   # We may want to spread instances across all availability zones, however
   # this will also require creating a scanner subnet in each availability zone
@@ -49,38 +49,44 @@ resource "aws_instance" "cyhy_nmap" {
   volume_tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
 }
 
-# The Elastic IP for the *Production* CyHy nmap scanner instance
-# Can be created via dhs-ncats/elastic-ips-terraform or manually
-# Intended to be a public IP address that rarely changes
-data "aws_eip" "cyhy_nmap_eip" {
-  count = "${local.production_workspace ? 1 : 0}"
-  public_ip = "${var.cyhy_nmap_elastic_ip}"
+# The Elastic IPs for the *production* CyHy nmap scanner instances.
+# These EIPs can be created via dhs-ncats/elastic-ips-terraform or
+# manually and are intended to be a public IP address that rarely
+# changes.
+data "aws_eip" "cyhy_nmap_eips" {
+  count = "${local.production_workspace ? local.nmap_instance_count : 0}"
+  public_ip = "${element(var.cyhy_nmap_elastic_ips, count.index)}"
 }
 
-# The Elastic IP for the *Non-Production* CyHy nmap scanner instance
-# Only created in *non-production* workspaces
-# This is a randomly-assigned public IP address for temporary use
-resource "aws_eip" "cyhy_nmap_random_eip" {
-  count = "${local.production_workspace ? 0 : 1}"
+# The Elastic IPs for the *non-production* CyHy nmap scanner
+# instances.  These EIPs are only created in *non-production*
+# workspaces and are randomly-assigned public IP address for temporary
+# use.
+resource "aws_eip" "cyhy_nmap_random_eips" {
+  count = "${local.production_workspace ? 0 : local.nmap_instance_count}"
   vpc = true
   tags = "${merge(var.tags, map("Name", "CyHy Nmap EIP", "Publish Egress", "True"))}"
 }
 
-# Associate the appropriate Elastic IP above with the CyHy nmap instance
-# Since our elastic IPs are handled differently in production vs.
-# non-production workspaces, their corresponding terraform resources
-# (data.aws_eip.cyhy_nmap_eip, data.aws_eip.cyhy_nmap_random_eip)
-# may or may not be created.  To handle that, we use "splat syntax" (the *),
-# which resolves to either an empty list (if the resource is not present in
-# the current workspace) or a valid list (if the resource is present).  Then
-# we use coalescelist() to choose the (non-empty) list containing the valid
-# eip.id. Finally, we use element() to choose the first element in that
-# non-empty list, which is the allocation_id of our elastic IP.
-# See https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
+# Associate the appropriate Elastic IP above with the CyHy nmap
+# instances.  Since our elastic IPs are handled differently in
+# production vs.  non-production workspaces, their corresponding
+# terraform resources (data.aws_eip.cyhy_nmap_eips,
+# data.aws_eip.cyhy_nmap_random_eips) may or may not be created.  To
+# handle that, we use "splat syntax" (the *), which resolves to either
+# an empty list (if the resource is not present in the current
+# workspace) or a valid list (if the resource is present).  Then we
+# use coalescelist() to choose the (non-empty) list containing the
+# valid eip.id. Finally, we use element() to choose the first element
+# in that non-empty list, which is the allocation_id of our elastic
+# IP.  See
+# https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
+#
 # VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
-resource "aws_eip_association" "cyhy_nmap_eip_assoc" {
-  instance_id   = "${aws_instance.cyhy_nmap.id}"
-  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_nmap_eip.*.id, aws_eip.cyhy_nmap_random_eip.*.id), 0)}"
+resource "aws_eip_association" "cyhy_nmap_eip_assocs" {
+  count = "${local.nmap_instance_count}"
+  instance_id = "${element(aws_instance.cyhy_nmap.*.id, count.index)}"
+  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_nmap_eips.*.id, aws_eip.cyhy_nmap_random_eips.*.id), count.index)}"
 }
 
 # Note that the EBS volume contains production data. Therefore we need

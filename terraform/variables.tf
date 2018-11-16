@@ -66,12 +66,14 @@ variable "cyhy_archive_bucket_name" {
   default = "ncats-cyhy-archive"
 }
 
-variable "cyhy_nmap_elastic_ip" {
-  description = "The IP address of the elastic IP to be assigned to the CyHy nmap instance"
-  default = ""
+variable "cyhy_nmap_elastic_ips" {
+  type = "list"
+  description = "The IP addresses of the elastic IPs to be assigned to the CyHy nmap instances.  These values are only used in a production workspace, and in that case the number of elements in the list should equal the number of nmap instances being created."
+  default = []
 }
 
-variable "cyhy_vulnscan_nat_gw_elastic_ip" {
-  description = "The IP address of the elastic IP to be assigned to the CyHy Vulnscan NAT gateway"
-  default = ""
+variable "cyhy_vulnscan_elastic_ips" {
+  type = "list"
+  description = "The IP addresses of the elastic IPs to be assigned to the CyHy vulnscan instances.  These values are only used in a production workspace, and in that case the number of elements in the list should equal the number of Nessus instances being created."
+  default = []
 }
