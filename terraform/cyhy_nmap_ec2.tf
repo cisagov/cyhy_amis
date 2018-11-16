@@ -65,7 +65,7 @@ data "aws_eip" "cyhy_nmap_eips" {
 resource "aws_eip" "cyhy_nmap_random_eips" {
   count = "${local.production_workspace ? 0 : local.nmap_instance_count}"
   vpc = true
-  tags = "${merge(var.tags, map("Name", "CyHy Nmap EIP", "Publish Egress", "True"))}"
+  tags = "${merge(var.tags, map("Name", format("CyHy Nmap EIP %d", count.index+1), "Publish Egress", "True"))}"
 }
 
 # Associate the appropriate Elastic IP above with the CyHy nmap
