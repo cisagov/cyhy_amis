@@ -28,7 +28,6 @@ resource "aws_instance" "cyhy_nessus" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = "${aws_subnet.cyhy_vulnscanner_subnet.id}"
-  associate_public_ip_address = false
 
   root_block_device {
     volume_type = "gp2"
@@ -49,6 +48,44 @@ resource "aws_instance" "cyhy_nessus" {
   lifecycle {
     prevent_destroy = true
   }
+}
+
+# The Elastic IPs for the *production* CyHy Nessus instances.  These
+# EIPs can be created via dhs-ncats/elastic-ips-terraform or manually,
+# and are intended to be a public IP address that rarely changes.
+data "aws_eip" "cyhy_nessus_eips" {
+  count = "${local.production_workspace ? local.nessus_instance_count : 0}"
+  public_ip = "${element(var.cyhy_vulnscan_elastic_ips, count.index)}"
+}
+
+# The Elastic IP for the *non-production* CyHy Nessus instances.
+# These EIPs are only created in *non-production* workspaces and are
+# randomly-assigned public IP address for temporary use.
+resource "aws_eip" "cyhy_nessus_random_eips" {
+  count = "${local.production_workspace ? 0 : local.nessus_instance_count}"
+  vpc = true
+  tags = "${merge(var.tags, map("Name", format("CyHy Nessus EIP %d", count.index+1), "Publish Egress", "True"))}"
+}
+
+# Associate the appropriate Elastic IPs above with the CyHy Nessus
+# instances.  Since our elastic IPs are handled differently in
+# production vs. non-production workspaces, their corresponding
+# terraform resources (data.aws_eip.cyhy_nessus_eips,
+# data.aws_eip.cyhy_nessus_random_eips) may or may not be created.  To
+# handle that, we use "splat syntax" (the *), which resolves to either
+# an empty list (if the resource is not present in the current
+# workspace) or a valid list (if the resource is present).  Then we
+# use coalescelist() to choose the (non-empty) list containing the
+# valid eip.id. Finally, we use element() to choose the appropriate
+# element in that non-empty list, which is the allocation_id of our
+# elastic IP.  See
+# https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
+#
+# VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
+resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
+  count = "${local.nessus_instance_count}"
+  instance_id = "${element(aws_instance.cyhy_nessus.*.id, count.index)}"
+  allocation_id = "${element(coalescelist(data.aws_eip.cyhy_nessus_eips.*.id, aws_eip.cyhy_nessus_random_eips.*.id), count.index)}"
 }
 
 # Note that the EBS volume contains production data. Therefore we need
