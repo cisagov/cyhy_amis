@@ -22,7 +22,7 @@ data "aws_ami" "nmap" {
 
 resource "aws_instance" "cyhy_nmap" {
   ami = "${data.aws_ami.nmap.id}"
-  instance_type = "${local.production_workspace ? "r5.12xlarge" : "t3.micro"}"
+  instance_type = "${local.production_workspace ? "r5.24xlarge" : "t3.micro"}"
   count = "${local.nmap_instance_count}"
 
   ebs_optimized = "${local.production_workspace}"
@@ -35,7 +35,7 @@ resource "aws_instance" "cyhy_nmap" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_workspace ? 200 : 8}"
+    volume_size = "${local.production_workspace ? 100 : 8}"
     delete_on_termination = true
   }
 
