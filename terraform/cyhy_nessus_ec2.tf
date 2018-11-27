@@ -55,7 +55,7 @@ resource "aws_instance" "cyhy_nessus" {
 # and are intended to be a public IP address that rarely changes.
 data "aws_eip" "cyhy_nessus_eips" {
   count = "${local.production_workspace ? local.nessus_instance_count : 0}"
-  public_ip = "${element(var.cyhy_vulnscan_elastic_ips, count.index)}"
+  public_ip = "${cidrhost(var.cyhy_elastic_ip_cidr_block, var.cyhy_vulnscan_first_elastic_ip_offset + count.index)}"
 }
 
 # The Elastic IP for the *non-production* CyHy Nessus instances.
