@@ -23,8 +23,13 @@ variable "mongo_disks" {
   }
 }
 
-variable "cyhy_runner_disk" {
-  description = "The cyhy-runner data volume"
+variable "nmap_cyhy_runner_disk" {
+  description = "The cyhy-runner data volume for the nmap instance(s)"
+  default = "/dev/nvme1n1"
+}
+
+variable "nessus_cyhy_runner_disk" {
+  description = "The cyhy-runner data volume for the nessus instance(s)"
   default = "/dev/xvdb"
 }
 

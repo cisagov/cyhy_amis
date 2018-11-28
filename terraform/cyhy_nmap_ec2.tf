@@ -43,7 +43,7 @@ resource "aws_instance" "cyhy_nmap" {
     "${aws_security_group.cyhy_scanner_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_and_cyhy_runner_cloud_init_tasks.rendered}"
+  user_data = "${data.template_cloudinit_config.ssh_and_nmap_cyhy_runner_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1), "Publish Egress", "True"))}"
   volume_tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
@@ -116,7 +116,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
 
 resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   count = "${local.nmap_instance_count}"
-  device_name = "${var.cyhy_runner_disk}"
+  device_name = "/dev/xvdb"
   volume_id = "${aws_ebs_volume.nmap_cyhy_runner_data.*.id[count.index]}"
   instance_id = "${aws_instance.cyhy_nmap.*.id[count.index]}"
 
