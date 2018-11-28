@@ -22,7 +22,7 @@ data "aws_ami" "nmap" {
 
 resource "aws_instance" "cyhy_nmap" {
   ami = "${data.aws_ami.nmap.id}"
-  instance_type = "${local.production_workspace ? "r5.24xlarge" : "t3.micro"}"
+  instance_type = "${local.production_workspace ? "t3.micro" : "t3.micro"}"
   count = "${local.nmap_instance_count}"
 
   ebs_optimized = "${local.production_workspace}"
@@ -35,7 +35,7 @@ resource "aws_instance" "cyhy_nmap" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = "${local.production_workspace ? 100 : 8}"
+    volume_size = "${local.production_workspace ? 20 : 8}"
     delete_on_termination = true
   }
 
@@ -43,7 +43,7 @@ resource "aws_instance" "cyhy_nmap" {
     "${aws_security_group.cyhy_scanner_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_and_cyhy_runner_cloud_init_tasks.rendered}"
+  user_data = "${data.template_cloudinit_config.ssh_and_nmap_cyhy_runner_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1), "Publish Egress", "True"))}"
   volume_tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
@@ -55,7 +55,7 @@ resource "aws_instance" "cyhy_nmap" {
 # changes.
 data "aws_eip" "cyhy_nmap_eips" {
   count = "${local.production_workspace ? local.nmap_instance_count : 0}"
-  public_ip = "${element(var.cyhy_portscan_elastic_ips, count.index)}"
+  public_ip = "${cidrhost(var.cyhy_elastic_ip_cidr_block, var.cyhy_portscan_first_elastic_ip_offset + count.index)}"
 }
 
 # The Elastic IPs for the *non-production* CyHy nmap scanner
@@ -104,7 +104,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   # availability_zone = "${element(data.aws_availability_zones.all.names, count.index)}"
   type = "gp2"
-  size = "${local.production_workspace ? 128 : 1}"
+  size = "${local.production_workspace ? 2 : 1}"
   encrypted = true
 
   tags = "${merge(var.tags, map("Name", format("CyHy Nmap - portscan%d", count.index+1)))}"
@@ -116,7 +116,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
 
 resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   count = "${local.nmap_instance_count}"
-  device_name = "${var.cyhy_runner_disk}"
+  device_name = "/dev/xvdb"
   volume_id = "${aws_ebs_volume.nmap_cyhy_runner_data.*.id[count.index]}"
   instance_id = "${aws_instance.cyhy_nmap.*.id[count.index]}"
 

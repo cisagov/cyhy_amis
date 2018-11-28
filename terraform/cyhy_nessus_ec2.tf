@@ -39,7 +39,7 @@ resource "aws_instance" "cyhy_nessus" {
     "${aws_security_group.cyhy_scanner_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_and_cyhy_runner_cloud_init_tasks.rendered}"
+  user_data = "${data.template_cloudinit_config.ssh_and_nessus_cyhy_runner_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", format("CyHy Nessus - vulnscan%d", count.index+1), "Publish Egress", "True"))}"
   volume_tags = "${merge(var.tags, map("Name", format("CyHy Nessus - vulnscan%d", count.index+1)))}"
@@ -55,7 +55,7 @@ resource "aws_instance" "cyhy_nessus" {
 # and are intended to be a public IP address that rarely changes.
 data "aws_eip" "cyhy_nessus_eips" {
   count = "${local.production_workspace ? local.nessus_instance_count : 0}"
-  public_ip = "${element(var.cyhy_vulnscan_elastic_ips, count.index)}"
+  public_ip = "${cidrhost(var.cyhy_elastic_ip_cidr_block, var.cyhy_vulnscan_first_elastic_ip_offset + count.index)}"
 }
 
 # The Elastic IP for the *non-production* CyHy Nessus instances.
@@ -115,7 +115,7 @@ resource "aws_ebs_volume" "nessus_cyhy_runner_data" {
 
 resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   count = "${local.nessus_instance_count}"
-  device_name = "${var.cyhy_runner_disk}"
+  device_name = "/dev/xvdb"
   volume_id = "${aws_ebs_volume.nessus_cyhy_runner_data.*.id[count.index]}"
   instance_id = "${aws_instance.cyhy_nessus.*.id[count.index]}"
 
