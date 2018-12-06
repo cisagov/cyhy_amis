@@ -72,3 +72,27 @@ resource "aws_security_group_rule" "bastion_egress_to_mongo_via_mongo" {
   from_port = 27017
   to_port = 27017
 }
+
+# Allow egress via the mongodb port to the mongo host
+resource "aws_security_group_rule" "bastion_egress_to_dashboard" {
+  security_group_id = "${aws_security_group.cyhy_bastion_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_dashboard.private_ip}/32"
+  ]
+  from_port = 4200
+  to_port = 4200
+}
+
+# Allow egress of webd to bastion
+resource "aws_security_group_rule" "bastion_egress_for_webd" {
+  security_group_id = "${aws_security_group.cyhy_bastion_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_dashboard.private_ip}/32"
+  ]
+  from_port = 5000
+  to_port = 5000
+}
