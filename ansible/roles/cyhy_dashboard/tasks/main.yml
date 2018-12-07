@@ -2,7 +2,6 @@
 # tasks file for cyhy_dashboard
 
 #
-#
 # Grab the files we need to create the "places" collection from cyhy-core
 #
 
@@ -76,9 +75,9 @@
     state: directory
     owner: cyhy
     group: cyhy
-    mode: 0660
+    mode: 0750
 
-- name: Create /etc/cyhy directory
+- name: Create /etc/cyhy/webui directory
   file:
     path: /var/cyhy/ncats-webui
     state: directory
@@ -86,7 +85,7 @@
     group: cyhy
     mode: 0660
 
-- name: Create /etc/cyhy directory
+- name: Create /etc/cyhy/webd directory
   file:
     path: /var/cyhy/ncats-webd
     state: directory
@@ -171,6 +170,10 @@
 
 - name: Start ncat-webd
   shell: ncats-webd -ls production &
+  become_method: sudo
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
 
 # Run `dev-build` target as root
 - make:

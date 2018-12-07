@@ -9,18 +9,6 @@
     name: python-pip
     state: latest
 
-- name: Install curl and unzip
-  package:
-    name:
-      - build-essential
-      - curl
-      - unzip
-      - apt-transport-https
-      - ca-certificates
-      - gnupg2
-      - software-properties-common
-    state: latest
-
 - name: Grab GitHub OAuth token from S3
   local_action:
     module: aws_s3
