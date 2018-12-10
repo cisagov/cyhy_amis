@@ -5,22 +5,6 @@
 # Grab the files we need to create the "places" collection from cyhy-core
 #
 
-- name: Grab GitHub OAuth token from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: github_oauth_token.yml
-    dest: /tmp/github_oauth_token.yml
-    mode: get
-  become: no
-
-
-- name: Load GitHub OAuth token from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/github_oauth_token.yml
-
-
 - name: Grab mongo users from S3
   local_action:
     module: aws_s3
@@ -36,39 +20,6 @@
     file: /tmp/mongo_users.yml
     name: mongo_users
 
-- name: Create the /tmp/cyhy-places/scripts directory
-  file:
-    path: /tmp/cyhy-places/scripts
-    state: directory
-
-- name: Create the /tmp/cyhy-places/extras directory
-  file:
-    path: /tmp/cyhy-places/extras
-    state: directory
-
-- name: Download load_places.sh from GitHub
-  get_url:
-    url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/load_places.sh"
-    headers:
-      Authorization: "token {{ github_oauth_token }}"
-    dest: /tmp/cyhy-places/scripts/load_places.sh
-    mode: 0755
-
-- name: Download GNIS_data_import.py from GitHub
-  get_url:
-    url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/GNIS_data_import.py"
-    headers:
-      Authorization: "token {{ github_oauth_token }}"
-    dest: /tmp/cyhy-places/scripts/GNIS_data_import.py
-    mode: 0755
-
-- name: Download ADDL_CYHY_PLACES.txt from GitHub
-  get_url:
-    url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
-    headers:
-      Authorization: "token {{ github_oauth_token }}"
-    dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
-
 - name: Create /etc/cyhy directory
   file:
     path: /etc/cyhy
@@ -77,45 +28,13 @@
     group: cyhy
     mode: 0750
 
-- name: Create /etc/cyhy/webui directory
+- name: Create /var/cyhy directory
   file:
-    path: /var/cyhy/ncats-webui
+    path: /var/cyhy
     state: directory
     owner: cyhy
     group: cyhy
-    mode: 0660
-
-- name: Create /etc/cyhy/webd directory
-  file:
-    path: /var/cyhy/ncats-webd
-    state: directory
-    owner: cyhy
-    group: cyhy
-    mode: 0660
-
-- name: Create /var/cyhy/core directory
-  file:
-    path: /var/cyhy/cyhy-core
-    state: directory
-    owner: cyhy
-    group: cyhy
-    mode: 0660
-
-- name: Download and untar the webui tarball
-  unarchive:
-    src: "https://api.github.com/repos/jsf9k/ncats-webui/tarball/develop?access_token={{ github_oauth_token }}"
-    dest: /var/cyhy/ncats-webui
-    remote_src: yes
-    extra_opts:
-      - "--strip-components=1"
-
-- name: Download and untar the webd tarball
-  unarchive:
-    src: "https://api.github.com/repos/jsf9k/ncats-webd/tarball/develop?access_token={{ github_oauth_token }}"
-    dest: /var/cyhy/ncats-webd
-    remote_src: yes
-    extra_opts:
-      - "--strip-components=1"
+    mode: 0750
 
 - name: Create /var/cyhy/web directory
   file:
