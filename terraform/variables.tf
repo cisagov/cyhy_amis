@@ -23,8 +23,13 @@ variable "mongo_disks" {
   }
 }
 
-variable "cyhy_runner_disk" {
-  description = "The cyhy-runner data volume"
+variable "nmap_cyhy_runner_disk" {
+  description = "The cyhy-runner data volume for the nmap instance(s)"
+  default = "/dev/nvme1n1"
+}
+
+variable "nessus_cyhy_runner_disk" {
+  description = "The cyhy-runner data volume for the nessus instance(s)"
   default = "/dev/xvdb"
 }
 
@@ -71,12 +76,17 @@ variable "cyhy_archive_bucket_name" {
   default = "ncats-cyhy-archive"
 }
 
-variable "cyhy_portscan_nat_gw_elastic_ip" {
-  description = "The IP address of the elastic IP to be assigned to the CyHy Portscan NAT gateway"
+variable "cyhy_elastic_ip_cidr_block" {
+  description = "The CIDR block of elastic addresses available for use by CyHy scanner instances."
   default = ""
 }
 
-variable "cyhy_vulnscan_nat_gw_elastic_ip" {
-  description = "The IP address of the elastic IP to be assigned to the CyHy Vulnscan NAT gateway"
-  default = ""
+variable "cyhy_portscan_first_elastic_ip_offset" {
+  description = "The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy portscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first portscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional portscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available."
+  default = 0
+}
+
+variable "cyhy_vulnscan_first_elastic_ip_offset" {
+  description = "The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy vulnscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first vulnscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional vulnscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available."
+  default = 1
 }

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import boto3
 from datetime import datetime
+from ipaddress import collapse_addresses, ip_network
 import re
 
 '''
@@ -42,13 +43,13 @@ FILE_CONFIGS = \
     [   {
         'filename':     'all.txt',
         'app_regex':    re.compile('.*'),
-        'static_ips':   ('64.69.57.0/24',),
+        'static_ips':   ('100.27.42.128/25','64.69.57.0/24',),
         'description':  'This file contains a consolidated list of all the IP addresses that NCATS is currently using for external scanning.'
         },
         {
         'filename':     'cyhy.txt',
         'app_regex':    re.compile('(Manual )?Cyber Hygiene$'),
-        'static_ips':   (),
+        'static_ips':   ('100.27.42.128/25','64.69.57.0/24',),
         'description':  'This file contains a list of all IPs used for Cyber Hygiene scanning.'
         },
         {
@@ -91,7 +92,11 @@ def get_ec2_ips(region):
 
     for vpc_address in vpc_addresses:
         # convert tags from aws dict into a real dictionary
-        tags = {x['Key']:x['Value'] for x in vpc_address.tags}
+        try:
+            tags = {x['Key']:x['Value'] for x in vpc_address.tags}
+        except TypeError:
+            # This happens if there are no tags associated with the elastic IPs
+            tags = {}
         # if the publish egress tag isn't set to True we can skip
         if tags.get(PUBLISH_EGRESS_TAG, str(False)) != str(True):
             continue
@@ -130,7 +135,7 @@ def main():
 
     # initialize a set to accumulate ips for each file
     for config in FILE_CONFIGS:
-        config['ip_set'] = set(config['static_ips'])
+        config['ip_set'] = set(ip_network(i) for i in config['static_ips'])
 
     # loop through the region list and fetch the public ec2 ips
     for region in regions:
@@ -140,7 +145,7 @@ def main():
             # loop through all regexs and add ip to set if matched
             for config in FILE_CONFIGS:
                 if config['app_regex'].match(application_tag):
-                    config['ip_set'].add(public_ip)
+                    config['ip_set'].add(ip_network(public_ip))
 
     # use a single timestamp for all files
     now = '{0:%a %b %d %H:%M:%S UTC %Y}'.format(datetime.utcnow())
@@ -149,8 +154,8 @@ def main():
     for config in FILE_CONFIGS:
         # initialize bucket contents
         bucket_contents = HEADER
-        for ip in sorted(config['ip_set']):
-            bucket_contents += ip + '\n'
+        for net in collapse_addresses(config['ip_set']):
+            bucket_contents += str(net) + '\n'
 
         # fill in template
         bucket_contents = bucket_contents.format(domain=DOMAIN,

@@ -79,15 +79,18 @@
   when: production_workspace
 # This cron job runs at midnight UTC on Sunday mornings.  The BOD
 # scanning is long since completed by that time.
-- name: Create a cron job for report generation
-  cron:
-    name: "Snapshot, CyHy report, and CybEx scorecard generation"
-    minute: 0
-    hour: 0
-    weekday: 0
-    user: cyhy
-    job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
-  when: production_workspace
+#
+# Disable the reporting cron job for now until the BOD scanning and
+# the CyHy reporting share a common redis DB.
+# - name: Create a cron job for report generation
+#   cron:
+#     name: "Snapshot, CyHy report, and CybEx scorecard generation"
+#     minute: 0
+#     hour: 0
+#     weekday: 0
+#     user: cyhy
+#     job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
+#   when: production_workspace
 
 #
 # Add users to the cyhy group
