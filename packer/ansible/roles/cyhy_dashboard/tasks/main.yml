@@ -1,14 +1,5 @@
 ---
 # tasks file for cyhy_dashboard
-
-#
-# Install curl and unzip; they are needed by cyhy_core/var/load_places.sh
-#
-- name: Install pip
-  package:
-    name: python-pip
-    state: latest
-
 #
 # Grab the cyhy-core code
 #
