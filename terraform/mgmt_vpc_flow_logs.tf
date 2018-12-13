@@ -1,4 +1,4 @@
-mgmt# IAM assume role policy document for the role we're creating
+# IAM assume role policy document for the role we're creating
 data "aws_iam_policy_document" "mgmt_flow_log_assume_role_doc" {
   count = "${var.create_mgmt_flow_logs}"
 
