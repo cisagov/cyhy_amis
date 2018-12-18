@@ -97,6 +97,13 @@
   roles:
     - cyhy_feeds
 
+- hosts: cyhy_dashboard
+  name: Install and configure cyhy-dashboard
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_dashboard
+
 - hosts: cyhy_archive
   name: Configure cyhy-archive hosts
   become: yes

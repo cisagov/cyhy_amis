@@ -1,0 +1,9 @@
+[Unit]
+Description=ncats-webd service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=cyhy
+ExecStart=/usr/local/bin/ncats-webd -ls production

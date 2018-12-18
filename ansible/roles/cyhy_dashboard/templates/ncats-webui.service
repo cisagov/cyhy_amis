@@ -1,0 +1,9 @@
+[Unit]
+Description=ncats-webui service
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=cyhy
+ExecStart=/usr/bin/make -C /var/cyhy/ncats-webui/ dev-start

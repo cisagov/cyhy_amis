@@ -85,6 +85,14 @@
   roles:
     - cyhy_feeds
 
+- hosts: cyhy_dashboard
+  name: Install and configure cyhy-dashboard
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_dashboard
+    - docker
+
 - hosts: cyhy_archive
   name: Install cyhy-archive helper script
   become: yes
