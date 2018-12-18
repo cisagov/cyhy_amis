@@ -39,11 +39,11 @@
 - name: Install webd
   command: pip install /tmp/ncats-webd
 
-- name: Create /var/cyhy/webui directory
+- name: Create /var/cyhy/ncats-webui directory
   file:
     path: /var/cyhy/ncats-webui
     state: directory
-    mode: 0660
+    mode: 0760
 
 - name: Download and untar the webui tarball
   unarchive:

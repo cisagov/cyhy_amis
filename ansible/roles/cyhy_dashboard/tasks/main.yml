@@ -38,7 +38,7 @@
     state: directory
     owner: cyhy
     group: cyhy
-    mode: 0775
+    mode: 0750
 
 - name: Create random secret key for webd
   shell: touch /var/cyhy/web/secret_key
@@ -83,24 +83,32 @@
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
 
-- name: Start ncats-webd
-  shell: ncats-webd -ls production &
-  become_method: sudo
-  become_user: cyhy
-  vars:
-    ansible_ssh_pipelining: yes
-
-# Run `dev-build` target as root
 - make:
     chdir: /var/cyhy/ncats-webui
     target: dev-build
   become: yes
 
-# Run `dev-start` target as root
-- make:
-    chdir: /var/cyhy/ncats-webui
-    target: dev-start
-  become: yes
+- name: Copy webd service file
+  template:
+    src: ncats-webd.service
+    dest: /etc/systemd/system/ncats-webd.service
+    mode: 644
+
+- name: Start webd service
+  service:
+    name: ncats-webd
+    state: started
+
+- name: Copy webui service file
+  template:
+    src: ncats-webui.service
+    dest: /etc/systemd/system/ncats-webui.service
+    mode: 644
+
+- name: Start webui service
+  service:
+    name: ncats-webui
+    state: started
 
 - name: Delete /tmp/mongo_users.yml
   local_action:

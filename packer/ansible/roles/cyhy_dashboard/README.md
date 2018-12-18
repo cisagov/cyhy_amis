@@ -24,10 +24,10 @@ Example Playbook
 Here's how to use it in a playbook:
 
      - hosts: cyhy_dashboard
-      become: yes
-      become_method: sudo
-      roles:
-         - cyhy_dashboard
+       become: yes
+       become_method: sudo
+       roles:
+        - cyhy_dashboard
 License
 -------
 
