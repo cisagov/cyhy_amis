@@ -29,7 +29,7 @@ resource "aws_instance" "bod_docker" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
-  subnet_id = "${aws_subnet.bod_private_subnet.id}"
+  subnet_id = "${aws_subnet.bod_docker_subnet.id}"
 
   root_block_device {
     volume_type = "gp2"
