@@ -50,14 +50,13 @@ resource "aws_security_group_rule" "private_mongodb_ingress_from_bastion" {
   to_port = 27017
 }
 
-# Allow MongoDB ingress from the reporter, cyhy feeds, and dashboard
+# Allow MongoDB ingress from the reporter and dashboard
 resource "aws_security_group_rule" "private_mongodb_ingress" {
   security_group_id = "${aws_security_group.cyhy_private_sg.id}"
   type = "ingress"
   protocol = "tcp"
   cidr_blocks = [
     "${aws_instance.cyhy_reporter.private_ip}/32",
-    "${aws_instance.cyhy_feeds.private_ip}/32",
     "${aws_instance.cyhy_dashboard.private_ip}/32"
   ]
   from_port = 27017

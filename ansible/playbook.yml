@@ -34,6 +34,7 @@
   become_method: sudo
   roles:
     - mongo
+    - cyhy_feeds
 
 - hosts: bod_docker
   name: Configure Docker hosts for BOD 18-01 scanning and reporting
@@ -89,13 +90,6 @@
   become_method: sudo
   roles:
     - cyhy_ops
-
-- hosts: cyhy_feeds
-  name: Configure cyhy-feeds hosts
-  become: yes
-  become_method: sudo
-  roles:
-    - cyhy_feeds
 
 - hosts: cyhy_dashboard
   name: Install and configure cyhy-dashboard
