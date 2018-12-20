@@ -83,14 +83,14 @@ resource "aws_network_acl_rule" "private_egress_to_bastion_via_ephemeral_ports" 
   to_port = 65535
 }
 
-# Allow egress to the BOD 18-01 private subnet via ephemeral ports
-resource "aws_network_acl_rule" "private_egress_to_bod_private_via_ephemeral_ports" {
+# Allow egress to the BOD 18-01 docker subnet via ephemeral ports
+resource "aws_network_acl_rule" "private_egress_to_bod_docker_via_ephemeral_ports" {
   network_acl_id = "${aws_network_acl.cyhy_private_acl.id}"
   egress = true
   protocol = "tcp"
   rule_number = 120
   rule_action = "allow"
-  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
+  cidr_block = "${aws_subnet.bod_docker_subnet.cidr_block}"
   from_port = 1024
   to_port = 65535
 }

@@ -191,14 +191,24 @@ resource "aws_network_acl_rule" "public_egress_to_anywhere_via_tcp_ephemeral_por
   to_port = 65535
 }
 
-# Allow egress to the private subnet via UDP ephemeral ports
-resource "aws_network_acl_rule" "public_egress_to_private_via_udp_ephemeral_ports" {
+# Allow egress to the docker and lambda subnets via UDP ephemeral ports
+resource "aws_network_acl_rule" "public_egress_to_docker_via_udp_ephemeral_ports" {
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = true
   protocol = "udp"
   rule_number = 210
   rule_action = "allow"
-  cidr_block = "${aws_subnet.bod_private_subnet.cidr_block}"
+  cidr_block = "${aws_subnet.bod_docker_subnet.cidr_block}"
+  from_port = 1024
+  to_port = 65535
+}
+resource "aws_network_acl_rule" "public_egress_to_lambda_via_udp_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.bod_public_acl.id}"
+  egress = true
+  protocol = "udp"
+  rule_number = 220
+  rule_action = "allow"
+  cidr_block = "${aws_subnet.bod_lambda_subnet.cidr_block}"
   from_port = 1024
   to_port = 65535
 }
