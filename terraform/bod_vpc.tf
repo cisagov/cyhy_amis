@@ -1,6 +1,6 @@
 # The BOD 18-01 VPC
 resource "aws_vpc" "bod_vpc" {
-  cidr_block = "10.10.12.0/23"
+  cidr_block = "10.11.0.0/21"
   enable_dns_hostnames = true
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01"))}"
@@ -21,23 +21,36 @@ resource "aws_vpc_dhcp_options_association" "bod_vpc_dhcp" {
   dhcp_options_id = "${aws_vpc_dhcp_options.bod_dhcp_options.id}"
 }
 
-# Private subnet of the VPC
-resource "aws_subnet" "bod_private_subnet" {
+# Docker subnet of the VPC
+resource "aws_subnet" "bod_docker_subnet" {
  vpc_id = "${aws_vpc.bod_vpc.id}"
- cidr_block = "10.10.12.0/24"
+ cidr_block = "10.11.1.0/24"
  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
  depends_on = [
    "aws_internet_gateway.bod_igw"
  ]
 
- tags = "${merge(var.tags, map("Name", "BOD 18-01 Private"))}"
+ tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker"))}"
+}
+
+# Lambda subnet of the VPC
+resource "aws_subnet" "bod_lambda_subnet" {
+ vpc_id = "${aws_vpc.bod_vpc.id}"
+ cidr_block = "10.11.4.0/22"
+ availability_zone = "${var.aws_region}${var.aws_availability_zone}"
+
+ depends_on = [
+   "aws_internet_gateway.bod_igw"
+ ]
+
+ tags = "${merge(var.tags, map("Name", "BOD 18-01 Lambda"))}"
 }
 
 # Public subnet of the VPC
 resource "aws_subnet" "bod_public_subnet" {
   vpc_id = "${aws_vpc.bod_vpc.id}"
-  cidr_block = "10.10.13.0/24"
+  cidr_block = "10.11.0.0/24"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   depends_on = [
@@ -118,14 +131,24 @@ resource "aws_route_table_association" "bod_association" {
   route_table_id = "${aws_route_table.bod_public_route_table.id}"
 }
 
-# ACL for the private subnet of the VPC
-resource "aws_network_acl" "bod_private_acl" {
+# ACL for the docker subnet of the VPC
+resource "aws_network_acl" "bod_docker_acl" {
   vpc_id = "${aws_vpc.bod_vpc.id}"
   subnet_ids = [
-    "${aws_subnet.bod_private_subnet.id}"
+    "${aws_subnet.bod_docker_subnet.id}"
   ]
 
-  tags = "${merge(var.tags, map("Name", "BOD 18-01 Private"))}"
+  tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker"))}"
+}
+
+# ACL for the Lambda subnet of the VPC
+resource "aws_network_acl" "bod_lambda_acl" {
+  vpc_id = "${aws_vpc.bod_vpc.id}"
+  subnet_ids = [
+    "${aws_subnet.bod_lambda_subnet.id}"
+  ]
+
+  tags = "${merge(var.tags, map("Name", "BOD 18-01 Lambda"))}"
 }
 
 # ACL for the public subnet of the VPC
@@ -145,11 +168,11 @@ resource "aws_security_group" "bod_docker_sg" {
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker"))}"
 }
 
-# Security group for the public portion of the VPC
-resource "aws_security_group" "bod_public_sg" {
+# Security group for the Lambda portion of the VPC
+resource "aws_security_group" "bod_lambda_sg" {
   vpc_id = "${aws_vpc.bod_vpc.id}"
 
-  tags = "${merge(var.tags, map("Name", "BOD 18-01 Public"))}"
+  tags = "${merge(var.tags, map("Name", "BOD 18-01 Lambda"))}"
 }
 
 # Security group for the bastion portion of the VPC
