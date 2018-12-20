@@ -1,6 +1,6 @@
 # Allow ssh ingress from the public subnet
-resource "aws_network_acl_rule" "private_ingress_from_public_via_ssh" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+resource "aws_network_acl_rule" "docker_ingress_from_public_via_ssh" {
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = false
   protocol = "tcp"
   rule_number = 100
@@ -11,8 +11,8 @@ resource "aws_network_acl_rule" "private_ingress_from_public_via_ssh" {
 }
 
 # Allow ingress via ephemeral ports from anywhere via TCP
-resource "aws_network_acl_rule" "private_ingress_anywhere_via_ephemeral_ports_tcp" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+resource "aws_network_acl_rule" "docker_ingress_anywhere_via_ephemeral_ports_tcp" {
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = false
   protocol = "tcp"
   rule_number = 110
@@ -23,8 +23,8 @@ resource "aws_network_acl_rule" "private_ingress_anywhere_via_ephemeral_ports_tc
 }
 
 # Allow ingress via ephemeral ports from Google DNS via UDP
-resource "aws_network_acl_rule" "private_ingress_from_google_dns_via_ephemeral_ports_udp_1" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+resource "aws_network_acl_rule" "docker_ingress_from_google_dns_via_ephemeral_ports_udp_1" {
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = false
   protocol = "udp"
   rule_number = 111
@@ -33,8 +33,8 @@ resource "aws_network_acl_rule" "private_ingress_from_google_dns_via_ephemeral_p
   from_port = 1024
   to_port = 65535
 }
-resource "aws_network_acl_rule" "private_ingress_from_google_dns_via_ephemeral_ports_udp_2" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+resource "aws_network_acl_rule" "docker_ingress_from_google_dns_via_ephemeral_ports_udp_2" {
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = false
   protocol = "udp"
   rule_number = 112
@@ -45,10 +45,10 @@ resource "aws_network_acl_rule" "private_ingress_from_google_dns_via_ephemeral_p
 }
 
 # Allow outbound HTTP, HTTPS, SMTP (587), and FTP anywhere
-resource "aws_network_acl_rule" "private_egress_anywhere" {
+resource "aws_network_acl_rule" "docker_egress_anywhere" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = true
   protocol = "tcp"
   rule_number = "${120 + count.index}"
@@ -59,10 +59,10 @@ resource "aws_network_acl_rule" "private_egress_anywhere" {
 }
 
 # Allow egress to Google DNS
-resource "aws_network_acl_rule" "private_egress_to_google_dns_1" {
+resource "aws_network_acl_rule" "docker_egress_to_google_dns_1" {
   count = "${length(local.tcp_and_udp)}"
 
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = true
   protocol = "${local.tcp_and_udp[count.index]}"
   rule_number = "${135 + count.index}"
@@ -71,10 +71,10 @@ resource "aws_network_acl_rule" "private_egress_to_google_dns_1" {
   from_port = 53
   to_port = 53
 }
-resource "aws_network_acl_rule" "private_egress_to_google_dns_2" {
+resource "aws_network_acl_rule" "docker_egress_to_google_dns_2" {
   count = "${length(local.tcp_and_udp)}"
 
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = true
   protocol = "${local.tcp_and_udp[count.index]}"
   rule_number = "${137 + count.index}"
@@ -90,8 +90,8 @@ resource "aws_network_acl_rule" "private_egress_to_google_dns_2" {
 #
 # Note that this rule allows egress to the CyHy private subnet as
 # well.
-resource "aws_network_acl_rule" "private_egress_to_public_via_ephemeral_ports" {
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+resource "aws_network_acl_rule" "docker_egress_to_public_via_ephemeral_ports" {
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = true
   protocol = "tcp"
   rule_number = 140
