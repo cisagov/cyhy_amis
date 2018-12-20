@@ -1,6 +1,8 @@
 resource "aws_route53_zone" "bod_private_zone" {
   name = "${local.bod_private_domain}."
-  vpc_id = "${aws_vpc.bod_vpc.id}"
+  vpc {
+    vpc_id = "${aws_vpc.bod_vpc.id}"
+  }
   tags = "${merge(var.tags, map("Name", "BOD Private Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
@@ -73,7 +75,9 @@ resource "aws_route53_zone" "bod_public_zone_reverse" {
     element( split(".", aws_subnet.bod_public_subnet.cidr_block), 0),
   )}"
 
-  vpc_id = "${aws_vpc.bod_vpc.id}"
+  vpc {
+    vpc_id = "${aws_vpc.bod_vpc.id}"
+  }
   tags = "${merge(var.tags, map("Name", "BOD Public Reverse Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
@@ -135,7 +139,9 @@ resource "aws_route53_zone" "bod_private_zone_reverse" {
     element( split(".", aws_subnet.bod_docker_subnet.cidr_block), 0),
   )}"
 
-  vpc_id = "${aws_vpc.bod_vpc.id}"
+  vpc {
+    vpc_id = "${aws_vpc.bod_vpc.id}"
+  }
   tags = "${merge(var.tags, map("Name", "BOD Private Reverse Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
