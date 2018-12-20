@@ -42,7 +42,6 @@
 
 - name: Create random secret key for webd
   shell: touch /var/cyhy/web/secret_key
-  mode: 0664
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
