@@ -34,6 +34,7 @@
   roles:
     - xfs
     - mongo
+    - cyhy_feeds
 
 - hosts: nessus
   name: Install and configure Nessus
@@ -77,13 +78,6 @@
     - xfs
     - cyhy_reporter
     - cyhy_mailer
-
-- hosts: cyhy_feeds
-  name: Install and configure cyhy-feeds
-  become: yes
-  become_method: sudo
-  roles:
-    - cyhy_feeds
 
 - hosts: cyhy_dashboard
   name: Install and configure cyhy-dashboard
