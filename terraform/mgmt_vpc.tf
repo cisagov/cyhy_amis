@@ -145,21 +145,14 @@ resource "aws_network_acl" "mgmt_public_acl" {
   tags = "${merge(var.tags, map("Name", "Management Public"))}"
 }
 
-# Security group for the private portion of the VPC
-resource "aws_security_group" "mgmt_private_sg" {
+# Security group for scanner hosts (private subnet)
+resource "aws_security_group" "mgmt_scanner_sg" {
   vpc_id = "${aws_vpc.mgmt_vpc.id}"
 
-  tags = "${merge(var.tags, map("Name", "Management Private"))}"
+  tags = "${merge(var.tags, map("Name", "Management Scanner"))}"
 }
 
-# Security group for the public portion of the VPC
-resource "aws_security_group" "mgmt_public_sg" {
-  vpc_id = "${aws_vpc.mgmt_vpc.id}"
-
-  tags = "${merge(var.tags, map("Name", "Management Public"))}"
-}
-
-# Security group for the bastion host
+# Security group for the bastion host (public subnet)
 resource "aws_security_group" "mgmt_bastion_sg" {
   vpc_id = "${aws_vpc.mgmt_vpc.id}"
 
