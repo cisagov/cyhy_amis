@@ -148,8 +148,8 @@ resource "aws_network_acl_rule" "public_egress_anywhere" {
   rule_number = "${170 + count.index}"
   rule_action = "allow"
   cidr_block = "0.0.0.0/0"
-  from_port = "${distinct(concat(local.bod_docker_egress_anywhere_ports, local.bod_lambda_egress_anywhere_ports))[count.index]}"
-  to_port = "${distinct(concat(local.bod_docker_egress_anywhere_ports, local.bod_lambda_egress_anywhere_ports))[count.index]}"
+  from_port = "${element(distinct(concat(local.bod_docker_egress_anywhere_ports, local.bod_lambda_egress_anywhere_ports)), count.index)}"
+  to_port = "${element(distinct(concat(local.bod_docker_egress_anywhere_ports, local.bod_lambda_egress_anywhere_ports)), count.index)}"
 }
 
 # Allow egress to Google DNS.  This is so the NAT gateway can relay
