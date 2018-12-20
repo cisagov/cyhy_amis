@@ -19,6 +19,8 @@ resource "aws_vpc_peering_connection_options" "cyhy_bod_peering_connection" {
 }
 
 resource "aws_vpc_peering_connection" "cyhy_mgmt_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+
   vpc_id = "${aws_vpc.mgmt_vpc.id}"
   peer_vpc_id = "${aws_vpc.cyhy_vpc.id}"
   auto_accept = true
@@ -27,6 +29,8 @@ resource "aws_vpc_peering_connection" "cyhy_mgmt_peering_connection" {
 }
 
 resource "aws_vpc_peering_connection_options" "cyhy_mgmt_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+
   vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_mgmt_peering_connection.id}"
 
   accepter {
@@ -39,6 +43,8 @@ resource "aws_vpc_peering_connection_options" "cyhy_mgmt_peering_connection" {
 }
 
 resource "aws_vpc_peering_connection" "bod_mgmt_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+
   vpc_id = "${aws_vpc.mgmt_vpc.id}"
   peer_vpc_id = "${aws_vpc.bod_vpc.id}"
   auto_accept = true
@@ -47,6 +53,8 @@ resource "aws_vpc_peering_connection" "bod_mgmt_peering_connection" {
 }
 
 resource "aws_vpc_peering_connection_options" "bod_mgmt_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+
   vpc_peering_connection_id = "${aws_vpc_peering_connection.bod_mgmt_peering_connection.id}"
 
   accepter {
