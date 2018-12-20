@@ -13,13 +13,13 @@
             ],
             "most_recent": true
         },
-        "instance_type": "t2.micro",
+        "instance_type": "t3.micro",
         "ssh_username": "admin",
-        "ami_name": "cyhy-mongo-hvm-{{timestamp}}-x86_64-ebs",
+        "ami_name": "cyhy-dashboard-hvm-{{timestamp}}-x86_64-ebs",
         "ami_regions": [
-             "us-east-1",
-             "us-west-1",
-             "us-west-2"
+            "us-east-1",
+            "us-west-1",
+            "us-west-2"
         ],
 
         "tags": {
@@ -36,9 +36,8 @@
             "type": "ansible",
             "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
-                "mongo",
-                "cyhy_commander",
-                "cyhy_archive"
+                "cyhy_dashboard",
+                "docker"
             ]
         }
     ]

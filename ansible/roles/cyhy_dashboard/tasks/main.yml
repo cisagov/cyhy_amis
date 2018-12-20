@@ -1,0 +1,118 @@
+---
+# tasks file for cyhy_dashboard
+
+- name: Grab mongo users from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: mongo_users.yml
+    dest: /tmp/mongo_users.yml
+    mode: get
+  become: no
+
+- name: Load mongo users token from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/mongo_users.yml
+    name: mongo_users
+
+- name: Create /etc/cyhy directory
+  file:
+    path: /etc/cyhy
+    state: directory
+    owner: cyhy
+    group: cyhy
+    mode: 0750
+
+- name: Create /var/cyhy directory
+  file:
+    path: /var/cyhy
+    state: directory
+    owner: cyhy
+    group: cyhy
+    mode: 0750
+
+- name: Create /var/cyhy/web directory
+  file:
+    path: /var/cyhy/web
+    state: directory
+    owner: cyhy
+    group: cyhy
+    mode: 0750
+
+- name: Create random secret key for webd
+  shell: touch /var/cyhy/web/secret_key
+  mode: 0664
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
+
+- name: create secret key file
+  file:
+    path: /var/cyhy/web/secret_key
+    owner: cyhy
+    group: cyhy
+    mode: 0664
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
+
+- name: Create random secret key for webd
+  shell: head -c 24 /dev/urandom > /var/cyhy/web/secret_key
+  become_method: sudo
+  become_user: cyhy
+  vars:
+    ansible_ssh_pipelining: yes
+
+#
+# Set up /etc/cyhy/cyhy.conf with commander creds
+#
+- name: Create /etc/cyhy/cyhy.conf with commander credentials
+  copy:
+    dest: /etc/cyhy/cyhy.conf
+    owner: cyhy
+    group: cyhy
+    mode: 0660
+    content: |
+      [DEFAULT]
+      default-section = production
+      database-uri = mongodb://localhost:27017/
+      report-key =
+
+      [production]
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-name = cyhy
+
+- make:
+    chdir: /var/cyhy/ncats-webui
+    target: dev-build
+  become: yes
+
+- name: Copy webd service file
+  template:
+    src: ncats-webd.service
+    dest: /etc/systemd/system/ncats-webd.service
+    mode: 644
+
+- name: Start webd service
+  service:
+    name: ncats-webd
+    state: started
+
+- name: Copy webui service file
+  template:
+    src: ncats-webui.service
+    dest: /etc/systemd/system/ncats-webui.service
+    mode: 644
+
+- name: Start webui service
+  service:
+    name: ncats-webui
+    state: started
+
+- name: Delete /tmp/mongo_users.yml
+  local_action:
+    module: file
+    path: /tmp/mongo_users.yml
+    state: absent
+  become: no

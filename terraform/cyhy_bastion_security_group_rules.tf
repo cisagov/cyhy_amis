@@ -73,6 +73,30 @@ resource "aws_security_group_rule" "bastion_egress_to_mongo_via_mongo" {
   to_port = 27017
 }
 
+# Allow egress via webui port to the dashboard
+resource "aws_security_group_rule" "bastion_egress_to_dashboard" {
+  security_group_id = "${aws_security_group.cyhy_bastion_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_dashboard.private_ip}/32"
+  ]
+  from_port = 4200
+  to_port = 4200
+}
+
+# Allow egress via webd port to the dashboard
+resource "aws_security_group_rule" "bastion_egress_for_webd" {
+  security_group_id = "${aws_security_group.cyhy_bastion_sg.id}"
+  type = "egress"
+  protocol = "tcp"
+  cidr_blocks = [
+    "${aws_instance.cyhy_dashboard.private_ip}/32"
+  ]
+  from_port = 5000
+  to_port = 5000
+}
+
 # Allow all ICMP from vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "cyhy_bastion_ingress_all_icmp_from_mgmt_vulnscan" {

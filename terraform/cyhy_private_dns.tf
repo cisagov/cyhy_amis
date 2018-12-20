@@ -75,12 +75,12 @@ resource "aws_route53_record" "cyhy_vulnscan_A" {
   records = [ "${aws_instance.cyhy_nessus.*.private_ip[count.index]}" ]
 }
 
-resource "aws_route53_record" "cyhy_feeds_A" {
+resource "aws_route53_record" "cyhy_dashboard_A" {
   zone_id = "${aws_route53_zone.cyhy_private_zone.zone_id}"
-  name    = "feeds.${aws_route53_zone.cyhy_private_zone.name}"
+  name    = "dashboard.${aws_route53_zone.cyhy_private_zone.name}"
   type    = "A"
   ttl     = 300
-  records = [ "${aws_instance.cyhy_feeds.private_ip}"]
+  records = [ "${aws_instance.cyhy_dashboard.private_ip}"]
 }
 
 ##################################
@@ -209,15 +209,15 @@ resource "aws_route53_record" "cyhy_rev_database_PTR" {
   records = [ "database${count.index + 1}.${local.cyhy_private_domain}." ]
 }
 
-resource "aws_route53_record" "cyhy_rev_feeds_PTR" {
+resource "aws_route53_record" "cyhy_rev_dashboard_PTR" {
   zone_id = "${aws_route53_zone.cyhy_private_zone_reverse.zone_id}"
   name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
-    element(split(".", aws_instance.cyhy_feeds.private_ip), 3),
-    element(split(".", aws_instance.cyhy_feeds.private_ip), 2),
-    element(split(".", aws_instance.cyhy_feeds.private_ip), 1),
-    element(split(".", aws_instance.cyhy_feeds.private_ip), 0),
+    element(split(".", aws_instance.cyhy_dashboard.private_ip), 3),
+    element(split(".", aws_instance.cyhy_dashboard.private_ip), 2),
+    element(split(".", aws_instance.cyhy_dashboard.private_ip), 1),
+    element(split(".", aws_instance.cyhy_dashboard.private_ip), 0),
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "feeds.${local.cyhy_private_domain}." ]
+  records = [ "dashboard.${local.cyhy_private_domain}." ]
 }
