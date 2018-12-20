@@ -112,8 +112,19 @@ resource "aws_route" "cyhy_default_route_external_traffic_through_internet_gatew
   gateway_id = "${aws_internet_gateway.cyhy_igw.id}"
 }
 
+# Default route: Route all Management traffic through the VPC peering
+# connection
+resource "aws_route" "cyhy_default_route_mgmt_traffic_through_mgmt_vpc_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+
+  route_table_id = "${aws_default_route_table.cyhy_default_route_table.id}"
+  destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_mgmt_peering_connection.id}"
+}
+
 # Route table for our private subnet, which routes:
 # - all BOD traffic through the VPC peering connection
+# - all management VPC traffic through the VPC peering connection
 # - all other external traffic through the NAT gateway
 resource "aws_route_table" "cyhy_private_route_table" {
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
@@ -123,10 +134,20 @@ resource "aws_route_table" "cyhy_private_route_table" {
 
 # Private route: Route all BOD traffic through the VPC peering
 # connection
-resource "aws_route" "cyhy_private_route_external_traffic_through_vpc_peering_connection" {
+resource "aws_route" "cyhy_private_route_external_traffic_through_bod_vpc_peering_connection" {
   route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
   destination_cidr_block = "${aws_vpc.bod_vpc.cidr_block}"
   vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_bod_peering_connection.id}"
+}
+
+# Private route: Route all Management traffic through the VPC peering
+# connection
+resource "aws_route" "cyhy_private_route_external_traffic_through_mgmt_vpc_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  
+  route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
+  destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_mgmt_peering_connection.id}"
 }
 
 # Private route: Route all (non-BOD) external traffic through the NAT
