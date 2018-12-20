@@ -91,6 +91,15 @@ resource "aws_route" "bod_route_cyhy_traffic_through_peering_connection" {
   vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_bod_peering_connection.id}"
 }
 
+# Route all Management VPC traffic through the VPC peering connection
+resource "aws_route" "bod_route_mgmt_traffic_through_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+
+  route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
+  destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.bod_mgmt_peering_connection.id}"
+}
+
 # Route all external traffic through the NAT gateway
 resource "aws_route" "bod_route_external_traffic_through_nat_gateway" {
   route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
@@ -103,6 +112,15 @@ resource "aws_route_table" "bod_public_route_table" {
   vpc_id = "${aws_vpc.bod_vpc.id}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 public route table"))}"
+}
+
+# Route all Management VPC traffic through the VPC peering connection
+resource "aws_route" "bod_public_route_mgmt_traffic_through_peering_connection" {
+  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+
+  route_table_id = "${aws_route_table.bod_public_route_table.id}"
+  destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
+  vpc_peering_connection_id = "${aws_vpc_peering_connection.bod_mgmt_peering_connection.id}"
 }
 
 # Route all external traffic through the internet gateway
