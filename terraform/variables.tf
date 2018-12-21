@@ -90,3 +90,18 @@ variable "bod_nat_gateway_eip" {
   description = "The IP corresponding to the EIP to be used for the BOD 18-01 NAT gateway in production.  In a non-production workspace an EIP will be created.."
   default = ""
 }
+
+variable "scan_types" {
+  type = "list"
+  description = "The scan types that can be run."
+}
+
+variable "lambda_function_names" {
+  type = "map"
+  description = "The names to use for the Lambda functions.  The keys are the values in scan_types."
+}
+
+variable "lambda_function_zip_files" {
+  type = "map"
+  description = "The locations of the zip files for the Lambda functions.  The keys are the values in scan_types."
+}
