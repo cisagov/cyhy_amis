@@ -60,8 +60,21 @@ resource "aws_subnet" "bod_public_subnet" {
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Public"))}"
 }
 
-# Elastic IP for the NAT gateway
-resource "aws_eip" "bod_eip" {
+# The Elastic IP for the *production* NAT gateway
+data "aws_eip" "bod_production_eip" {
+  count = "${local.production_workspace ? 1 : 0}"
+  public_ip = "${var.bod_nat_gateway_eip}"
+
+  depends_on = [
+    "aws_internet_gateway.bod_igw"
+  ]
+
+  tags = "${merge(var.tags, map("Name", "BOD 18-01 NATGW IP"))}"
+}
+
+# The Elastic IP for the *non-production* NAT gateway
+resource "aws_eip" "bod_nonproduction_eip" {
+  count = "${local.production_workspace ? 0 : 1}"
   vpc = true
 
   depends_on = [
@@ -73,7 +86,22 @@ resource "aws_eip" "bod_eip" {
 
 # The NAT gateway for the VPC
 resource "aws_nat_gateway" "bod_nat_gw" {
-  allocation_id = "${aws_eip.bod_eip.id}"
+  # This affront to the laws of nature merits an explanation.
+  #
+  # Since our EIPs are handled differently in the production and
+  # non-production workspaces, their corresponding Terraform resources
+  # (data.aws_eip.bod_production_eip and
+  # data.aws_eip.bod_nonpriduction_eip) may or may not be created.  To
+  # handle that, we use splat syntax (the *), which resolves to either
+  # an empty list (if the resource is not present in the current
+  # workspace) or a valid list (if the resource is present).  Then we
+  # use coalescelist() to choose the (single-valued) list containing
+  # the valid eip.id. Finally, we use element() to choose the zeroth
+  # element of that non-empty list, which is the allocation_id of our
+  # elastic IP.  See
+  # https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
+  # for more details.
+  allocation_id = "${element(coalescelist(data.aws_eip.bod_production_eip.*.id, aws_eip.bod_nonproduction_eip.*.id), 0)}"
   subnet_id = "${aws_subnet.bod_public_subnet.id}"
 
   depends_on = [
