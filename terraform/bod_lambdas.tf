@@ -65,7 +65,7 @@ resource "aws_lambda_function" "lambdas" {
   description = "Lambda function for performing BOD 18-01 ${var.scan_types[count.index]} scans"
   vpc_config {
     subnet_ids = [
-      "${aws_subnet.bod_lambda_subnet.arn}"
+      "${aws_subnet.bod_lambda_subnet.id}"
     ]
 
     security_group_ids = [
