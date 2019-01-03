@@ -42,7 +42,7 @@ resource "aws_iam_role" "bod_docker_role" {
 }
 
 # IAM policy document that that allows the invocation of our Lambda
-# functions.  This will be applied to the cyhy-archive role.
+# functions.  This will be applied to the role we are creating.
 data "aws_iam_policy_document" "lambda_bod_docker_doc" {
   statement {
     effect = "Allow"
