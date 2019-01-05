@@ -66,8 +66,32 @@ resource "aws_iam_role_policy" "lambda_bod_docker_policy" {
   policy = "${data.aws_iam_policy_document.lambda_bod_docker_doc.json}"
 }
 
+# IAM policy document that only allows GETting from the dmarc-import
+# Elasticsearch database.  This will be applied to the role we are
+# creating.
+data "aws_iam_policy_document" "es_bod_docker_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "es:ESHttpGet"
+    ]
+
+    resources = [
+      "${var.dmarc_import_es_arn}",
+      "${var.dmarc_import_es_arn}/*"
+    ]
+  }
+}
+
+# The Elasticsearch policy for our role
+resource "aws_iam_role_policy" "es_bod_docker_policy" {
+  role = "${aws_iam_role.bod_docker_role.id}"
+  policy = "${data.aws_iam_policy_document.es_bod_docker_doc.json}"
+}
+
 # The instance profile to be used by any EC2 instances that need to
-# invoke our Lambda functions
+# invoke our Lambda functions and/or read the dmarc-import ES database
 resource "aws_iam_instance_profile" "bod_docker" {
   role = "${aws_iam_role.bod_docker_role.name}"
 }
@@ -113,7 +137,8 @@ module "bod_docker_ansible_provisioner" {
     "host_groups=docker,bod_docker",
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
     "production_workspace=${local.production_workspace}",
-    "aws_region=${var.aws_region}"
+    "aws_region=${var.aws_region}",
+    "dmarc_import_aws_region=${var.dmarc_import_aws_region}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

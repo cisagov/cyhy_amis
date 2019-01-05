@@ -105,3 +105,12 @@ variable "lambda_function_zip_files" {
   type = "map"
   description = "The locations of the zip files for the Lambda functions.  The keys are the values in scan_types."
 }
+
+variable "dmarc_import_aws_region" {
+  description = "The AWS region where the dmarc-import Elasticsearch database resides."
+  default = "us-east-1"
+}
+
+variable "dmarc_import_es_arn" {
+  description = "The ARN of the dmarc-import Elasticsearch database."
+}

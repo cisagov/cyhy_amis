@@ -87,39 +87,8 @@
       [profile lambda]
       region = {{ aws_region }}
 
-- name: Create directory to store the AWS Elasticsearch secrets
-  local_action:
-    module: file
-    path: "/tmp/secrets/aws_elasticsearch"
-    state: directory
-  become: no
-
-- name: Grab the AWS Elasticsearch credentials from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-bod-18-01-secrets
-    object: "orchestrator_secrets/aws_elasticsearch/{{ item }}"
-    dest: "/tmp/secrets/aws_elasticsearch/{{ item }}"
-    mode: get
-  become: no
-  loop:
-    - config
-    - credentials
-
-- name: Copy the AWS Elasticsearch secrets
-  copy:
-    src: "/tmp/secrets/aws_elasticsearch"
-    dest: /var/cyhy/orchestrator/secrets
-    owner: cyhy
-    group: cyhy
-    mode: 0750
-
-- name: Delete local copy of secrets
-  local_action:
-    module: file
-    path: /tmp/secrets
-    state: absent
-  become: no
+      [profile elasticsearch]
+      region = {{ dmarc_import_aws_region }}
 
 
 #
