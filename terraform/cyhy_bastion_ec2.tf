@@ -19,7 +19,7 @@ resource "aws_instance" "cyhy_bastion" {
     "${aws_security_group.cyhy_bastion_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
+  user_data_base64 = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
