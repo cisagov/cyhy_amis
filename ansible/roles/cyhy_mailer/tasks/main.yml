@@ -56,36 +56,15 @@
         name: cyhy
         uri: mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@{{ mongo_host }}:27017/cyhy
 
-- name: Create a temporary directory to store the cyhy-mailer AWS SMTP credentials
-  local_action:
-    module: file
-    path: /tmp/secrets/smtp
-    state: directory
-  become: no
-
-- name: Grab the cyhy-mailer AWS SMTP credentials from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-bod-18-01-secrets
-    object: cyhy-mailer_secrets/smtp_creds.yml
-    dest: /tmp/secrets/smtp/smtp_creds.yml
-    mode: get
-  become: no
-
-- name: Copy the cyhy-mailer AWS SMTP credentials
+- name: Create the AWS config
   copy:
-    src: /tmp/secrets/smtp/smtp_creds.yml
-    dest: /var/cyhy/cyhy-mailer/secrets/smtp_creds.yml
+    dest: /var/cyhy/cyhy-mailer/secrets/aws_config
     owner: cyhy
     group: cyhy
     mode: 0444
-
-- name: Delete local copy of cyhy-mailer secrets
-  local_action:
-    module: file
-    path: /tmp/secrets
-    state: absent
-  become: no
+    content: |
+      [default]
+      region = {{ ses_aws_region }}
 
 
 #
