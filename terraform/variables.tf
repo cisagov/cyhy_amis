@@ -114,3 +114,8 @@ variable "dmarc_import_aws_region" {
 variable "dmarc_import_es_arn" {
   description = "The ARN of the dmarc-import Elasticsearch database."
 }
+
+variable "ses_aws_region" {
+  description = "The AWS region where SES is configured."
+  default = "us-east-1"
+}
