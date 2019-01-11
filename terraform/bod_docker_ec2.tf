@@ -24,7 +24,7 @@ data "aws_ami" "bod_docker" {
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
-  instance_type = "${local.production_workspace ? "r4.xlarge" : "t2.micro"}"
+  instance_type = "${local.production_workspace ? "r5.xlarge" : "t3.micro"}"
   ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
