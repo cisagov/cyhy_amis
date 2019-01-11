@@ -24,7 +24,6 @@ resource "aws_instance" "cyhy_nessus" {
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "${local.production_workspace ? "m4.2xlarge" : "m4.large"}"
   count = "${local.nessus_instance_count}"
-  ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = "${aws_subnet.cyhy_vulnscanner_subnet.id}"
