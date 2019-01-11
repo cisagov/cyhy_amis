@@ -2,10 +2,6 @@
 
 data "template_file" "reporter_disk_setup" {
   template = "${file("scripts/reporter_disk_setup.yml")}"
-
-  vars {
-    device = "${local.production_workspace ? "/dev/nvme1n1" : "/dev/xvdb"}"
-  }
 }
 
 data "template_cloudinit_config" "ssh_and_reporter_cloud_init_tasks" {
