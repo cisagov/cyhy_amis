@@ -111,7 +111,7 @@
       database-name = cyhy
 
       [production_bod_scan]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1:27017/scan
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
       database-name = scan
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as
