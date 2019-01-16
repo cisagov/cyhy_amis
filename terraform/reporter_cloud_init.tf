@@ -1,6 +1,6 @@
 # cloud-init commands for configuring ssh and cyhy reporter
 
-data "template_file" "disk_setup" {
+data "template_file" "reporter_disk_setup" {
   template = "${file("${path.module}/scripts/disk_setup.sh")}"
 
   vars {
@@ -31,6 +31,6 @@ data "template_cloudinit_config" "ssh_and_reporter_cloud_init_tasks" {
 
   part {
     content_type = "text/x-shellscript"
-    content = "${data.template_file.disk_setup.rendered}"
+    content = "${data.template_file.reporter_disk_setup.rendered}"
   }
 }
