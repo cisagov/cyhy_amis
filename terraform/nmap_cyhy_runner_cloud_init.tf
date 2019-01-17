@@ -13,8 +13,8 @@ data "template_file" "nmap_disk_setup" {
 }
 
 data "template_cloudinit_config" "ssh_and_nmap_cyhy_runner_cloud_init_tasks" {
-  gzip = false
-  base64_encode = false
+  gzip = true
+  base64_encode = true
 
   part {
     filename     = "user_ssh_setup.yml"
