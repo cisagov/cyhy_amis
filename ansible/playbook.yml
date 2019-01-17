@@ -34,6 +34,7 @@
   become_method: sudo
   roles:
     - mongo
+    - mongo_logrotate
     - cyhy_feeds
 
 - hosts: bod_docker
