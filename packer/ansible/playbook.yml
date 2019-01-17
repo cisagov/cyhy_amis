@@ -1,4 +1,6 @@
 ---
+# The instance types used for almost all the instances expose EBS
+# volumes as NVMe block devices, so that's why we need nvme here.
 - hosts: all
   name: Update the base image, install python, add banner, persist journald
   become: yes
@@ -6,6 +8,7 @@
   roles:
     - upgrade
     - python
+    - nvme
     - banner
     - persist_journald
 
@@ -67,14 +70,11 @@
   roles:
     - cyhy_commander
 
-# In production, the CyHy reporter instance is a c5 instance type.
-# These instance types expose EBS volumes as NVMe block devices.
 - hosts: cyhy_reporter
   name: Install and configure cyhy-reports
   become: yes
   become_method: sudo
   roles:
-    - nvme
     - xfs
     - cyhy_reporter
     - cyhy_mailer
