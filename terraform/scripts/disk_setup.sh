@@ -36,13 +36,13 @@ do
     if [ "$non_nvme_device_name" = "${device_name}" ]
     then
         # We've found our device
-
-        # Grab the UUID of this volume
-        uuid=$(blkid -s UUID -o value $nvme_device)
         
         # Create a file system on the EBS volume if one was not
         # already there.
-        blkid -c /dev/null $nvme_device || mkfs -t ${fs_type} $nvme_device -L ${label}
+        blkid -c /dev/null $nvme_device || mkfs -t ${fs_type} -L ${label} $nvme_device
+
+        # Grab the UUID of this volume
+        uuid=$(blkid -s UUID -o value $nvme_device)
 
         # Mount the file system
         mount UUID="$uuid" ${mount_point}
