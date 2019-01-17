@@ -110,6 +110,9 @@
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
 
+      [production_bod_scan]
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
+      database-name = scan
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as
 # cyhy
@@ -120,4 +123,4 @@
     hour: 08
     minute: 15
     user: cyhy
-    job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --section production --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
+    job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --bod_section production_bod_scan --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
