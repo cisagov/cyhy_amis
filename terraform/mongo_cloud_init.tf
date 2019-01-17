@@ -11,8 +11,8 @@ data "template_file" "mongo_disk_setup" {
 }
 
 data "template_cloudinit_config" "ssh_and_mongo_cloud_init_tasks" {
-  gzip = false
-  base64_encode = false
+  gzip = true
+  base64_encode = true
 
   part {
     filename     = "mongo_disk_setup.yml"
