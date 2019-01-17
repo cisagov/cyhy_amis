@@ -71,9 +71,8 @@ resource "aws_iam_instance_profile" "cyhy_reporter" {
 }
 
 resource "aws_instance" "cyhy_reporter" {
-  ami = "${data.aws_ami.cyhy_reporter.id}"
-  instance_type = "${local.production_workspace ? "c5.2xlarge" : "t2.micro"}"
-  ebs_optimized = "${local.production_workspace}"
+  ami = "${data.aws_ami.reporter.id}"
+  instance_type = "${local.production_workspace ? "c5.2xlarge" : "t3.micro"}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
@@ -115,8 +114,6 @@ module "cyhy_reporter_ansible_provisioner" {
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
     "production_workspace=${local.production_workspace}",
     "ses_aws_region=${var.ses_aws_region}",
-    # We want to force ansible to rerun when the instance is recreated
-    "instance_arn=${aws_instance.cyhy_reporter.arn}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

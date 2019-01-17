@@ -25,7 +25,6 @@ resource "aws_instance" "cyhy_nmap" {
   instance_type = "${local.production_workspace ? "t3.micro" : "t3.micro"}"
   count = "${local.nmap_instance_count}"
 
-  ebs_optimized = "${local.production_workspace}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   # We may want to spread instances across all availability zones, however
   # this will also require creating a scanner subnet in each availability zone
