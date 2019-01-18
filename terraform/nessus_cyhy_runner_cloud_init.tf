@@ -9,6 +9,7 @@ data "template_file" "nessus_disk_setup" {
     mount_point = "/var/cyhy/runner"
     label = "cyhy_runner"
     fs_type = "ext4"
+    mount_options = "defaults"
   }
 }
 
