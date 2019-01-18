@@ -9,6 +9,7 @@ data "template_file" "reporter_disk_setup" {
     mount_point = "/var/cyhy/reports/output"
     label = "report_data"
     fs_type = "xfs"
+    mount_options = "defaults"
   }
 }
 
