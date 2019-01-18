@@ -10,6 +10,8 @@
 # file system
 # fs_type - the file system type to use if it is necessary to create a
 # file system
+# mount_options - a comma-separated list of options to pass when
+# mounting (defaults or defaults,noauto, for example)
 
 set -o nounset
 set -o errexit
@@ -21,7 +23,7 @@ do
     sleep 5
 done
 
-nvme_devices=$(find /dev | grep -i 'nvme[0-21]n1$')
+nvme_devices=$(find /dev | grep -i 'nvme[0-9][1-9]\?n1$')
 
 # Find our device from among the NVMe devices by checking each one's
 # vendor-specific region for the non-NVMe device name as it is
@@ -32,7 +34,13 @@ nvme_devices=$(find /dev | grep -i 'nvme[0-21]n1$')
 # non-deterministic.
 for nvme_device in $nvme_devices
 do
+    # Turn off pipefail and errexit for this one command.  This
+    # command will always fail if the NVMe disk isn't the one we're
+    # looking for.
+    set +o errexit; set +o pipefail
     non_nvme_device_name=$(nvme id-ctrl -v $nvme_device | grep -o ${device_name})
+    set -o errexit; set -o pipefail
+    
     if [ "$non_nvme_device_name" = "${device_name}" ]
     then
         # We've found our device
@@ -45,11 +53,11 @@ do
         uuid=$(blkid -s UUID -o value $nvme_device)
 
         # Mount the file system
-        mount UUID="$uuid" ${mount_point}
+        mount UUID="$uuid" -o ${mount_options} ${mount_point}
 
         # Save the mount point in fstab, so the file system is
         # remounted if the instance is rebooted
         echo "# ${label}" >> /etc/fstab
-        echo "UUID=$uuid ${mount_point} ${fs_type} defaults 0 2" >> /etc/fstab
+        echo "UUID=$uuid ${mount_point} ${fs_type} ${mount_options} 0 2" >> /etc/fstab
     fi
 done

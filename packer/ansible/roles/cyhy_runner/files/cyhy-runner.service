@@ -1,6 +1,7 @@
 [Unit]
 Description=cyhy-runner service
 After=network.target
+RequiresMountsFor=/var/cyhy/runner
 
 [Service]
 Type=simple
