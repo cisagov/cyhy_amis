@@ -48,6 +48,15 @@
     state: present
     line: ExecStart=/usr/bin/numactl --interleave=all /usr/bin/mongod --config /etc/mongod.conf
 
+- name: Make sure all mongo file systems are mounted before starting
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    firstmatch: yes
+    regexp: ^RequiresMountsFor=/var/lib/mongodb /var/lib/mongodb/journal /var/log/mongodb
+    insertafter: ^After=
+    state: present
+    line: RequiresMountsFor=/var/lib/mongodb /var/lib/mongodb/journal /var/log/mongodb
+
 # pymongo is needed for ansible mongodb_user module
 - name: Install pymongo via pip
   pip:
