@@ -135,7 +135,7 @@
       Authorization: "token {{ github_oauth_token }}"
     dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
 
-- name: Check that cyhy.conf exists
+- name: Check if cyhy.conf already exists
   stat:
     path: /etc/cyhy/cyhy.conf
   register: cyhy_conf_result
@@ -143,7 +143,7 @@
 #
 # Set up /etc/cyhy/cyhy.conf with commander creds
 #
-- name: Create /etc/cyhy/cyhy.conf with commander credentials
+- name: Create cyhy.conf with commander credentials if it doesn't already exist
   copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy

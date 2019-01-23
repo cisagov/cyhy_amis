@@ -94,12 +94,12 @@
     path: /etc/cyhy
     state: directory
 
-- name: Check that cyhy.conf exists
+- name: Check if cyhy.conf already exists
   stat:
     path: /etc/cyhy/cyhy.conf
   register: cyhy_conf_result
 
-- name: Create /etc/cyhy/cyhy.conf with commander credentials
+- name: Create cyhy.conf with commander credentials if it doesn't already exist
   copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy
@@ -120,7 +120,7 @@
       database-name = scan
   when: cyhy_conf_result.stat.exists == False
 
-- name: checks if items are in a file and if not append to file
+- name: Check if desired additions are in cyhy.conf and if not append them
   lineinfile:
     dest: /etc/cyhy/cyhy.conf
     line: '{{ item }}'
@@ -128,6 +128,7 @@
     - '[production_bod_scan]'
     - database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1:27017/scan
     - 'database-name = scan'
+
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as
 # cyhy
