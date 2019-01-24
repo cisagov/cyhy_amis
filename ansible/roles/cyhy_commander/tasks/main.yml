@@ -143,7 +143,7 @@
 #
 # Set up /etc/cyhy/cyhy.conf with commander creds
 #
-- name: Create cyhy.conf with commander credentials if it doesn't already exist
+- name: Create cyhy.conf (with commander credentials) if it doesn't exist
   copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy
@@ -155,10 +155,22 @@
       database-uri = mongodb://localhost:27017/
       report-key =
 
+      ; BEGIN ANSIBLE MANAGED BLOCK CYHY COMMANDER
       [production]
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
+      ; END ANSIBLE MANAGED BLOCK CYHY COMMANDER
   when: cyhy_conf_result.stat.exists == False
+
+- name: Add commander credentials block to cyhy.conf if necessary
+  blockinfile:
+    path: /etc/cyhy/cyhy.conf
+    marker: '; {mark} ANSIBLE MANAGED BLOCK CYHY COMMANDER'
+    block: |
+      [production]
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-name = cyhy
+  when: cyhy_conf_result.stat.exists == True
 
 #
 # Run script to create the "places" collection

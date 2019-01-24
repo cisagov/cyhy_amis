@@ -99,7 +99,7 @@
     path: /etc/cyhy/cyhy.conf
   register: cyhy_conf_result
 
-- name: Create cyhy.conf with commander credentials if it doesn't already exist
+- name: Create cyhy.conf (with scan-reader credentials) if it doesn't exist
   copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy
@@ -111,23 +111,22 @@
       database-uri = mongodb://localhost:27017/
       report-key =
 
-      [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
-      database-name = cyhy
-
+      ; BEGIN ANSIBLE MANAGED BLOCK CYHY FEEDS
       [production_bod_scan]
       database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
       database-name = scan
+      ; END ANSIBLE MANAGED BLOCK CYHY FEEDS
   when: cyhy_conf_result.stat.exists == False
 
-- name: Check if desired additions are in cyhy.conf and if not append them
-  lineinfile:
-    dest: /etc/cyhy/cyhy.conf
-    line: '{{ item }}'
-  with_items:
-    - '[production_bod_scan]'
-    - database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1:27017/scan
-    - 'database-name = scan'
+- name: Add scan-reader credentials block to cyhy.conf if necessary
+  blockinfile:
+    path: /etc/cyhy/cyhy.conf
+    marker: '; {mark} ANSIBLE MANAGED BLOCK CYHY FEEDS'
+    block: |
+      [production_bod_scan]
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1:27017/scan
+      database-name = scan
+  when: cyhy_conf_result.stat.exists == True
 
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as
