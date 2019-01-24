@@ -1,7 +1,7 @@
 # cloud-init commands for configuring ssh and cyhy-runner
 
 data "template_file" "nessus_disk_setup" {
-  template = "${file("${path.module}/scripts/non_nvme_disk_setup.sh")}"
+  template = "${file("${path.module}/scripts/disk_setup.sh")}"
 
   vars {
     num_disks = 2
