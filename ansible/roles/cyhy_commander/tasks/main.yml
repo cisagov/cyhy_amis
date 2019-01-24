@@ -143,6 +143,12 @@
 #
 # Set up /etc/cyhy/cyhy.conf with commander creds
 #
+# This is a little messy.  The real solution is to just create a
+# cyhy.conf with credentials for each user in mongo_users.other_users.
+# That will cause some heartburn, though, since the credential
+# sections will have to be named using the MongoDB username.  That
+# will necessitate some changes elsewhere in the code where named
+# sections from cyhy.conf are explicitly referenced.
 - name: Create cyhy.conf (with commander credentials) if it doesn't exist
   copy:
     dest: /etc/cyhy/cyhy.conf
@@ -155,17 +161,17 @@
       database-uri = mongodb://localhost:27017/
       report-key =
 
-      ; BEGIN ANSIBLE MANAGED BLOCK CYHY COMMANDER
+      ; BEGIN ANSIBLE MANAGED BLOCK commander
       [production]
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
-      ; END ANSIBLE MANAGED BLOCK CYHY COMMANDER
+      ; END ANSIBLE MANAGED BLOCK commander
   when: cyhy_conf_result.stat.exists == False
 
 - name: Add commander credentials block to cyhy.conf if necessary
   blockinfile:
     path: /etc/cyhy/cyhy.conf
-    marker: '; {mark} ANSIBLE MANAGED BLOCK CYHY COMMANDER'
+    marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     block: |
       [production]
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
