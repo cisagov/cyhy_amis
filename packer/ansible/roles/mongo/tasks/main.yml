@@ -32,12 +32,19 @@
     name: mongod
     enabled: yes
 
-- name: Configure mongo service to run after cloud-config
+# We want the mongo service to be started very late in the boot
+# process.  This is because cloud-init may have to format the mongo
+# data, journal, and/or logs volumes, and that can take some time.
+#
+# multi-user.target is pretty late in the boot process, and including
+# cloud-final.service here should ensure that cloud-init is finished
+# running before this service is started.
+- name: Configure mongo service to run after multi-user and cloud-final
   lineinfile:
     dest: /lib/systemd/system/mongod.service
     regexp: ^After=
     state: present
-    line: After=network.target cloud-config.service
+    line: After=network.target multi-user.target cloud-final.service
 
 # Mongo docs recommend running via numactl on NUMA hosts
 # https://docs.mongodb.com/manual/administration/production-notes/#mongodb-and-numa-hardware
@@ -56,6 +63,36 @@
     insertafter: ^After=
     state: present
     line: RequiresMountsFor=/var/lib/mongodb /var/lib/mongodb/journal /var/log/mongodb
+
+# These three lines will disallow mongo from starting up in the event
+# that the mongo data, journal, and/or log volumes are not ready yet.
+# The mongo service will fail to start, and the failed assertion will
+# be mentioned explicitly in the output of the command "systemctl
+# status mongod.service".
+- name: Make sure mongo data file system is mounted before starting
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    firstmatch: yes
+    regexp: ^AssertPathIsMountPoint=/var/lib/mongodb
+    insertafter: ^RequiresMountsFor=
+    state: present
+    line: AssertPathIsMountPoint=/var/lib/mongodb
+- name: Make sure mongo journal file system is mounted before starting
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    firstmatch: yes
+    regexp: ^AssertPathIsMountPoint=/var/lib/mongodb/journal
+    insertafter: ^RequiresMountsFor=
+    state: present
+    line: AssertPathIsMountPoint=/var/lib/mongodb/journal
+- name: Make sure mongo log file system is mounted before starting
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    firstmatch: yes
+    regexp: ^AssertPathIsMountPoint=/var/log/mongodb
+    insertafter: ^RequiresMountsFor=
+    state: present
+    line: AssertPathIsMountPoint=/var/log/mongodb
 
 # pymongo is needed for ansible mongodb_user module
 - name: Install pymongo via pip
