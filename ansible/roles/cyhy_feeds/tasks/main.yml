@@ -121,7 +121,7 @@
       report-key =
 
       ; BEGIN ANSIBLE MANAGED BLOCK commander
-      [Production]
+      [production]
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
       ; END ANSIBLE MANAGED BLOCK commander
