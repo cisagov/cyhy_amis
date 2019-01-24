@@ -116,7 +116,7 @@
 #
 # Clean up
 #
-- name: Delete  /tmp/cyhy-base-nessus-policy.xml
+- name: Delete /tmp/cyhy-base-nessus-policy.xml
   file:
     path: /tmp/cyhy-base-nessus-policy.xml
     state: absent
