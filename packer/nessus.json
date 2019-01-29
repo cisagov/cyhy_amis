@@ -5,16 +5,16 @@
         "source_ami_filter": {
             "filters": {
                 "virtualization-type": "hvm",
-                "name": "Nessus 6.11.3 (master-*) BYOL-*",
+                "name": "debian-stretch-hvm-x86_64-gp2-*",
                 "root-device-type": "ebs"
             },
             "owners": [
-                "679593333241"
+                "379101102735"
             ],
             "most_recent": true
         },
-        "instance_type": "m4.large",
-        "ssh_username": "ec2-user",
+        "instance_type": "m5.large",
+        "ssh_username": "admin",
         "ami_name": "cyhy-nessus-hvm-{{timestamp}}-x86_64-ebs",
         "ami_regions": [
             "us-east-1",
@@ -25,7 +25,7 @@
         "tags": {
             "Team": "NCATS OIS - Development",
             "Application": "Cyber Hygiene",
-            "OS_Version": "Amazon Linux 4.14",
+            "OS_Version": "Debian Stretch",
             "Release": "Latest",
             "Base_AMI_Name": "{{ .SourceAMIName }}"
         }
