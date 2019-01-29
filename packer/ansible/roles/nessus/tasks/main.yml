@@ -1,36 +1,34 @@
 ---
 # tasks file for nessus
 
-# Temporarily commented out during testing
-# - name: Fetch Nessus 8.2 package from S3
-#   local_action:
-#     module: aws_s3
-#     bucket: ncats-3rd-party-packages
-#     object: Nessus-8.2.0-debian6_amd64.deb
-#     dest: /tmp/Nessus-8.2.0-debian6_amd64.deb
-#     mode: get
-#   become: no
+- name: Fetch Nessus 8.2 package from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-3rd-party-packages
+    object: Nessus-8.2.1-debian6_amd64.deb
+    dest: /tmp/Nessus-8.2.1-debian6_amd64.deb
+    mode: get
+  become: no
 
 - name: Copy local Nessus package (.deb) to remote side
   copy:
-    src: /tmp/Nessus-8.2.0-debian6_amd64.deb
-    dest: /tmp/Nessus-8.2.0-debian6_amd64.deb
+    src: /tmp/Nessus-8.2.1-debian6_amd64.deb
+    dest: /tmp/Nessus-8.2.1-debian6_amd64.deb
     mode: 0644
 
 - name: Install Nessus 8.2
   apt:
-    deb: /tmp/Nessus-8.2.0-debian6_amd64.deb
+    deb: /tmp/Nessus-8.2.1-debian6_amd64.deb
     state: present
 
 - name: Delete Nessus package (.deb) on remote side
   file:
-    path: /tmp/Nessus-8.2.0-debian6_amd64.deb
+    path: /tmp/Nessus-8.2.1-debian6_amd64.deb
     state: absent
 
-# Temporarily commented out during testing
-# - name: Delete local copy of Nessus package
-#   local_action:
-#     module: file
-#     path: /tmp/Nessus-8.2.0-debian6_amd64.deb
-#     state: absent
-#   become: no
+- name: Delete local copy of Nessus package
+  local_action:
+    module: file
+    path: /tmp/Nessus-8.2.1-debian6_amd64.deb
+    state: absent
+  become: no
