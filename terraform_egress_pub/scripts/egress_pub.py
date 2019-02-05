@@ -39,17 +39,24 @@ HEADER = '''###
 # app_regex field.  If it matches it will be included in the associated
 # filename.
 
+# The following CIDR blocks are where our test Qualys scans originate from:
+# 64.39.99.11/32, 64.39.99.12/30, 64.39.99.16/29,
+# 64.39.99.24/31, 64.39.99.56/30, 64.39.99.60/32
 FILE_CONFIGS = \
     [   {
         'filename':     'all.txt',
         'app_regex':    re.compile('.*'),
-        'static_ips':   ('100.27.42.128/25','64.69.57.0/24',),
+        'static_ips':   ('100.27.42.128/25','64.69.57.0/24', '64.39.99.11/32',
+                         '64.39.99.12/30', '64.39.99.16/29', '64.39.99.24/31',
+                         '64.39.99.56/30', '64.39.99.60/32',),
         'description':  'This file contains a consolidated list of all the IP addresses that NCATS is currently using for external scanning.'
         },
         {
         'filename':     'cyhy.txt',
         'app_regex':    re.compile('(Manual )?Cyber Hygiene$'),
-        'static_ips':   ('100.27.42.128/25','64.69.57.0/24',),
+        'static_ips':   ('100.27.42.128/25','64.69.57.0/24', '64.39.99.11/32',
+                         '64.39.99.12/30', '64.39.99.16/29', '64.39.99.24/31',
+                         '64.39.99.56/30', '64.39.99.60/32',),
         'description':  'This file contains a list of all IPs used for Cyber Hygiene scanning.'
         },
         {
