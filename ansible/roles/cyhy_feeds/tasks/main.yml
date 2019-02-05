@@ -165,3 +165,4 @@
     minute: 15
     user: cyhy
     job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --bod_section production_bod_scan --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
+  when: production_workspace
