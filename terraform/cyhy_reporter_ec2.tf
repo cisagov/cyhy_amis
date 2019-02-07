@@ -43,10 +43,6 @@ resource "aws_instance" "cyhy_reporter" {
   user_data_base64 = "${data.template_cloudinit_config.ssh_and_reporter_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
-
-  # The reporter requires the CyHy database, so make this instance
-  # dependent on cyhy_mongo
-  depends_on = ["aws_instance.cyhy_mongo"]
 }
 
 # Provision the reporter EC2 instance via Ansible
