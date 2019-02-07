@@ -43,6 +43,7 @@ resource "aws_instance" "cyhy_reporter" {
   user_data_base64 = "${data.template_cloudinit_config.ssh_and_reporter_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
+  volume_tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
 }
 
 # Provision the reporter EC2 instance via Ansible
