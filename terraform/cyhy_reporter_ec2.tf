@@ -93,10 +93,7 @@ resource "aws_instance" "cyhy_reporter" {
   iam_instance_profile = "${aws_iam_instance_profile.cyhy_reporter.name}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
-
-  # The reporter requires the CyHy database, so make this instance
-  # dependent on cyhy_mongo
-  depends_on = ["aws_instance.cyhy_mongo"]
+  volume_tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
 }
 
 # Provision the reporter EC2 instance via Ansible
