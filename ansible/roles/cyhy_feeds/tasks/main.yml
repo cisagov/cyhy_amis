@@ -131,6 +131,12 @@
       database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
       database-name = scan
       ; END ANSIBLE MANAGED BLOCK scan-reader
+
+      ; BEGIN ANSIBLE MANAGED BLOCK assessment-reader
+      [production_assessment_reader]
+      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1:27017/assessment
+      database-name = assessment
+      ; END ANSIBLE MANAGED BLOCK assessment-reader
   when: cyhy_conf_result.stat.exists == False
 
 # This should be changed in the future to use a read-only Mongo user.
@@ -154,6 +160,15 @@
       database-name = scan
   when: cyhy_conf_result.stat.exists == True
 
+- name: Add assessment-reader credentials block to cyhy.conf if necessary
+  blockinfile:
+    path: /etc/cyhy/cyhy.conf
+    marker: '; {mark} ANSIBLE MANAGED BLOCK assessment-reader'
+    block: |
+      [production_assessment_reader]
+      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1:27017/assessment
+      database-name = assessment
+  when: cyhy_conf_result.stat.exists == True
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as
 # cyhy
@@ -165,3 +180,4 @@
     minute: 15
     user: cyhy
     job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --bod_section production_bod_scan --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
+  when: production_workspace

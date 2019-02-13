@@ -86,15 +86,6 @@
     state: absent
   become: no
 
-# /var/run/mongodb is used to store a file containing the mongod pid
-- name: Create the /var/run/mongodb directory
-  file:
-    path: /var/run/mongodb
-    state: directory
-    owner: mongodb
-    group: mongodb
-    mode: 0744
-
 - name: Copy mongo configuration file
   template:
     src: mongod.conf

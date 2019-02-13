@@ -94,6 +94,26 @@
     state: present
     line: AssertPathIsMountPoint=/var/log/mongodb
 
+# /run/mongodb (AKA /var/run/mnogodb) is used to store a file
+# containing the mongod pid.  We shouldn't start up until that
+# directory exists and has teh correct permissions.
+- name: Make sure /run/mongodb is created before starting
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    firstmatch: yes
+    regexp: ^RuntimeDirectory=mongodb
+    insertafter: ^Group=mongodb
+    state: present
+    line: RuntimeDirectory=mongodb
+- name: Make sure /run/mongodb has the correct permissions before starting
+  lineinfile:
+    dest: /lib/systemd/system/mongod.service
+    firstmatch: yes
+    regexp: ^RuntimeDirectoryMode=0744
+    insertafter: ^RuntimeDirectory=mongodb
+    state: present
+    line: RuntimeDirectoryMode=0744
+
 # pymongo is needed for ansible mongodb_user module
 - name: Install pymongo via pip
   pip:

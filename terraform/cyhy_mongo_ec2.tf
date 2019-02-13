@@ -30,7 +30,7 @@ resource "aws_instance" "cyhy_mongo" {
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 20
+    volume_size = 100
     delete_on_termination = true
   }
 
@@ -65,7 +65,8 @@ module "cyhy_mongo_ansible_provisioner" {
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
-    "host_groups=mongo,cyhy_commander,cyhy_archive"
+    "host_groups=mongo,cyhy_commander,cyhy_archive",
+    "production_workspace=${local.production_workspace}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
