@@ -127,7 +127,7 @@
       ; END ANSIBLE MANAGED BLOCK commander
 
       ; BEGIN ANSIBLE MANAGED BLOCK scan-reader
-      [production_bod_scan]
+      [production_scan_reader]
       database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
       database-name = scan
       ; END ANSIBLE MANAGED BLOCK scan-reader
@@ -155,7 +155,7 @@
     path: /etc/cyhy/cyhy.conf
     marker: '; {mark} ANSIBLE MANAGED BLOCK scan-reader'
     block: |
-      [production_bod_scan]
+      [production_scan_reader]
       database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1:27017/scan
       database-name = scan
   when: cyhy_conf_result.stat.exists == True
@@ -179,5 +179,5 @@
     hour: 08
     minute: 15
     user: cyhy
-    job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --bod_section production_bod_scan --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
+    job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --scan_section production_scan_reader --assessment_section production_assessment_reader --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
   when: production_workspace
