@@ -58,10 +58,10 @@ locals {
   bod_private_domain = "local"
 
   # zone to use for public DNS
-  cyhy_public_zone  = "cyber.dhs.gov"
+  cyhy_public_zone  = "ncats.cyber.dhs.gov"
 
   # zone to use for public DNS
-  bod_public_zone  = "cyber.dhs.gov"
+  bod_public_zone  = "ncats.cyber.dhs.gov"
 
   # subdomains to use in the public_zone.
   # to create records directly in the public_zone set to ""
