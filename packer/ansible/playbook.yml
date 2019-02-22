@@ -45,6 +45,7 @@
   become_method: sudo
   roles:
     - cyhy_runner
+    - nessus
     - more_ephemeral_ports
 
 - hosts: docker
