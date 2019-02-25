@@ -1,6 +1,6 @@
 [Unit]
 Description=cyhy-commander service
-After=network.target
+After=network.target mongod.service
 
 [Service]
 Type=simple

@@ -1,10 +1,15 @@
 # cloud-init commands for configuring ssh and cyhy reporter
 
 data "template_file" "reporter_disk_setup" {
-  template = "${file("scripts/reporter_disk_setup.yml")}"
+  template = "${file("${path.module}/scripts/disk_setup.sh")}"
 
   vars {
-    device = "${local.production_workspace ? "/dev/nvme1n1" : "/dev/xvdb"}"
+    num_disks = 2
+    device_name = "/dev/xvdb"
+    mount_point = "/var/cyhy/reports/output"
+    label = "report_data"
+    fs_type = "xfs"
+    mount_options = "defaults"
   }
 }
 
@@ -13,16 +18,9 @@ data "template_cloudinit_config" "ssh_and_reporter_cloud_init_tasks" {
   base64_encode = true
 
   part {
-    filename     = "reporter_disk_setup.yml"
-    content_type = "text/cloud-config"
-    content      = "${data.template_file.reporter_disk_setup.rendered}"
-  }
-
-  part {
     filename     = "user_ssh_setup.yml"
     content_type = "text/cloud-config"
     content      = "${data.template_file.user_ssh_setup.rendered}"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
   }
 
   part {
@@ -30,5 +28,10 @@ data "template_cloudinit_config" "ssh_and_reporter_cloud_init_tasks" {
     content_type = "text/cloud-config"
     content      = "${data.template_file.cyhy_user_ssh_setup.rendered}"
     merge_type   = "list(append)+dict(recurse_array)+str()"
+  }
+
+  part {
+    content_type = "text/x-shellscript"
+    content = "${data.template_file.reporter_disk_setup.rendered}"
   }
 }

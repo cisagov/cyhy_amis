@@ -23,15 +23,14 @@ data "aws_ami" "cyhy_mongo" {
 resource "aws_instance" "cyhy_mongo" {
   count = "${local.mongo_instance_count}"
   ami = "${data.aws_ami.cyhy_mongo.id}"
-  instance_type = "${local.production_workspace ? "m4.10xlarge" : "t2.micro"}"
-  ebs_optimized = "${local.production_workspace}"
+  instance_type = "${local.production_workspace ? "m5.12xlarge" : "t3.micro"}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   subnet_id = "${aws_subnet.cyhy_private_subnet.id}"
   associate_public_ip_address = false
 
   root_block_device {
     volume_type = "gp2"
-    volume_size = 20
+    volume_size = 100
     delete_on_termination = true
   }
 
@@ -66,7 +65,8 @@ module "cyhy_mongo_ansible_provisioner" {
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
-    "host_groups=mongo,cyhy_commander,cyhy_archive"
+    "host_groups=mongo,cyhy_commander,cyhy_archive",
+    "production_workspace=${local.production_workspace}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

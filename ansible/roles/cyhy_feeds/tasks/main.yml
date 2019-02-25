@@ -94,7 +94,21 @@
     path: /etc/cyhy
     state: directory
 
-- name: Create /etc/cyhy/cyhy.conf with commander credentials
+#
+# Set up /etc/cyhy/cyhy.conf with commander and scan-reader creds
+#
+# This is a little messy.  The real solution is to just create a
+# cyhy.conf with credentials for each user in mongo_users.other_users.
+# That will cause some heartburn, though, since the credential
+# sections will have to be named using the MongoDB username.  That
+# will necessitate some changes elsewhere in the code where named
+# sections from cyhy.conf are explicitly referenced.
+- name: Check if cyhy.conf already exists
+  stat:
+    path: /etc/cyhy/cyhy.conf
+  register: cyhy_conf_result
+
+- name: Create cyhy.conf (with scan-reader credentials) if it doesn't exist
   copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy
@@ -106,10 +120,55 @@
       database-uri = mongodb://localhost:27017/
       report-key =
 
+      ; BEGIN ANSIBLE MANAGED BLOCK commander
       [production]
       database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
       database-name = cyhy
+      ; END ANSIBLE MANAGED BLOCK commander
 
+      ; BEGIN ANSIBLE MANAGED BLOCK scan-reader
+      [production_scan_reader]
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
+      database-name = scan
+      ; END ANSIBLE MANAGED BLOCK scan-reader
+
+      ; BEGIN ANSIBLE MANAGED BLOCK assessment-reader
+      [production_assessment_reader]
+      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1:27017/assessment
+      database-name = assessment
+      ; END ANSIBLE MANAGED BLOCK assessment-reader
+  when: cyhy_conf_result.stat.exists == False
+
+# This should be changed in the future to use a read-only Mongo user.
+- name: Add commander credentials block to cyhy.conf if necessary
+  blockinfile:
+    path: /etc/cyhy/cyhy.conf
+    marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
+    block: |
+      [production]
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-name = cyhy
+  when: cyhy_conf_result.stat.exists == True
+
+- name: Add scan-reader credentials block to cyhy.conf if necessary
+  blockinfile:
+    path: /etc/cyhy/cyhy.conf
+    marker: '; {mark} ANSIBLE MANAGED BLOCK scan-reader'
+    block: |
+      [production_scan_reader]
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1:27017/scan
+      database-name = scan
+  when: cyhy_conf_result.stat.exists == True
+
+- name: Add assessment-reader credentials block to cyhy.conf if necessary
+  blockinfile:
+    path: /etc/cyhy/cyhy.conf
+    marker: '; {mark} ANSIBLE MANAGED BLOCK assessment-reader'
+    block: |
+      [production_assessment_reader]
+      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1:27017/assessment
+      database-name = assessment
+  when: cyhy_conf_result.stat.exists == True
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as
 # cyhy
@@ -120,4 +179,5 @@
     hour: 08
     minute: 15
     user: cyhy
-    job: python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --section production --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
+    job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --scan_section production_scan_reader --assessment_section production_assessment_reader --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
+  when: production_workspace

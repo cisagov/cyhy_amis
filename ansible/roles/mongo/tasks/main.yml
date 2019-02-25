@@ -90,7 +90,7 @@
   template:
     src: mongod.conf
     dest: /etc/mongod.conf
-    mode: 644
+    mode: 0644
 
 - name: Restart mongod service to use new configuration
   service:

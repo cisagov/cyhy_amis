@@ -23,8 +23,7 @@ data "aws_ami" "reporter" {
 
 resource "aws_instance" "cyhy_reporter" {
   ami = "${data.aws_ami.reporter.id}"
-  instance_type = "${local.production_workspace ? "c5.2xlarge" : "t2.micro"}"
-  ebs_optimized = "${local.production_workspace}"
+  instance_type = "${local.production_workspace ? "c5.2xlarge" : "t3.micro"}"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
@@ -44,10 +43,7 @@ resource "aws_instance" "cyhy_reporter" {
   user_data_base64 = "${data.template_cloudinit_config.ssh_and_reporter_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
-
-  # The reporter requires the CyHy database, so make this instance
-  # dependent on cyhy_mongo
-  depends_on = ["aws_instance.cyhy_mongo"]
+  volume_tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
 }
 
 # Provision the reporter EC2 instance via Ansible
@@ -63,9 +59,7 @@ module "cyhy_reporter_ansible_provisioner" {
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=docker,cyhy_reporter",
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
-    "production_workspace=${local.production_workspace}",
-    # We want to force ansible to rerun when the instance is recreated
-    "instance_arn=${aws_instance.cyhy_reporter.arn}"
+    "production_workspace=${local.production_workspace}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

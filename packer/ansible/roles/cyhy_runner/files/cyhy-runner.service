@@ -1,6 +1,19 @@
 [Unit]
 Description=cyhy-runner service
-After=network.target
+# We want this to be started very late in the boot process.  This is
+# because cloud-init may have to format the cyhy-runner data volume,
+# and that can take some time.
+#
+# multi-user.target is pretty late in the boot process, and including
+# cloud-final.service here should ensure that cloud-init is finished
+# running before this service is started.
+After=network.target multi-user.target cloud-final.service
+RequiresMountsFor=/var/cyhy/runner
+# This will disallow us from starting up in the event that the cyhy-runner
+# mount isn't ready yet.  This service will fail to start, and this failed
+# assertion will be mentioned explicitly in the output of the command
+# "systemctl status cyhy-runner.service".
+AssertPathIsMountPoint=/var/cyhy/runner
 
 [Service]
 Type=simple
