@@ -99,15 +99,15 @@
   local_action:
     module: aws_s3
     bucket: ncats-cyhy-secrets
-    object: cyhy-base-nessus-policy.xml
-    dest: /tmp/cyhy-base-nessus-policy.xml
+    object: cyhy-base-nessus8-policy.xml
+    dest: /tmp/cyhy-base-nessus8-policy.xml
     mode: get
   become: no
 
 - name: Copy base nessus scan to instance tmp
   copy:
-    src: /tmp/cyhy-base-nessus-policy.xml
-    dest: /tmp/cyhy-base-nessus-policy.xml
+    src: /tmp/cyhy-base-nessus8-policy.xml
+    dest: /tmp/cyhy-base-nessus8-policy.xml
 
 
 - name: Run nessus base policy import script
@@ -116,9 +116,9 @@
 #
 # Clean up
 #
-- name: Delete  /tmp/cyhy-base-nessus-policy.xml
+- name: Delete /tmp/cyhy-base-nessus8-policy.xml
   file:
-    path: /tmp/cyhy-base-nessus-policy.xml
+    path: /tmp/cyhy-base-nessus8-policy.xml
     state: absent
 
 - name: Delete /tmp/nessus_base.py
@@ -136,6 +136,6 @@
 - name: Delete local copy of Nessus scan policy
   local_action:
     module: file
-    path: /tmp/cyhy-base-nessus-policy.xml
+    path: /tmp/cyhy-base-nessus8-policy.xml
     state: absent
   become: no
