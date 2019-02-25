@@ -2,7 +2,6 @@
 resource "aws_instance" "mgmt_bastion" {
   ami = "${data.aws_ami.bastion.id}"
   instance_type = "t3.micro"
-  # ebs_optimized = true
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the public subnet
