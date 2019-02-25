@@ -14,7 +14,8 @@ import time
 USER = ''
 PASSWORD = ''
 URL = 'https://localhost:8834'
-BASE_POLICY_FILE_NAME = '/tmp/cyhy-base-nessus-policy.xml'
+BASE_POLICY_NAME = 'cyhy-base'
+BASE_POLICY_FILE_NAME = '/tmp/cyhy-base-nessus8-policy.xml'
 
 DEBUG = False
 LOGIN = '/session'
@@ -160,7 +161,7 @@ def main():
 
     # create new policy
     LOGGER.info('Creating new policy based on base policy')
-    if not controller.find_policy('cyhy-base'):
+    if not controller.find_policy(BASE_POLICY_NAME):
         files = {'Filedata': (BASE_POLICY_FILE_NAME, open(BASE_POLICY_FILE_NAME, 'rb'), 'text/xml')}
         upload_response = controller.upload_file(files)
         assert upload_response, 'Response empty, upload failed'
