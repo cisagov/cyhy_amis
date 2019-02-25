@@ -1,7 +1,6 @@
 resource "aws_instance" "mgmt_nessus" {
   ami = "${data.aws_ami.nessus.id}"
-  instance_type = "m4.large"
-  ebs_optimized = true
+  instance_type = "m5.large"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = "${aws_subnet.mgmt_private_subnet.id}"
