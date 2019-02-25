@@ -78,7 +78,7 @@ resource "aws_security_group_rule" "mgmt_bastion_ingress_all_tcp_from_mgmt_vulns
     "${aws_instance.mgmt_nessus.private_ip}/32"
   ]
   from_port = 0
-  to_port = 0
+  to_port = 65535
 }
 
 # Allow all UDP from vulnscanner instance in Management VPC,
@@ -93,7 +93,7 @@ resource "aws_security_group_rule" "mgmt_bastion_ingress_all_udp_from_mgmt_vulns
     "${aws_instance.mgmt_nessus.private_ip}/32"
   ]
   from_port = 0
-  to_port = 0
+  to_port = 65535
 }
 
 # Allow all ICMP to vulnscanner instance in Management VPC,
@@ -123,7 +123,7 @@ resource "aws_security_group_rule" "mgmt_bastion_egress_all_tcp_to_mgmt_vulnscan
     "${aws_instance.mgmt_nessus.private_ip}/32"
   ]
   from_port = 0
-  to_port = 0
+  to_port = 65535
 }
 
 # Allow all UDP to vulnscanner instance in Management VPC,
@@ -138,5 +138,5 @@ resource "aws_security_group_rule" "mgmt_bastion_egress_all_udp_to_mgmt_vulnscan
     "${aws_instance.mgmt_nessus.private_ip}/32"
   ]
   from_port = 0
-  to_port = 0
+  to_port = 65535
 }
