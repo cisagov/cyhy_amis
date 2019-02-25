@@ -73,7 +73,7 @@ locals {
   # to create records directly in the public_zone set to ""
   # otherwise it must end in a period
   bod_public_subdomain = "bod.ncats."
-  mgmt_public_subdomain = "mgmt.ncats"
+  mgmt_public_subdomain = "mgmt.ncats."
 
   # DNS zone calculations based on requested instances.  The numbers
   # represent the count of IP addresses in a subnet.
