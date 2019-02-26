@@ -123,6 +123,8 @@ variable "dmarc_import_aws_region" {
 
 variable "dmarc_import_es_arn" {
   description = "The ARN of the dmarc-import Elasticsearch database."
+}
+
 # If additional VPCs are added in the future:
 #  - Ensure that they include security groups and ACLs that allow complete
 #    access by the vulnscanner in the management VPC
