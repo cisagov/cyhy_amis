@@ -105,3 +105,11 @@
   become_method: sudo
   roles:
     - cyhy_archive
+
+- hosts: mgmt_bastion
+  name: Configure management bastion hosts
+  become: yes
+  become_method: sudo
+  roles:
+    - mgmt_ops
+    
