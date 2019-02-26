@@ -1,0 +1,58 @@
+---
+# tasks file for mgmt_ops
+
+#
+# Copy mgmt_ops user information to local temp dir and load it
+#
+- name: Grab mgmt_ops user information from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: mgmt_ops_users.yml
+    dest: /tmp/mgmt_ops_users.yml
+    mode: get
+  become: no
+
+- name: Load mgmt_ops user information from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/mgmt_ops_users.yml
+    name: mgmt_ops_users
+  become: no
+
+#
+# Create the mgmt_ops user
+#
+- name: Create the mgmt_ops user
+  user:
+    name: mgmt_ops
+
+# Make sure the /home/mgmt_ops/.ssh directory exists
+- name: Create the /home/mgmt_ops/.ssh directory
+  file:
+    path: /home/mgmt_ops/.ssh
+    owner: mgmt_ops
+    group: mgmt_ops
+    mode: 0700
+    state: directory
+
+#
+# Create the .ssh/authorized_keys file for mgmt_ops
+#
+- name: Create .ssh/authorized_keys file for mgmt_ops
+  template:
+    dest: /home/mgmt_ops/.ssh/authorized_keys
+    owner: mgmt_ops
+    group: mgmt_ops
+    mode: 0600
+    src: authorized_keys.j2
+
+#
+# Delete local copy of mgmt_ops user informaiton
+#
+- name: Delete local copy of mgmt_ops user information
+  local_action:
+    module: file
+    path: /tmp/mgmt_ops_users.yml
+    state: absent
+  become: no

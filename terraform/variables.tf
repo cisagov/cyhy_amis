@@ -56,6 +56,11 @@ variable "nessus_activation_codes" {
   description = "A list of strings containing Nessus activation codes"
 }
 
+variable "mgmt_nessus_activation_code" {
+  description = "The Nessus activation code used in the management VPC"
+  default = ""
+}
+
 variable "create_cyhy_flow_logs" {
   description = "Whether or not to create flow logs for the CyHy VPC.  Zero means no and one means yes"
   default = 0
@@ -63,6 +68,11 @@ variable "create_cyhy_flow_logs" {
 
 variable "create_bod_flow_logs" {
   description = "Whether or not to create flow logs for the BOD 18-01 VPC.  Zero means no and one means yes"
+  default = 0
+}
+
+variable "create_mgmt_flow_logs" {
+  description = "Whether or not to create flow logs for the Management VPC.  Zero means no and one means yes"
   default = 0
 }
 
@@ -118,4 +128,18 @@ variable "dmarc_import_es_arn" {
 variable "ses_aws_region" {
   description = "The AWS region where SES is configured."
   default = "us-east-1"
+}
+
+# If additional VPCs are added in the future:
+#  - Ensure that they include security groups and ACLs that allow complete
+#    access by the vulnscanner in the management VPC
+#  - Ensure that the variable below is used to enable/disable the security
+#    group and ACL rules as needed
+#
+# For some examples of this, refer to the rules in these files:
+#  - cyhy_private_security_group_rules.tf
+#  - cyhy_private_acl_rules.tf
+variable "enable_mgmt_vpc_access_to_all_vpcs" {
+  description = "Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC.  Zero means access is disabled and one means access is enabled."
+  default = 0
 }

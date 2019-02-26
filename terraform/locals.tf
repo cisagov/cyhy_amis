@@ -40,6 +40,19 @@ locals {
     587
   ]
 
+  # These are the ports via which trusted networks are allowed to
+  # access the Management hosts on the private subnet
+  mgmt_trusted_ingress_ports = [
+    22,
+    8834
+  ]
+
+  # These are the ports on which the Management scanner security group is
+  # allowed to egress anywhere
+  mgmt_scanner_egress_anywhere_ports = [
+    443
+  ]
+
   # Pretty obvious what these are
   tcp_and_udp = [
     "tcp",
@@ -50,17 +63,15 @@ locals {
     "egress"
   ]
 
-  # domain name to use for internal DNS
+  # domain names to use for internal DNS
   cyhy_private_domain = "local"
-
-  # domain name to use for internal DNS
   bod_private_domain = "local"
+  mgmt_private_domain = "local"
 
-  # zone to use for public DNS
+  # zones to use for public DNS
   cyhy_public_zone  = "cyber.dhs.gov"
-
-  # zone to use for public DNS
   bod_public_zone  = "cyber.dhs.gov"
+  mgmt_public_zone  = "cyber.dhs.gov"
 
   # subdomains to use in the public_zone.
   # to create records directly in the public_zone set to ""
@@ -71,6 +82,7 @@ locals {
   # to create records directly in the public_zone set to ""
   # otherwise it must end in a period
   bod_public_subdomain = "bod.ncats."
+  mgmt_public_subdomain = "mgmt.ncats."
 
   # DNS zone calculations based on requested instances.  The numbers
   # represent the count of IP addresses in a subnet.
