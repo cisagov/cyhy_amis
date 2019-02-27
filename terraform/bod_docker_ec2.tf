@@ -21,6 +21,81 @@ data "aws_ami" "bod_docker" {
   most_recent = true
 }
 
+# IAM assume role policy document for the BOD Docker IAM role to be
+# used by the BOD Docker EC2 instance
+data "aws_iam_policy_document" "bod_docker_assume_role_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+# The BOD Docker IAM role to be used by the BOD Docker EC2 instance
+resource "aws_iam_role" "bod_docker_role" {
+  assume_role_policy = "${data.aws_iam_policy_document.bod_docker_assume_role_doc.json}"
+}
+
+# IAM policy document that that allows the invocation of our Lambda
+# functions.  This will be applied to the role we are creating.
+data "aws_iam_policy_document" "lambda_bod_docker_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+
+    # I should be able to use splat syntax here
+    resources = [
+      "${aws_lambda_function.lambdas.0.arn}",
+      "${aws_lambda_function.lambdas.1.arn}",
+      "${aws_lambda_function.lambdas.2.arn}"
+    ]
+  }
+}
+
+# The Lambda policy for our role
+resource "aws_iam_role_policy" "lambda_bod_docker_policy" {
+  role = "${aws_iam_role.bod_docker_role.id}"
+  policy = "${data.aws_iam_policy_document.lambda_bod_docker_doc.json}"
+}
+
+# IAM policy document that only allows GETting from the dmarc-import
+# Elasticsearch database.  This will be applied to the role we are
+# creating.
+data "aws_iam_policy_document" "es_bod_docker_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "es:ESHttpGet"
+    ]
+
+    resources = [
+      "${var.dmarc_import_es_arn}",
+      "${var.dmarc_import_es_arn}/*"
+    ]
+  }
+}
+
+# The Elasticsearch policy for our role
+resource "aws_iam_role_policy" "es_bod_docker_policy" {
+  role = "${aws_iam_role.bod_docker_role.id}"
+  policy = "${data.aws_iam_policy_document.es_bod_docker_doc.json}"
+}
+
+# The instance profile to be used by any EC2 instances that need to
+# invoke our Lambda functions and/or read the dmarc-import ES database
+resource "aws_iam_instance_profile" "bod_docker" {
+  role = "${aws_iam_role.bod_docker_role.name}"
+}
+
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
   ami = "${data.aws_ami.bod_docker.id}"
@@ -28,7 +103,7 @@ resource "aws_instance" "bod_docker" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
-  subnet_id = "${aws_subnet.bod_private_subnet.id}"
+  subnet_id = "${aws_subnet.bod_docker_subnet.id}"
 
   root_block_device {
     volume_type = "gp2"
@@ -41,6 +116,7 @@ resource "aws_instance" "bod_docker" {
   ]
 
   user_data = "${data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered}"
+  iam_instance_profile = "${aws_iam_instance_profile.bod_docker.name}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
   volume_tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
@@ -59,7 +135,9 @@ module "bod_docker_ansible_provisioner" {
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
     "host_groups=docker,bod_docker",
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
-    "production_workspace=${local.production_workspace}"
+    "production_workspace=${local.production_workspace}",
+    "aws_region=${var.aws_region}",
+    "dmarc_import_aws_region=${var.dmarc_import_aws_region}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

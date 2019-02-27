@@ -35,21 +35,6 @@ resource "aws_security_group_rule" "ephemeral_port_egress_anywhere" {
   to_port = 65535
 }
 
-# Allow DNS egress to Google
-resource "aws_security_group_rule" "docker_dns_to_google" {
-  count = "${length(local.tcp_and_udp)}"
-
-  security_group_id = "${aws_security_group.bod_docker_sg.id}"
-  type = "egress"
-  protocol = "${local.tcp_and_udp[count.index]}"
-  cidr_blocks = [
-    "8.8.8.8/32",
-    "8.8.4.4/32"
-  ]
-  from_port = 53
-  to_port = 53
-}
-
 # Allow egress via the MongoDB port to the "CyHy Private" security
 # group
 resource "aws_security_group_rule" "docker_egress_to_cyhy_private_via_mongodb" {

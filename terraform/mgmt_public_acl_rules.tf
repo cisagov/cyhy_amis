@@ -42,30 +42,6 @@ resource "aws_network_acl_rule" "mgmt_public_ingress_from_anywhere_via_ephemeral
   to_port = 65535
 }
 
-# Allow ingress from Google DNS via ephemeral ports for UDP.  This is
-# necessary because the return traffic to the NAT gateway has to enter
-# here before it is relayed to the private subnet.
-resource "aws_network_acl_rule" "mgmt_public_ingress_from_google_dns_via_ephemeral_ports_udp_1" {
-  network_acl_id = "${aws_network_acl.mgmt_public_acl.id}"
-  egress = false
-  protocol = "udp"
-  rule_number = 95
-  rule_action = "allow"
-  cidr_block = "8.8.8.8/32"
-  from_port = 1024
-  to_port = 65535
-}
-resource "aws_network_acl_rule" "mgmt_public_ingress_from_google_dns_via_ephemeral_ports_udp_2" {
-  network_acl_id = "${aws_network_acl.mgmt_public_acl.id}"
-  egress = false
-  protocol = "udp"
-  rule_number = 96
-  rule_action = "allow"
-  cidr_block = "8.8.4.4/32"
-  from_port = 1024
-  to_port = 65535
-}
-
 # Allow ingress from anywhere via ssh
 resource "aws_network_acl_rule" "mgmt_public_ingress_from_anywhere_via_ssh" {
   network_acl_id = "${aws_network_acl.mgmt_public_acl.id}"
@@ -117,33 +93,6 @@ resource "aws_network_acl_rule" "mgmt_public_egress_anywhere" {
   cidr_block = "0.0.0.0/0"
   from_port = "${local.mgmt_scanner_egress_anywhere_ports[count.index]}"
   to_port = "${local.mgmt_scanner_egress_anywhere_ports[count.index]}"
-}
-
-# Allow egress to Google DNS.  This is so the NAT gateway can relay
-# the corresponding requests from the private subnet.
-resource "aws_network_acl_rule" "mgmt_public_egress_to_google_dns_1" {
-  count = "${length(local.tcp_and_udp)}"
-
-  network_acl_id = "${aws_network_acl.mgmt_public_acl.id}"
-  egress = true
-  protocol = "${local.tcp_and_udp[count.index]}"
-  rule_number = "${135 + count.index}"
-  rule_action = "allow"
-  cidr_block = "8.8.8.8/32"
-  from_port = 53
-  to_port = 53
-}
-resource "aws_network_acl_rule" "mgmt_public_egress_to_google_dns_2" {
-  count = "${length(local.tcp_and_udp)}"
-
-  network_acl_id = "${aws_network_acl.mgmt_public_acl.id}"
-  egress = true
-  protocol = "${local.tcp_and_udp[count.index]}"
-  rule_number = "${137 + count.index}"
-  rule_action = "allow"
-  cidr_block = "8.8.4.4/32"
-  from_port = 53
-  to_port = 53
 }
 
 # Allow egress to anywhere via TCP ephemeral ports

@@ -34,7 +34,7 @@ variable "nessus_cyhy_runner_disk" {
 }
 
 # This should be overridden by a production.tfvars file,
-# most-likely stored outside of version control
+# most likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {
   type = "list"
   description = "IPv4 CIDR blocks from which to allow ingress to the bastion server"
@@ -94,6 +94,35 @@ variable "cyhy_portscan_first_elastic_ip_offset" {
 variable "cyhy_vulnscan_first_elastic_ip_offset" {
   description = "The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy vulnscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first vulnscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional vulnscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available."
   default = 1
+}
+
+variable "bod_nat_gateway_eip" {
+  description = "The IP corresponding to the EIP to be used for the BOD 18-01 NAT gateway in production.  In a non-production workspace an EIP will be created.."
+  default = ""
+}
+
+variable "scan_types" {
+  type = "list"
+  description = "The scan types that can be run."
+}
+
+variable "lambda_function_names" {
+  type = "map"
+  description = "The names to use for the Lambda functions.  The keys are the values in scan_types."
+}
+
+variable "lambda_function_zip_files" {
+  type = "map"
+  description = "The locations of the zip files for the Lambda functions.  The keys are the values in scan_types."
+}
+
+variable "dmarc_import_aws_region" {
+  description = "The AWS region where the dmarc-import Elasticsearch database resides."
+  default = "us-east-1"
+}
+
+variable "dmarc_import_es_arn" {
+  description = "The ARN of the dmarc-import Elasticsearch database."
 }
 
 # If additional VPCs are added in the future:
