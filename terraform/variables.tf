@@ -34,7 +34,7 @@ variable "nessus_cyhy_runner_disk" {
 }
 
 # This should be overridden by a production.tfvars file,
-# most-likely stored outside of version control
+# most likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {
   type = "list"
   description = "IPv4 CIDR blocks from which to allow ingress to the bastion server"

@@ -1,6 +1,8 @@
 resource "aws_route53_zone" "mgmt_private_zone" {
   name = "${local.mgmt_private_domain}."
-  vpc_id = "${aws_vpc.mgmt_vpc.id}"
+  vpc {
+    vpc_id = "${aws_vpc.mgmt_vpc.id}"
+  }
   tags = "${merge(var.tags, map("Name", "Management Private Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
@@ -70,7 +72,9 @@ resource "aws_route53_zone" "mgmt_public_zone_reverse" {
     element( split(".", aws_subnet.mgmt_public_subnet.cidr_block), 0),
   )}"
 
-  vpc_id = "${aws_vpc.mgmt_vpc.id}"
+  vpc {
+    vpc_id = "${aws_vpc.mgmt_vpc.id}"
+  }
   tags = "${merge(var.tags, map("Name", "Management Public Reverse Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
@@ -132,7 +136,9 @@ resource "aws_route53_zone" "mgmt_private_zone_reverse" {
     element( split(".", aws_subnet.mgmt_private_subnet.cidr_block), 0),
   )}"
 
-  vpc_id = "${aws_vpc.mgmt_vpc.id}"
+  vpc {
+    vpc_id = "${aws_vpc.mgmt_vpc.id}"
+  }
   tags = "${merge(var.tags, map("Name", "Management Private Reverse Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }

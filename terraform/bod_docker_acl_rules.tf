@@ -22,29 +22,7 @@ resource "aws_network_acl_rule" "docker_ingress_anywhere_via_ephemeral_ports_tcp
   to_port = 65535
 }
 
-# Allow ingress via ephemeral ports from Google DNS via UDP
-resource "aws_network_acl_rule" "docker_ingress_from_google_dns_via_ephemeral_ports_udp_1" {
-  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
-  egress = false
-  protocol = "udp"
-  rule_number = 111
-  rule_action = "allow"
-  cidr_block = "8.8.8.8/32"
-  from_port = 1024
-  to_port = 65535
-}
-resource "aws_network_acl_rule" "docker_ingress_from_google_dns_via_ephemeral_ports_udp_2" {
-  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
-  egress = false
-  protocol = "udp"
-  rule_number = 112
-  rule_action = "allow"
-  cidr_block = "8.8.4.4/32"
-  from_port = 1024
-  to_port = 65535
-}
-
-# Allow outbound HTTP, HTTPS, and FTP anywhere
+# Allow outbound HTTP, HTTPS, SMTP (587), and FTP anywhere
 resource "aws_network_acl_rule" "docker_egress_anywhere" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
@@ -56,32 +34,6 @@ resource "aws_network_acl_rule" "docker_egress_anywhere" {
   cidr_block = "0.0.0.0/0"
   from_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
   to_port = "${local.bod_docker_egress_anywhere_ports[count.index]}"
-}
-
-# Allow egress to Google DNS
-resource "aws_network_acl_rule" "docker_egress_to_google_dns_1" {
-  count = "${length(local.tcp_and_udp)}"
-
-  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
-  egress = true
-  protocol = "${local.tcp_and_udp[count.index]}"
-  rule_number = "${135 + count.index}"
-  rule_action = "allow"
-  cidr_block = "8.8.8.8/32"
-  from_port = 53
-  to_port = 53
-}
-resource "aws_network_acl_rule" "docker_egress_to_google_dns_2" {
-  count = "${length(local.tcp_and_udp)}"
-
-  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
-  egress = true
-  protocol = "${local.tcp_and_udp[count.index]}"
-  rule_number = "${137 + count.index}"
-  rule_action = "allow"
-  cidr_block = "8.8.4.4/32"
-  from_port = 53
-  to_port = 53
 }
 
 # Allow egress anywhere via ephemeral ports.  We could get away with
@@ -106,7 +58,7 @@ resource "aws_network_acl_rule" "docker_egress_to_public_via_ephemeral_ports" {
 resource "aws_network_acl_rule" "bod_private_ingress_all_from_mgmt_private" {
   count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
 
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = false
   protocol = "-1"
   rule_number = 200
@@ -121,7 +73,7 @@ resource "aws_network_acl_rule" "bod_private_ingress_all_from_mgmt_private" {
 resource "aws_network_acl_rule" "bod_private_egress_all_to_mgmt_private" {
   count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
 
-  network_acl_id = "${aws_network_acl.bod_private_acl.id}"
+  network_acl_id = "${aws_network_acl.bod_docker_acl.id}"
   egress = true
   protocol = "-1"
   rule_number = 201

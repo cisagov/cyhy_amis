@@ -40,6 +40,16 @@ locals {
     587
   ]
 
+  # These are the ports on which the BOD Lambda security group is
+  # allowed to egress anywhere
+  bod_lambda_egress_anywhere_ports = [
+    25,
+    80,
+    443,
+    465,
+    587
+  ]
+  
   # These are the ports via which trusted networks are allowed to
   # access the Management hosts on the private subnet
   mgmt_trusted_ingress_ports = [
@@ -47,8 +57,8 @@ locals {
     8834
   ]
 
-  # These are the ports on which the Management scanner security group is
-  # allowed to egress anywhere
+  # These are the ports on which the Management scanner security group
+  # is allowed to egress anywhere
   mgmt_scanner_egress_anywhere_ports = [
     443
   ]
