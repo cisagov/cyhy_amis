@@ -90,8 +90,11 @@ resource "aws_iam_role_policy" "lambda_ec2_policies" {
 resource "aws_lambda_function" "lambdas" {
   count = "${length(var.scan_types)}"
 
-  filename = "${var.lambda_function_zip_files[var.scan_types[count.index]]}"
-  source_code_hash = "${base64sha256(file(var.lambda_function_zip_files[var.scan_types[count.index]]))}"
+  # Terraform cannot access buckets that are not in the provider's
+  # region.  This limitation means that we have to create
+  # region-specific buckets.
+  s3_bucket = "${var.lambda_function_bucket}-${var.aws_region}"
+  s3_key = "${var.lambda_function_keys[var.scan_types[count.index]]}"
   function_name = "${var.lambda_function_names[var.scan_types[count.index]]}"
   role = "${aws_iam_role.lambda_roles.*.arn[count.index]}"
   handler = "lambda_handler.handler"

@@ -1,5 +1,5 @@
 # The reporter EC2 instance
-data "aws_ami" "cyhy_reporter" {
+data "aws_ami" "reporter" {
   filter {
     name = "name"
     values = [
