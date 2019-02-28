@@ -22,7 +22,7 @@ resource "aws_network_acl_rule" "docker_ingress_anywhere_via_ephemeral_ports_tcp
   to_port = 65535
 }
 
-# Allow outbound HTTP, HTTPS, SMTP (587), and FTP anywhere
+# Allow outbound HTTP, HTTPS, and FTP anywhere
 resource "aws_network_acl_rule" "docker_egress_anywhere" {
   count = "${length(local.bod_docker_egress_anywhere_ports)}"
 
