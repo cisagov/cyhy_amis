@@ -5,8 +5,8 @@ data "template_file" "cyhy_user_ssh_setup" {
 }
 
 data "template_cloudinit_config" "cyhy_ssh_cloud_init_tasks" {
-  gzip = false
-  base64_encode = false
+  gzip = true
+  base64_encode = true
 
   part {
     filename     = "user_ssh_setup.yml"

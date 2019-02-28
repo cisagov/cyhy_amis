@@ -27,7 +27,16 @@ locals {
   bod_docker_egress_anywhere_ports = [
     21,
     80,
+    443
+  ]
+
+  # These are the ports on which the BOD Lambda security group is
+  # allowed to egress anywhere
+  bod_lambda_egress_anywhere_ports = [
+    25,
+    80,
     443,
+    465,
     587
   ]
 

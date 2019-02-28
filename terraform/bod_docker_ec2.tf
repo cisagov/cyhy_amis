@@ -90,8 +90,31 @@ resource "aws_iam_role_policy" "es_bod_docker_policy" {
   policy = "${data.aws_iam_policy_document.es_bod_docker_doc.json}"
 }
 
+# IAM policy document that allows sending emails via SES.  This will
+# be applied to the role we are creating.
+data "aws_iam_policy_document" "ses_bod_docker_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ses:SendRawEmail"
+    ]
+
+    # There are no resources for SES policies, although there are
+    # conditions
+    resources = ["*"]
+  }
+}
+
+# The SES policy for our role
+resource "aws_iam_role_policy" "ses_bod_docker_policy" {
+  role = "${aws_iam_role.bod_docker_role.id}"
+  policy = "${data.aws_iam_policy_document.ses_bod_docker_doc.json}"
+}
+
 # The instance profile to be used by any EC2 instances that need to
-# invoke our Lambda functions and/or read the dmarc-import ES database
+# invoke our Lambda functions, read the dmarc-import ES database,
+# and/or send emails via SES.
 resource "aws_iam_instance_profile" "bod_docker" {
   role = "${aws_iam_role.bod_docker_role.name}"
 }
@@ -115,7 +138,7 @@ resource "aws_instance" "bod_docker" {
     "${aws_security_group.bod_docker_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered}"
+  user_data_base64 = "${data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered}"
   iam_instance_profile = "${aws_iam_instance_profile.bod_docker.name}"
 
   tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
@@ -137,7 +160,8 @@ module "bod_docker_ansible_provisioner" {
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
     "production_workspace=${local.production_workspace}",
     "aws_region=${var.aws_region}",
-    "dmarc_import_aws_region=${var.dmarc_import_aws_region}"
+    "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
+    "ses_aws_region=${var.ses_aws_region}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

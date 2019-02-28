@@ -38,7 +38,7 @@ resource "aws_instance" "cyhy_mongo" {
     "${aws_security_group.cyhy_private_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
+  user_data_base64 = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
 
   # Give this instance access needed to run cyhy-archive
   iam_instance_profile = "${aws_iam_instance_profile.cyhy_archive.name}"

@@ -1,5 +1,5 @@
 # The reporter EC2 instance
-data "aws_ami" "reporter" {
+data "aws_ami" "cyhy_reporter" {
   filter {
     name = "name"
     values = [
@@ -19,6 +19,55 @@ data "aws_ami" "reporter" {
 
   owners = ["${data.aws_caller_identity.current.account_id}"] # This is us
   most_recent = true
+}
+
+# IAM assume role policy document for the CyHy reporter IAM role to be
+# used by the CyHy reporter EC2 instance
+data "aws_iam_policy_document" "cyhy_reporter_assume_role_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+# The CyHy reporter IAM role to be used by the CyHy reporter EC2
+# instance
+resource "aws_iam_role" "cyhy_reporter_role" {
+  assume_role_policy = "${data.aws_iam_policy_document.cyhy_reporter_assume_role_doc.json}"
+}
+
+# IAM policy document that allows sending emails via SES.  This will
+# be applied to the role we are creating.
+data "aws_iam_policy_document" "ses_cyhy_reporter_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ses:SendRawEmail"
+    ]
+
+    # There are no resources for SES policies, although there are
+    # conditions
+    resources = ["*"]
+  }
+}
+
+# The SES policy for our role
+resource "aws_iam_role_policy" "ses_cyhy_reporter_policy" {
+  role = "${aws_iam_role.cyhy_reporter_role.id}"
+  policy = "${data.aws_iam_policy_document.ses_cyhy_reporter_doc.json}"
+}
+
+# The instance profile to be used by any EC2 instances that need to
+# send emails via SES.
+resource "aws_iam_instance_profile" "cyhy_reporter" {
+  role = "${aws_iam_role.cyhy_reporter_role.name}"
 }
 
 resource "aws_instance" "cyhy_reporter" {
@@ -41,6 +90,7 @@ resource "aws_instance" "cyhy_reporter" {
   ]
 
   user_data_base64 = "${data.template_cloudinit_config.ssh_and_reporter_cloud_init_tasks.rendered}"
+  iam_instance_profile = "${aws_iam_instance_profile.cyhy_reporter.name}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
   volume_tags = "${merge(var.tags, map("Name", "CyHy Reporter"))}"
@@ -59,7 +109,8 @@ module "cyhy_reporter_ansible_provisioner" {
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=docker,cyhy_reporter",
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
-    "production_workspace=${local.production_workspace}"
+    "production_workspace=${local.production_workspace}",
+    "ses_aws_region=${var.ses_aws_region}",
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
