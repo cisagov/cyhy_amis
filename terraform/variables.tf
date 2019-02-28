@@ -111,9 +111,14 @@ variable "lambda_function_names" {
   description = "The names to use for the Lambda functions.  The keys are the values in scan_types."
 }
 
-variable "lambda_function_zip_files" {
+variable "lambda_function_bucket" {
+  type = "string"
+  description = "The name of the S3 bucket where the Lambda function zip files reside.  Terraform cannot access buckets that are not in the provider's region, so the region name will be appended to the bucket name to obtain the actual bucket where the zips are stored.  So if we are working in region us-west-1 and this variable has the value buckethead, then the zips will be looked for in the bucket buckethead-us-west-1."
+}
+
+variable "lambda_function_keys" {
   type = "map"
-  description = "The locations of the zip files for the Lambda functions.  The keys are the values in scan_types."
+  description = "The keys (names) of the zip files for the Lambda functions inside the S3 bucket.  The keys for the map are the values in scan_types."
 }
 
 variable "dmarc_import_aws_region" {
