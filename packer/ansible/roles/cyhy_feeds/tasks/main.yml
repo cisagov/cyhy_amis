@@ -8,9 +8,8 @@
 
 - name: Download cyhy extract scripts from GitHub
   get_url:
-    url: "https://raw.githubusercontent.com/jsf9k/cyhy-feeds/develop/aws_jobs/{{ item }}"
+    url: "https://raw.githubusercontent.com/cisagov/cyhy-feeds/develop/aws_jobs/{{ item }}"
     headers:
-      Authorization: "token {{ github_oauth_token }}"
     dest: "/var/cyhy/scripts/cyhy-feeds/{{ item }}"
     mode: 0755
   loop:
