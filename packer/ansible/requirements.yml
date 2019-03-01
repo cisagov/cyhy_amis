@@ -1,8 +1,8 @@
-- src: https://github.com/dhs-ncats/ansible-role-banner
+- src: https://github.com/cisagov/ansible-role-banner
   name: banner
 - src: https://github.com/GekoCloud/ansible-role-disable-thp
   name: disable_thp
-- src: https://github.com/dhs-ncats/ansible-role-github-oauth
+- src: https://github.com/cisagov/ansible-role-github-oauth
   name: github_oauth
-- src: https://github.com/dhs-ncats/ansible-role-htop
+- src: https://github.com/cisagov/ansible-role-htop
   name: htop

@@ -64,12 +64,6 @@ resource "aws_subnet" "bod_public_subnet" {
 data "aws_eip" "bod_production_eip" {
   count = "${local.production_workspace ? 1 : 0}"
   public_ip = "${var.bod_nat_gateway_eip}"
-
-  depends_on = [
-    "aws_internet_gateway.bod_igw"
-  ]
-
-  tags = "${merge(var.tags, map("Name", "BOD 18-01 NATGW IP"))}"
 }
 
 # The Elastic IP for the *non-production* NAT gateway
