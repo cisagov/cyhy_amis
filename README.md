@@ -1,7 +1,7 @@
 # NCATS AWS AMIs :dvd: #
 
 [![Build
-Status](https://travis-ci.org/cisagov/cyhy_amis.svg?branch=develop)](https://travis-ci.org/cisagov/cyhy_amis)
+Status](https://travis-ci.com/cisagov/cyhy_amis.svg?branch=develop)](https://travis-ci.com/cisagov/cyhy_amis)
 
 ## Building the AMIs ##
 The AMIs are built like so:
