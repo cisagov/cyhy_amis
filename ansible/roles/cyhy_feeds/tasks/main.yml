@@ -34,6 +34,22 @@
     - gpg_keys.trust
 
 #
+# Create the AWS config
+#
+- name: Create the AWS config
+  copy:
+    dest: /var/cyhy/scripts/cyhy-feeds/aws_config
+    owner: cyhy
+    group: cyhy
+    mode: 0440
+    content: |
+      [profile default]
+      region = {{ aws_region }}
+
+      [profile elasticsearch]
+      region = {{ dmarc_import_aws_region }}
+
+#
 # Import keys and trust
 #
 
