@@ -20,6 +20,89 @@ data "aws_ami" "cyhy_mongo" {
   most_recent = true
 }
 
+# IAM assume role policy document for the Mongo IAM role to be used by
+# the Mongo EC2 instance
+data "aws_iam_policy_document" "cyhy_mongo_assume_role_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
+}
+
+# The Mongo IAM role to be used by the Mongo EC2 instance
+resource "aws_iam_role" "cyhy_mongo_role" {
+  assume_role_policy = "${data.aws_iam_policy_document.cyhy_mongo_assume_role_doc.json}"
+}
+
+# IAM policy document that only allows GETting from the dmarc-import
+# Elasticsearch database.  This will be applied to the role we are
+# creating.
+data "aws_iam_policy_document" "es_cyhy_mongo_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "es:ESHttpGet"
+    ]
+
+    resources = [
+      "${var.dmarc_import_es_arn}",
+      "${var.dmarc_import_es_arn}/*"
+    ]
+  }
+}
+
+# The Elasticsearch policy for our role
+resource "aws_iam_role_policy" "es_cyhy_mongo_policy" {
+  role = "${aws_iam_role.cyhy_mongo_role.id}"
+  policy = "${data.aws_iam_policy_document.es_cyhy_mongo_doc.json}"
+}
+
+# IAM policy document that that allows write permissions on the MOE
+# bucket.  This will be applied to the role we are creating.
+data "aws_iam_policy_document" "s3_cyhy_mongo_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.moe_bucket.arn}"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject"
+    ]
+
+    resources = [
+      "${aws_s3_bucket.moe_bucket.arn}/*"
+    ]
+  }
+}
+
+# The S3 policy for our role
+resource "aws_iam_user_policy" "s3_cyhy_mongo_policy" {
+  role = "${aws_iam_role.cyhy_mongo_role.id}"
+  policy = "${data.aws_iam_policy_document.s3_cyhy_mongo_doc.json}"
+}
+
+# The instance profile to be used by the CyHy Mongo EC2 instance.
+resource "aws_iam_instance_profile" "cyhy_mongo" {
+  role = "${aws_iam_role.cyhy_mongo_role.name}"
+}
+
 resource "aws_instance" "cyhy_mongo" {
   count = "${local.mongo_instance_count}"
   ami = "${data.aws_ami.cyhy_mongo.id}"
@@ -39,6 +122,7 @@ resource "aws_instance" "cyhy_mongo" {
   ]
 
   user_data_base64 = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
+  iam_instance_profile = "${aws_iam_instance_profile.cyhy_mongo.name}"
 
   # Give this instance access needed to run cyhy-archive
   iam_instance_profile = "${aws_iam_instance_profile.cyhy_archive.name}"
@@ -66,7 +150,9 @@ module "cyhy_mongo_ansible_provisioner" {
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
     "host_groups=mongo,cyhy_commander,cyhy_archive",
-    "production_workspace=${local.production_workspace}"
+    "production_workspace=${local.production_workspace}",
+    "aws_region=${var.aws_region}",
+    "dmarc_import_aws_region=${var.dmarc_import_aws_region}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
