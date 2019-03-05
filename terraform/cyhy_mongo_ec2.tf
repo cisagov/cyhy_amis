@@ -40,6 +40,12 @@ resource "aws_iam_role" "cyhy_mongo_role" {
   assume_role_policy = "${data.aws_iam_policy_document.cyhy_mongo_assume_role_doc.json}"
 }
 
+# The cyhy-archive S3 policy for our role
+resource "aws_iam_role_policy" "archive_cyhy_mongo_policy" {
+  role = "${aws_iam_role.cyhy_mongo_role.id}"
+  policy = "${data.aws_iam_policy_document.s3_cyhy_archive_write_doc.json}"
+}
+
 # IAM policy document that only allows GETting from the dmarc-import
 # Elasticsearch database.  This will be applied to the role we are
 # creating.
@@ -93,7 +99,7 @@ data "aws_iam_policy_document" "s3_cyhy_mongo_doc" {
 }
 
 # The S3 policy for our role
-resource "aws_iam_user_policy" "s3_cyhy_mongo_policy" {
+resource "aws_iam_role_policy" "s3_cyhy_mongo_policy" {
   role = "${aws_iam_role.cyhy_mongo_role.id}"
   policy = "${data.aws_iam_policy_document.s3_cyhy_mongo_doc.json}"
 }
@@ -122,10 +128,9 @@ resource "aws_instance" "cyhy_mongo" {
   ]
 
   user_data_base64 = "${data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered}"
+  # Give this instance the access needed for archiving and doing daily
+  # extracts
   iam_instance_profile = "${aws_iam_instance_profile.cyhy_mongo.name}"
-
-  # Give this instance access needed to run cyhy-archive
-  iam_instance_profile = "${aws_iam_instance_profile.cyhy_archive.name}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Mongo, Commander"))}"
   # We add some explicit tags to the Mongo volumes below, so we don't
