@@ -40,19 +40,13 @@
     group: cyhy
     mode: 0750
 
-- name: Create random secret key for webd
-  shell: touch /var/cyhy/web/secret_key
-  become_user: cyhy
-  vars:
-    ansible_ssh_pipelining: yes
-
-- name: create secret key file
+- name: Create secret key file for webd
   file:
     path: /var/cyhy/web/secret_key
     owner: cyhy
     group: cyhy
     mode: 0664
-  become_user: cyhy
+    state: touch
   vars:
     ansible_ssh_pipelining: yes
 
