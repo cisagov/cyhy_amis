@@ -161,7 +161,10 @@ module "bod_docker_ansible_provisioner" {
     "production_workspace=${local.production_workspace}",
     "aws_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "ses_aws_region=${var.ses_aws_region}"
+    "ses_aws_region=${var.ses_aws_region}",
+    # This file will be used to add/override any settings in
+    # docker-compose.yml (for cyhy-mailer).
+    "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false

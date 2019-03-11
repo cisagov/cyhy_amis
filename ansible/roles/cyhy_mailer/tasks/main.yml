@@ -66,6 +66,20 @@
       [default]
       region = {{ ses_aws_region }}
 
+# docker-compose will automatically use docker-compose.yml and
+# docker-compose.override.yml, so this is a way for us to tune
+# docker-compose's behavior to the particular machine.
+#
+# In our case we want to send the BOD 18-01 reports on the BOD docker
+# instance and the CyHy-related reports on the reporter instance.
+- name: Create a symlink for the docker-compose override file
+  file:
+    src: /var/cyhy/cyhy-mailer/{{ docker_compose_override_file_for_mailer }}
+    path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
+    state: link
+    owner: cyhy
+    group: cyhy
+    mode: 0664
 
 #
 # Create a cron job for the sending of reports
@@ -77,8 +91,7 @@
 #     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 #     user: cyhy
 #   when: production_workspace
-# This cron job runs at noon UTC on Mondays.  The BOD reports are long
-# since completed by that time.
+#
 # - name: Create a cron job for sending BOD 18-01 reports
 #   cron:
 #     name: "Sending BOD 18-01 reports"

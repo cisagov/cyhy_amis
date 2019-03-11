@@ -135,6 +135,16 @@ variable "ses_aws_region" {
   default = "us-east-1"
 }
 
+variable "reporter_mailer_override_filename" {
+  description = "This file is used to add/override any docker-compose settings for cyhy-mailer for the reporter EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer."
+  default = "docker-compose.cyhy.yml"
+}
+
+variable "docker_mailer_override_filename" {
+  description = "This file is used to add/override any docker-compose settings for cyhy-mailer for the docker EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer."
+  default = "docker-compose.bod.yml"
+}
+
 # If additional VPCs are added in the future:
 #  - Ensure that they include security groups and ACLs that allow complete
 #    access by the vulnscanner in the management VPC
