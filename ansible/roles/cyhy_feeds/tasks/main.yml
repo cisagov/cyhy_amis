@@ -34,6 +34,22 @@
     - gpg_keys.trust
 
 #
+# Create the AWS config
+#
+- name: Create the AWS config
+  copy:
+    dest: /var/cyhy/scripts/cyhy-feeds/aws_config
+    owner: cyhy
+    group: cyhy
+    mode: 0440
+    content: |
+      [default]
+      region = {{ aws_region }}
+
+      [profile elasticsearch]
+      region = {{ dmarc_import_aws_region }}
+
+#
 # Import keys and trust
 #
 
@@ -179,5 +195,5 @@
     hour: 08
     minute: 15
     user: cyhy
-    job: cd /var/cyhy/scripts/cyhy-feeds && python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --scan_section production_scan_reader --assessment_section production_assessment_reader --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
+    job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --scan_section production_scan_reader --assessment_section production_assessment_reader --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
   when: production_workspace
