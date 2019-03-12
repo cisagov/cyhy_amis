@@ -111,6 +111,9 @@ module "cyhy_reporter_ansible_provisioner" {
     "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
     "production_workspace=${local.production_workspace}",
     "ses_aws_region=${var.ses_aws_region}",
+    # This file will be used to add/override any settings in
+    # docker-compose.yml (for cyhy-mailer).
+    "docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run = false
