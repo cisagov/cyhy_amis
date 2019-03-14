@@ -70,6 +70,7 @@ resource "aws_route53_record" "mgmt_vulnscan_A" {
   records = [
     "${aws_instance.mgmt_nessus.*.private_ip[count.index]}"
   ]
+}
 
 ##################################
 # Reverse records - public subnet

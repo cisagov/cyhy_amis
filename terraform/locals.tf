@@ -101,3 +101,4 @@ locals {
 
   # Management Vulnerability Scanner DNS entries
   count_mgmt_vuln_scanner = "${local.mgmt_nessus_instance_count}"
+}
