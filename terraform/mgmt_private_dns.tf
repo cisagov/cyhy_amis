@@ -1,4 +1,6 @@
 resource "aws_route53_zone" "mgmt_private_zone" {
+  count = "${var.enable_mgmt_vpc}"
+
   name = "${local.mgmt_private_domain}."
   vpc {
     vpc_id = "${aws_vpc.mgmt_vpc.id}"
@@ -8,6 +10,8 @@ resource "aws_route53_zone" "mgmt_private_zone" {
 }
 
 resource "aws_route53_record" "mgmt_router_A" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_private_zone.zone_id}"
   name = "router.${aws_route53_zone.mgmt_private_zone.name}"
   type = "A"
@@ -19,6 +23,8 @@ resource "aws_route53_record" "mgmt_router_A" {
 }
 
 resource "aws_route53_record" "mgmt_ns_A" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_private_zone.zone_id}"
   name = "ns.${aws_route53_zone.mgmt_private_zone.name}"
   type = "A"
@@ -30,6 +36,8 @@ resource "aws_route53_record" "mgmt_ns_A" {
 }
 
 resource "aws_route53_record" "mgmt_reserved_A" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_private_zone.zone_id}"
   name = "reserved.${aws_route53_zone.mgmt_private_zone.name}"
   type = "A"
@@ -41,6 +49,8 @@ resource "aws_route53_record" "mgmt_reserved_A" {
 }
 
 resource "aws_route53_record" "mgmt_bastion_A" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_private_zone.zone_id}"
   name = "bastion.${aws_route53_zone.mgmt_private_zone.name}"
   type = "A"
@@ -51,6 +61,8 @@ resource "aws_route53_record" "mgmt_bastion_A" {
 }
 
 resource "aws_route53_record" "mgmt_vulnscan_A" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_private_zone.zone_id}"
   name = "vulnscan1.${aws_route53_zone.mgmt_private_zone.name}"
   type = "A"
@@ -65,6 +77,8 @@ resource "aws_route53_record" "mgmt_vulnscan_A" {
 ##################################
 
 resource "aws_route53_zone" "mgmt_public_zone_reverse" {
+  count = "${var.enable_mgmt_vpc}"
+
   # NOTE:  This assumes that we are using /24 blocks
   name = "${format("%s.%s.%s.in-addr.arpa.",
     element( split(".", aws_subnet.mgmt_public_subnet.cidr_block), 2),
@@ -80,6 +94,8 @@ resource "aws_route53_zone" "mgmt_public_zone_reverse" {
 }
 
 resource "aws_route53_record" "mgmt_rev_1_PTR" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_public_zone_reverse.zone_id}"
   name = "1.${aws_route53_zone.mgmt_public_zone_reverse.name}"
   type = "PTR"
@@ -90,6 +106,8 @@ resource "aws_route53_record" "mgmt_rev_1_PTR" {
 }
 
 resource "aws_route53_record" "mgmt_rev_2_PTR" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_public_zone_reverse.zone_id}"
   name = "2.${aws_route53_zone.mgmt_public_zone_reverse.name}"
   type = "PTR"
@@ -100,6 +118,8 @@ resource "aws_route53_record" "mgmt_rev_2_PTR" {
 }
 
 resource "aws_route53_record" "mgmt_rev_3_PTR" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_public_zone_reverse.zone_id}"
   name = "3.${aws_route53_zone.mgmt_public_zone_reverse.name}"
   type = "PTR"
@@ -110,6 +130,8 @@ resource "aws_route53_record" "mgmt_rev_3_PTR" {
 }
 
 resource "aws_route53_record" "mgmt_rev_bastion_PTR" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_public_zone_reverse.zone_id}"
   name = "${format("%s.%s.%s.%s.in-addr.arpa.",
     element( split(".", aws_instance.mgmt_bastion.private_ip), 3),
@@ -129,6 +151,8 @@ resource "aws_route53_record" "mgmt_rev_bastion_PTR" {
 ##################################
 
 resource "aws_route53_zone" "mgmt_private_zone_reverse" {
+  count = "${var.enable_mgmt_vpc}"
+
   # NOTE:  This assumes that we are using /24 blocks
   name = "${format("%s.%s.%s.in-addr.arpa.",
     element( split(".", aws_subnet.mgmt_private_subnet.cidr_block), 2),
@@ -144,6 +168,8 @@ resource "aws_route53_zone" "mgmt_private_zone_reverse" {
 }
 
 resource "aws_route53_record" "mgmt_rev_nessus_PTR" {
+  count = "${var.enable_mgmt_vpc}"
+
   zone_id = "${aws_route53_zone.mgmt_private_zone_reverse.zone_id}"
   name = "${format("%s.%s.%s.%s.in-addr.arpa.",
     element( split(".", aws_instance.mgmt_nessus.private_ip), 3),

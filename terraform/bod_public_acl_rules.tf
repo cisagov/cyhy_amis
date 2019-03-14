@@ -117,7 +117,7 @@ resource "aws_network_acl_rule" "bod_public_egress_to_anywhere_via_ephemeral_por
 # Allow all ports and protocols from Management private subnet to ingress,
 # for internal scanning
 resource "aws_network_acl_rule" "bod_public_ingress_all_from_mgmt_private" {
-  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  count = "${var.enable_mgmt_vpc}"
 
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = false
@@ -132,7 +132,7 @@ resource "aws_network_acl_rule" "bod_public_ingress_all_from_mgmt_private" {
 # Allow all ports and protocols to egress to Management private subnet,
 # for internal scanning
 resource "aws_network_acl_rule" "bod_public_egress_all_to_mgmt_private" {
-  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  count = "${var.enable_mgmt_vpc}"
 
   network_acl_id = "${aws_network_acl.bod_public_acl.id}"
   egress = true

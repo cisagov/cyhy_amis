@@ -115,7 +115,7 @@ resource "aws_route" "cyhy_default_route_external_traffic_through_internet_gatew
 # Default route: Route all Management traffic through the VPC peering
 # connection
 resource "aws_route" "cyhy_default_route_mgmt_traffic_through_mgmt_vpc_peering_connection" {
-  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  count = "${var.enable_mgmt_vpc}"
 
   route_table_id = "${aws_default_route_table.cyhy_default_route_table.id}"
   destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
@@ -143,7 +143,7 @@ resource "aws_route" "cyhy_private_route_external_traffic_through_bod_vpc_peerin
 # Private route: Route all Management traffic through the VPC peering
 # connection
 resource "aws_route" "cyhy_private_route_external_traffic_through_mgmt_vpc_peering_connection" {
-  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  count = "${var.enable_mgmt_vpc}"
   
   route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
   destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
