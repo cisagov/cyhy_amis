@@ -1,4 +1,6 @@
 resource "aws_instance" "mgmt_nessus" {
+  count = "${var.enable_mgmt_vpc}"
+  
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "m5.large"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
@@ -15,6 +17,7 @@ resource "aws_instance" "mgmt_nessus" {
     "${aws_security_group.mgmt_scanner_sg.id}"
   ]
 
+  #TODO: Make this user_data_base64
   user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "Management Nessus - vulnscan1"))}"
@@ -26,20 +29,11 @@ resource "aws_instance" "mgmt_nessus" {
   }
 }
 
-# Provision a Nessus EC2 instance via Ansible
-module "mgmt_nessus_ansible_provisioner" {
-  source = "github.com/cloudposse/tf_ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.mgmt_bastion.public_ip}\"'"
-  ]
-  envs = [
-    "host=${aws_instance.mgmt_nessus.private_ip}",
-    "bastion_host=${aws_instance.mgmt_bastion.public_ip}",
-    "host_groups=nessus",
-    "nessus_activation_code=${var.mgmt_nessus_activation_code}"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
+# load in the dynamically created provisioner modules
+module "dyn_mgmt_nessus" {
+  source = "./dyn_mgmt_nessus"
+  mgmt_bastion_public_ip = "${aws_instance.mgmt_bastion.public_ip}"
+  mgmt_nessus_private_ips = "${aws_instance.mgmt_nessus.*.private_ip}"
+  mgmt_nessus_activation_codes = "${var.mgmt_nessus_activation_codes}"
+  remote_ssh_user = "${var.remote_ssh_user}"
 }
