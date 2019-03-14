@@ -25,6 +25,7 @@ import sys
 assert sys.version_info >= (3,7), 'This script requires Python version 3.7 or newer'
 
 # for each workspace, set the number of instances to create for each template
+# NOTE: mgmt_bastion should only be set to 0 or 1
 WORKSPACE_CONFIGS = {
     'production': {
         'nmap': 64, 'nessus': 3, 'mongo': 1,
