@@ -1,5 +1,5 @@
 resource "aws_instance" "mgmt_nessus" {
-  count = "${var.enable_mgmt_vpc}"
+  count = "${var.enable_mgmt_vpc * local.mgmt_nessus_instance_count}"
 
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "m5.large"
@@ -19,8 +19,8 @@ resource "aws_instance" "mgmt_nessus" {
 
   user_data_base64 = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
-  tags = "${merge(var.tags, map("Name", "Management Nessus - vulnscan1"))}"
-  volume_tags = "${merge(var.tags, map("Name", "Management Nessus - vulnscan1"))}"
+  tags = "${merge(var.tags, map("Name", format("Management Nessus - vulnscan%d", count.index+1)))}"
+  volume_tags = "${merge(var.tags, map("Name", format("Management Nessus - vulnscan%d", count.index+1)))}"
 
   # If the instance is destroyed we will have to reset the license to nessus
   lifecycle {

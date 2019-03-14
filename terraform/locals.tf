@@ -39,7 +39,7 @@ locals {
     465,
     587
   ]
-  
+
   # These are the ports via which trusted networks are allowed to
   # access the Management hosts on the private subnet
   mgmt_trusted_ingress_ports = [
@@ -98,4 +98,6 @@ locals {
 
   # Database DNS entries
   count_database = "${local.mongo_instance_count}"
-}
+
+  # Management Vulnerability Scanner DNS entries
+  count_mgmt_vuln_scanner = "${local.mgmt_nessus_instance_count}"

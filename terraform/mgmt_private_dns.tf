@@ -61,16 +61,15 @@ resource "aws_route53_record" "mgmt_bastion_A" {
 }
 
 resource "aws_route53_record" "mgmt_vulnscan_A" {
-  count = "${var.enable_mgmt_vpc}"
+  count = "${var.enable_mgmt_vpc * local.count_mgmt_vuln_scanner}"
 
   zone_id = "${aws_route53_zone.mgmt_private_zone.zone_id}"
-  name = "vulnscan1.${aws_route53_zone.mgmt_private_zone.name}"
+  name = "vulnscan${count.index + 1}.${aws_route53_zone.mgmt_private_zone.name}"
   type = "A"
   ttl = 300
   records = [
-    "${aws_instance.mgmt_nessus.private_ip}"
+    "${aws_instance.mgmt_nessus.*.private_ip[count.index]}"
   ]
-}
 
 ##################################
 # Reverse records - public subnet
@@ -168,7 +167,7 @@ resource "aws_route53_zone" "mgmt_private_zone_reverse" {
 }
 
 resource "aws_route53_record" "mgmt_rev_nessus_PTR" {
-  count = "${var.enable_mgmt_vpc}"
+  count = "${var.enable_mgmt_vpc * local.count_mgmt_vuln_scanner}"
 
   zone_id = "${aws_route53_zone.mgmt_private_zone_reverse.zone_id}"
   name = "${format("%s.%s.%s.%s.in-addr.arpa.",
@@ -180,6 +179,6 @@ resource "aws_route53_record" "mgmt_rev_nessus_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "vulnscan1.${local.mgmt_private_domain}."
+    "vulnscan${count.index + 1}.${local.mgmt_private_domain}."
   ]
 }
