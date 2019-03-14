@@ -1,6 +1,6 @@
 resource "aws_instance" "mgmt_nessus" {
   count = "${var.enable_mgmt_vpc}"
-  
+
   ami = "${data.aws_ami.nessus.id}"
   instance_type = "m5.large"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
@@ -17,8 +17,7 @@ resource "aws_instance" "mgmt_nessus" {
     "${aws_security_group.mgmt_scanner_sg.id}"
   ]
 
-  #TODO: Make this user_data_base64
-  user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
+  user_data_base64 = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "Management Nessus - vulnscan1"))}"
   volume_tags = "${merge(var.tags, map("Name", "Management Nessus - vulnscan1"))}"
