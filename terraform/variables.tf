@@ -56,9 +56,9 @@ variable "nessus_activation_codes" {
   description = "A list of strings containing Nessus activation codes"
 }
 
-variable "mgmt_nessus_activation_code" {
-  description = "The Nessus activation code used in the management VPC"
-  default = ""
+variable "mgmt_nessus_activation_codes" {
+  type = "list"
+  description = "A list of strings containing Nessus activation codes used in the management VPC"
 }
 
 variable "create_cyhy_flow_logs" {
@@ -154,7 +154,7 @@ variable "docker_mailer_override_filename" {
 # For some examples of this, refer to the rules in these files:
 #  - cyhy_private_security_group_rules.tf
 #  - cyhy_private_acl_rules.tf
-variable "enable_mgmt_vpc_access_to_all_vpcs" {
+variable "enable_mgmt_vpc" {
   description = "Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC.  Zero means access is disabled and one means access is enabled."
   default = 0
 }

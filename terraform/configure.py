@@ -26,21 +26,35 @@ assert sys.version_info >= (3,7), 'This script requires Python version 3.7 or ne
 
 # for each workspace, set the number of instances to create for each template
 WORKSPACE_CONFIGS = {
-                        'production':   {'nmap':64, 'nessus':3, 'mongo':1},
-                        'prod-a':       {'nmap':64, 'nessus':3, 'mongo':1},
-                        'prod-b':       {'nmap':64, 'nessus':3, 'mongo':1},
-                        'felddy':       {'nmap':4, 'nessus':1, 'mongo':1},
-                        'jsf9k':        {'nmap':0, 'nessus':0, 'mongo':1},
-                    }
+    'production': {
+        'nmap': 64, 'nessus': 3, 'mongo': 1,
+        'mgmt_bastion': 0, 'mgmt_nessus': 0},
+    'prod-a': {
+        'nmap': 64, 'nessus': 3, 'mongo': 1,
+        'mgmt_bastion': 0, 'mgmt_nessus': 0},
+    'prod-b': {
+        'nmap': 64, 'nessus': 3, 'mongo': 1,
+        'mgmt_bastion': 0, 'mgmt_nessus': 0},
+    'felddy': {
+        'nmap': 4, 'nessus': 1, 'mongo': 1,
+        'mgmt_bastion': 0, 'mgmt_nessus': 0},
+    'jsf9k': {
+        'nmap': 0, 'nessus': 0, 'mongo': 1,
+        'mgmt_bastion': 0, 'mgmt_nessus': 0}
+    }
 
 # the default configuration if a workspace is not defined above
-DEFAULT_CONFIG =    {'nmap':1, 'nessus':1, 'mongo':1}
+DEFAULT_CONFIG = {
+        'nmap': 1, 'nessus': 1, 'mongo': 1,
+        'mgmt_bastion': 0, 'mgmt_nessus': 0}
 
 # variables to be defined in a dynamic locals file
 LOCAL_DEFS = {
-    'nmap':     'nmap_instance_count',
-    'nessus':   'nessus_instance_count',
-    'mongo':    'mongo_instance_count'
+    'nmap':          'nmap_instance_count',
+    'nessus':        'nessus_instance_count',
+    'mongo':         'mongo_instance_count',
+    'mgmt_bastion':  'mgmt_bastion_instance_count',
+    'mgmt_nessus':   'mgmt_nessus_instance_count'
     }
 
 # filename constant definitions
