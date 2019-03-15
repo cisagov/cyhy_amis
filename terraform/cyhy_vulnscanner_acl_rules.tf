@@ -67,7 +67,7 @@ resource "aws_network_acl_rule" "vulnscanner_egress_to_anywhere_via_any_port" {
 # Allow all ports and protocols from Management private subnet to ingress,
 # for internal scanning
 resource "aws_network_acl_rule" "vulnscanner_ingress_all_from_mgmt_vpc" {
-  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  count = "${var.enable_mgmt_vpc}"
 
   network_acl_id = "${aws_network_acl.cyhy_vulnscanner_acl.id}"
   egress = false

@@ -128,7 +128,7 @@ resource "aws_route" "bod_route_cyhy_traffic_through_peering_connection" {
 
 # Route all Management VPC traffic through the VPC peering connection
 resource "aws_route" "bod_route_mgmt_traffic_through_peering_connection" {
-  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  count = "${var.enable_mgmt_vpc}"
 
   route_table_id = "${aws_default_route_table.bod_default_route_table.id}"
   destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
@@ -151,7 +151,7 @@ resource "aws_route_table" "bod_public_route_table" {
 
 # Route all Management VPC traffic through the VPC peering connection
 resource "aws_route" "bod_public_route_mgmt_traffic_through_peering_connection" {
-  count = "${var.enable_mgmt_vpc_access_to_all_vpcs}"
+  count = "${var.enable_mgmt_vpc}"
 
   route_table_id = "${aws_route_table.bod_public_route_table.id}"
   destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"

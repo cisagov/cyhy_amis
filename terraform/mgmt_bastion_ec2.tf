@@ -1,5 +1,7 @@
 # The bastion EC2 instance
 resource "aws_instance" "mgmt_bastion" {
+  count = "${var.enable_mgmt_vpc}"
+
   ami = "${data.aws_ami.bastion.id}"
   instance_type = "t3.micro"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
@@ -18,24 +20,15 @@ resource "aws_instance" "mgmt_bastion" {
     "${aws_security_group.mgmt_bastion_sg.id}"
   ]
 
-  user_data = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
+  user_data_base64 = "${data.template_cloudinit_config.ssh_cloud_init_tasks.rendered}"
 
   tags = "${merge(var.tags, map("Name", "Management Bastion"))}"
   volume_tags = "${merge(var.tags, map("Name", "Management Bastion"))}"
 }
 
-# Provision the bastion EC2 instance via Ansible
-module "mgmt_bastion_ansible_provisioner" {
-  source = "github.com/cloudposse/tf_ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no'"
-  ]
-  envs = [
-    "host=${aws_instance.mgmt_bastion.public_ip}",
-    "host_groups=mgmt_bastion"
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run = false
+# load in the dynamically created provisioner modules
+module "dyn_mgmt_bastion" {
+  source = "./dyn_mgmt_bastion"
+  mgmt_bastion_public_ip = "${aws_instance.mgmt_bastion.public_ip}"
+  remote_ssh_user = "${var.remote_ssh_user}"
 }
