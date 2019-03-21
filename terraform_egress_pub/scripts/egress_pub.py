@@ -16,12 +16,13 @@ BUCKET_NAME = 's3-cdn.rules.ncats.cyber.dhs.gov'
 DOMAIN = 'rules.ncats.cyber.dhs.gov'
 
 # an AWS-style filter definition to limit the queried regions
-REGION_FILTERS = [{'Name':'endpoint', 'Values':['*.us-*']}]
+REGION_FILTERS = [{'Name': 'endpoint', 'Values': ['*.us-*']}]
 
 # the instance tag used to designate that a public ip should be published
 PUBLISH_EGRESS_TAG = 'Publish Egress'
 
-# the instance tag that will contain the application associated with an instance
+# the instance tag that will contain the application associated with
+# an instance
 APPLICATION_TAG = 'Application'
 
 # the header template for each file
@@ -44,31 +45,32 @@ HEADER = '''###
 # 64.39.99.98/31, 64.39.99.100/32, 64.39.99.131/32,
 # 64.39.99.132/30, 64.39.99.136/29, 64.39.99.144/31
 FILE_CONFIGS = \
-    [   {
-        'filename':     'all.txt',
-        'app_regex':    re.compile('.*'),
-        'static_ips':   ('100.27.42.128/25','64.69.57.0/24',
-        '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
-        '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
-        '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',),
-        'description':  'This file contains a consolidated list of all the IP addresses that NCATS is currently using for external scanning.'
-        },
-        {
-        'filename':     'cyhy.txt',
-        'app_regex':    re.compile('(Manual )?Cyber Hygiene$'),
-        'static_ips':   ('100.27.42.128/25','64.69.57.0/24',
-        '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
-        '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
-        '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',),
-        'description':  'This file contains a list of all IPs used for Cyber Hygiene scanning.'
-        },
-        {
-        'filename':     'pca.txt',
-        'app_regex':    re.compile('Phishing Campaign Assessment$'),
-        'static_ips':   (),
-        'description':  'This file contains a list of all IPs used for Phishing Campaign Assessments'
-        },
-    ]
+    [{
+        'filename': 'all.txt',
+        'app_regex': re.compile('.*'),
+        'static_ips': (
+            '100.27.42.128/25', '64.69.57.0/24',
+            '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
+            '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
+            '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
+        ),
+        'description': 'This file contains a consolidated list of all the IP addresses that NCATS is currently using for external scanning.'
+    }, {
+        'filename': 'cyhy.txt',
+        'app_regex': re.compile('(Manual )?Cyber Hygiene$'),
+        'static_ips': (
+            '100.27.42.128/25', '64.69.57.0/24',
+            '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
+            '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
+            '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
+        ),
+        'description': 'This file contains a list of all IPs used for Cyber Hygiene scanning.'
+    }, {
+        'filename': 'pca.txt',
+        'app_regex': re.compile('Phishing Campaign Assessment$'),
+        'static_ips': (),
+        'description': 'This file contains a list of all IPs used for Phishing Campaign Assessments'
+    }]
 
 
 def get_ec2_regions(filter=None):
@@ -79,40 +81,47 @@ def get_ec2_regions(filter=None):
     result = [x['RegionName'] for x in response['Regions']]
     return result
 
+
 def get_ec2_ips(region):
     '''create a set of public IPs for the given region
        yields (application tag value, public_ip) tuples'''
 
     ec2 = boto3.resource('ec2', region_name=region)
-    instances = ec2.instances.filter(Filters=[{'Name': 'instance-state-name', 'Values': ['running']}])
+    instances = ec2.instances.filter(Filters=[{
+        'Name': 'instance-state-name',
+        'Values': ['running']
+    }])
     vpc_addresses = ec2.vpc_addresses.all()    # the list of elastic IPs
 
     for instance in instances:
         # if the instance doesn't have a public ip we can skip
-        if instance.public_ip_address == None:
+        if instance.public_ip_address is None:
             continue
         # convert tags from aws dict into a real dictionary
-        tags = {x['Key']:x['Value'] for x in instance.tags}
+        tags = {x['Key']: x['Value'] for x in instance.tags}
         # if the publish egress tag isn't set to True we can skip
         if tags.get(PUBLISH_EGRESS_TAG, str(False)) != str(True):
             continue
-        # send back a tuple associating the public ip to an application
-        # if application is unset use '', because we still want it in our "all" list
+        # send back a tuple associating the public ip to an
+        # application if application is unset use '', because we still
+        # want it in our "all" list
         yield (tags.get(APPLICATION_TAG, ''), instance.public_ip_address)
 
     for vpc_address in vpc_addresses:
         # convert tags from aws dict into a real dictionary
         try:
-            tags = {x['Key']:x['Value'] for x in vpc_address.tags}
+            tags = {x['Key']: x['Value'] for x in vpc_address.tags}
         except TypeError:
             # This happens if there are no tags associated with the elastic IPs
             tags = {}
         # if the publish egress tag isn't set to True we can skip
         if tags.get(PUBLISH_EGRESS_TAG, str(False)) != str(True):
             continue
-        # send back a tuple associating the public ip to an application
-        # if application is unset use '', because we still want it in our "all" list
+        # send back a tuple associating the public ip to an
+        # application if application is unset use '', because we still
+        # want it in our "all" list
         yield (tags.get(APPLICATION_TAG, ''), vpc_address.public_ip)
+
 
 def update_bucket(bucket_name, filename, bucket_contents):
     '''update the s3 bucket with the new contents'''
@@ -135,6 +144,7 @@ def update_bucket(bucket_name, filename, bucket_contents):
     # by default new objects cannot be read by public
     # allow public reads of this object
     b_object.Acl().put(ACL='public-read')
+
 
 def main():
     # get a list of all the regions
@@ -168,10 +178,12 @@ def main():
             bucket_contents += str(net) + '\n'
 
         # fill in template
-        bucket_contents = bucket_contents.format(domain=DOMAIN,
-                                                 filename=config['filename'],
-                                                 timestamp=now,
-                                                 description=config['description'])
+        bucket_contents = bucket_contents.format(
+            domain=DOMAIN,
+            filename=config['filename'],
+            timestamp=now,
+            description=config['description']
+        )
 
         # send the contents to the s3 bucket
         update_bucket(BUCKET_NAME, config['filename'], bucket_contents)
@@ -184,7 +196,8 @@ def main():
         print()
     print('complete')
 
-    #import IPython; IPython.embed() #<<< BREAKPOINT >>>
+    # import IPython; IPython.embed() #<<< BREAKPOINT >>>
+
 
 if __name__ == '__main__':
     main()
