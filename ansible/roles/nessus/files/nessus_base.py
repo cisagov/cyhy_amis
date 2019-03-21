@@ -139,9 +139,10 @@ class NessusController(object):
                 # request will have it's own num_retries counter
             else:
                 num_retries += 1
-        else:   # while loop has reached FAILED_REQUEST_MAX_RETRIES
-            LOGGER.critical('Maximum retry attempts reached without success.')
-            sys.exit(num_retries)
+
+        # The while loop has reached FAILED_REQUEST_MAX_RETRIES
+        LOGGER.critical('Maximum retry attempts reached without success.')
+        sys.exit(num_retries)
 
     def find_policy(self, policy_name):
         '''Attempts to grab the policy ID for a name'''
