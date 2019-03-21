@@ -35,7 +35,9 @@ FAILED_REQUEST_MAX_RETRIES = 3
 # Seconds to wait between failed request retries
 FAILED_REQUEST_RETRY_WAIT_SEC = 30
 
-if DEBUG:
+# Note that we disable LGTM's unreachable statement warning for this
+# particular bit of code
+if DEBUG:  # lgtm[py/unreachable-statement]
     import httplib as http_client
     http_client.HTTPConnection.debuglevel = 1
     logging.basicConfig()
