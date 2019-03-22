@@ -37,8 +37,8 @@ FAILED_REQUEST_RETRY_WAIT_SEC = 30
 
 # Note that we disable LGTM's unreachable statement warning for this
 # particular bit of code
-if DEBUG:  # lgtm[py/unreachable-statement]
-    import httplib as http_client
+if DEBUG:
+    import httplib as http_client  # lgtm[py/unreachable-statement]
     http_client.HTTPConnection.debuglevel = 1
     logging.basicConfig()
     logging.getLogger().setLevel(logging.DEBUG)
