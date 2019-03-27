@@ -42,6 +42,18 @@ resource "aws_route53_record" "root_CAA" {
             ]
 }
 
+# This DNS record gives Amazon Certificate Manager permission to
+# generate certificates for rules.ncats.cyber.dhs.gov
+resource "aws_route53_record" "root_acm_rules_CNAME" {
+  zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
+  name = "_724d852f42d6b10ed1c6ab4135301ef6.rules.ncats.${aws_route53_zone.cyber_zone.name}"
+  type = "CNAME"
+  ttl = 60
+  records = [
+    "_548e9cb4a195b3c2a5410a9ff88fcda3.acm-validations.aws"
+  ]
+}
+
 resource "aws_route53_record" "root_MX" {
   zone_id = "${aws_route53_zone.cyber_zone.zone_id}"
   name    = "${aws_route53_zone.cyber_zone.name}"
