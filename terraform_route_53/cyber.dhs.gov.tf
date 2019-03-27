@@ -36,6 +36,7 @@ resource "aws_route53_record" "root_CAA" {
   type    = "CAA"
   ttl     = 300
   records = [ "0 issue \"letsencrypt.org\"",
+              "0 issue \"amazon.com\"",
               "0 issuewild \";\"",
               "0 iodef \"mailto:NCATSSecurity@hq.dhs.gov\""
             ]
