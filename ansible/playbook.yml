@@ -44,6 +44,7 @@
   roles:
     - orchestrator
     - cyhy_mailer
+    - code_gov_update
 
 - hosts: cyhy_commander
   name: Configure cyhy-commander hosts
