@@ -8,7 +8,7 @@
 
 - name: Download and untar the orchestrator tarball
   unarchive:
-    src: https://api.github.com/repos/dhs-ncats/orchestrator/tarball/develop
+    src: https://api.github.com/repos/cisagov/orchestrator/tarball/develop
     dest: /var/cyhy/orchestrator
     remote_src: yes
     extra_opts:

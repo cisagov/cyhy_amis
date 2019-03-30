@@ -8,7 +8,7 @@
 
 - name: Download and untar the cyhy-mailer tarball
   unarchive:
-    src: https://api.github.com/repos/dhs-ncats/cyhy-mailer/tarball/develop
+    src: https://api.github.com/repos/cisagov/cyhy-mailer/tarball/develop
     dest: /var/cyhy/cyhy-mailer
     remote_src: yes
     extra_opts:
