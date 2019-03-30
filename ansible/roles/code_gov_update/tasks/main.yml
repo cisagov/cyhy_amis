@@ -54,7 +54,7 @@
     mode: 0440
     content: |
       [default]
-      region = {{ aws_region }}
+      region = {{ ses_aws_region }}
 
 
 #
