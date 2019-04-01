@@ -63,6 +63,7 @@
     - xfs
     - orchestrator
     - cyhy_mailer
+    - code_gov_update
 
 - hosts: cyhy_commander
   name: Install and configure cyhy-commander
