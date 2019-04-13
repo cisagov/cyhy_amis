@@ -40,7 +40,7 @@
 
 - name: Create the credentials file to allow reading the scan database
   copy:
-    dest: /var/cyhy/orchestrator/secrets/scan_read_creds.yml
+    dest: /var/cyhy/client-cert-update/secrets/scan_read_creds.yml
     owner: cyhy
     group: cyhy
     mode: 0440
