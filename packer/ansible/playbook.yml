@@ -64,6 +64,7 @@
     - orchestrator
     - cyhy_mailer
     - code_gov_update
+    - client_cert_update
 
 - hosts: cyhy_commander
   name: Install and configure cyhy-commander

@@ -28,7 +28,7 @@ Here's how to use it in a playbook:
       become: yes
       become_method: sudo
       roles:
-         - code_gov_updater
+         - code_gov_update
 
 License
 -------

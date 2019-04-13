@@ -1,5 +1,5 @@
-code_gov_update
-===============
+client_cert_update
+==================
 
 An Ansible role for configuring a host to generate updated code.gov
 JSON files and email them.
@@ -28,7 +28,7 @@ Here's how to use it in a playbook:
       become: yes
       become_method: sudo
       roles:
-         - code_gov_update
+         - client_cert_update
 
 License
 -------

@@ -1,8 +1,9 @@
-code_gov_update
-===============
+client_cert_update
+==================
 
-An Ansible role for configuring a host to generate updated code.gov
-JSON files and email them.
+An Ansible role for configuring a host to generate a list of the BOD
+18-01 web hosts that require authentication via client certificates
+and email it out.
 
 Requirements
 ------------
@@ -28,7 +29,7 @@ Here's how to use it in a playbook:
       become: yes
       become_method: sudo
       roles:
-         - code_gov_update
+         - client_cert_update
 
 License
 -------
