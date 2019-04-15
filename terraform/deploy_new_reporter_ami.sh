@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
 
+# deploy_new_reporter_ami.sh
+# deploy_new_reporter_ami.sh workspace_name
+
 set -o nounset
 set -o errexit
 set -o pipefail
+
+workspace=prod-a
+if [ $# -ge 1 ]
+then
+    workspace=$1
+fi
+
+terraform workspace select "$workspace"
 
 reporter_instance_id=$(terraform state show aws_instance.cyhy_reporter | \
                            grep "^id" | sed "s/^id *= \(.*\)/\1/")
@@ -11,7 +22,7 @@ reporter_instance_id=$(terraform state show aws_instance.cyhy_reporter | \
 aws ec2 terminate-instances --instance-ids "$reporter_instance_id"
 aws ec2 wait instance-terminated --instance-ids "$reporter_instance_id"
 
-terraform apply -var-file=prod-a.tfvars \
+terraform apply -var-file="$workspace.tfvars" \
           -target=aws_instance.cyhy_reporter \
           -target=aws_route53_record.cyhy_reporter_A \
           -target=aws_route53_record.cyhy_rev_reporter_PTR \
