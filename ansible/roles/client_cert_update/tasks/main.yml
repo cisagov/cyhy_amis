@@ -1,0 +1,84 @@
+---
+# tasks file for client_cert_update
+
+#
+# Load mongo users and passwords into a variable
+#
+- name: Grab mongo users and passwords from S3
+  local_action:
+    module: aws_s3
+    bucket: ncats-cyhy-secrets
+    object: mongo_users.yml
+    dest: /tmp/mongo_users.yml
+    mode: get
+  become: no
+
+- name: Load mongo users and passwords from YML file
+  local_action:
+    module: include_vars
+    file: /tmp/mongo_users.yml
+    name: mongo_users
+  become: no
+
+- name: Delete local copy of mongo users
+  local_action:
+    module: file
+    path: /tmp/mongo_users.yml
+    state: absent
+  become: no
+
+
+#
+# client_cert_update secrets
+#
+- name: Create the secrets directory
+  file:
+    path: /var/cyhy/client-cert-update/secrets
+    owner: cyhy
+    group: cyhy
+    state: directory
+
+- name: Create the credentials file to allow reading the scan database
+  copy:
+    dest: /var/cyhy/client-cert-update/secrets/scan_read_creds.yml
+    owner: cyhy
+    group: cyhy
+    mode: 0440
+    content: |
+      version: '1'
+
+      database:
+        name: scan
+        uri: mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@{{ mongo_host }}:27017/scan
+
+- name: Create the AWS config
+  copy:
+    dest: /var/cyhy/client-cert-update/secrets/aws_config
+    owner: cyhy
+    group: cyhy
+    mode: 0440
+    content: |
+      [default]
+      region = {{ ses_aws_region }}
+
+
+#
+# Create a cron job
+#
+- name: Add /usr/local/bin to cron's path
+  cron:
+    env: yes
+    name: PATH
+    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+    user: cyhy
+  when: production_workspace
+# This cron job runs at midnight UTC on Friday mornings
+- name: Create a cron job for updating the list of hosts that require client certs
+  cron:
+    name: "client cert update"
+    minute: 0
+    hour: 0
+    weekday: 5
+    user: cyhy
+    job: cd /var/cyhy/client-cert-update && docker-compose up -d 2>&1 | /usr/bin/logger -t client-cert-update
+  when: production_workspace
