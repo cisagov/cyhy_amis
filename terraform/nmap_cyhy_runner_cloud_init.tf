@@ -34,4 +34,9 @@ data "template_cloudinit_config" "ssh_and_nmap_cyhy_runner_cloud_init_tasks" {
     content_type = "text/x-shellscript"
     content = "${data.template_file.nmap_disk_setup.rendered}"
   }
+
+  part {
+    content_type = "text/x-shellscript"
+    content = "${data.template_file.set_hostname.rendered}"
+  }
 }

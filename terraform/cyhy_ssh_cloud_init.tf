@@ -20,5 +20,10 @@ data "template_cloudinit_config" "cyhy_ssh_cloud_init_tasks" {
     content      = "${data.template_file.cyhy_user_ssh_setup.rendered}"
     merge_type   = "list(append)+dict(recurse_array)+str()"
   }
+
+  part {
+    content_type = "text/x-shellscript"
+    content = "${data.template_file.set_hostname.rendered}"
+  }
 }
 
