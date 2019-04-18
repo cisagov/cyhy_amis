@@ -41,8 +41,8 @@ WORKSPACE_CONFIGS = {
         'nmap': 4, 'nessus': 1, 'mongo': 1,
         'mgmt_bastion': 0, 'mgmt_nessus': 0},
     'jsf9k': {
-        'nmap': 0, 'nessus': 0, 'mongo': 1,
-        'mgmt_bastion': 0, 'mgmt_nessus': 0}
+        'nmap': 1, 'nessus': 1, 'mongo': 1,
+        'mgmt_bastion': 1, 'mgmt_nessus': 1}
     }
 
 # the default configuration if a workspace is not defined above
@@ -136,8 +136,7 @@ def main():
         template_key, unused = os.path.splitext(filename)
         # lookup the count for this template
         count = config[template_key]
-        print(f"Creating {count} instantiation{'' if count==1 else 's'} "
-              f"of template {template_file}")
+        print(f"Creating {count} instantiation{'' if count == 1 else 's'} of template {template_file}")
         # read in the template
         template = read_template(template_file)
         for i in range(count):
