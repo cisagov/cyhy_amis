@@ -85,12 +85,12 @@ resource "aws_route53_record" "cyhy_dashboard_A" {
   records = [ "${aws_instance.cyhy_dashboard.private_ip}"]
 }
 
-##################################
-# Reverse records - scanner subnet
-##################################
+#######################################################
+# Reverse records - portscanner and vulnscanner subnets
+#######################################################
 
 resource "aws_route53_zone" "cyhy_scanner_zone_reverse" {
-  # NOTE:  This assumes that we are using /24 blocks
+  # NOTE:  This assumes that we are using /24 blocks or smaller
   name = "${format("%s.%s.%s.in-addr.arpa.",
     element(split(".", aws_subnet.cyhy_portscanner_subnet.cidr_block), 2),
     element(split(".", aws_subnet.cyhy_portscanner_subnet.cidr_block), 1),
@@ -100,7 +100,7 @@ resource "aws_route53_zone" "cyhy_scanner_zone_reverse" {
   vpc {
     vpc_id = "${aws_vpc.cyhy_vpc.id}"
   }
-  tags = "${merge(var.tags, map("Name", "CyHy Scanner Reverse Zone"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Portcanner/Vulnscanner Reverse Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
@@ -126,19 +126,6 @@ resource "aws_route53_record" "cyhy_rev_3_PTR" {
   type    = "PTR"
   ttl     = 300
   records = [ "reserved.${local.cyhy_private_domain}." ]
-}
-
-resource "aws_route53_record" "cyhy_rev_bastion_PTR" {
-  zone_id = "${aws_route53_zone.cyhy_scanner_zone_reverse.zone_id}"
-  name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
-    element(split(".", aws_instance.cyhy_bastion.private_ip), 3),
-    element(split(".", aws_instance.cyhy_bastion.private_ip), 2),
-    element(split(".", aws_instance.cyhy_bastion.private_ip), 1),
-    element(split(".", aws_instance.cyhy_bastion.private_ip), 0),
-  )}"
-  type    = "PTR"
-  ttl     = 300
-  records = [ "bastion.${local.cyhy_private_domain}." ]
 }
 
 resource "aws_route53_record" "cyhy_rev_portscan_PTR" {
@@ -169,12 +156,12 @@ resource "aws_route53_record" "cyhy_rev_vulnscan_PTR" {
   records = [ "vulnscan${count.index + 1}.${local.cyhy_private_domain}." ]
 }
 
-##################################
-# Reverse records - private subnet
-##################################
+##############################################
+# Reverse records - private and public subnets
+##############################################
 
-resource "aws_route53_zone" "cyhy_private_zone_reverse" {
-  # NOTE:  This assumes that we are using /24 blocks
+resource "aws_route53_zone" "cyhy_public_private_zone_reverse" {
+  # NOTE:  This assumes that we are using /24 blocks or smaller
   name = "${format("%s.%s.%s.in-addr.arpa.",
     element(split(".", aws_subnet.cyhy_private_subnet.cidr_block), 2),
     element(split(".", aws_subnet.cyhy_private_subnet.cidr_block), 1),
@@ -184,12 +171,25 @@ resource "aws_route53_zone" "cyhy_private_zone_reverse" {
   vpc {
     vpc_id = "${aws_vpc.cyhy_vpc.id}"
   }
-  tags = "${merge(var.tags, map("Name", "CyHy Private Reverse Zone"))}"
+  tags = "${merge(var.tags, map("Name", "CyHy Public/Private Reverse Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
+resource "aws_route53_record" "cyhy_rev_bastion_PTR" {
+  zone_id = "${aws_route53_zone.cyhy_public_private_zone_reverse.zone_id}"
+  name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
+    element(split(".", aws_instance.cyhy_bastion.private_ip), 3),
+    element(split(".", aws_instance.cyhy_bastion.private_ip), 2),
+    element(split(".", aws_instance.cyhy_bastion.private_ip), 1),
+    element(split(".", aws_instance.cyhy_bastion.private_ip), 0),
+  )}"
+  type    = "PTR"
+  ttl     = 300
+  records = [ "bastion.${local.cyhy_private_domain}." ]
+}
+
 resource "aws_route53_record" "cyhy_rev_reporter_PTR" {
-  zone_id = "${aws_route53_zone.cyhy_private_zone_reverse.zone_id}"
+  zone_id = "${aws_route53_zone.cyhy_public_private_zone_reverse.zone_id}"
   name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
     element(split(".", aws_instance.cyhy_reporter.private_ip), 3),
     element(split(".", aws_instance.cyhy_reporter.private_ip), 2),
@@ -203,7 +203,7 @@ resource "aws_route53_record" "cyhy_rev_reporter_PTR" {
 
 resource "aws_route53_record" "cyhy_rev_database_PTR" {
   count = "${local.count_database}"
-  zone_id = "${aws_route53_zone.cyhy_private_zone_reverse.zone_id}"
+  zone_id = "${aws_route53_zone.cyhy_public_private_zone_reverse.zone_id}"
   name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
     element(split(".", aws_instance.cyhy_mongo.private_ip), 3),
     element(split(".", aws_instance.cyhy_mongo.private_ip), 2),
@@ -216,7 +216,7 @@ resource "aws_route53_record" "cyhy_rev_database_PTR" {
 }
 
 resource "aws_route53_record" "cyhy_rev_dashboard_PTR" {
-  zone_id = "${aws_route53_zone.cyhy_private_zone_reverse.zone_id}"
+  zone_id = "${aws_route53_zone.cyhy_public_private_zone_reverse.zone_id}"
   name    = "${format("%s.%s.%s.%s.in-addr.arpa.",
     element(split(".", aws_instance.cyhy_dashboard.private_ip), 3),
     element(split(".", aws_instance.cyhy_dashboard.private_ip), 2),
