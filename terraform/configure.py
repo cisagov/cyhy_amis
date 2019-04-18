@@ -41,8 +41,8 @@ WORKSPACE_CONFIGS = {
         'nmap': 4, 'nessus': 1, 'mongo': 1,
         'mgmt_bastion': 0, 'mgmt_nessus': 0},
     'jsf9k': {
-        'nmap': 1, 'nessus': 1, 'mongo': 1,
-        'mgmt_bastion': 1, 'mgmt_nessus': 1}
+        'nmap': 0, 'nessus': 0, 'mongo': 1,
+        'mgmt_bastion': 0, 'mgmt_nessus': 0}
     }
 
 # the default configuration if a workspace is not defined above
