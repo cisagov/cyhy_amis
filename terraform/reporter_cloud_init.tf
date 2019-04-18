@@ -34,4 +34,9 @@ data "template_cloudinit_config" "ssh_and_reporter_cloud_init_tasks" {
     content_type = "text/x-shellscript"
     content = "${data.template_file.reporter_disk_setup.rendered}"
   }
+
+  part {
+    content_type = "text/x-shellscript"
+    content = "${data.template_file.set_hostname.rendered}"
+  }
 }

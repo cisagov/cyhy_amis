@@ -90,4 +90,9 @@ data "template_cloudinit_config" "ssh_and_mongo_cloud_init_tasks" {
     content_type = "text/x-shellscript"
     content = "${data.template_file.mongo_dir_setup.rendered}"
   }
+
+  part {
+    content_type = "text/x-shellscript"
+    content = "${data.template_file.set_hostname.rendered}"
+  }
 }
