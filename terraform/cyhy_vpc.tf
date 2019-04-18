@@ -19,7 +19,8 @@ resource "aws_vpc_dhcp_options_association" "cyhy_vpc_dhcp" {
   dhcp_options_id = "${aws_vpc_dhcp_options.cyhy_dhcp_options.id}"
 }
 
-# Private subnet of the VPC, for database and CyHy commander
+# Private subnet of the VPC, for reporter, database, and CyHy
+# commander
 resource "aws_subnet" "cyhy_private_subnet" {
  vpc_id = "${aws_vpc.cyhy_vpc.id}"
  cidr_block = "10.10.10.0/25"
