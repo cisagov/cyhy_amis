@@ -87,8 +87,8 @@ locals {
   # DNS zone calculations based on requested instances.  The numbers
   # represent the count of IP addresses in a subnet.
   #
-  # NOTE: there is an assumption that subnets are /24 in the reverse
-  # zone names.
+  # NOTE: there is an assumption that subnets are /24 or smaller in
+  # the reverse zone names.
 
   # Port Scanners DNS entries
   count_port_scanner = "${local.nmap_instance_count}"
