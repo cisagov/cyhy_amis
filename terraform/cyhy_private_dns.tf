@@ -109,7 +109,7 @@ resource "aws_route53_record" "cyhy_rev_1_PTR" {
   name    = "1.${aws_route53_zone.cyhy_scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "router.${local.cyhy_private_domain}." ]
+  records = [ "router.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 resource "aws_route53_record" "cyhy_rev_2_PTR" {
@@ -117,7 +117,7 @@ resource "aws_route53_record" "cyhy_rev_2_PTR" {
   name    = "2.${aws_route53_zone.cyhy_scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "ns.${local.cyhy_private_domain}." ]
+  records = [ "ns.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 resource "aws_route53_record" "cyhy_rev_3_PTR" {
@@ -125,7 +125,7 @@ resource "aws_route53_record" "cyhy_rev_3_PTR" {
   name    = "3.${aws_route53_zone.cyhy_scanner_zone_reverse.name}"
   type    = "PTR"
   ttl     = 300
-  records = [ "reserved.${local.cyhy_private_domain}." ]
+  records = [ "reserved.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 resource "aws_route53_record" "cyhy_rev_portscan_PTR" {
@@ -139,7 +139,7 @@ resource "aws_route53_record" "cyhy_rev_portscan_PTR" {
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "portscan${count.index + 1}.${local.cyhy_private_domain}." ]
+  records = [ "portscan${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 resource "aws_route53_record" "cyhy_rev_vulnscan_PTR" {
@@ -153,7 +153,7 @@ resource "aws_route53_record" "cyhy_rev_vulnscan_PTR" {
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "vulnscan${count.index + 1}.${local.cyhy_private_domain}." ]
+  records = [ "vulnscan${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 ##############################################
@@ -185,7 +185,7 @@ resource "aws_route53_record" "cyhy_rev_bastion_PTR" {
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "bastion.${local.cyhy_private_domain}." ]
+  records = [ "bastion.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 resource "aws_route53_record" "cyhy_rev_reporter_PTR" {
@@ -198,7 +198,7 @@ resource "aws_route53_record" "cyhy_rev_reporter_PTR" {
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "reporter.${local.cyhy_private_domain}." ]
+  records = [ "reporter.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 resource "aws_route53_record" "cyhy_rev_database_PTR" {
@@ -212,7 +212,7 @@ resource "aws_route53_record" "cyhy_rev_database_PTR" {
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "database${count.index + 1}.${local.cyhy_private_domain}." ]
+  records = [ "database${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}" ]
 }
 
 resource "aws_route53_record" "cyhy_rev_dashboard_PTR" {
@@ -225,5 +225,5 @@ resource "aws_route53_record" "cyhy_rev_dashboard_PTR" {
   )}"
   type    = "PTR"
   ttl     = 300
-  records = [ "dashboard.${local.cyhy_private_domain}." ]
+  records = [ "dashboard.${aws_route53_zone.cyhy_private_zone.name}" ]
 }

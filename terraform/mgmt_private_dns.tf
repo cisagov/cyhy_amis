@@ -101,7 +101,7 @@ resource "aws_route53_record" "mgmt_rev_1_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "router.${local.mgmt_private_domain}."
+    "router.${aws_route53_zone.mgmt_private_zone.name}"
   ]
 }
 
@@ -113,7 +113,7 @@ resource "aws_route53_record" "mgmt_rev_2_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "ns.${local.mgmt_private_domain}."
+    "ns.${aws_route53_zone.mgmt_private_zone.name}"
   ]
 }
 
@@ -125,7 +125,7 @@ resource "aws_route53_record" "mgmt_rev_3_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "reserved.${local.mgmt_private_domain}."
+    "reserved.${aws_route53_zone.mgmt_private_zone.name}"
   ]
 }
 
@@ -142,7 +142,7 @@ resource "aws_route53_record" "mgmt_rev_bastion_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "bastion.${local.mgmt_private_domain}."
+    "bastion.${aws_route53_zone.mgmt_private_zone.name}"
   ]
 }
 
@@ -180,6 +180,6 @@ resource "aws_route53_record" "mgmt_rev_nessus_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "vulnscan${count.index + 1}.${local.mgmt_private_domain}."
+    "vulnscan${count.index + 1}.${aws_route53_zone.mgmt_private_zone.name}"
   ]
 }

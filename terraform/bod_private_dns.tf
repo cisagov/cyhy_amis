@@ -88,7 +88,7 @@ resource "aws_route53_record" "bod_rev_1_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "router.${local.bod_private_domain}."
+    "router.${aws_route53_zone.bod_private_zone.name}"
   ]
 }
 
@@ -98,7 +98,7 @@ resource "aws_route53_record" "bod_rev_2_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "ns.${local.bod_private_domain}."
+    "ns.${aws_route53_zone.bod_private_zone.name}"
   ]
 }
 
@@ -108,7 +108,7 @@ resource "aws_route53_record" "bod_rev_3_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "reserved.${local.bod_private_domain}."
+    "reserved.${aws_route53_zone.bod_private_zone.name}"
   ]
 }
 
@@ -123,7 +123,7 @@ resource "aws_route53_record" "bod_rev_bastion_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "bastion.${local.bod_private_domain}."
+    "bastion.${aws_route53_zone.bod_private_zone.name}"
   ]
 }
 
@@ -157,6 +157,6 @@ resource "aws_route53_record" "bod_rev_docker_PTR" {
   type = "PTR"
   ttl = 300
   records = [
-    "docker.${local.bod_private_domain}."
+    "docker.${aws_route53_zone.bod_private_zone.name}"
   ]
 }
