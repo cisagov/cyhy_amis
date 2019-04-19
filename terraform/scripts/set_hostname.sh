@@ -20,6 +20,6 @@ done
 
 name=$(echo "$hostinfo" | \
            cut --delimiter=' ' --fields=5 | \
-           sed 's/\(.*\)\.local\./\1/')
+           sed 's/\([^\.]*\)\.\([^\.]*\)\./\1/')
 
 hostnamectl set-hostname --no-ask-password "$name"

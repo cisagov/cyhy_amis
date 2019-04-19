@@ -64,9 +64,9 @@ locals {
   ]
 
   # domain names to use for internal DNS
-  cyhy_private_domain = "local"
-  bod_private_domain = "local"
-  mgmt_private_domain = "local"
+  cyhy_private_domain = "cyhy"
+  bod_private_domain = "bod"
+  mgmt_private_domain = "mgmt"
 
   # zones to use for public DNS
   cyhy_public_zone  = "cyber.dhs.gov"
