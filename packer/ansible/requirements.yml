@@ -8,3 +8,7 @@
   name: github_oauth
 - src: https://github.com/cisagov/ansible-role-htop
   name: htop
+- src: https://github.com/cisagov/ansible-role-pip
+  name: pip
+- src: https://github.com/cisagov/ansible-role-python
+  name: python
