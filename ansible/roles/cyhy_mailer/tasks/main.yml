@@ -54,7 +54,7 @@
 
       database:
         name: cyhy
-        uri: mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@{{ mongo_host }}:27017/cyhy
+        uri: mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
 
 - name: Create the AWS config
   copy:

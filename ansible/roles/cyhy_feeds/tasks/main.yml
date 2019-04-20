@@ -133,24 +133,24 @@
     content: |
       [DEFAULT]
       default-section = production
-      database-uri = mongodb://localhost:27017/
+      database-uri = mongodb://database1.cyhy:27017/
       report-key =
 
       ; BEGIN ANSIBLE MANAGED BLOCK commander
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
       database-name = cyhy
       ; END ANSIBLE MANAGED BLOCK commander
 
       ; BEGIN ANSIBLE MANAGED BLOCK scan-reader
       [production_scan_reader]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1:27017/scan
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
       database-name = scan
       ; END ANSIBLE MANAGED BLOCK scan-reader
 
       ; BEGIN ANSIBLE MANAGED BLOCK assessment-reader
       [production_assessment_reader]
-      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1:27017/assessment
+      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1.cyhy:27017/assessment
       database-name = assessment
       ; END ANSIBLE MANAGED BLOCK assessment-reader
   when: cyhy_conf_result.stat.exists == False
@@ -162,7 +162,7 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     block: |
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
       database-name = cyhy
   when: cyhy_conf_result.stat.exists == True
 
@@ -172,7 +172,7 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK scan-reader'
     block: |
       [production_scan_reader]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1:27017/scan
+      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1.cyhy:27017/scan
       database-name = scan
   when: cyhy_conf_result.stat.exists == True
 
@@ -182,7 +182,7 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK assessment-reader'
     block: |
       [production_assessment_reader]
-      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1:27017/assessment
+      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1.cyhy:27017/assessment
       database-name = assessment
   when: cyhy_conf_result.stat.exists == True
 #

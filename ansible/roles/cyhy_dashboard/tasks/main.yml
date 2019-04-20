@@ -69,11 +69,11 @@
     content: |
       [DEFAULT]
       default-section = production
-      database-uri = mongodb://localhost:27017/
+      database-uri = mongodb://database1.cyhy:27017/
       report-key =
 
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1:27017/cyhy
+      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
       database-name = cyhy
 
 - make:
