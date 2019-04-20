@@ -108,7 +108,6 @@ module "cyhy_reporter_ansible_provisioner" {
     "host=${aws_instance.cyhy_reporter.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=docker,cyhy_reporter",
-    "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
     "production_workspace=${local.production_workspace}",
     "ses_aws_region=${var.ses_aws_region}",
     # This file will be used to add/override any settings in
