@@ -3,6 +3,9 @@ resource "aws_route53_zone" "cyhy_private_zone" {
   vpc {
     vpc_id = "${aws_vpc.cyhy_vpc.id}"
   }
+  vpc {
+    vpc_id = "${aws_vpc.bod_vpc.id}"
+  }
   tags = "${merge(var.tags, map("Name", "CyHy Private Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
