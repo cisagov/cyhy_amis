@@ -157,7 +157,6 @@ module "bod_docker_ansible_provisioner" {
     "host=${aws_instance.bod_docker.private_ip}",
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
     "host_groups=docker,bod_docker",
-    "mongo_host=${aws_instance.cyhy_mongo.private_ip}",
     "production_workspace=${local.production_workspace}",
     "aws_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",

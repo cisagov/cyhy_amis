@@ -49,7 +49,7 @@
 
       database:
         name: scan
-        uri: mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@{{ mongo_host }}:27017/scan
+        uri: mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
 
 - name: Create the AWS config
   copy:
