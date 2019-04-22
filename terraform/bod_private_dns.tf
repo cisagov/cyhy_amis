@@ -1,13 +1,31 @@
 resource "aws_route53_zone" "bod_private_zone" {
   name = "${local.bod_private_domain}."
+
   vpc {
     vpc_id = "${aws_vpc.bod_vpc.id}"
   }
+
   vpc {
     vpc_id = "${aws_vpc.cyhy_vpc.id}"
   }
+
+  # Because we're conditionally associating the management VPC with
+  # this zone using the aws_route53_zone_association resource below,
+  # this lifecycle bit is required.  See
+  # https://www.terraform.io/docs/providers/aws/r/route53_zone_association.html
+  lifecycle {
+    ignore_changes = ["vpc"]
+  }
+
   tags = "${merge(var.tags, map("Name", "BOD Private Zone"))}"
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
+}
+
+# Also associate the management VPC, if it's present
+resource "aws_route53_zone_association" "mgmt_bod" {
+  count = "${var.enable_mgmt_vpc}"
+  zone_id = "${aws_route53_zone.bod_private_zone.zone_id}"
+  vpc_id  = "${aws_vpc.mgmt_vpc.id}"
 }
 
 resource "aws_route53_record" "bod_router_A" {
