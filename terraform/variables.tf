@@ -158,3 +158,24 @@ variable "enable_mgmt_vpc" {
   description = "Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC.  Zero means access is disabled and one means access is enabled."
   default = 0
 }
+
+variable "assessment_data_s3_bucket" {
+  type = "string"
+  description = "The name of the bucket where the assessment data JSON file can be found.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+  default = ""
+}
+
+variable "assessment_data_filename" {
+  type = "string"
+  description = "The name of the assessment data JSON file that can be found in the assessment_data_s3_bucket."
+}
+
+variable "assessment_data_import_lambda_s3_bucket" {
+  type = "string"
+  description = "The name of the bucket where the assessment data import Lambda function can be found.  This bucket should be created with https://github.com/cisagov/assessment-data-import-terraform.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+}
+
+variable "assessment_data_import_lambda_s3_key" {
+  type = "string"
+  description = "The key (name) of the zip file for the assessment data import Lambda function inside the S3 bucket."
+}
