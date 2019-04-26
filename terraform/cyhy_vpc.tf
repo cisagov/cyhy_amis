@@ -145,7 +145,7 @@ resource "aws_route" "cyhy_private_route_external_traffic_through_bod_vpc_peerin
 # connection
 resource "aws_route" "cyhy_private_route_external_traffic_through_mgmt_vpc_peering_connection" {
   count = "${var.enable_mgmt_vpc}"
-  
+
   route_table_id = "${aws_route_table.cyhy_private_route_table.id}"
   destination_cidr_block = "${aws_vpc.mgmt_vpc.cidr_block}"
   vpc_peering_connection_id = "${aws_vpc_peering_connection.cyhy_mgmt_peering_connection.id}"
@@ -224,4 +224,11 @@ resource "aws_security_group" "cyhy_bastion_sg" {
   vpc_id = "${aws_vpc.cyhy_vpc.id}"
 
   tags = "${merge(var.tags, map("Name", "CyHy Bastion"))}"
+}
+
+# Security group for the assessment data import Lambda portion of the VPC
+resource "aws_security_group" "adi_lambda_sg" {
+  vpc_id = "${aws_vpc.cyhy_vpc.id}"
+
+  tags = "${merge(var.tags, map("Name", "Assessment Data Import Lambda"))}"
 }
