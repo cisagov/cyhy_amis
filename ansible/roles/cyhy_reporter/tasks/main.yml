@@ -2,31 +2,6 @@
 # tasks file for cyhy_reporter
 
 #
-# Grab mongo users and master report password
-#
-- name: Grab mongo users and master report password from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: "{{ item }}"
-    dest: "/tmp/{{ item }}"
-    mode: get
-  become: no
-  loop:
-    - mongo_users.yml
-    - master_report_password.yml
-
-- name: Load mongo users and master report password from YML files
-  local_action:
-    module: include_vars
-    file: "/tmp/{{ item }}"
-    name: "{{ item | regex_replace('^(.*).yml$', '\\1') }}"
-  become: no
-  loop:
-    - mongo_users.yml
-    - master_report_password.yml
-
-#
 # Set up /etc/cyhy/cyhy.conf
 #
 - name: Create the /etc/cyhy directory
@@ -44,28 +19,15 @@
       [DEFAULT]
       default-section = cyhy
       database-uri = mongodb://database1.cyhy:27017/
-      report-key = {{ master_report_password.password }}
+      report-key = {{ lookup('aws_ssm', '/cyhy/master_report_key') }}
 
       [cyhy]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
-      database-name = cyhy
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
 
       [scan]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
-      database-name = scan
-
-#
-# Cleanup
-#
-- name: Delete /tmp/mongo_users.yml and /tmp/master_report_password.yml
-  local_action:
-    module: file
-    path: "{{ item }}"
-    state: absent
-  become: no
-  loop:
-    - /tmp/mongo_users.yml
-    - /tmp/master_report_password.yml
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
 
 #
 # Create cron job for snapshot, CyHy report, and CybEx scorecard generation

@@ -90,20 +90,6 @@
 #
 # Create /etc/cyhy/cyhy.conf file
 #
-- name: Grab mongo users from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: mongo_users.yml
-    dest: /tmp/mongo_users.yml
-    mode: get
-  become: no
-
-- name: Load mongo users token from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/mongo_users.yml
-    name: mongo_users
 
 - name: Create /etc/cyhy directory
   file:
@@ -138,20 +124,20 @@
 
       ; BEGIN ANSIBLE MANAGED BLOCK commander
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
-      database-name = cyhy
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
       ; END ANSIBLE MANAGED BLOCK commander
 
       ; BEGIN ANSIBLE MANAGED BLOCK scan-reader
       [production_scan_reader]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
-      database-name = scan
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
       ; END ANSIBLE MANAGED BLOCK scan-reader
 
       ; BEGIN ANSIBLE MANAGED BLOCK assessment-reader
       [production_assessment_reader]
-      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1.cyhy:27017/assessment
-      database-name = assessment
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
       ; END ANSIBLE MANAGED BLOCK assessment-reader
   when: cyhy_conf_result.stat.exists == False
 
@@ -162,8 +148,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     block: |
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
-      database-name = cyhy
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
   when: cyhy_conf_result.stat.exists == True
 
 - name: Add scan-reader credentials block to cyhy.conf if necessary
@@ -172,8 +158,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK scan-reader'
     block: |
       [production_scan_reader]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1.cyhy:27017/scan
-      database-name = scan
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
   when: cyhy_conf_result.stat.exists == True
 
 - name: Add assessment-reader credentials block to cyhy.conf if necessary
@@ -182,8 +168,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK assessment-reader'
     block: |
       [production_assessment_reader]
-      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1.cyhy:27017/assessment
-      database-name = assessment
+      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
+      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
   when: cyhy_conf_result.stat.exists == True
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as

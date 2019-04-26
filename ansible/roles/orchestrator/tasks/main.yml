@@ -2,33 +2,6 @@
 # tasks file for orchestrator
 
 #
-# Load mongo users and passwords into a variable
-#
-- name: Grab mongo users and passwords from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: mongo_users.yml
-    dest: /tmp/mongo_users.yml
-    mode: get
-  become: no
-
-- name: Load mongo users and passwords from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/mongo_users.yml
-    name: mongo_users
-  become: no
-
-- name: Delete local copy of mongo users
-  local_action:
-    module: file
-    path: /tmp/mongo_users.yml
-    state: absent
-  become: no
-
-
-#
 # orchestrator secrets
 #
 - name: Create the secrets directory
@@ -48,8 +21,8 @@
       version: '1'
 
       database:
-        name: cyhy
-        uri: mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
+        name: {{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}
+        uri: mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}
 
 - name: Create the credentials file to allow reading the scan database
   copy:
@@ -61,8 +34,8 @@
       version: '1'
 
       database:
-        name: scan
-        uri: mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
+        name: {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
+        uri: mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
 
 - name: Create the credentials file to allow writing to the scan database
   copy:
@@ -74,8 +47,8 @@
       version: '1'
 
       database:
-        name: scan
-        uri: mongodb://scan-writer:{{ mongo_users.other_users | selectattr("user", "eq", "scan-writer") | map(attribute="password") | first }}@database1.cyhy:27017/scan
+        name: {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/database') }}
+        uri: mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/database') }}
 
 - name: Create the AWS config
   copy:
