@@ -10,7 +10,7 @@
 
 - name: Download and untar the cyhy-core tarball
   unarchive:
-    src: "https://api.github.com/repos/jsf9k/cyhy-core/tarball/develop?access_token={{ github_oauth_token }}"
+    src: "https://api.github.com/repos/jsf9k/cyhy-core/tarball/develop?access_token={{ lookup('aws_ssm', '/github/oauth_token') }}"
     dest: /tmp/cyhy-core
     remote_src: yes
     extra_opts:
@@ -30,7 +30,7 @@
 
 - name: Download and untar the webd tarball
   unarchive:
-    src: "https://api.github.com/repos/jsf9k/ncats-webd/tarball/develop?access_token={{ github_oauth_token }}"
+    src: "https://api.github.com/repos/jsf9k/ncats-webd/tarball/develop?access_token={{ lookup('aws_ssm', '/github/oauth_token') }}"
     dest: /tmp/ncats-webd
     remote_src: yes
     extra_opts:
@@ -47,7 +47,7 @@
 
 - name: Download and untar the webui tarball
   unarchive:
-    src: "https://api.github.com/repos/jsf9k/ncats-webui/tarball/develop?access_token={{ github_oauth_token }}"
+    src: "https://api.github.com/repos/jsf9k/ncats-webui/tarball/develop?access_token={{ lookup('aws_ssm', '/github/oauth_token') }}"
     dest: /var/cyhy/ncats-webui
     remote_src: yes
     extra_opts:

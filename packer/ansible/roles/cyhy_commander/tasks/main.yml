@@ -21,7 +21,7 @@
 
 - name: Download and untar the cyhy-commander tarball
   unarchive:
-    src: "https://api.github.com/repos/jsf9k/cyhy-commander/tarball/develop?access_token={{ github_oauth_token }}"
+    src: "https://api.github.com/repos/jsf9k/cyhy-commander/tarball/develop?access_token={{ lookup('aws_ssm', '/github/oauth_token') }}"
     dest: /tmp/cyhy-commander
     remote_src: yes
     extra_opts:

@@ -10,6 +10,6 @@
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/cyhy_archive.sh"
     headers:
-      Authorization: "token {{ github_oauth_token }}"
+      Authorization: "token {{ lookup('aws_ssm', '/github/oauth_token') }}"
     dest: /var/cyhy/scripts/cyhy_archive.sh
     mode: 0755
