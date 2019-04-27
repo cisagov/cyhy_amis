@@ -1,37 +1,13 @@
 ---
 # tasks file for cyhy_feeds
 
-#
-# Grab and copy some secrets from S3
-#
-- name: Grab secrets from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: "{{ item }}"
-    dest: "/tmp/{{ item }}"
-    mode: get
-  become: no
-  loop:
-    - cyhy-data-extract.cfg
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
-    - gpg_keys.trust
-
-- name: Copy secrets
+- name: Create cyhy-feeds config
   copy:
-    src: "/tmp/{{ item }}"
-    dest: "/var/cyhy/scripts/cyhy-feeds/{{ item }}"
+    content: "{{ lookup('aws_ssm', '/cyhy/feeds/config') }}"
+    dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
     mode: 0444
     owner: cyhy
     group: cyhy
-  loop:
-    - cyhy-data-extract.cfg
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
-    - gpg_keys.trust
 
 #
 # Create the AWS config
@@ -56,36 +32,22 @@
 # The --batch flag makes sure that gpg2 doesn't attempt to do anything
 # interactive.
 - name: Import gpg keys
-  shell: "gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch /var/cyhy/scripts/cyhy-feeds/{{ item }}"
+  shell: "echo '{{ item }}' | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
   loop:
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
+    - "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/public') }}"
+    - "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/private') }}"
+    - "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/nsd_public') }}"
+  loop_control:
+    label: "<key redacted>"
 
 - name: Import gpg trust
-  shell: "gpg2 --import-ownertrust --batch /var/cyhy/scripts/cyhy-feeds/gpg_keys.trust"
+  shell: "echo {{ lookup('aws_ssm', '/cyhy/feeds/gpg/trust') }} | gpg2 --import-ownertrust --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
-
-#
-# Cleanup
-#
-- name: Delete local copies of secrets
-  local_action:
-    module: file
-    path: "/tmp/{{ item }}"
-    state: absent
-  become: no
-  loop:
-    - cyhy-data-extract.cfg
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
-    - gpg_keys.trust
 
 #
 # Create /etc/cyhy/cyhy.conf file
