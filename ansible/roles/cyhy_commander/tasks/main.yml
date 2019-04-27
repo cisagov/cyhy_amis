@@ -2,37 +2,15 @@
 # tasks file for cyhy_commander
 
 #
-# Copy ssh private key to local temp dir
-#
-- name: Grab ssh private key from S3 for cyhy user
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: cyhy_private_id_ed25519
-    dest: /tmp/id_ed25519
-    mode: get
-  become: no
-
-#
 # Copy private key to new instance
 #
 - name: Copy ssh private key for cyhy user
   copy:
-    src: /tmp/id_ed25519
+    content: "{{ lookup('aws_ssm', '/cyhy/ssh/private_key') }}"
     dest: /var/cyhy/.ssh/id_ed25519
     owner: cyhy
     group: cyhy
     mode: 0600
-
-#
-# Delete local copy of private key
-#
-- name: Delete local copy of ssh private key for cyhy user
-  local_action:
-    module: file
-    path: /tmp/id_ed25519
-    state: absent
-  become: no
 
 #
 # Create the cyhy directory in etc for commander conf
