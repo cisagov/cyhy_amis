@@ -26,8 +26,8 @@
       version: '1'
 
       database:
-        name: {{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}
-        uri: mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}
+        name: {{ reporter_db }}
+        uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
 
 - name: Create the AWS config
   copy:

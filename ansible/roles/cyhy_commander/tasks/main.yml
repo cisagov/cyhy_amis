@@ -6,7 +6,7 @@
 #
 - name: Copy ssh private key for cyhy user
   copy:
-    content: "{{ lookup('aws_ssm', '/cyhy/ssh/private_key') }}"
+    content: "{{ ssh_private_key }}"
     dest: /var/cyhy/.ssh/id_ed25519
     owner: cyhy
     group: cyhy
@@ -46,7 +46,7 @@
     dest: /etc/cyhy/commander.conf
     regexp: "database-uri ="
     state: present
-    line: "database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
+    line: "database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}"
 
 - name: Enable and start cyhy-commander
   service:
@@ -71,7 +71,7 @@
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/load_places.sh"
     headers:
-      Authorization: "token {{ lookup('aws_ssm', '/github/oauth_token') }}"
+      Authorization: "token {{ oauth_token }}"
     dest: /tmp/cyhy-places/scripts/load_places.sh
     mode: 0755
 
@@ -79,7 +79,7 @@
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/GNIS_data_import.py"
     headers:
-      Authorization: "token {{ lookup('aws_ssm', '/github/oauth_token') }}"
+      Authorization: "token {{ oauth_token }}"
     dest: /tmp/cyhy-places/scripts/GNIS_data_import.py
     mode: 0755
 
@@ -87,7 +87,7 @@
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
     headers:
-      Authorization: "token {{ lookup('aws_ssm', '/github/oauth_token') }}"
+      Authorization: "token {{ oauth_token }}"
     dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
 
 - name: Check if cyhy.conf already exists
@@ -118,8 +118,8 @@
 
       ; BEGIN ANSIBLE MANAGED BLOCK commander
       [production]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
       ; END ANSIBLE MANAGED BLOCK commander
   when: cyhy_conf_result.stat.exists == False
 
@@ -129,8 +129,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     block: |
       [production]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
   when: cyhy_conf_result.stat.exists == True
 
 #

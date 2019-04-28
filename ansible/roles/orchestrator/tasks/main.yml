@@ -21,8 +21,8 @@
       version: '1'
 
       database:
-        name: {{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}
-        uri: mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}
+        name: {{ reporter_db }}
+        uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
 
 - name: Create the credentials file to allow reading the scan database
   copy:
@@ -34,8 +34,8 @@
       version: '1'
 
       database:
-        name: {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
-        uri: mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
+        name: {{ scan_reader_db }}
+        uri: mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
 
 - name: Create the credentials file to allow writing to the scan database
   copy:
@@ -47,8 +47,8 @@
       version: '1'
 
       database:
-        name: {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/database') }}
-        uri: mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-writer/database') }}
+        name: {{ scan_writer_db }}
+        uri: mongodb://{{ scan_writer_user }}:{{ scan_writer_pw }}@database1.cyhy:27017/{{ scan_writer_db }}
 
 - name: Create the AWS config
   copy:

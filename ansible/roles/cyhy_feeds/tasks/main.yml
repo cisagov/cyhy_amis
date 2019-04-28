@@ -3,7 +3,7 @@
 
 - name: Create cyhy-feeds config
   copy:
-    content: "{{ lookup('aws_ssm', '/cyhy/feeds/config') }}"
+    content: "{{ config }}"
     dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
     mode: 0444
     owner: cyhy
@@ -37,14 +37,14 @@
   vars:
     ansible_ssh_pipelining: yes
   loop:
-    - "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/public') }}"
-    - "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/private') }}"
-    - "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/nsd_public') }}"
+    - "{{ public_gpg_key }}"
+    - "{{ private_gpg_key }}"
+    - "{{ nsd_public_gpg_key }}"
   loop_control:
     label: "<key redacted>"
 
 - name: Import gpg trust
-  shell: "echo {{ lookup('aws_ssm', '/cyhy/feeds/gpg/trust') }} | gpg2 --import-ownertrust --batch"
+  shell: "echo {{ trust }} | gpg2 --import-ownertrust --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
@@ -86,20 +86,20 @@
 
       ; BEGIN ANSIBLE MANAGED BLOCK commander
       [production]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
       ; END ANSIBLE MANAGED BLOCK commander
 
       ; BEGIN ANSIBLE MANAGED BLOCK scan-reader
       [production_scan_reader]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
+      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+      database-name = {{ scan_reader_db }}
       ; END ANSIBLE MANAGED BLOCK scan-reader
 
       ; BEGIN ANSIBLE MANAGED BLOCK assessment-reader
       [production_assessment_reader]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
+      database-uri = mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
+      database-name = {{ assessment_read_db }}
       ; END ANSIBLE MANAGED BLOCK assessment-reader
   when: cyhy_conf_result.stat.exists == False
 
@@ -110,8 +110,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     block: |
       [production]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
   when: cyhy_conf_result.stat.exists == True
 
 - name: Add scan-reader credentials block to cyhy.conf if necessary
@@ -120,8 +120,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK scan-reader'
     block: |
       [production_scan_reader]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}
+      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+      database-name = {{ scan_reader_db }}
   when: cyhy_conf_result.stat.exists == True
 
 - name: Add assessment-reader credentials block to cyhy.conf if necessary
@@ -130,8 +130,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK assessment-reader'
     block: |
       [production_assessment_reader]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
+      database-uri = mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
+      database-name = {{ assessment_read_db }}
   when: cyhy_conf_result.stat.exists == True
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as

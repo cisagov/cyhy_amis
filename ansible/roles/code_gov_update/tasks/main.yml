@@ -30,7 +30,7 @@
 
           "GitHub": [{
              "url": "https://github.com",
-             "token": "{{ lookup('aws_ssm', '/github/oauth_token') }}",
+             "token": "{{ oauth_token }}",
              "public_only": true,
 
              "orgs": [

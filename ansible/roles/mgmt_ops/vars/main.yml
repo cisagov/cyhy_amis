@@ -1,2 +1,5 @@
 ---
 # vars file for mgmt_ops
+
+# A list of the management OPS users
+ops_users: "{{ lookup('aws_ssm', '/mgmt/ops/users').split(',') }}"

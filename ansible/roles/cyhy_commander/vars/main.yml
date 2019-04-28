@@ -1,2 +1,15 @@
 ---
 # vars file for cyhy_commander
+
+# The CyHy SSH private key
+ssh_private_key: "{{ lookup('aws_ssm', '/cyhy/ssh/private_key') }}"
+
+# commander mongo username
+commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
+# commander mongo password
+commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
+# commander mongo database
+commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
+
+# The GitHub OAUTH token
+oauth_token: "{{ lookup('aws_ssm', '/github/oauth_token') }}"

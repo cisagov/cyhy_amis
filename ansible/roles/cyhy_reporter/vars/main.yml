@@ -1,2 +1,19 @@
 ---
 # vars file for cyhy_reporter
+
+# The master key for all reports
+master_report_key: "{{ lookup('aws_ssm', '/cyhy/master_report_key') }}"
+
+# commander mongo username
+commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
+# commander mongo password
+commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
+# commander mongo database
+commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
+
+# scan-reader mongo username
+scan_reader_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}"
+# scan-reader mongo password
+scan_reader_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}"
+# scan-reader mongo database
+scan_reader_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}"

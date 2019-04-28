@@ -58,8 +58,8 @@
       report-key =
 
       [production]
-      database-uri = mongodb://{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}:{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}@database1.cyhy:27017/{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
-      database-name = {{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
 
 - make:
     chdir: /var/cyhy/ncats-webui
