@@ -71,7 +71,7 @@
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/load_places.sh"
     headers:
-      Authorization: "token {{ oauth_token }}"
+      Authorization: "token {{ github_oauth_token }}"
     dest: /tmp/cyhy-places/scripts/load_places.sh
     mode: 0755
 
@@ -79,7 +79,7 @@
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/var/GNIS_data_import.py"
     headers:
-      Authorization: "token {{ oauth_token }}"
+      Authorization: "token {{ github_oauth_token }}"
     dest: /tmp/cyhy-places/scripts/GNIS_data_import.py
     mode: 0755
 
@@ -87,7 +87,7 @@
   get_url:
     url: "https://raw.githubusercontent.com/jsf9k/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
     headers:
-      Authorization: "token {{ oauth_token }}"
+      Authorization: "token {{ github_oauth_token }}"
     dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
 
 - name: Check if cyhy.conf already exists

@@ -2,4 +2,4 @@
 # vars file for cyhy_archive
 
 # The GitHub OAUTH token
-oauth_token: "{{ lookup('aws_ssm', '/github/oauth_token') }}"
+github_oauth_token: "{{ lookup('aws_ssm', '/github/oauth_token') }}"

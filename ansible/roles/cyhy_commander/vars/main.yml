@@ -12,4 +12,4 @@ commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
 commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
 
 # The GitHub OAUTH token
-oauth_token: "{{ lookup('aws_ssm', '/github/oauth_token') }}"
+github_oauth_token: "{{ lookup('aws_ssm', '/github/oauth_token') }}"

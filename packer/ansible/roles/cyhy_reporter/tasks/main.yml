@@ -11,7 +11,7 @@
 
 - name: Download and untar the ncats-webd tarball
   unarchive:
-    src: "https://api.github.com/repos/jsf9k/ncats-webd/tarball/develop?access_token={{ oauth_token }}"
+    src: "https://api.github.com/repos/jsf9k/ncats-webd/tarball/develop?access_token={{ github_oauth_token }}"
     dest: /tmp/ncats-webd
     remote_src: yes
     extra_opts:
@@ -62,7 +62,7 @@
 
 - name: Download and untar the cyhy-reports tarball
   unarchive:
-    src: "https://api.github.com/repos/jsf9k/cyhy-reports/tarball/develop?access_token={{ oauth_token }}"
+    src: "https://api.github.com/repos/jsf9k/cyhy-reports/tarball/develop?access_token={{ github_oauth_token }}"
     dest: /tmp/cyhy-reports
     remote_src: yes
     extra_opts:
