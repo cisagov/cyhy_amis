@@ -51,7 +51,7 @@
     database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/database') }}"
     name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/user') }}"
     password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/password') }}"
-    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/roles') }}"
+    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/roles').split(',') }}"
     state: present
   # Loop over all the users *except* for admin
   loop: "{{ non_admin_users }}"

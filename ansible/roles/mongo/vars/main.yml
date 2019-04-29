@@ -10,7 +10,7 @@ admin_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/password') }}"
 # admin mongo database
 admin_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/database') }}"
 # admin mongo roles
-admin_roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/roles') }}"
+admin_roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/roles').split(',') }}"
 
 # Non-admin MongoDB users
 non_admin_users: "{{ lookup('aws_ssm', '/cyhy/mongo/users', shortnames=false, recursive=true, bypath=true) | dict2items | map(attribute='key') | map('regex_replace', '^/cyhy/mongo/users/([^/]*).*', '\\1') | unique | reject('equalto', 'admin') | list }}"
