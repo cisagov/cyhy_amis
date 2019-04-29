@@ -12,7 +12,7 @@ private_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/private') }}"
 nsd_public_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/nsd_public') }}"
 
 # cyhy-feeds GPG trust
-trust: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/trust') }}"
+gpg_trust: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/trust') }}"
 
 # commander mongo username
 commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"

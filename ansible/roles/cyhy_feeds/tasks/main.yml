@@ -44,7 +44,7 @@
     label: "<key redacted>"
 
 - name: Import gpg trust
-  shell: "echo {{ trust }} | gpg2 --import-ownertrust --batch"
+  shell: "echo {{ gpg_trust }} | gpg2 --import-ownertrust --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
