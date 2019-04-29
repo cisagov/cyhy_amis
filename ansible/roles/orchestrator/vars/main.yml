@@ -6,7 +6,7 @@ reporter_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}"
 # reporter mongo password
 reporter_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/password') }}"
 # reporter mongo database
-reporter_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporterXS/database') }}"
+reporter_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}"
 
 # scan-reader mongo username
 scan_reader_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}"
