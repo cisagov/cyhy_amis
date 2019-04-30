@@ -179,3 +179,33 @@ variable "assessment_data_import_lambda_s3_key" {
   type = "string"
   description = "The key (name) of the zip file for the assessment data import Lambda function inside the S3 bucket."
 }
+
+variable "assessment_data_import_db_hostname" {
+  type        = "string"
+  description = "The hostname that has the database to store the assessment data in."
+  default     = ""
+}
+
+variable "assessment_data_import_db_port" {
+  type        = "string"
+  description = "The port that the database server is listening on."
+  default     = ""
+}
+
+variable "assessment_data_import_ssm_db_name" {
+  type        = "string"
+  description = "The name of the parameter in AWS SSM that holds the name of the database to store the assessment data in."
+  default     = ""
+}
+
+variable "assessment_data_import_ssm_db_user" {
+  type        = "string"
+  description = "The name of the parameter in AWS SSM that holds the database username with write permission to the assessment database."
+  default     = ""
+}
+
+variable "assessment_data_import_ssm_db_password" {
+  type        = "string"
+  description = "The name of the parameter in AWS SSM that holds the database password for the user with write permission to the assessment database."
+  default     = ""
+}

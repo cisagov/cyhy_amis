@@ -168,11 +168,13 @@ resource "aws_lambda_function" "adi_lambda" {
 
   environment {
     variables = {
-      assessment_data_s3_bucket = "${data.aws_s3_bucket.assessment_data.id}"
-      assessment_data_filename = "${var.assessment_data_filename}"
-      # TODO: Coming soon...
-      # db_creds_s3_bucket = "${var.db_creds_s3_bucket}"
-      # db_creds_filename = "${var.db_creds_filename}"
+      s3_bucket = "${data.aws_s3_bucket.assessment_data.id}"
+      data_filename = "${var.assessment_data_filename}"
+      db_hostname = "${var.assessment_data_import_db_hostname}"
+      db_port = "${var.assessment_data_import_db_port}"
+      ssm_db_name = "${var.assessment_data_import_ssm_db_name}"
+      ssm_db_user = "${var.assessment_data_import_ssm_db_user}"
+      ssm_db_password = "${var.assessment_data_import_ssm_db_password}"
     }
   }
 
