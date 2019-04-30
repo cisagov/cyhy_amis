@@ -46,7 +46,7 @@ resource "aws_iam_role_policy" "adi_lambda_cloudwatch_policy" {
   policy = "${data.aws_iam_policy_document.adi_lambda_cloudwatch_doc.json}"
 }
 
-# IAM policy documents that that allows some EC2 permissions
+# IAM policy document that that allows some EC2 permissions
 # for our Lambda function.  This will allow the Lambda function to
 # create and destroy ENI resources, as described here:
 # https://docs.aws.amazon.com/lambda/latest/dg/vpc.html.
@@ -76,6 +76,58 @@ data "aws_iam_policy_document" "adi_lambda_ec2_doc" {
 resource "aws_iam_role_policy" "adi_lambda_ec2_policy" {
   role = "${aws_iam_role.adi_lambda_role.id}"
   policy = "${data.aws_iam_policy_document.adi_lambda_ec2_doc.json}"
+}
+
+# IAM policy document that that allows some S3 permissions
+# for our Lambda function.  This will allow the Lambda function to
+# get the assessment data JSON file from the bucket and delete it after
+# the data has been imported to the database.  This will be applied to the
+# role we are creating.
+data "aws_iam_policy_document" "adi_lambda_s3_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:GetObject",
+      "s3:DeleteObject",
+    ]
+
+    resources = [
+      "${data.aws_s3_bucket.assessment_data.arn}/*",
+    ]
+  }
+}
+
+# The S3 policy for our role
+resource "aws_iam_role_policy" "adi_lambda_s3_policy" {
+  role = "${aws_iam_role.adi_lambda_role.id}"
+  policy = "${data.aws_iam_policy_document.adi_lambda_s3_doc.json}"
+}
+
+# IAM policy document that that allows some SSM permissions
+# for our Lambda function.  This will allow the Lambda function to
+# get the SSM parameters that contain the credentials needed to access the
+# assessment database.  This will be applied to the role we are creating.
+data "aws_iam_policy_document" "adi_lambda_ssm_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter"
+    ]
+
+    resources = [
+      "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.assessment_data_import_ssm_db_name}",
+      "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.assessment_data_import_ssm_db_user}",
+      "arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter${var.assessment_data_import_ssm_db_password}"
+    ]
+  }
+}
+
+# The SSM policy for our role
+resource "aws_iam_role_policy" "adi_lambda_ssm_policy" {
+  role = "${aws_iam_role.adi_lambda_role.id}"
+  policy = "${data.aws_iam_policy_document.adi_lambda_ssm_doc.json}"
 }
 
 # The S3 bucket where the assessment data is stored
