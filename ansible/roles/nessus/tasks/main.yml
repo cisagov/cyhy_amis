@@ -21,22 +21,6 @@
 #
 # Create the Nessus scanner user
 #
-- name: Grab Nessus credentials from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: nessus_scanner_user.yml
-    dest: /tmp/nessus_scanner_user.yml
-    mode: get
-  become: no
-
-- name: Load Nessus credentials from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/nessus_scanner_user.yml
-    name: nessus
-  become: no
-
 - name: Grab the existing Nessus users
   command: /opt/nessus/sbin/nessuscli lsuser
   register: users
@@ -46,16 +30,16 @@
   pip:
     name:
       - pexpect
-  when: nessus.username not in users.stdout
+  when: username not in users.stdout
 
 - name: Create scanner user if necessary
   expect:
-    command: "/opt/nessus/sbin/nessuscli adduser {{ nessus.username }}"
+    command: "/opt/nessus/sbin/nessuscli adduser {{ username }}"
     responses:
-      password: "{{ nessus.password }}"
+      password: "{{ password }}"
       administrator: y
       BLANK: ""
-  when: nessus.username not in users.stdout
+  when: username not in users.stdout
 
 - name: Update plugins
   command: /opt/nessus/sbin/nessuscli update --plugins-only
@@ -81,34 +65,24 @@
     dest: /tmp/nessus_base.py
     mode: 0744
 
-- name: Configure nessus base policy to import nessus username
+- name: Configure nessus base policy to use nessus username
   lineinfile:
     dest: /tmp/nessus_base.py
     regexp: "USER = ''"
     state: present
-    line: "USER = '{{ nessus.username }}'"
+    line: "USER = '{{ username }}'"
 
-- name: Configure nessus base policy to import nessus password
+- name: Configure nessus base policy to use nessus password
   lineinfile:
     dest: /tmp/nessus_base.py
     regexp: "PASSWORD = ''"
     state: present
-    line: "PASSWORD = '{{ nessus.password }}'"
+    line: "PASSWORD = '{{ password }}'"
 
-- name: Grab Nessus base scan policy
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: cyhy-base-nessus8-policy.xml
+- name: Copy base nessus scan policy to instance tmp
+  template:
+    src: cyhy-base-nessus8-policy.xml.j2
     dest: /tmp/cyhy-base-nessus8-policy.xml
-    mode: get
-  become: no
-
-- name: Copy base nessus scan to instance tmp
-  copy:
-    src: /tmp/cyhy-base-nessus8-policy.xml
-    dest: /tmp/cyhy-base-nessus8-policy.xml
-
 
 - name: Run nessus base policy import script
   command: python /tmp/nessus_base.py
@@ -125,17 +99,3 @@
   file:
     path: /tmp/nessus_base.py
     state: absent
-
-- name: Delete local copy of Nessus credentials
-  local_action:
-    module: file
-    path: /tmp/nessus_scanner_user.yml
-    state: absent
-  become: no
-
-- name: Delete local copy of Nessus scan policy
-  local_action:
-    module: file
-    path: /tmp/cyhy-base-nessus8-policy.xml
-    state: absent
-  become: no

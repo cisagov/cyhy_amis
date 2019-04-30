@@ -1,2 +1,36 @@
 ---
 # vars file for cyhy_feeds
+
+# cyhy-feeds config
+config: "{{ lookup('aws_ssm', '/cyhy/feeds/config') }}"
+
+# cyhy-feeds public GPG key
+public_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/public') }}"
+# cyhy-feeds private GPG key
+private_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/private') }}"
+# NSD public GPG key
+nsd_public_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/nsd_public') }}"
+
+# cyhy-feeds GPG trust
+gpg_trust: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/trust') }}"
+
+# commander mongo username
+commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
+# commander mongo password
+commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
+# commander mongo database
+commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
+
+# scan-reader mongo username
+scan_reader_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}"
+# scan-reader mongo password
+scan_reader_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/password') }}"
+# scan-reader mongo database
+scan_reader_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/database') }}"
+
+# assessment-read mongo username
+assessment_read_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/user') }}"
+# assessment-read mongo password
+assessment_read_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/password') }}"
+# assessment-read mongo database
+assessment_read_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}"

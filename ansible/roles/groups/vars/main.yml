@@ -1,2 +1,5 @@
 ---
 # vars file for groups
+
+# The development users
+dev_users: "{{ lookup('aws_ssm', '/cyhy/dev/users').split(',') }}"

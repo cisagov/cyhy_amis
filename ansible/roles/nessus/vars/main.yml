@@ -1,2 +1,7 @@
 ---
 # vars file for nessus
+
+# The Nessus username
+username: "{{ lookup('aws_ssm', '/cyhy/nessus/username') }}"
+# The Nessus password
+password: "{{ lookup('aws_ssm', '/cyhy/nessus/password') }}"

@@ -1,2 +1,16 @@
 ---
 # vars file for mongo
+
+# admin mongo username
+admin_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/user') }}"
+# Old admin mongo password
+admin_old_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/old_password') }}"
+# admin mongo password
+admin_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/password') }}"
+# admin mongo database
+admin_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/database') }}"
+# admin mongo roles
+admin_roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/roles').split(',') }}"
+
+# Non-admin MongoDB users
+non_admin_users: "{{ lookup('aws_ssm', '/cyhy/mongo/users', shortnames=false, recursive=true, bypath=true) | dict2items | map(attribute='key') | map('regex_replace', '^/cyhy/mongo/users/([^/]*).*', '\\1') | unique | reject('equalto', 'admin') | list }}"

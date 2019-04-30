@@ -54,5 +54,4 @@ galaxy_info:
 
 dependencies:
   - pip
-  - github_oauth
   - cyhy_core

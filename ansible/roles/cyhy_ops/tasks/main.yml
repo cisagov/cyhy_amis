@@ -2,25 +2,6 @@
 # tasks file for cyhy_ops
 
 #
-# Copy cyhy_ops user information to local temp dir and load it
-#
-- name: Grab cyhy_ops user information from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: cyhy_ops_users.yml
-    dest: /tmp/cyhy_ops_users.yml
-    mode: get
-  become: no
-
-- name: Load cyhy_ops user information from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/cyhy_ops_users.yml
-    name: cyhy_ops_users
-  become: no
-
-#
 # Create the cyhy_ops user
 #
 - name: Create the cyhy_ops user
@@ -40,19 +21,8 @@
 # Create the .ssh/authorized_keys file for cyhy_ops
 #
 - name: Create .ssh/authorized_keys file for cyhy_ops
-  template:
-    dest: /home/cyhy_ops/.ssh/authorized_keys
-    owner: cyhy_ops
-    group: cyhy_ops
-    mode: 0600
-    src: authorized_keys.j2
-
-#
-# Delete local copy of cyhy_ops user informaiton
-#
-- name: Delete local copy of cyhy_ops user information
-  local_action:
-    module: file
-    path: /tmp/cyhy_ops_users.yml
-    state: absent
-  become: no
+  lineinfile:
+    path: /home/cyhy_ops/.ssh/authorized_keys
+    line: "{{ lookup('aws_ssm', '/ssh/public_keys/{{ item }}') }}"
+    create: yes
+  loop: "{{ ops_users }}"

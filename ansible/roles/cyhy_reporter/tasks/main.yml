@@ -2,31 +2,6 @@
 # tasks file for cyhy_reporter
 
 #
-# Grab mongo users and master report password
-#
-- name: Grab mongo users and master report password from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: "{{ item }}"
-    dest: "/tmp/{{ item }}"
-    mode: get
-  become: no
-  loop:
-    - mongo_users.yml
-    - master_report_password.yml
-
-- name: Load mongo users and master report password from YML files
-  local_action:
-    module: include_vars
-    file: "/tmp/{{ item }}"
-    name: "{{ item | regex_replace('^(.*).yml$', '\\1') }}"
-  become: no
-  loop:
-    - mongo_users.yml
-    - master_report_password.yml
-
-#
 # Set up /etc/cyhy/cyhy.conf
 #
 - name: Create the /etc/cyhy directory
@@ -44,28 +19,15 @@
       [DEFAULT]
       default-section = cyhy
       database-uri = mongodb://database1.cyhy:27017/
-      report-key = {{ master_report_password.password }}
+      report-key = {{ master_report_key }}
 
       [cyhy]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
-      database-name = cyhy
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
 
       [scan]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
-      database-name = scan
-
-#
-# Cleanup
-#
-- name: Delete /tmp/mongo_users.yml and /tmp/master_report_password.yml
-  local_action:
-    module: file
-    path: "{{ item }}"
-    state: absent
-  become: no
-  loop:
-    - /tmp/mongo_users.yml
-    - /tmp/master_report_password.yml
+      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+      database-name = {{ scan_reader_db }}
 
 #
 # Create cron job for snapshot, CyHy report, and CybEx scorecard generation
@@ -93,19 +55,12 @@
 #   when: production_workspace
 
 #
-# Add users to the cyhy group
+# Add dev users to the cyhy group
 #
-- name: Load users from YML file
-  local_action:
-    module: include_vars
-    file: ../../../../terraform/scripts/user_ssh_setup.yml
-    name: ssh_users
-  become: no
-
-- name: Add known users to the cyhy group
+- name: Add development users to the cyhy group
   user:
     name: "{{ item }}"
     groups:
       - cyhy
     append: yes
-  loop: "{{ ssh_users.users | map(attribute='name') | list }}"
+  loop: "{{ dev_users }}"

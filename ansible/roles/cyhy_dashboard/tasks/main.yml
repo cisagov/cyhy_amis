@@ -1,21 +1,6 @@
 ---
 # tasks file for cyhy_dashboard
 
-- name: Grab mongo users from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: mongo_users.yml
-    dest: /tmp/mongo_users.yml
-    mode: get
-  become: no
-
-- name: Load mongo users token from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/mongo_users.yml
-    name: mongo_users
-
 - name: Create /etc/cyhy directory
   file:
     path: /etc/cyhy
@@ -73,8 +58,8 @@
       report-key =
 
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
-      database-name = cyhy
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
 
 - make:
     chdir: /var/cyhy/ncats-webui
@@ -102,10 +87,3 @@
   service:
     name: ncats-webui
     state: started
-
-- name: Delete /tmp/mongo_users.yml
-  local_action:
-    module: file
-    path: /tmp/mongo_users.yml
-    state: absent
-  become: no

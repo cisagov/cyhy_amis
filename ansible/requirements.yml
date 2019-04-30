@@ -1,5 +1,3 @@
-- src: https://github.com/cisagov/ansible-role-github-oauth
-  name: github_oauth
 - src: https://github.com/cisagov/ansible-role-cyhy-logrotate
   name: cyhy_logrotate
 - src: https://github.com/cisagov/ansible-role-mongo-logrotate
