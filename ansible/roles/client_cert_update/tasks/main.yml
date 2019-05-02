@@ -2,33 +2,6 @@
 # tasks file for client_cert_update
 
 #
-# Load mongo users and passwords into a variable
-#
-- name: Grab mongo users and passwords from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: mongo_users.yml
-    dest: /tmp/mongo_users.yml
-    mode: get
-  become: no
-
-- name: Load mongo users and passwords from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/mongo_users.yml
-    name: mongo_users
-  become: no
-
-- name: Delete local copy of mongo users
-  local_action:
-    module: file
-    path: /tmp/mongo_users.yml
-    state: absent
-  become: no
-
-
-#
 # client_cert_update secrets
 #
 - name: Create the secrets directory
@@ -48,8 +21,8 @@
       version: '1'
 
       database:
-        name: scan
-        uri: mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
+        name: {{ scan_reader_db }}
+        uri: mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
 
 - name: Create the AWS config
   copy:

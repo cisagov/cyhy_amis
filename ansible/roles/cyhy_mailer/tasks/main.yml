@@ -2,33 +2,6 @@
 # tasks file for cyhy_mailer
 
 #
-# Load mongo users and passwords into a variable
-#
-- name: Grab mongo users and passwords from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: mongo_users.yml
-    dest: /tmp/mongo_users.yml
-    mode: get
-  become: no
-
-- name: Load mongo users and passwords from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/mongo_users.yml
-    name: mongo_users
-  become: no
-
-- name: Delete local copy of mongo users
-  local_action:
-    module: file
-    path: /tmp/mongo_users.yml
-    state: absent
-  become: no
-
-
-#
 # cyhy-mailer secrets
 #
 # The cyhy-mailer container does not run as root, so the creds files
@@ -53,8 +26,8 @@
       version: '1'
 
       database:
-        name: cyhy
-        uri: mongodb://reporter:{{ mongo_users.other_users | selectattr("user", "eq", "reporter") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
+        name: {{ reporter_db }}
+        uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
 
 - name: Create the AWS config
   copy:

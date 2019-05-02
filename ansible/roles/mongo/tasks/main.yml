@@ -1,21 +1,5 @@
 ---
 # tasks file for mongo
-- name: Grab mongo users and passwords from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: mongo_users.yml
-    dest: /tmp/mongo_users.yml
-    mode: get
-  become: no
-
-- name: Load mongo users and passwords from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/mongo_users.yml
-    name: mongo_users
-  become: no
-
 - name: Check if any mongo users already exist
   shell: mongo --eval 'db.getUsers()' admin
   ignore_errors: true
@@ -40,51 +24,43 @@
 
 - name: Create admin user in admin db (first user, no authentication)
   mongodb_user:
-    database: admin
-    name: "{{ mongo_users.admin_user.user }}"
-    password: "{{ mongo_users.admin_user.password }}"
-    roles: userAdminAnyDatabase
+    database: "{{ admin_db }}"
+    name: "{{ admin_user }}"
+    password: "{{ admin_pw }}"
+    roles: "{{ admin_roles }}"
     state: present
   when: checkifmongousers.rc == 0
 
 - name: Update admin user in admin db (authenticate as admin)
   mongodb_user:
-    login_database: admin
-    login_user: "{{ mongo_users.admin_user.user }}"
-    login_password: "{{ mongo_users.admin_user.old_password }}"
-    database: "{{ mongo_users.admin_user.database }}"
-    name: "{{ mongo_users.admin_user.user }}"
-    password: "{{ mongo_users.admin_user.password }}"
-    roles: "{{ mongo_users.admin_user.roles }}"
+    login_database: "{{ admin_db }}"
+    login_user: "{{ admin_user }}"
+    login_password: "{{ admin_old_pw }}"
+    database: "{{ admin_db }}"
+    name: "{{ admin_user }}"
+    password: "{{ admin_pw }}"
+    roles: "{{ admin_roles }}"
     state: present
   when: checkifmongousers.rc != 0
 
 - name: Update other users (authenticate as admin)
   mongodb_user:
-    login_database: admin
-    login_user: "{{ mongo_users.admin_user.user }}"
-    login_password: "{{ mongo_users.admin_user.password }}"
-    database: "{{ item.database }}"
-    name: "{{ item.user }}"
-    password: "{{ item.password }}"
-    roles: "{{ item.roles }}"
+    login_database: "{{ admin_db }}"
+    login_user: "{{ admin_user }}"
+    login_password: "{{ admin_pw }}"
+    database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/database') }}"
+    name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/user') }}"
+    password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/password') }}"
+    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/roles').split(',') }}"
     state: present
-  loop: "{{ mongo_users.other_users }}"
-  loop_control:
-    label: "{{ item.user }}"
+  # Loop over all the users *except* for admin
+  loop: "{{ non_admin_users }}"
 
 # HACK ALERT - Part 2: Revert to older pymongo, needed for cyhy-core
 - name: Downgrade to pymongo 2.9.5
   pip:
     name: pymongo
     version: 2.9.5
-
-- name: Delete local copy of mongo user file
-  local_action:
-    module: file
-    path: /tmp/mongo_users.yml
-    state: absent
-  become: no
 
 - name: Copy mongo configuration file
   template:

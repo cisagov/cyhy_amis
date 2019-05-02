@@ -1,37 +1,13 @@
 ---
 # tasks file for cyhy_feeds
 
-#
-# Grab and copy some secrets from S3
-#
-- name: Grab secrets from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: "{{ item }}"
-    dest: "/tmp/{{ item }}"
-    mode: get
-  become: no
-  loop:
-    - cyhy-data-extract.cfg
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
-    - gpg_keys.trust
-
-- name: Copy secrets
+- name: Create cyhy-feeds config
   copy:
-    src: "/tmp/{{ item }}"
-    dest: "/var/cyhy/scripts/cyhy-feeds/{{ item }}"
+    content: "{{ config }}"
+    dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
     mode: 0444
     owner: cyhy
     group: cyhy
-  loop:
-    - cyhy-data-extract.cfg
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
-    - gpg_keys.trust
 
 #
 # Create the AWS config
@@ -56,54 +32,26 @@
 # The --batch flag makes sure that gpg2 doesn't attempt to do anything
 # interactive.
 - name: Import gpg keys
-  shell: "gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch /var/cyhy/scripts/cyhy-feeds/{{ item }}"
+  shell: "echo '{{ item }}' | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
   loop:
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
+    - "{{ public_gpg_key }}"
+    - "{{ private_gpg_key }}"
+    - "{{ nsd_public_gpg_key }}"
+  loop_control:
+    label: "<key redacted>"
 
 - name: Import gpg trust
-  shell: "gpg2 --import-ownertrust --batch /var/cyhy/scripts/cyhy-feeds/gpg_keys.trust"
+  shell: "echo {{ gpg_trust }} | gpg2 --import-ownertrust --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
-
-#
-# Cleanup
-#
-- name: Delete local copies of secrets
-  local_action:
-    module: file
-    path: "/tmp/{{ item }}"
-    state: absent
-  become: no
-  loop:
-    - cyhy-data-extract.cfg
-    - ncats_lab_public_gpg.key
-    - ncats_lab_private_gpg.key
-    - nsd_cyhy_daily_extract_public.key
-    - gpg_keys.trust
 
 #
 # Create /etc/cyhy/cyhy.conf file
 #
-- name: Grab mongo users from S3
-  local_action:
-    module: aws_s3
-    bucket: ncats-cyhy-secrets
-    object: mongo_users.yml
-    dest: /tmp/mongo_users.yml
-    mode: get
-  become: no
-
-- name: Load mongo users token from YML file
-  local_action:
-    module: include_vars
-    file: /tmp/mongo_users.yml
-    name: mongo_users
 
 - name: Create /etc/cyhy directory
   file:
@@ -138,20 +86,20 @@
 
       ; BEGIN ANSIBLE MANAGED BLOCK commander
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
-      database-name = cyhy
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
       ; END ANSIBLE MANAGED BLOCK commander
 
       ; BEGIN ANSIBLE MANAGED BLOCK scan-reader
       [production_scan_reader]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password") | first }}@database1.cyhy:27017/scan
-      database-name = scan
+      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+      database-name = {{ scan_reader_db }}
       ; END ANSIBLE MANAGED BLOCK scan-reader
 
       ; BEGIN ANSIBLE MANAGED BLOCK assessment-reader
       [production_assessment_reader]
-      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1.cyhy:27017/assessment
-      database-name = assessment
+      database-uri = mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
+      database-name = {{ assessment_read_db }}
       ; END ANSIBLE MANAGED BLOCK assessment-reader
   when: cyhy_conf_result.stat.exists == False
 
@@ -162,8 +110,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     block: |
       [production]
-      database-uri = mongodb://commander:{{ mongo_users.other_users | selectattr("user", "eq", "commander") | map(attribute="password") | first }}@database1.cyhy:27017/cyhy
-      database-name = cyhy
+      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+      database-name = {{ commander_db }}
   when: cyhy_conf_result.stat.exists == True
 
 - name: Add scan-reader credentials block to cyhy.conf if necessary
@@ -172,8 +120,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK scan-reader'
     block: |
       [production_scan_reader]
-      database-uri = mongodb://scan-reader:{{ mongo_users.other_users | selectattr("user", "eq", "scan-reader") | map(attribute="password")| first }}@database1.cyhy:27017/scan
-      database-name = scan
+      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+      database-name = {{ scan_reader_db }}
   when: cyhy_conf_result.stat.exists == True
 
 - name: Add assessment-reader credentials block to cyhy.conf if necessary
@@ -182,8 +130,8 @@
     marker: '; {mark} ANSIBLE MANAGED BLOCK assessment-reader'
     block: |
       [production_assessment_reader]
-      database-uri = mongodb://assessment-read:{{ mongo_users.other_users | selectattr("user", "eq", "assessment-read") | map(attribute="password") | first }}@database1.cyhy:27017/assessment
-      database-name = assessment
+      database-uri = mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
+      database-name = {{ assessment_read_db }}
   when: cyhy_conf_result.stat.exists == True
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as

@@ -1,2 +1,5 @@
 ---
 # vars file for bod_docker
+
+# The GitHub OAUTH token
+github_oauth_token: "{{ lookup('aws_ssm', '/github/oauth_token') }}"
