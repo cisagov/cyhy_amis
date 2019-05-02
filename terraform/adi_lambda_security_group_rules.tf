@@ -6,8 +6,8 @@ resource "aws_security_group_rule" "adi_lambda_to_cyhy_mongo" {
   cidr_blocks = [
     "${aws_instance.cyhy_mongo.private_ip}/32"
   ]
-  from_port = "27017"
-  to_port = "27017"
+  from_port = "${var.assessment_data_import_db_port}"
+  to_port = "${var.assessment_data_import_db_port}"
 }
 
 # Allow HTTPS egress anywhere; needed to access AWS S3 bucket via boto3
