@@ -1,5 +1,7 @@
 - src: https://github.com/cisagov/ansible-role-banner
   name: banner
+- src: https://github.com/cisagov/ansible-role-client-cert-update
+  name: client_cert_update
 - src: https://github.com/GekoCloud/ansible-role-disable-thp
   name: disable_thp
 - src: https://github.com/cisagov/ansible-role-docker
