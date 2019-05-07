@@ -12,6 +12,8 @@
   name: docker
 - src: https://github.com/cisagov/ansible-role-htop
   name: htop
+- src: https://github.com/cisagov/ansible-role-orchestrator
+  name: orchestrator
 - src: https://github.com/cisagov/ansible-role-pip
   name: pip
 - src: https://github.com/cisagov/ansible-role-python
