@@ -18,3 +18,5 @@
   name: pip
 - src: https://github.com/cisagov/ansible-role-python
   name: python
+- src: https://github.com/cisagov/ansible-role-xfs
+  name: xfs
