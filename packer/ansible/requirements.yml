@@ -6,12 +6,16 @@
   name: code_gov_update
 - src: https://github.com/cisagov/ansible-role-cyhy-mailer
   name: cyhy_mailer
+- src: https://github.com/cisagov/ansible-role-disable-numa
+  name: disable_numa
 - src: https://github.com/GekoCloud/ansible-role-disable-thp
   name: disable_thp
 - src: https://github.com/cisagov/ansible-role-docker
   name: docker
 - src: https://github.com/cisagov/ansible-role-htop
   name: htop
+- src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
+  name: more_ephemeral_ports
 - src: https://github.com/cisagov/ansible-role-nmap
   name: nmap
 - src: https://github.com/cisagov/ansible-role-numactl
