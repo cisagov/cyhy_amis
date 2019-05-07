@@ -14,6 +14,8 @@
   name: htop
 - src: https://github.com/cisagov/ansible-role-nmap
   name: nmap
+- src: https://github.com/cisagov/ansible-role-numactl
+  name: numactl
 - src: https://github.com/cisagov/ansible-role-orchestrator
   name: orchestrator
 - src: https://github.com/cisagov/ansible-role-pip
