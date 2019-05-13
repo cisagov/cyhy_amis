@@ -24,6 +24,8 @@
   name: nvme
 - src: https://github.com/cisagov/ansible-role-orchestrator
   name: orchestrator
+- src: https://github.com/cisagov/ansible-role-persist-journald
+  name: persist-journald
 - src: https://github.com/cisagov/ansible-role-pip
   name: pip
 - src: https://github.com/cisagov/ansible-role-python
