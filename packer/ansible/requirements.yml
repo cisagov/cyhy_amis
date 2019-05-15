@@ -4,6 +4,8 @@
   name: client_cert_update
 - src: https://github.com/cisagov/ansible-role-code-gov-update
   name: code_gov_update
+- src: https://github.com/cisagov/ansible-role-cyhy-archive
+  name: cyhy_archive
 - src: https://github.com/cisagov/ansible-role-cyhy-core
   name: cyhy_core
 - src: https://github.com/cisagov/ansible-role-cyhy-mailer
