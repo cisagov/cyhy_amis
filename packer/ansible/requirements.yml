@@ -6,6 +6,8 @@
   name: code_gov_update
 - src: https://github.com/cisagov/ansible-role-cyhy-archive
   name: cyhy_archive
+- src: https://github.com/cisagov/ansible-role-cyhy-commander
+  name: cyhy_commander
 - src: https://github.com/cisagov/ansible-role-cyhy-core
   name: cyhy_core
 - src: https://github.com/cisagov/ansible-role-cyhy-mailer
