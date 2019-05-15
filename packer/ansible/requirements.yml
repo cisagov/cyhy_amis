@@ -16,6 +16,8 @@
   name: htop
 - src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
   name: more_ephemeral_ports
+- src: https://github.com/cisagov/ansible-role-nessus
+  name: nessus
 - src: https://github.com/cisagov/ansible-role-nmap
   name: nmap
 - src: https://github.com/cisagov/ansible-role-numactl
