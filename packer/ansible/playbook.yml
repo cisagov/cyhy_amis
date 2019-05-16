@@ -87,7 +87,8 @@
   become: yes
   become_method: sudo
   roles:
-    - cyhy_dashboard
+    - ncats_webd
+    - ncats_webui
     - docker
 
 - hosts: cyhy_archive

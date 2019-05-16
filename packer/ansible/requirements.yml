@@ -24,6 +24,8 @@
   name: more_ephemeral_ports
 - src: https://github.com/cisagov/ansible-role-ncats-webd
   name: ncats_webd
+- src: https://github.com/cisagov/ansible-role-ncats-webui
+  name: ncats_webui
 - src: https://github.com/cisagov/ansible-role-nessus
   name: nessus
 - src: https://github.com/cisagov/ansible-role-nmap
