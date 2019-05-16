@@ -10,6 +10,8 @@
   name: cyhy_commander
 - src: https://github.com/cisagov/ansible-role-cyhy-core
   name: cyhy_core
+- src: https://github.com/cisagov/ansible-role-cyhy-feeds
+  name: cyhy_feeds
 - src: https://github.com/cisagov/ansible-role-cyhy-mailer
   name: cyhy_mailer
 - src: https://github.com/cisagov/ansible-role-disable-numa
