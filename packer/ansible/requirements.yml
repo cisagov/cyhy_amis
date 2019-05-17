@@ -14,6 +14,8 @@
   name: cyhy_feeds
 - src: https://github.com/cisagov/ansible-role-cyhy-mailer
   name: cyhy_mailer
+- src: https://github.com/cisagov/ansible-role-cyhy-runner
+  name: cyhy_runner
 - src: https://github.com/cisagov/ansible-role-disable-numa
   name: disable_numa
 - src: https://github.com/GekoCloud/ansible-role-disable-thp
