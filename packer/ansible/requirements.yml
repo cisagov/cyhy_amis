@@ -24,6 +24,8 @@
   name: docker
 - src: https://github.com/cisagov/ansible-role-htop
   name: htop
+- src: https://github.com/cisagov/ansible-role-mongo
+  name: mongo
 - src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
   name: more_ephemeral_ports
 - src: https://github.com/cisagov/ansible-role-ncats-webd
