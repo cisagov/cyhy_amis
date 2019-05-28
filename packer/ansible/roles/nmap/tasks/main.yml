@@ -1,7 +1,0 @@
----
-# tasks file for nmap
-
-- name: Install nmap
-  package:
-    name: nmap
-    state: latest

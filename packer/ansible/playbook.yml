@@ -79,7 +79,7 @@
   become_method: sudo
   roles:
     - xfs
-    - cyhy_reporter
+    - cyhy_reports
     - cyhy_mailer
 
 - hosts: cyhy_dashboard
@@ -87,7 +87,8 @@
   become: yes
   become_method: sudo
   roles:
-    - cyhy_dashboard
+    - ncats_webd
+    - ncats_webui
     - docker
 
 - hosts: cyhy_archive

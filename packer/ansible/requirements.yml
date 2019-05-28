@@ -1,12 +1,56 @@
 - src: https://github.com/cisagov/ansible-role-banner
   name: banner
+- src: https://github.com/cisagov/ansible-role-client-cert-update
+  name: client_cert_update
+- src: https://github.com/cisagov/ansible-role-code-gov-update
+  name: code_gov_update
+- src: https://github.com/cisagov/ansible-role-cyhy-archive
+  name: cyhy_archive
+- src: https://github.com/cisagov/ansible-role-cyhy-commander
+  name: cyhy_commander
+- src: https://github.com/cisagov/ansible-role-cyhy-core
+  name: cyhy_core
+- src: https://github.com/cisagov/ansible-role-cyhy-feeds
+  name: cyhy_feeds
+- src: https://github.com/cisagov/ansible-role-cyhy-mailer
+  name: cyhy_mailer
+- src: https://github.com/cisagov/ansible-role-cyhy-reports
+  name: cyhy_reports
+- src: https://github.com/cisagov/ansible-role-cyhy-runner
+  name: cyhy_runner
+- src: https://github.com/cisagov/ansible-role-disable-numa
+  name: disable_numa
 - src: https://github.com/GekoCloud/ansible-role-disable-thp
   name: disable_thp
 - src: https://github.com/cisagov/ansible-role-docker
   name: docker
 - src: https://github.com/cisagov/ansible-role-htop
   name: htop
+- src: https://github.com/cisagov/ansible-role-mongo
+  name: mongo
+- src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
+  name: more_ephemeral_ports
+- src: https://github.com/cisagov/ansible-role-ncats-webd
+  name: ncats_webd
+- src: https://github.com/cisagov/ansible-role-ncats-webui
+  name: ncats_webui
+- src: https://github.com/cisagov/ansible-role-nessus
+  name: nessus
+- src: https://github.com/cisagov/ansible-role-nmap
+  name: nmap
+- src: https://github.com/cisagov/ansible-role-numactl
+  name: numactl
+- src: https://github.com/cisagov/ansible-role-nvme
+  name: nvme
+- src: https://github.com/cisagov/ansible-role-orchestrator
+  name: orchestrator
+- src: https://github.com/cisagov/ansible-role-persist-journald
+  name: persist_journald
 - src: https://github.com/cisagov/ansible-role-pip
   name: pip
 - src: https://github.com/cisagov/ansible-role-python
   name: python
+- src: https://github.com/cisagov/ansible-role-upgrade
+  name: upgrade
+- src: https://github.com/cisagov/ansible-role-xfs
+  name: xfs
