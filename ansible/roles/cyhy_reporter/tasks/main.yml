@@ -55,6 +55,19 @@
 #   when: production_workspace
 
 #
+# The cron job below generates and emails CyHy notifications;
+# it runs at 1000 UTC every day.
+#
+- name: Create cron job for daily CyHy notifications
+  cron:
+    name: "Generate and send daily CyHy notifications"
+    minute: 0
+    hour: 10
+    user: cyhy
+    job: cd /var/cyhy/notifications && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
+  when: production_workspace
+
+#
 # Add dev users to the cyhy group
 #
 - name: Add development users to the cyhy group
