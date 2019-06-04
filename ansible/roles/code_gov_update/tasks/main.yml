@@ -65,14 +65,14 @@
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
     user: cyhy
-  when: production_workspace
+  when: production_workspace|bool
 # This cron job runs at midnight UTC on Friday mornings
 - name: Create a cron job for updating the code.gov JSON
   cron:
     name: "code.gov update"
-    minute: 0
-    hour: 0
-    weekday: 5
+    minute: '0'
+    hour: '0'
+    weekday: '5'
     user: cyhy
     job: cd /var/cyhy/code-gov-update && docker-compose up -d 2>&1 | /usr/bin/logger -t code-gov-update
-  when: production_workspace
+  when: production_workspace|bool
