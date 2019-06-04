@@ -73,15 +73,15 @@
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
     user: cyhy
-  when: production_workspace
+  when: production_workspace|bool
 # This cron job runs at midnight UTC on Saturday mornings, so it
 # should be done by 2PM on Saturday.
 - name: Create a cron job for BOD 18-01 scanning
   cron:
     name: "BOD 18-01 scanning"
-    minute: 0
-    hour: 0
-    weekday: 6
+    minute: '0'
+    hour: '0'
+    weekday: '6'
     user: cyhy
     job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
-  when: production_workspace
+  when: production_workspace|bool

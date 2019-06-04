@@ -38,7 +38,7 @@
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
     user: cyhy
-  when: production_workspace
+  when: production_workspace|bool
 # This cron job runs at midnight UTC on Sunday mornings.  The BOD
 # scanning is long since completed by that time.
 #
@@ -47,12 +47,12 @@
 # - name: Create a cron job for report generation
 #   cron:
 #     name: "Snapshot, CyHy report, and CybEx scorecard generation"
-#     minute: 0
-#     hour: 0
-#     weekday: 0
+#     minute: '0'
+#     hour: '0'
+#     weekday: '0'
 #     user: cyhy
 #     job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
-#   when: production_workspace
+#   when: production_workspace|bool
 
 #
 # The cron job below generates and emails CyHy notifications;

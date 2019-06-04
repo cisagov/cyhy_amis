@@ -20,8 +20,8 @@
 - name: Set up weekly cyhy-archive cron job
   cron:
     name: Weekly cyhy-archive
-    weekday: 6
-    hour: 5
-    minute: 0
+    weekday: '6'
+    hour: '5'
+    minute: '0'
     user: cyhy
     job: /var/cyhy/scripts/cyhy_archive.sh /var/lib/mongodb/cyhy_archives {{ cyhy_archive_s3_bucket_name }} {{ cyhy_archive_s3_bucket_region }} 2>&1 | /usr/bin/logger -t cyhy-archive

@@ -19,8 +19,7 @@
 - name: Install pymongo 3.5.  This should be changed to install the latest once that is possible.
   pip:
     name: pymongo
-    version: 3.5
-    # state: latest
+    version: '3.5'
 
 - name: Create admin user in admin db (first user, no authentication)
   mongodb_user:

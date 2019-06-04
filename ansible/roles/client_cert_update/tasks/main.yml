@@ -44,14 +44,14 @@
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
     user: cyhy
-  when: production_workspace
+  when: production_workspace|bool
 # This cron job runs at 5AM UTC on Tuesday mornings
 - name: Create a cron job for updating the list of hosts that require client certs
   cron:
     name: "client cert update"
-    minute: 0
-    hour: 5
-    weekday: 2
+    minute: '0'
+    hour: '5'
+    weekday: '2'
     user: cyhy
     job: cd /var/cyhy/client-cert-update && docker-compose up -d 2>&1 | /usr/bin/logger -t client-cert-update
-  when: production_workspace
+  when: production_workspace|bool

@@ -159,7 +159,7 @@
 - name: Set up nightly cron job to sync NVD data
   cron:
     name: Nightly cyhy-nvdsync
-    hour: 08
-    minute: 15
+    hour: '8'
+    minute: '15'
     user: cyhy
     job: /usr/local/bin/cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger -t cyhy-nvdsync

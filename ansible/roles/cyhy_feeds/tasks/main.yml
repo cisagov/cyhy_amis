@@ -140,8 +140,8 @@
 - name: Set up nightly cron job to sync NSD data for MOE extract
   cron:
     name: Nightly cyhy extract
-    hour: 08
-    minute: 15
+    hour: '8'
+    minute: '15'
     user: cyhy
     job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_section production --scan_section production_scan_reader --assessment_section production_assessment_reader --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
-  when: production_workspace
+  when: production_workspace|bool
