@@ -25,3 +25,9 @@ users:
     shell: /bin/bash
     ssh-authorized-keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKY5tqMRtnZSkVPwU0X1zKA8L3RnvmhSAR/bHAtd3Vcr kyle.evers
+  - name: nicholas.mcdonnell
+    groups: [ sudo ]
+    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWZgKiUcpnS8PwEJ54sxrb3/bt35mcG6xSb6rv447aj nicholas.mcdonnell
