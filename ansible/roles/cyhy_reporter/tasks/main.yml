@@ -61,8 +61,8 @@
 - name: Create cron job for daily CyHy notifications
   cron:
     name: "Generate and send daily CyHy notifications"
-    minute: 0
-    hour: 10
+    minute: '0'
+    hour: '10'
     user: cyhy
     job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
   when: production_workspace
