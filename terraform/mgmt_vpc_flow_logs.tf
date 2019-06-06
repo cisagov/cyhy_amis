@@ -1,6 +1,6 @@
 # IAM assume role policy document for the role we're creating
 data "aws_iam_policy_document" "mgmt_flow_log_assume_role_doc" {
-  count = var.create_mgmt_flow_logs
+  count = var.create_mgmt_flow_logs ? 1 : 0
 
   statement {
     effect = "Allow"
@@ -16,7 +16,7 @@ data "aws_iam_policy_document" "mgmt_flow_log_assume_role_doc" {
 
 # The IAM role for flow logs
 resource "aws_iam_role" "mgmt_flow_log_role" {
-  count = var.create_mgmt_flow_logs
+  count = var.create_mgmt_flow_logs ? 1 : 0
 
   name = "mgmt_flow_log_role_${terraform.workspace}"
 
@@ -26,7 +26,7 @@ resource "aws_iam_role" "mgmt_flow_log_role" {
 # IAM policy document that that allows some permissions for flow logs.
 # This will be applied to the role we are creating.
 data "aws_iam_policy_document" "mgmt_flow_log_doc" {
-  count = var.create_mgmt_flow_logs
+  count = var.create_mgmt_flow_logs ? 1 : 0
 
   statement {
     effect = "Allow"
@@ -47,7 +47,7 @@ data "aws_iam_policy_document" "mgmt_flow_log_doc" {
 
 # The IAM role policy for the management flow log role
 resource "aws_iam_role_policy" "mgmt_flow_log_policy" {
-  count = var.create_mgmt_flow_logs
+  count = var.create_mgmt_flow_logs ? 1 : 0
 
   name = "mgmt_flow_log_policy_${terraform.workspace}"
   role = aws_iam_role.mgmt_flow_log_role[0].id
@@ -57,18 +57,17 @@ resource "aws_iam_role_policy" "mgmt_flow_log_policy" {
 
 # The flow log group
 resource "aws_cloudwatch_log_group" "mgmt_flow_log_group" {
-  count = var.create_mgmt_flow_logs
+  count = var.create_mgmt_flow_logs ? 1 : 0
 
   name = "mgmt_flow_log_group_${terraform.workspace}"
 }
 
 # The flow logs
 resource "aws_flow_log" "mgmt_flow_log" {
-  count = var.create_mgmt_flow_logs
+  count = var.create_mgmt_flow_logs ? 1 : 0
 
   log_group_name = aws_cloudwatch_log_group.mgmt_flow_log_group[0].name
   iam_role_arn   = aws_iam_role.mgmt_flow_log_role[0].arn
   vpc_id         = aws_vpc.mgmt_vpc[0].id
   traffic_type   = "ALL"
 }
-

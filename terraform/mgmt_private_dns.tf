@@ -1,5 +1,5 @@
 resource "aws_route53_zone" "mgmt_private_zone" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   name = "${local.mgmt_private_domain}."
   vpc {
@@ -15,7 +15,7 @@ resource "aws_route53_zone" "mgmt_private_zone" {
 }
 
 resource "aws_route53_record" "mgmt_router_A" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
   name    = "router.${aws_route53_zone.mgmt_private_zone[0].name}"
@@ -28,7 +28,7 @@ resource "aws_route53_record" "mgmt_router_A" {
 }
 
 resource "aws_route53_record" "mgmt_ns_A" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
   name    = "ns.${aws_route53_zone.mgmt_private_zone[0].name}"
@@ -41,7 +41,7 @@ resource "aws_route53_record" "mgmt_ns_A" {
 }
 
 resource "aws_route53_record" "mgmt_reserved_A" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
   name    = "reserved.${aws_route53_zone.mgmt_private_zone[0].name}"
@@ -54,7 +54,7 @@ resource "aws_route53_record" "mgmt_reserved_A" {
 }
 
 resource "aws_route53_record" "mgmt_bastion_A" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
   name    = "bastion.${aws_route53_zone.mgmt_private_zone[0].name}"
@@ -66,7 +66,7 @@ resource "aws_route53_record" "mgmt_bastion_A" {
 }
 
 resource "aws_route53_record" "mgmt_vulnscan_A" {
-  count = var.enable_mgmt_vpc * local.count_mgmt_vuln_scanner
+  count = var.enable_mgmt_vpc ? local.count_mgmt_vuln_scanner : 0
 
   zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
   name    = "vulnscan${count.index + 1}.${aws_route53_zone.mgmt_private_zone[0].name}"
@@ -82,7 +82,7 @@ resource "aws_route53_record" "mgmt_vulnscan_A" {
 ##################################
 
 resource "aws_route53_zone" "mgmt_public_zone_reverse" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   # NOTE:  This assumes that we are using /24 blocks
   name = format(
@@ -105,7 +105,7 @@ resource "aws_route53_zone" "mgmt_public_zone_reverse" {
 }
 
 resource "aws_route53_record" "mgmt_rev_1_PTR" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_public_zone_reverse[0].zone_id
   name    = "1.${aws_route53_zone.mgmt_public_zone_reverse[0].name}"
@@ -117,7 +117,7 @@ resource "aws_route53_record" "mgmt_rev_1_PTR" {
 }
 
 resource "aws_route53_record" "mgmt_rev_2_PTR" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_public_zone_reverse[0].zone_id
   name    = "2.${aws_route53_zone.mgmt_public_zone_reverse[0].name}"
@@ -129,7 +129,7 @@ resource "aws_route53_record" "mgmt_rev_2_PTR" {
 }
 
 resource "aws_route53_record" "mgmt_rev_3_PTR" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_public_zone_reverse[0].zone_id
   name    = "3.${aws_route53_zone.mgmt_public_zone_reverse[0].name}"
@@ -141,7 +141,7 @@ resource "aws_route53_record" "mgmt_rev_3_PTR" {
 }
 
 resource "aws_route53_record" "mgmt_rev_bastion_PTR" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   zone_id = aws_route53_zone.mgmt_public_zone_reverse[0].zone_id
   name = format(
@@ -164,7 +164,7 @@ resource "aws_route53_record" "mgmt_rev_bastion_PTR" {
 ##################################
 
 resource "aws_route53_zone" "mgmt_private_zone_reverse" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   # NOTE:  This assumes that we are using /24 blocks
   name = format(
@@ -187,7 +187,7 @@ resource "aws_route53_zone" "mgmt_private_zone_reverse" {
 }
 
 resource "aws_route53_record" "mgmt_rev_nessus_PTR" {
-  count = var.enable_mgmt_vpc * local.count_mgmt_vuln_scanner
+  count = var.enable_mgmt_vpc ? local.count_mgmt_vuln_scanner : 0
 
   zone_id = aws_route53_zone.mgmt_private_zone_reverse[0].zone_id
   name = format(
@@ -204,4 +204,3 @@ resource "aws_route53_record" "mgmt_rev_nessus_PTR" {
     "vulnscan${count.index + 1}.${aws_route53_zone.mgmt_private_zone[0].name}",
   ]
 }
-

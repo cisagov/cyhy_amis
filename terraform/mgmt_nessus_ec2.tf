@@ -1,5 +1,5 @@
 resource "aws_instance" "mgmt_nessus" {
-  count = var.enable_mgmt_vpc * local.mgmt_nessus_instance_count
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
 
   ami               = data.aws_ami.nessus.id
   instance_type     = "m5.large"
@@ -46,4 +46,3 @@ module "dyn_mgmt_nessus" {
   mgmt_nessus_activation_codes = var.mgmt_nessus_activation_codes
   remote_ssh_user              = var.remote_ssh_user
 }
-

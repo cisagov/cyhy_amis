@@ -28,7 +28,7 @@ resource "aws_route53_zone" "cyhy_private_zone" {
 
 # Also associate the management VPC, if it's present
 resource "aws_route53_zone_association" "mgmt_cyhy" {
-  count   = var.enable_mgmt_vpc
+  count   = var.enable_mgmt_vpc ? 1 : 0
   zone_id = aws_route53_zone.cyhy_private_zone.zone_id
   vpc_id  = aws_vpc.mgmt_vpc[0].id
 }

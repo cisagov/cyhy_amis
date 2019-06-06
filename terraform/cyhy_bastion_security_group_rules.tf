@@ -101,7 +101,7 @@ resource "aws_security_group_rule" "bastion_egress_for_webd" {
 # Allow all ICMP from vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "cyhy_bastion_ingress_all_icmp_from_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   security_group_id = aws_security_group.cyhy_bastion_sg.id
   type              = "ingress"
@@ -116,7 +116,7 @@ resource "aws_security_group_rule" "cyhy_bastion_ingress_all_icmp_from_mgmt_vuln
 # Allow all TCP from vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "cyhy_bastion_ingress_all_tcp_from_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   security_group_id = aws_security_group.cyhy_bastion_sg.id
   type              = "ingress"
@@ -131,7 +131,7 @@ resource "aws_security_group_rule" "cyhy_bastion_ingress_all_tcp_from_mgmt_vulns
 # Allow all UDP from vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "cyhy_bastion_ingress_all_udp_from_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   security_group_id = aws_security_group.cyhy_bastion_sg.id
   type              = "ingress"
@@ -146,7 +146,7 @@ resource "aws_security_group_rule" "cyhy_bastion_ingress_all_udp_from_mgmt_vulns
 # Allow all ICMP to vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "cyhy_bastion_egress_all_icmp_to_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   security_group_id = aws_security_group.cyhy_bastion_sg.id
   type              = "egress"
@@ -161,7 +161,7 @@ resource "aws_security_group_rule" "cyhy_bastion_egress_all_icmp_to_mgmt_vulnsca
 # Allow all TCP to vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "cyhy_bastion_egress_all_tcp_to_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   security_group_id = aws_security_group.cyhy_bastion_sg.id
   type              = "egress"
@@ -176,7 +176,7 @@ resource "aws_security_group_rule" "cyhy_bastion_egress_all_tcp_to_mgmt_vulnscan
 # Allow all UDP to vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "cyhy_bastion_egress_all_udp_to_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   security_group_id = aws_security_group.cyhy_bastion_sg.id
   type              = "egress"

@@ -4,7 +4,7 @@
 # they want via the NAT gateway, subject to their own security group
 # and network ACL restrictions.
 resource "aws_network_acl_rule" "mgmt_public_ingress_from_private" {
-  count = var.enable_mgmt_vpc * length(local.mgmt_scanner_egress_anywhere_ports)
+  count = var.enable_mgmt_vpc ? length(local.mgmt_scanner_egress_anywhere_ports) : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = false
@@ -17,7 +17,7 @@ resource "aws_network_acl_rule" "mgmt_public_ingress_from_private" {
 }
 
 resource "aws_network_acl_rule" "mgmt_public_ingress_from_private_via_port_53" {
-  count = var.enable_mgmt_vpc * length(local.tcp_and_udp)
+  count = var.enable_mgmt_vpc ? length(local.tcp_and_udp) : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = false
@@ -33,7 +33,7 @@ resource "aws_network_acl_rule" "mgmt_public_ingress_from_private_via_port_53" {
 # necessary because the return traffic to the NAT gateway has to enter
 # here before it is relayed to the private subnet.
 resource "aws_network_acl_rule" "mgmt_public_ingress_from_anywhere_via_ephemeral_ports_tcp" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = false
@@ -47,7 +47,7 @@ resource "aws_network_acl_rule" "mgmt_public_ingress_from_anywhere_via_ephemeral
 
 # Allow ingress from anywhere via ssh
 resource "aws_network_acl_rule" "mgmt_public_ingress_from_anywhere_via_ssh" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = false
@@ -61,7 +61,7 @@ resource "aws_network_acl_rule" "mgmt_public_ingress_from_anywhere_via_ssh" {
 
 # Allow egress to the private subnet via ssh
 resource "aws_network_acl_rule" "mgmt_public_egress_to_private_via_ssh" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = true
@@ -76,7 +76,7 @@ resource "aws_network_acl_rule" "mgmt_public_egress_to_private_via_ssh" {
 # Allow egress to the bastion via ssh.  This is necessary because
 # Ansible applies the ssh proxy even when sshing to the bastion.
 resource "aws_network_acl_rule" "mgmt_public_egress_to_bastion_via_ssh" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = true
@@ -92,7 +92,7 @@ resource "aws_network_acl_rule" "mgmt_public_egress_to_bastion_via_ssh" {
 # This is so the NAT gateway can relay the corresponding requests
 # from the private subnet.
 resource "aws_network_acl_rule" "mgmt_public_egress_anywhere" {
-  count = var.enable_mgmt_vpc * length(local.mgmt_scanner_egress_anywhere_ports)
+  count = var.enable_mgmt_vpc ? length(local.mgmt_scanner_egress_anywhere_ports) : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = true
@@ -106,7 +106,7 @@ resource "aws_network_acl_rule" "mgmt_public_egress_anywhere" {
 
 # Allow egress to anywhere via TCP ephemeral ports
 resource "aws_network_acl_rule" "mgmt_public_egress_to_anywhere_via_tcp_ephemeral_ports" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = true
@@ -121,7 +121,7 @@ resource "aws_network_acl_rule" "mgmt_public_egress_to_anywhere_via_tcp_ephemera
 # Allow all ports and protocols from Management private subnet to ingress,
 # for internal scanning
 resource "aws_network_acl_rule" "mgmt_public_ingress_all_from_mgmt_private" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = false
@@ -136,7 +136,7 @@ resource "aws_network_acl_rule" "mgmt_public_ingress_all_from_mgmt_private" {
 # Allow all ports and protocols to egress to Management private subnet,
 # for internal scanning
 resource "aws_network_acl_rule" "mgmt_public_egress_all_to_mgmt_private" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.mgmt_public_acl[0].id
   egress         = true

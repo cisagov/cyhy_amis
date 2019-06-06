@@ -1,6 +1,6 @@
 # The Management VPC
 resource "aws_vpc" "mgmt_vpc" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   cidr_block           = "10.10.14.0/23"
   enable_dns_hostnames = true
@@ -15,7 +15,7 @@ resource "aws_vpc" "mgmt_vpc" {
 
 # Setup DHCP so we can resolve our private domain
 resource "aws_vpc_dhcp_options" "mgmt_dhcp_options" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   domain_name = local.mgmt_private_domain
   domain_name_servers = [
@@ -31,7 +31,7 @@ resource "aws_vpc_dhcp_options" "mgmt_dhcp_options" {
 
 # Associate the DHCP options above with the VPC
 resource "aws_vpc_dhcp_options_association" "mgmt_vpc_dhcp" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id          = aws_vpc.mgmt_vpc[0].id
   dhcp_options_id = aws_vpc_dhcp_options.mgmt_dhcp_options[0].id
@@ -39,7 +39,7 @@ resource "aws_vpc_dhcp_options_association" "mgmt_vpc_dhcp" {
 
 # Private subnet of the VPC
 resource "aws_subnet" "mgmt_private_subnet" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id            = aws_vpc.mgmt_vpc[0].id
   cidr_block        = "10.10.14.0/24"
@@ -57,7 +57,7 @@ resource "aws_subnet" "mgmt_private_subnet" {
 
 # Public subnet of the VPC
 resource "aws_subnet" "mgmt_public_subnet" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id            = aws_vpc.mgmt_vpc[0].id
   cidr_block        = "10.10.15.0/24"
@@ -75,7 +75,7 @@ resource "aws_subnet" "mgmt_public_subnet" {
 
 # Elastic IP for the NAT gateway
 resource "aws_eip" "mgmt_eip" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc = true
 
@@ -91,7 +91,7 @@ resource "aws_eip" "mgmt_eip" {
 
 # The NAT gateway for the VPC
 resource "aws_nat_gateway" "mgmt_nat_gw" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   allocation_id = aws_eip.mgmt_eip[0].id
   subnet_id     = aws_subnet.mgmt_public_subnet[0].id
@@ -108,7 +108,7 @@ resource "aws_nat_gateway" "mgmt_nat_gw" {
 
 # The internet gateway for the VPC
 resource "aws_internet_gateway" "mgmt_igw" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
@@ -122,7 +122,7 @@ resource "aws_internet_gateway" "mgmt_igw" {
 
 # Default route table
 resource "aws_default_route_table" "mgmt_default_route_table" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   default_route_table_id = aws_vpc.mgmt_vpc[0].default_route_table_id
 
@@ -136,7 +136,7 @@ resource "aws_default_route_table" "mgmt_default_route_table" {
 
 # Route all CyHy traffic through the CyHy-Management VPC peering connection
 resource "aws_route" "mgmt_route_cyhy_traffic_through_peering_connection" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   route_table_id            = aws_default_route_table.mgmt_default_route_table[0].id
   destination_cidr_block    = aws_vpc.cyhy_vpc.cidr_block
@@ -145,7 +145,7 @@ resource "aws_route" "mgmt_route_cyhy_traffic_through_peering_connection" {
 
 # Route all BOD traffic through the BOD-Management VPC peering connection
 resource "aws_route" "mgmt_route_bod_traffic_through_peering_connection" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   route_table_id            = aws_default_route_table.mgmt_default_route_table[0].id
   destination_cidr_block    = aws_vpc.bod_vpc.cidr_block
@@ -154,7 +154,7 @@ resource "aws_route" "mgmt_route_bod_traffic_through_peering_connection" {
 
 # Route all external traffic through the NAT gateway
 resource "aws_route" "mgmt_route_external_traffic_through_nat_gateway" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   route_table_id         = aws_default_route_table.mgmt_default_route_table[0].id
   destination_cidr_block = "0.0.0.0/0"
@@ -163,7 +163,7 @@ resource "aws_route" "mgmt_route_external_traffic_through_nat_gateway" {
 
 # Route table for our public subnet
 resource "aws_route_table" "mgmt_public_route_table" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
@@ -177,7 +177,7 @@ resource "aws_route_table" "mgmt_public_route_table" {
 
 # Route all external traffic through the internet gateway
 resource "aws_route" "mgmt_public_route_external_traffic_through_internet_gateway" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   route_table_id         = aws_route_table.mgmt_public_route_table[0].id
   destination_cidr_block = "0.0.0.0/0"
@@ -186,7 +186,7 @@ resource "aws_route" "mgmt_public_route_external_traffic_through_internet_gatewa
 
 # Associate the route table with the public subnet
 resource "aws_route_table_association" "mgmt_association" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   subnet_id      = aws_subnet.mgmt_public_subnet[0].id
   route_table_id = aws_route_table.mgmt_public_route_table[0].id
@@ -194,7 +194,7 @@ resource "aws_route_table_association" "mgmt_association" {
 
 # ACL for the private subnet of the VPC
 resource "aws_network_acl" "mgmt_private_acl" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
   subnet_ids = [
@@ -211,7 +211,7 @@ resource "aws_network_acl" "mgmt_private_acl" {
 
 # ACL for the public subnet of the VPC
 resource "aws_network_acl" "mgmt_public_acl" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
   subnet_ids = [
@@ -228,7 +228,7 @@ resource "aws_network_acl" "mgmt_public_acl" {
 
 # Security group for scanner hosts (private subnet)
 resource "aws_security_group" "mgmt_scanner_sg" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
@@ -242,7 +242,7 @@ resource "aws_security_group" "mgmt_scanner_sg" {
 
 # Security group for the bastion host (public subnet)
 resource "aws_security_group" "mgmt_bastion_sg" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
@@ -253,4 +253,3 @@ resource "aws_security_group" "mgmt_bastion_sg" {
     },
   )
 }
-

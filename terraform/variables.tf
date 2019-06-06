@@ -62,18 +62,21 @@ variable "mgmt_nessus_activation_codes" {
 }
 
 variable "create_cyhy_flow_logs" {
-  description = "Whether or not to create flow logs for the CyHy VPC.  Zero means no and one means yes"
-  default     = 0
+  type        = bool
+  description = "Whether or not to create flow logs for the CyHy VPC."
+  default     = false
 }
 
 variable "create_bod_flow_logs" {
-  description = "Whether or not to create flow logs for the BOD 18-01 VPC.  Zero means no and one means yes"
-  default     = 0
+  type        = bool
+  description = "Whether or not to create flow logs for the BOD 18-01 VPC."
+  default     = false
 }
 
 variable "create_mgmt_flow_logs" {
-  description = "Whether or not to create flow logs for the Management VPC.  Zero means no and one means yes"
-  default     = 0
+  type        = bool
+  description = "Whether or not to create flow logs for the Management VPC."
+  default     = false
 }
 
 variable "cyhy_archive_bucket_name" {
@@ -87,11 +90,13 @@ variable "cyhy_elastic_ip_cidr_block" {
 }
 
 variable "cyhy_portscan_first_elastic_ip_offset" {
+  type        = number
   description = "The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy portscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first portscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional portscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available."
   default     = 0
 }
 
 variable "cyhy_vulnscan_first_elastic_ip_offset" {
+  type        = number
   description = "The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy vulnscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first vulnscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional vulnscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available."
   default     = 1
 }
@@ -155,8 +160,9 @@ variable "docker_mailer_override_filename" {
 #  - cyhy_private_security_group_rules.tf
 #  - cyhy_private_acl_rules.tf
 variable "enable_mgmt_vpc" {
-  description = "Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC.  Zero means access is disabled and one means access is enabled."
-  default     = 0
+  type        = bool
+  description = "Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC."
+  default     = false
 }
 
 variable "assessment_data_s3_bucket" {
@@ -209,4 +215,3 @@ variable "assessment_data_import_ssm_db_password" {
   description = "The name of the parameter in AWS SSM that holds the database password for the user with write permission to the assessment database."
   default     = ""
 }
-

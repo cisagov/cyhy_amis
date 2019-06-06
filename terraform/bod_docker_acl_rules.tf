@@ -56,7 +56,7 @@ resource "aws_network_acl_rule" "docker_egress_to_public_via_ephemeral_ports" {
 # Allow all ports and protocols from Management private subnet to ingress,
 # for internal scanning
 resource "aws_network_acl_rule" "bod_private_ingress_all_from_mgmt_private" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.bod_docker_acl.id
   egress         = false
@@ -71,7 +71,7 @@ resource "aws_network_acl_rule" "bod_private_ingress_all_from_mgmt_private" {
 # Allow all ports and protocols to egress to Management private subnet,
 # for internal scanning
 resource "aws_network_acl_rule" "bod_private_egress_all_to_mgmt_private" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   network_acl_id = aws_network_acl.bod_docker_acl.id
   egress         = true

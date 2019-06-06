@@ -1,6 +1,6 @@
 # The bastion EC2 instance
 resource "aws_instance" "mgmt_bastion" {
-  count = var.enable_mgmt_vpc
+  count = var.enable_mgmt_vpc ? 1 : 0
 
   ami               = data.aws_ami.bastion.id
   instance_type     = "t3.micro"
