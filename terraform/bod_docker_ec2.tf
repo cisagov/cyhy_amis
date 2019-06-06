@@ -157,7 +157,7 @@ resource "aws_instance" "bod_docker" {
 
 # Provision the Docker EC2 instance via Ansible
 module "bod_docker_ansible_provisioner" {
-  source = "github.com/cloudposse/tf_ansible"
+  source = "github.com/jsf9k/terraform-null-ansible"
 
   arguments = [
     "--user=${var.remote_ssh_user}",

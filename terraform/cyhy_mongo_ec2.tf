@@ -148,7 +148,7 @@ resource "aws_instance" "cyhy_mongo" {
 # TODO when we start using multiple mongo, move this to a dyn_mongo module
 # TODO see pattern of nmap and nessus
 module "cyhy_mongo_ansible_provisioner" {
-  source = "github.com/cloudposse/tf_ansible"
+  source = "github.com/jsf9k/terraform-null-ansible"
 
   arguments = [
     "--user=${var.remote_ssh_user}",

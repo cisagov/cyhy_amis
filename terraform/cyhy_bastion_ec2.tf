@@ -36,7 +36,7 @@ resource "aws_instance" "cyhy_bastion" {
 
 # Provision the bastion EC2 instance via Ansible
 module "cyhy_bastion_ansible_provisioner" {
-  source = "github.com/cloudposse/tf_ansible"
+  source = "github.com/jsf9k/terraform-null-ansible"
 
   arguments = [
     "--user=${var.remote_ssh_user}",
