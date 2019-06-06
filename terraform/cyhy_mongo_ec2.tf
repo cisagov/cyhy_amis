@@ -247,19 +247,12 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   # around this, we explicitly terminate the cyhy_mongo volume via the AWS CLI
   # in a destroy provisioner; this gracefully shuts down the instance and
   # allows terraform to successfully destroy the volume attachments.
-  # Terraform attempts to destroy the volume attachments before it attempts to
-  # destroy the EC2 instance they are attached to.  EC2 does not like that and
-  # it results in the failed destruction of the volume attachments.  To get
-  # around this, we explicitly terminate the cyhy_mongo volume via the AWS CLI
-  # in a destroy provisioner; this gracefully shuts down the instance and
-  # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when       = destroy
     command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo[0].id}"
     on_failure = continue
   }
 
-  # Wait until cyhy_mongo instance is terminated before continuing on
   # Wait until cyhy_mongo instance is terminated before continuing on
   provisioner "local-exec" {
     when    = destroy
@@ -281,7 +274,6 @@ resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
   }
 
   # Wait until cyhy_mongo instance is terminated before continuing on
-  # Wait until cyhy_mongo instance is terminated before continuing on
   provisioner "local-exec" {
     when    = destroy
     command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
@@ -302,7 +294,6 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   }
 
   # Wait until cyhy_mongo instance is terminated before continuing on
-  # Wait until cyhy_mongo instance is terminated before continuing on
   provisioner "local-exec" {
     when    = destroy
     command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
@@ -310,4 +301,3 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
 
   skip_destroy = true
 }
-

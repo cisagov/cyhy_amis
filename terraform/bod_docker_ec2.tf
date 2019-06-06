@@ -171,6 +171,8 @@ module "bod_docker_ansible_provisioner" {
     "aws_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
     "ses_aws_region=${var.ses_aws_region}",
+    # This file will be used to add/override any settings in
+    # docker-compose.yml (for cyhy-mailer).
     "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
   ]
   playbook = "../ansible/playbook.yml"
@@ -211,20 +213,12 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
   # the bod_report volume via the AWS CLI in a destroy provisioner;
   # this gracefully shuts down the instance and allows terraform to
   # successfully destroy the volume attachments.
-  # Terraform attempts to destroy the volume attachments before it
-  # attempts to destroy the EC2 instance they are attached to.  EC2
-  # does not like that and it results in the failed destruction of the
-  # volume attachments.  To get around this, we explicitly terminate
-  # the bod_report volume via the AWS CLI in a destroy provisioner;
-  # this gracefully shuts down the instance and allows terraform to
-  # successfully destroy the volume attachments.
   provisioner "local-exec" {
     when       = destroy
     command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.bod_docker.id}"
     on_failure = continue
   }
 
-  # Wait until bod_report instance is terminated before continuing on
   # Wait until bod_report instance is terminated before continuing on
   provisioner "local-exec" {
     when    = destroy
@@ -233,4 +227,3 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
 
   skip_destroy = true
 }
-
