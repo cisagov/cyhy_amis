@@ -155,12 +155,6 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   # this, we explicitly terminate the cyhy_nessus instance via the AWS CLI
   # in a destroy provisioner; this gracefully shuts down the instance and
   # allows terraform to successfully destroy the volume attachments.
-  # Terraform attempts to destroy the volume attachment before it attempts to
-  # destroy the EC2 instance it is attached to.  EC2 does not like that and it
-  # results in the failed destruction of the volume attachment.  To get around
-  # this, we explicitly terminate the cyhy_nessus instance via the AWS CLI
-  # in a destroy provisioner; this gracefully shuts down the instance and
-  # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when = destroy
 
@@ -172,7 +166,6 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
     on_failure = continue
   }
 
-  # Wait until cyhy_nessus instance is terminated before continuing on
   # Wait until cyhy_nessus instance is terminated before continuing on
   provisioner "local-exec" {
     when    = destroy
@@ -191,4 +184,3 @@ module "dyn_nessus" {
   nessus_activation_codes = var.nessus_activation_codes
   remote_ssh_user         = var.remote_ssh_user
 }
-
