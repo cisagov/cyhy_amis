@@ -3,7 +3,7 @@ Description=ncats-webui service
 
 [Service]
 Type=simple
-Restart=always
-RestartSec=1
+Restart=on-failure
+RestartSec=10
 User=cyhy
 ExecStart=/usr/bin/make -C /var/cyhy/ncats-webui/ dev-start
