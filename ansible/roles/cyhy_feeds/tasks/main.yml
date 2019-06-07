@@ -26,6 +26,46 @@
       region = {{ dmarc_import_aws_region }}
 
 #
+# Create yml files for db access
+#
+
+# commander
+- name: Create cyhy.yml to store commander db credentials
+  copy:
+    dest: /var/cyhy/scripts/cyhy-feeds/cyhy.yml
+    owner: cyhy
+    group: cyhy
+    mode: 0660
+    content: |
+      database:
+        uri: mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+        name: {{ commander_db }}
+
+# scan-reader
+- name: Create scan_reader.yml to store scan reader db credentials
+  copy:
+    dest: /var/cyhy/scripts/cyhy-feeds/scan_reader.yml
+    owner: cyhy
+    group: cyhy
+    mode: 0660
+    content: |
+      database:
+        uri: mmongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+        name: {{ scan_reader_db }}
+
+# assessment-reader
+- name: Create assessment_reader.yml to store assessment reader db credentials
+  copy:
+    dest: /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml
+    owner: cyhy
+    group: cyhy
+    mode: 0660
+    content: |
+      database:
+        uri: mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
+        name: {{ assessment_read_db }}
+
+#
 # Import keys and trust
 #
 
@@ -49,90 +89,6 @@
   vars:
     ansible_ssh_pipelining: yes
 
-#
-# Create /etc/cyhy/cyhy.conf file
-#
-
-- name: Create /etc/cyhy directory
-  file:
-    path: /etc/cyhy
-    state: directory
-
-#
-# Set up /etc/cyhy/cyhy.conf with commander and scan-reader creds
-#
-# This is a little messy.  The real solution is to just create a
-# cyhy.conf with credentials for each user in mongo_users.other_users.
-# That will cause some heartburn, though, since the credential
-# sections will have to be named using the MongoDB username.  That
-# will necessitate some changes elsewhere in the code where named
-# sections from cyhy.conf are explicitly referenced.
-- name: Check if cyhy.conf already exists
-  stat:
-    path: /etc/cyhy/cyhy.conf
-  register: cyhy_conf_result
-
-- name: Create cyhy.conf (with scan-reader credentials) if it doesn't exist
-  copy:
-    dest: /etc/cyhy/cyhy.conf
-    owner: cyhy
-    group: cyhy
-    mode: 0660
-    content: |
-      [DEFAULT]
-      default-section = production
-      database-uri = mongodb://database1.cyhy:27017/
-      report-key =
-
-      ; BEGIN ANSIBLE MANAGED BLOCK commander
-      [production]
-      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
-      database-name = {{ commander_db }}
-      ; END ANSIBLE MANAGED BLOCK commander
-
-      ; BEGIN ANSIBLE MANAGED BLOCK scan-reader
-      [production_scan_reader]
-      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
-      database-name = {{ scan_reader_db }}
-      ; END ANSIBLE MANAGED BLOCK scan-reader
-
-      ; BEGIN ANSIBLE MANAGED BLOCK assessment-reader
-      [production_assessment_reader]
-      database-uri = mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
-      database-name = {{ assessment_read_db }}
-      ; END ANSIBLE MANAGED BLOCK assessment-reader
-  when: cyhy_conf_result.stat.exists == False
-
-# This should be changed in the future to use a read-only Mongo user.
-- name: Add commander credentials block to cyhy.conf if necessary
-  blockinfile:
-    path: /etc/cyhy/cyhy.conf
-    marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
-    block: |
-      [production]
-      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
-      database-name = {{ commander_db }}
-  when: cyhy_conf_result.stat.exists == True
-
-- name: Add scan-reader credentials block to cyhy.conf if necessary
-  blockinfile:
-    path: /etc/cyhy/cyhy.conf
-    marker: '; {mark} ANSIBLE MANAGED BLOCK scan-reader'
-    block: |
-      [production_scan_reader]
-      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
-      database-name = {{ scan_reader_db }}
-  when: cyhy_conf_result.stat.exists == True
-
-- name: Add assessment-reader credentials block to cyhy.conf if necessary
-  blockinfile:
-    path: /etc/cyhy/cyhy.conf
-    marker: '; {mark} ANSIBLE MANAGED BLOCK assessment-reader'
-    block: |
-      [production_assessment_reader]
-      database-uri = mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
-      database-name = {{ assessment_read_db }}
-  when: cyhy_conf_result.stat.exists == True
 #
 # Create a cron job to run the extract script nightly at 0815 (UTC) as
 # cyhy
