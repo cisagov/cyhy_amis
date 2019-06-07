@@ -5,7 +5,7 @@ resource "aws_iam_user" "moe_user_read" {
   # The reason is that we want to avoid name conflicts when deploying
   # to test environments but share (via terraform import) the users
   # when working in production environments.
-  name = "${local.production_workspace ? "moe-user-read" : format("moe-user-read-%s", terraform.workspace)}"
+  name = local.production_workspace ? "moe-user-read" : format("moe-user-read-%s", terraform.workspace)
 
   lifecycle {
     prevent_destroy = true
@@ -13,7 +13,7 @@ resource "aws_iam_user" "moe_user_read" {
 }
 
 resource "aws_iam_access_key" "moe_user_read" {
-  user = "${aws_iam_user.moe_user_read.name}"
+  user = aws_iam_user.moe_user_read.name
 }
 
 # IAM policy document that that allows read permissions on the MOE
@@ -23,11 +23,11 @@ data "aws_iam_policy_document" "moe_read_doc" {
     effect = "Allow"
 
     actions = [
-      "s3:ListBucket"
+      "s3:ListBucket",
     ]
 
     resources = [
-      "${aws_s3_bucket.moe_bucket.arn}"
+      aws_s3_bucket.moe_bucket.arn,
     ]
   }
 
@@ -35,17 +35,18 @@ data "aws_iam_policy_document" "moe_read_doc" {
     effect = "Allow"
 
     actions = [
-      "s3:GetObject"
+      "s3:GetObject",
     ]
 
     resources = [
-      "${aws_s3_bucket.moe_bucket.arn}/*"
+      "${aws_s3_bucket.moe_bucket.arn}/*",
     ]
   }
 }
 
 # The S3 policy for our role
 resource "aws_iam_user_policy" "moe_read_policy" {
-  user = "${aws_iam_user.moe_user_read.name}"
-  policy = "${data.aws_iam_policy_document.moe_read_doc.json}"
+  user   = aws_iam_user.moe_user_read.name
+  policy = data.aws_iam_policy_document.moe_read_doc.json
 }
+
