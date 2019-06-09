@@ -11,6 +11,7 @@
 - src: https://github.com/cisagov/ansible-role-cyhy-core
   name: cyhy_core
 - src: https://github.com/cisagov/ansible-role-cyhy-feeds
+  version: cyhy-feeds/remove_cyhy-core_dependency
   name: cyhy_feeds
 - src: https://github.com/cisagov/ansible-role-cyhy-mailer
   name: cyhy_mailer
