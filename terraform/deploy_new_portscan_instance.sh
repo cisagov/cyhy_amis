@@ -24,8 +24,12 @@ fi
 
 terraform workspace select "$workspace"
 
+# Strip control characters, then look for the text "id" surrounded by
+# space characters, then extract only the ID from that line.
 nmap_instance_id=$(terraform state show aws_instance.cyhy_nmap[$index] | \
-                       grep "^id" | sed "s/^id *= \(.*\)/\1/")
+                       sed -r "s/\x1b\[[0-9;]*m?//g" | \
+                       grep "[[:space:]]id[[:space:]]" | \
+                       sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
 # Terminate the existing nmap instance
 aws ec2 terminate-instances --instance-ids "$nmap_instance_id"
