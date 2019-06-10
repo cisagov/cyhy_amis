@@ -1,6 +1,6 @@
 # Provision a Management Nessus EC2 instance via Ansible
 module "mgmt_nessus_ansible_provisioner_$index" {
-  source = "github.com/jsf9k/terraform-null-ansible"
+  source = "github.com/cloudposse/terraform-null-ansible"
 
   arguments = [
     "--user=$${var.remote_ssh_user}",

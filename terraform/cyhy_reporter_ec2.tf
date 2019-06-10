@@ -108,7 +108,7 @@ resource "aws_instance" "cyhy_reporter" {
 
 # Provision the reporter EC2 instance via Ansible
 module "cyhy_reporter_ansible_provisioner" {
-  source = "github.com/jsf9k/terraform-null-ansible"
+  source = "github.com/cloudposse/terraform-null-ansible"
 
   arguments = [
     "--user=${var.remote_ssh_user}",
