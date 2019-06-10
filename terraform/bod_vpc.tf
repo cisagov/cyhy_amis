@@ -119,8 +119,8 @@ resource "aws_nat_gateway" "bod_nat_gw" {
   # for more details.
   allocation_id = element(
     coalescelist(
-      data.aws_eip.bod_production_eip.*.id,
-      aws_eip.bod_nonproduction_eip.*.id,
+      data.aws_eip.bod_production_eip[*].id,
+      aws_eip.bod_nonproduction_eip[*].id,
     ),
     0,
   )

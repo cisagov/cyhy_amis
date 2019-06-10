@@ -174,28 +174,28 @@ resource "aws_route53_record" "cyhy_rev_portscan_PTR" {
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nmap.*.private_ip, count.index),
+        aws_instance.cyhy_nmap[count.index].private_ip,
       ),
       3,
     ),
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nmap.*.private_ip, count.index),
+        aws_instance.cyhy_nmap[count.index].private_ip,
       ),
       2,
     ),
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nmap.*.private_ip, count.index),
+        aws_instance.cyhy_nmap[count.index].private_ip,
       ),
       1,
     ),
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nmap.*.private_ip, count.index),
+        aws_instance.cyhy_nmap[count.index].private_ip,
       ),
       0,
     ),
@@ -214,28 +214,28 @@ resource "aws_route53_record" "cyhy_rev_vulnscan_PTR" {
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nessus.*.private_ip, count.index),
+        aws_instance.cyhy_nessus[count.index].private_ip,
       ),
       3,
     ),
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nessus.*.private_ip, count.index),
+        aws_instance.cyhy_nessus[count.index].private_ip,
       ),
       2,
     ),
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nessus.*.private_ip, count.index),
+        aws_instance.cyhy_nessus[count.index].private_ip,
       ),
       1,
     ),
     element(
       split(
         ".",
-        element(aws_instance.cyhy_nessus.*.private_ip, count.index),
+        aws_instance.cyhy_nessus[count.index].private_ip,
       ),
       0,
     ),

@@ -103,11 +103,11 @@ resource "aws_eip" "cyhy_nessus_random_eips" {
 # VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
 resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
   count       = local.nessus_instance_count
-  instance_id = element(aws_instance.cyhy_nessus.*.id, count.index)
+  instance_id = aws_instance.cyhy_nessus[count.index].id
   allocation_id = element(
     coalescelist(
-      data.aws_eip.cyhy_nessus_eips.*.id,
-      aws_eip.cyhy_nessus_random_eips.*.id,
+      data.aws_eip.cyhy_nessus_eips[*].id,
+      aws_eip.cyhy_nessus_random_eips[*].id,
     ),
     count.index,
   )
@@ -180,7 +180,7 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
 module "dyn_nessus" {
   source                  = "./dyn_nessus"
   bastion_public_ip       = aws_instance.cyhy_bastion.public_ip
-  nessus_private_ips      = aws_instance.cyhy_nessus.*.private_ip
+  nessus_private_ips      = aws_instance.cyhy_nessus[*].private_ip
   nessus_activation_codes = var.nessus_activation_codes
   remote_ssh_user         = var.remote_ssh_user
 }

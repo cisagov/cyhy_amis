@@ -90,7 +90,7 @@ resource "aws_eip" "cyhy_nmap_random_eips" {
 
 # Associate the appropriate Elastic IP above with the CyHy nmap
 # instances.  Since our elastic IPs are handled differently in
-# production vs.  non-production workspaces, their corresponding
+# production vs. non-production workspaces, their corresponding
 # terraform resources (data.aws_eip.cyhy_nmap_eips,
 # data.aws_eip.cyhy_nmap_random_eips) may or may not be created.  To
 # handle that, we use "splat syntax" (the *), which resolves to either
@@ -105,11 +105,11 @@ resource "aws_eip" "cyhy_nmap_random_eips" {
 # VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
 resource "aws_eip_association" "cyhy_nmap_eip_assocs" {
   count       = local.nmap_instance_count
-  instance_id = element(aws_instance.cyhy_nmap.*.id, count.index)
+  instance_id = aws_instance.cyhy_nmap[count.index].id
   allocation_id = element(
     coalescelist(
-      data.aws_eip.cyhy_nmap_eips.*.id,
-      aws_eip.cyhy_nmap_random_eips.*.id,
+      data.aws_eip.cyhy_nmap_eips[*].id,
+      aws_eip.cyhy_nmap_random_eips[*].id,
     ),
     count.index,
   )
@@ -183,6 +183,6 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
 module "dyn_nmap" {
   source            = "./dyn_nmap"
   bastion_public_ip = aws_instance.cyhy_bastion.public_ip
-  nmap_private_ips  = aws_instance.cyhy_nmap.*.private_ip
+  nmap_private_ips  = aws_instance.cyhy_nmap[*].private_ip
   remote_ssh_user   = var.remote_ssh_user
 }
