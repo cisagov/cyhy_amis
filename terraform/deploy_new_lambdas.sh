@@ -17,7 +17,7 @@ terraform workspace select "$workspace"
 
 for i in $(seq 0 2)
 do
-    terraform taint "aws_lambda_function.lambdas.$i"
+    terraform taint "aws_lambda_function.lambdas[$i]"
 done
 
 terraform apply -var-file="$workspace.tfvars" \
