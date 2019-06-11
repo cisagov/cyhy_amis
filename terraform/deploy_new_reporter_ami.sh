@@ -16,7 +16,9 @@ fi
 terraform workspace select "$workspace"
 
 reporter_instance_id=$(terraform state show aws_instance.cyhy_reporter | \
-                           grep "^id" | sed "s/^id *= \(.*\)/\1/")
+                           sed $'s,\x1b\\[[0-9;]*[[:alpha:]]],,g' | \
+                           grep "[[:space:]]id[[:space:]]" | \
+                           sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
 # Terminate the existing reporter instance
 aws ec2 terminate-instances --instance-ids "$reporter_instance_id"
