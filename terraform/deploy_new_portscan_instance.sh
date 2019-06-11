@@ -1,24 +1,18 @@
 #!/usr/bin/env bash
 
-# deploy_new_portscan_instance.sh instance_index
-# deploy_new_portscan_instance.sh workspace_name instance_index
+# deploy_new_portscan_instance.sh region workspace_name instance_index
 
 set -o nounset
 set -o errexit
 set -o pipefail
 
-index=none
-workspace=prod-a
-if [ $# -eq 2 ]
+if [ $# -eq 3 ]
 then
-    workspace=$1
-    index=$2
-elif [ $# -eq 1 ]
-then
-    index=$1
+    region=$1
+    workspace=$2
+    index=$3
 else
-    echo "Usage:  deploy_new_portscan_instance.sh instance_index"
-    echo "        deploy_new_portscan_instance.sh workspace_name instance_index"
+    echo "Usage:  deploy_new_portscan_instance.sh region workspace_name instance_index"
     exit 1
 fi
 
@@ -34,8 +28,8 @@ nmap_instance_id=$(terraform state show aws_instance.cyhy_nmap[$index] | \
                        sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
 # Terminate the existing nmap instance
-aws ec2 terminate-instances --instance-ids "$nmap_instance_id"
-aws ec2 wait instance-terminated --instance-ids "$nmap_instance_id"
+aws --region "$region" ec2 terminate-instances --instance-ids "$nmap_instance_id"
+aws --region "$region" ec2 wait instance-terminated --instance-ids "$nmap_instance_id"
 
 terraform apply -var-file="$workspace.tfvars" \
           -target=aws_eip_association.cyhy_nmap_eip_assocs[$index] \
