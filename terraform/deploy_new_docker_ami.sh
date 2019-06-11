@@ -15,8 +15,14 @@ fi
 
 terraform workspace select "$workspace"
 
+# Strip control characters, then look for the text "id" surrounded by
+# space characters, then extract only the ID from that line.
+#
+# The first sed line has been carefully crafted to work with BSD sed.
 docker_instance_id=$(terraform state show aws_instance.bod_docker | \
-                         grep "^id" | sed "s/^id *= \(.*\)/\1/")
+                         sed $'s,\x1b\\[[0-9;]*[[:alpha:]],,g' | \
+                         grep "[[:space:]]id[[:space:]]" | \
+                         sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
 # Terminate the existing docker instance
 aws ec2 terminate-instances --instance-ids "$docker_instance_id"
