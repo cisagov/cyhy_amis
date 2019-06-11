@@ -64,7 +64,7 @@ resource "aws_instance" "cyhy_nessus" {
 # EIPs can be created via dhs-ncats/elastic-ips-terraform or manually,
 # and are intended to be a public IP address that rarely changes.
 data "aws_eip" "cyhy_nessus_eips" {
-  count = local.production_workspace ? local.nessus_instance_count : 0
+  count = local.production_workspace ? length(aws_instance.cyhy_nessus) : 0
   public_ip = cidrhost(
     var.cyhy_elastic_ip_cidr_block,
     var.cyhy_vulnscan_first_elastic_ip_offset + count.index,
@@ -75,7 +75,7 @@ data "aws_eip" "cyhy_nessus_eips" {
 # These EIPs are only created in *non-production* workspaces and are
 # randomly-assigned public IP address for temporary use.
 resource "aws_eip" "cyhy_nessus_random_eips" {
-  count = local.production_workspace ? 0 : local.nessus_instance_count
+  count = local.production_workspace ? 0 : length(aws_instance.cyhy_nessus)
   vpc   = true
   tags = merge(
     var.tags,
@@ -102,12 +102,12 @@ resource "aws_eip" "cyhy_nessus_random_eips" {
 #
 # VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
 resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
-  count       = local.nessus_instance_count
-  instance_id = element(aws_instance.cyhy_nessus.*.id, count.index)
+  count       = length(aws_instance.cyhy_nessus)
+  instance_id = aws_instance.cyhy_nessus[count.index].id
   allocation_id = element(
     coalescelist(
-      data.aws_eip.cyhy_nessus_eips.*.id,
-      aws_eip.cyhy_nessus_random_eips.*.id,
+      data.aws_eip.cyhy_nessus_eips[*].id,
+      aws_eip.cyhy_nessus_random_eips[*].id,
     ),
     count.index,
   )
@@ -124,7 +124,7 @@ resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
 # inside of the lifecycle block
 # (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "nessus_cyhy_runner_data" {
-  count             = local.nessus_instance_count
+  count             = length(aws_instance.cyhy_nessus)
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   type      = "gp2"
@@ -144,7 +144,7 @@ resource "aws_ebs_volume" "nessus_cyhy_runner_data" {
 }
 
 resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
-  count       = local.nessus_instance_count
+  count       = length(aws_instance.cyhy_nessus)
   device_name = "/dev/xvdb"
   volume_id   = aws_ebs_volume.nessus_cyhy_runner_data[count.index].id
   instance_id = aws_instance.cyhy_nessus[count.index].id
@@ -157,19 +157,14 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when = destroy
-
-    # Use element(aws_instance.cyhy_nessus.*.id, count.index) rather than
-    # aws_instance.cyhy_nessus.*.id[count.index] to avoid Terraform 'index out
-    # of range' error, similar to the one documented here:
-    # https://github.com/hashicorp/terraform/issues/14536#issue-228958605
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${element(aws_instance.cyhy_nessus.*.id, count.index)}"
+    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_nessus[count.index].id}"
     on_failure = continue
   }
 
   # Wait until cyhy_nessus instance is terminated before continuing on
   provisioner "local-exec" {
     when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${element(aws_instance.cyhy_nessus.*.id, count.index)}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_nessus[count.index].id}"
   }
 
   skip_destroy = true
@@ -180,7 +175,7 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
 module "dyn_nessus" {
   source                  = "./dyn_nessus"
   bastion_public_ip       = aws_instance.cyhy_bastion.public_ip
-  nessus_private_ips      = aws_instance.cyhy_nessus.*.private_ip
+  nessus_private_ips      = aws_instance.cyhy_nessus[*].private_ip
   nessus_activation_codes = var.nessus_activation_codes
   remote_ssh_user         = var.remote_ssh_user
 }

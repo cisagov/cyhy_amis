@@ -42,7 +42,7 @@ resource "aws_instance" "mgmt_nessus" {
 module "dyn_mgmt_nessus" {
   source                       = "./dyn_mgmt_nessus"
   mgmt_bastion_public_ip       = aws_instance.mgmt_bastion[0].public_ip
-  mgmt_nessus_private_ips      = aws_instance.mgmt_nessus.*.private_ip
+  mgmt_nessus_private_ips      = aws_instance.mgmt_nessus[*].private_ip
   mgmt_nessus_activation_codes = var.mgmt_nessus_activation_codes
   remote_ssh_user              = var.remote_ssh_user
 }

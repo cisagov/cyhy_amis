@@ -25,7 +25,7 @@ resource "aws_iam_role" "lambda_roles" {
 # generate log output in Cloudwatch.  These will be applied to the
 # roles we are creating.
 data "aws_iam_policy_document" "lambda_cloudwatch_docs" {
-  count = length(var.scan_types)
+  count = length(aws_cloudwatch_log_group.lambda_logs)
 
   statement {
     effect = "Allow"
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "lambda_cloudwatch_docs" {
 
 # The CloudWatch policies for our roles
 resource "aws_iam_role_policy" "lambda_cloudwatch_policies" {
-  count = length(var.scan_types)
+  count = length(aws_iam_role.lambda_roles)
 
   role   = aws_iam_role.lambda_roles[count.index].id
   policy = data.aws_iam_policy_document.lambda_cloudwatch_docs[count.index].json
@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "lambda_ec2_docs" {
 
 # The EC2 policies for our roles
 resource "aws_iam_role_policy" "lambda_ec2_policies" {
-  count = length(var.scan_types)
+  count = length(aws_iam_role.lambda_roles)
 
   role   = aws_iam_role.lambda_roles[count.index].id
   policy = data.aws_iam_policy_document.lambda_ec2_docs[count.index].json
@@ -88,7 +88,7 @@ resource "aws_iam_role_policy" "lambda_ec2_policies" {
 
 # The AWS Lambda functions that perform the scans
 resource "aws_lambda_function" "lambdas" {
-  count = length(var.scan_types)
+  count = length(aws_iam_role.lambda_roles)
 
   # Terraform cannot access buckets that are not in the provider's
   # region.  This limitation means that we have to create
@@ -117,7 +117,7 @@ resource "aws_lambda_function" "lambdas" {
 
 # The Cloudwatch log groups for the Lambda functions
 resource "aws_cloudwatch_log_group" "lambda_logs" {
-  count = length(var.scan_types)
+  count = length(aws_lambda_function.lambdas)
 
   name              = "/aws/lambda/${aws_lambda_function.lambdas[count.index].function_name}"
   retention_in_days = 30
