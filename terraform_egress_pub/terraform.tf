@@ -1,9 +1,10 @@
 terraform {
   backend "s3" {
-    encrypt = true
-    bucket = "ncats-terraform-state-storage"
+    encrypt        = true
+    bucket         = "ncats-terraform-state-storage"
     dynamodb_table = "terraform-state-lock"
-    region = "us-east-1"
-    key = "egress_pub/terraform.tfstate"
+    region         = "us-east-1"
+    key            = "egress_pub/terraform.tfstate"
   }
 }
+

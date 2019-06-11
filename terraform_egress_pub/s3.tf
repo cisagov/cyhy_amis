@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "rules_bucket" {
-  bucket = "${var.rules_bucket_name}"
+  bucket = var.rules_bucket_name
   acl    = "private"
 
   server_side_encryption_configuration {
@@ -15,6 +15,11 @@ resource "aws_s3_bucket" "rules_bucket" {
     error_document = "error.html"
   }
 
-  tags = "${merge(var.tags, map("Application", "Egress Publish"))}"
-
+  tags = merge(
+    var.tags,
+    {
+      "Application" = "Egress Publish"
+    },
+  )
 }
+

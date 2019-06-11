@@ -3,21 +3,21 @@ data "aws_ami" "bod_docker" {
   filter {
     name = "name"
     values = [
-      "cyhy-docker-hvm-*-x86_64-ebs"
+      "cyhy-docker-hvm-*-x86_64-ebs",
     ]
   }
 
   filter {
-    name = "virtualization-type"
+    name   = "virtualization-type"
     values = ["hvm"]
   }
 
   filter {
-    name = "root-device-type"
+    name   = "root-device-type"
     values = ["ebs"]
   }
 
-  owners = ["${data.aws_caller_identity.current.account_id}"] # This is us
+  owners      = [data.aws_caller_identity.current.account_id] # This is us
   most_recent = true
 }
 
@@ -30,7 +30,7 @@ data "aws_iam_policy_document" "bod_docker_assume_role_doc" {
     actions = ["sts:AssumeRole"]
 
     principals {
-      type = "Service"
+      type        = "Service"
       identifiers = ["ec2.amazonaws.com"]
     }
   }
@@ -38,7 +38,7 @@ data "aws_iam_policy_document" "bod_docker_assume_role_doc" {
 
 # The BOD Docker IAM role to be used by the BOD Docker EC2 instance
 resource "aws_iam_role" "bod_docker_role" {
-  assume_role_policy = "${data.aws_iam_policy_document.bod_docker_assume_role_doc.json}"
+  assume_role_policy = data.aws_iam_policy_document.bod_docker_assume_role_doc.json
 }
 
 # IAM policy document that that allows the invocation of our Lambda
@@ -48,22 +48,22 @@ data "aws_iam_policy_document" "lambda_bod_docker_doc" {
     effect = "Allow"
 
     actions = [
-      "lambda:InvokeFunction"
+      "lambda:InvokeFunction",
     ]
 
     # I should be able to use splat syntax here
     resources = [
-      "${aws_lambda_function.lambdas.0.arn}",
-      "${aws_lambda_function.lambdas.1.arn}",
-      "${aws_lambda_function.lambdas.2.arn}"
+      aws_lambda_function.lambdas[0].arn,
+      aws_lambda_function.lambdas[1].arn,
+      aws_lambda_function.lambdas[2].arn,
     ]
   }
 }
 
 # The Lambda policy for our role
 resource "aws_iam_role_policy" "lambda_bod_docker_policy" {
-  role = "${aws_iam_role.bod_docker_role.id}"
-  policy = "${data.aws_iam_policy_document.lambda_bod_docker_doc.json}"
+  role   = aws_iam_role.bod_docker_role.id
+  policy = data.aws_iam_policy_document.lambda_bod_docker_doc.json
 }
 
 # IAM policy document that only allows GETting from the dmarc-import
@@ -74,20 +74,20 @@ data "aws_iam_policy_document" "es_bod_docker_doc" {
     effect = "Allow"
 
     actions = [
-      "es:ESHttpGet"
+      "es:ESHttpGet",
     ]
 
     resources = [
-      "${var.dmarc_import_es_arn}",
-      "${var.dmarc_import_es_arn}/*"
+      var.dmarc_import_es_arn,
+      "${var.dmarc_import_es_arn}/*",
     ]
   }
 }
 
 # The Elasticsearch policy for our role
 resource "aws_iam_role_policy" "es_bod_docker_policy" {
-  role = "${aws_iam_role.bod_docker_role.id}"
-  policy = "${data.aws_iam_policy_document.es_bod_docker_doc.json}"
+  role   = aws_iam_role.bod_docker_role.id
+  policy = data.aws_iam_policy_document.es_bod_docker_doc.json
 }
 
 # IAM policy document that allows sending emails via SES.  This will
@@ -97,7 +97,7 @@ data "aws_iam_policy_document" "ses_bod_docker_doc" {
     effect = "Allow"
 
     actions = [
-      "ses:SendRawEmail"
+      "ses:SendRawEmail",
     ]
 
     # There are no resources for SES policies, although there are
@@ -108,50 +108,60 @@ data "aws_iam_policy_document" "ses_bod_docker_doc" {
 
 # The SES policy for our role
 resource "aws_iam_role_policy" "ses_bod_docker_policy" {
-  role = "${aws_iam_role.bod_docker_role.id}"
-  policy = "${data.aws_iam_policy_document.ses_bod_docker_doc.json}"
+  role   = aws_iam_role.bod_docker_role.id
+  policy = data.aws_iam_policy_document.ses_bod_docker_doc.json
 }
 
 # The instance profile to be used by any EC2 instances that need to
 # invoke our Lambda functions, read the dmarc-import ES database,
 # and/or send emails via SES.
 resource "aws_iam_instance_profile" "bod_docker" {
-  role = "${aws_iam_role.bod_docker_role.name}"
+  role = aws_iam_role.bod_docker_role.name
 }
 
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
-  ami = "${data.aws_ami.bod_docker.id}"
-  instance_type = "${local.production_workspace ? "r5.xlarge" : "t3.micro"}"
+  ami               = data.aws_ami.bod_docker.id
+  instance_type     = local.production_workspace ? "r5.xlarge" : "t3.micro"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
-  subnet_id = "${aws_subnet.bod_docker_subnet.id}"
+  subnet_id = aws_subnet.bod_docker_subnet.id
 
   root_block_device {
-    volume_type = "gp2"
-    volume_size = 200
+    volume_type           = "gp2"
+    volume_size           = 200
     delete_on_termination = true
   }
 
   vpc_security_group_ids = [
-    "${aws_security_group.bod_docker_sg.id}"
+    aws_security_group.bod_docker_sg.id,
   ]
 
-  user_data_base64 = "${data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered}"
-  iam_instance_profile = "${aws_iam_instance_profile.bod_docker.name}"
+  user_data_base64     = data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered
+  iam_instance_profile = aws_iam_instance_profile.bod_docker.name
 
-  tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
-  volume_tags = "${merge(var.tags, map("Name", "BOD 18-01 Docker host"))}"
+  tags = merge(
+    var.tags,
+    {
+      "Name" = "BOD 18-01 Docker host"
+    },
+  )
+  volume_tags = merge(
+    var.tags,
+    {
+      "Name" = "BOD 18-01 Docker host"
+    },
+  )
 }
 
 # Provision the Docker EC2 instance via Ansible
 module "bod_docker_ansible_provisioner" {
-  source = "github.com/cloudposse/tf_ansible"
+  source = "github.com/cloudposse/terraform-null-ansible"
 
   arguments = [
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'"
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'",
   ]
   envs = [
     "host=${aws_instance.bod_docker.private_ip}",
@@ -163,10 +173,10 @@ module "bod_docker_ansible_provisioner" {
     "ses_aws_region=${var.ses_aws_region}",
     # This file will be used to add/override any settings in
     # docker-compose.yml (for cyhy-mailer).
-    "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}"
+    "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run = false
+  dry_run  = false
 }
 
 # Note that the EBS volumes contain production data. Therefore we need
@@ -181,10 +191,10 @@ module "bod_docker_ansible_provisioner" {
 # (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "bod_report_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
-  type = "io1"
-  size = "${local.production_workspace ? 200 : 5}"
-  iops = 100
-  encrypted = true
+  type              = "io1"
+  size              = local.production_workspace ? 200 : 5
+  iops              = 100
+  encrypted         = true
 
   lifecycle {
     prevent_destroy = true
@@ -193,8 +203,8 @@ resource "aws_ebs_volume" "bod_report_data" {
 
 resource "aws_volume_attachment" "bod_report_data_attachment" {
   device_name = "/dev/xvdb"
-  volume_id = "${aws_ebs_volume.bod_report_data.id}"
-  instance_id = "${aws_instance.bod_docker.id}"
+  volume_id   = aws_ebs_volume.bod_report_data.id
+  instance_id = aws_instance.bod_docker.id
 
   # Terraform attempts to destroy the volume attachments before it
   # attempts to destroy the EC2 instance they are attached to.  EC2
@@ -204,14 +214,14 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
   # this gracefully shuts down the instance and allows terraform to
   # successfully destroy the volume attachments.
   provisioner "local-exec" {
-    when = "destroy"
-    command = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.bod_docker.id}"
-    on_failure = "continue"
+    when       = destroy
+    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.bod_docker.id}"
+    on_failure = continue
   }
 
   # Wait until bod_report instance is terminated before continuing on
   provisioner "local-exec" {
-    when = "destroy"
+    when    = destroy
     command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.bod_docker.id}"
   }
 

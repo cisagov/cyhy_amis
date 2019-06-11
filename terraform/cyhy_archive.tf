@@ -10,7 +10,7 @@ resource "aws_s3_bucket" "cyhy_archive" {
     }
   }
 
-  tags = "${var.tags}"
+  tags = var.tags
 }
 
 # IAM policy document that that allows S3 PutObject (write) on our
@@ -20,11 +20,12 @@ data "aws_iam_policy_document" "s3_cyhy_archive_write_doc" {
     effect = "Allow"
 
     actions = [
-      "s3:PutObject"
+      "s3:PutObject",
     ]
 
     resources = [
-      "${aws_s3_bucket.cyhy_archive.arn}/*"
+      "${aws_s3_bucket.cyhy_archive.arn}/*",
     ]
   }
 }
+
