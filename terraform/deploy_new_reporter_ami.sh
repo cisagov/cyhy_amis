@@ -15,6 +15,8 @@ fi
 
 terraform workspace select "$workspace"
 
+# Strip control characters, then look for the text "id" surrounded by
+# space characters, then extract only the ID from that line.
 reporter_instance_id=$(terraform state show aws_instance.cyhy_reporter | \
                            sed $'s,\x1b\\[[0-9;]*[[:alpha:]]],,g' | \
                            grep "[[:space:]]id[[:space:]]" | \

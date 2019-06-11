@@ -15,6 +15,8 @@ fi
 
 terraform workspace select "$workspace"
 
+# Strip control characters, then look for the text "id" surrounded by
+# space characters, then extract only the ID from that line.
 docker_instance_id=$(terraform state show aws_instance.bod_docker | \
                          sed $'s,\x1b\\[[0-9;]*[[:alpha:]]],,g' | \
                          grep "[[:space:]]id[[:space:]]" | \
