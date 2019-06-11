@@ -1,16 +1,18 @@
 #!/usr/bin/env bash
 
-# deploy_new_reporter_ami.sh
-# deploy_new_reporter_ami.sh workspace_name
+# deploy_new_reporter_ami.sh region workspace_name
 
 set -o nounset
 set -o errexit
 set -o pipefail
 
-workspace=prod-a
-if [ $# -ge 1 ]
+if [ $# -eq 2 ]
 then
-    workspace=$1
+    region=$1
+    workspace=$2
+else
+    echo "Usage:  deploy_new_reporter_ami.sh region workspace_name"
+    exit 1
 fi
 
 terraform workspace select "$workspace"
@@ -25,8 +27,8 @@ reporter_instance_id=$(terraform state show aws_instance.cyhy_reporter | \
                            sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
 # Terminate the existing reporter instance
-aws ec2 terminate-instances --instance-ids "$reporter_instance_id"
-aws ec2 wait instance-terminated --instance-ids "$reporter_instance_id"
+aws --region "$region" ec2 terminate-instances --instance-ids "$reporter_instance_id"
+aws --region "$region" ec2 wait instance-terminated --instance-ids "$reporter_instance_id"
 
 terraform apply -var-file="$workspace.tfvars" \
           -target=aws_instance.cyhy_reporter \
