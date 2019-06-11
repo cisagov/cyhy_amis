@@ -27,7 +27,7 @@ terraform workspace select "$workspace"
 # Strip control characters, then look for the text "id" surrounded by
 # space characters, then extract only the ID from that line.
 nmap_instance_id=$(terraform state show aws_instance.cyhy_nmap[$index] | \
-                       sed -r "s/\x1b\[[0-9;]*m?//g" | \
+                       sed $'s,\x1b\\[[0-9;]*[[:alpha:]]],,g' | \
                        grep "[[:space:]]id[[:space:]]" | \
                        sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
