@@ -157,19 +157,14 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
     when = destroy
-
-    # Use element(aws_instance.cyhy_nessus.*.id, count.index) rather than
-    # aws_instance.cyhy_nessus.*.id[count.index] to avoid Terraform 'index out
-    # of range' error, similar to the one documented here:
-    # https://github.com/hashicorp/terraform/issues/14536#issue-228958605
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${element(aws_instance.cyhy_nessus.*.id, count.index)}"
+    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_nessus[count.index].id}"
     on_failure = continue
   }
 
   # Wait until cyhy_nessus instance is terminated before continuing on
   provisioner "local-exec" {
     when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${element(aws_instance.cyhy_nessus.*.id, count.index)}"
+    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_nessus[count.index].id}"
   }
 
   skip_destroy = true
