@@ -23,7 +23,7 @@ import sys
 assert sys.version_info >= (3, 7), "This script requires Python 3.7 or newer"
 
 # for each workspace, set the number of instances to create for each template
-WORKSPACE_CONFIGS = {"production": {"nessus": 1}, "daver": {"nessus": 2}}
+WORKSPACE_CONFIGS = {"production": {"nessus": 1}}
 
 # the default configuration if a workspace is not defined above
 DEFAULT_CONFIG = {"nessus": 1}
