@@ -42,7 +42,7 @@ resource "aws_instance" "nessus" {
     aws_security_group.nessus_scanner_sg.id,
   ]
 
-  user_data = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
+  user_data_base64 = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
 
   tags = merge(
     var.tags,

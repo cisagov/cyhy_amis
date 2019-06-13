@@ -5,8 +5,8 @@ data "template_file" "user_ssh_setup" {
 }
 
 data "template_cloudinit_config" "ssh_cloud_init_tasks" {
-  gzip          = false
-  base64_encode = false
+  gzip          = true
+  base64_encode = true
 
   part {
     filename     = "user_ssh_setup.yml"
@@ -14,4 +14,3 @@ data "template_cloudinit_config" "ssh_cloud_init_tasks" {
     content      = data.template_file.user_ssh_setup.rendered
   }
 }
-
