@@ -15,7 +15,7 @@ resource "aws_subnet" "nessus_scanner_subnet" {
   tags = merge(
     var.tags,
     {
-      "Name" = "CyHy Nessus Scanners"
+      "Name" = "Manual CyHy Nessus Scanners"
     },
   )
 }
@@ -31,7 +31,7 @@ resource "aws_network_acl" "nessus_scanner_acl" {
   tags = merge(
     var.tags,
     {
-      "Name" = "CyHy Nessus Scanners"
+      "Name" = "Manual CyHy Nessus Scanners"
     },
   )
 }
@@ -43,8 +43,7 @@ resource "aws_security_group" "nessus_scanner_sg" {
   tags = merge(
     var.tags,
     {
-      "Name" = "CyHy Nessus Scanners"
+      "Name" = "Manual CyHy Nessus Scanners"
     },
   )
 }
-
