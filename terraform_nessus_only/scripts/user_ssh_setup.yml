@@ -25,9 +25,9 @@ users:
     shell: /bin/bash
     ssh-authorized-keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKY5tqMRtnZSkVPwU0X1zKA8L3RnvmhSAR/bHAtd3Vcr kyle.evers
-  - name: robert.mcneal
+  - name: nicholas.mcdonnell
     groups: [ sudo ]
     sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
     shell: /bin/bash
     ssh-authorized-keys:
-      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC9Br+LIxekK7bWSgVEVh0ryV2iE80qSlcMuvLgl1JZD5yGtIHigBiwLmriwiyTYsNBFxWY2ypEgsQ384/1kNvH6vSFzAbssBf15elV+SNNHH0OOHEh19CtHJIsZV2ry9i6SSllXIUsClmSR3rj/83sOwtclIDzes0vg8NfVyTsFWnywhZ1mCsCUwr0vu/jKKQvIohy4JwdMz8sgKl6zzUvg+5Q7e8i3lEKC1Grehkj1vG8ro/C4eltUtg8CwUxx/JA5csbR5NleGayyrQ6ZRtTckUyYnk3L7cVgBh4TnpxtoUbe/B4Coq0m9hxCclmYgC0s37Ynix7bacCSiyTM11l fedadmin@MAC-410941
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWZgKiUcpnS8PwEJ54sxrb3/bt35mcG6xSb6rv447aj nicholas.mcdonnell
