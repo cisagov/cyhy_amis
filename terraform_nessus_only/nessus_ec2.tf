@@ -21,17 +21,12 @@ data "aws_ami" "nessus" {
 }
 
 resource "aws_instance" "nessus" {
-  # Number of Nessus instances to create
-  count = terraform.workspace == "production" ? 3 : 1
-
   ami               = data.aws_ami.nessus.id
-  instance_type     = "m4.large"
-  ebs_optimized     = true
   instance_type     = "m5.large"
+  count             = local.nessus_instance_count   # Set by configure.py
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id                   = aws_subnet.nessus_scanner_subnet.id
-  associate_public_ip_address = true
 
   root_block_device {
     volume_type           = "gp2"
