@@ -99,5 +99,5 @@
     hour: '8'
     minute: '15'
     user: cyhy
-    job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy_config cyhy.yml --scan_config scan_reader.yml --assessment_config assessment_reader.yml --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
+    job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy-config /var/cyhy/scripts/cyhy-feeds/cyhy.yml --scan-config /var/cyhy/scripts/cyhy-feeds/scan_reader.yml --assessment-config /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml --aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
   when: production_workspace|bool
