@@ -8,7 +8,7 @@ module "nessus_ansible_provisioner_$index" {
   ]
   envs = [
     # If you terminate all the existing Nessus instances and then run apply,
-    # the list var.nessus_private_ips is empty at that time.  Then there is
+    # the list var.nessus_public_ips is empty at that time.  Then there is
     # an error condition when Terraform evaluates what must be done for the
     # apply because you are trying to use element() to reference indices in an
     # empty list.  The list will be populated with the actual values as the
