@@ -29,8 +29,8 @@
 # Create yml files for db access
 #
 
-# commander
-- name: Create cyhy.yml to store commander db credentials
+# reporter
+- name: Create cyhy.yml to store reporter db credentials
   copy:
     dest: /var/cyhy/scripts/cyhy-feeds/cyhy.yml
     owner: cyhy
@@ -38,8 +38,8 @@
     mode: 0660
     content: |
       database:
-        uri: mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
-        name: {{ commander_db }}
+        uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
+        name: {{ reporter_db }}
 
 # scan-reader
 - name: Create scan_reader.yml to store scan reader db credentials
