@@ -27,6 +27,7 @@ resource "aws_instance" "nessus" {
   ami               = data.aws_ami.nessus.id
   instance_type     = "m4.large"
   ebs_optimized     = true
+  instance_type     = "m5.large"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id                   = aws_subnet.nessus_scanner_subnet.id
@@ -34,8 +35,8 @@ resource "aws_instance" "nessus" {
 
   root_block_device {
     volume_type           = "gp2"
-    volume_size           = 100
-    delete_on_termination = false
+    volume_size           = local.production_workspace ? 100 : 16
+    delete_on_termination = true
   }
 
   vpc_security_group_ids = [
