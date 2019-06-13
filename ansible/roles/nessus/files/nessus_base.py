@@ -31,7 +31,7 @@ WAIT_TIME_SEC = 10
 # Would be nice to get this working
 VERIFY_SSL = False
 # Number of times to retry a failed request before giving up
-FAILED_REQUEST_MAX_RETRIES = 3
+FAILED_REQUEST_MAX_RETRIES = 10
 # Seconds to wait between failed request retries
 FAILED_REQUEST_RETRY_WAIT_SEC = 30
 
