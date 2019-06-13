@@ -112,7 +112,7 @@ def main():
         count = config[template_key]
         print(
             f"Creating {count} instantiation{'' if count == 1 else 's'} "
-            "of template {template_file}"
+            f"of template {template_file}"
         )
         # read in the template
         template = read_template(template_file)
