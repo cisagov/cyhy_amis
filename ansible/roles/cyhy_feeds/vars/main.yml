@@ -14,12 +14,12 @@ nsd_public_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/nsd_public') }}"
 # cyhy-feeds GPG trust
 gpg_trust: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/trust') }}"
 
-# commander mongo username
-commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
-# commander mongo password
-commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
-# commander mongo database
-commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
+# reporter mongo username
+reporter_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}"
+# reporter mongo password
+reporter_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/password') }}"
+# reporter mongo database
+reporter_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}"
 
 # scan-reader mongo username
 scan_reader_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}"
