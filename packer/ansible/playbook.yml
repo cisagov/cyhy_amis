@@ -48,22 +48,27 @@
     - nessus
     - more_ephemeral_ports
 
-- hosts: docker
-  name: Install Docker
-  become: yes
-  become_method: sudo
-  roles:
-    - docker
-
-- hosts: bod_docker
-  name: Configure Docker host for BOD 18-01 scanning and reporting
+- hosts: bod
+  name: Configure host for BOD 18-01 scanning and reporting
   become: yes
   become_method: sudo
   roles:
     - xfs
     - orchestrator
     - cyhy_mailer
+
+- hosts: code_gov
+  name: Configure host for code.gov updating
+  become: yes
+  become_method: sudo
+  roles:
     - code_gov_update
+
+- hosts: client_cert
+  name: Configure host for client cert auth updating
+  become: yes
+  become_method: sudo
+  roles:
     - client_cert_update
 
 - hosts: cyhy_commander
