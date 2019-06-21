@@ -50,8 +50,9 @@
             "type": "ansible",
             "playbook_file": "packer/ansible/playbook.yml",
             "groups": [
-                "docker",
-                "bod_docker"
+                "bod",
+                "code_gov",
+                "client_cert"
             ]
         }
     ]
