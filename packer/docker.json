@@ -26,6 +26,7 @@
             "device_name": "xvda",
             "volume_size": 10,
             "volume_type": "gp2",
+            "encrypted": true,
             "delete_on_termination": true
         }],
 
@@ -33,6 +34,7 @@
             "device_name": "xvda",
             "volume_size": 10,
             "volume_type": "gp2",
+            "encrypted": true,
             "delete_on_termination": true
         }],
 
