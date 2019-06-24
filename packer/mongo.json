@@ -21,6 +21,11 @@
              "us-west-1",
              "us-west-2"
         ],
+        "region_kms_key_ids": {
+            "us-east-1": "alias/aws/ebs",
+            "us-west-1": "alias/aws/ebs",
+            "us-west-2": "alias/aws/ebs"
+        },
 
         "ami_block_device_mappings": [{
             "device_name": "xvda",
