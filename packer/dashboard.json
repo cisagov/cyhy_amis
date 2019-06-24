@@ -22,6 +22,22 @@
             "us-west-2"
         ],
 
+        "ami_block_device_mappings": [{
+            "device_name": "xvda",
+            "volume_size": 8,
+            "volume_type": "gp2",
+            "encrypted": true,
+            "delete_on_termination": true
+        }],
+
+        "launch_block_device_mappings": [{
+            "device_name": "xvda",
+            "volume_size": 8,
+            "volume_type": "gp2",
+            "encrypted": true,
+            "delete_on_termination": true
+        }],
+
         "tags": {
             "Team": "NCATS OIS - Development",
             "Application": "Cyber Hygiene",
