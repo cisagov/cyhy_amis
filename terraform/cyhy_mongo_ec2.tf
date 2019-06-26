@@ -89,7 +89,7 @@ data "aws_iam_policy_document" "s3_cyhy_mongo_doc" {
     effect = "Allow"
 
     actions = [
-      "s3:DeleteObject"
+      "s3:DeleteObject",
       "s3:PutObject",
     ]
 
