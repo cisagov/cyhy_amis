@@ -11,11 +11,11 @@ matrix:
 # Install terraform and ansible
 before_install:
   - echo $(which packer)
-  - wget https://releases.hashicorp.com/terraform/0.12.1/terraform_0.12.1_linux_amd64.zip -O terraform.zip
+  - wget https://releases.hashicorp.com/terraform/0.12.3/terraform_0.12.3_linux_amd64.zip -O terraform.zip
   - sudo unzip terraform.zip -d /opt/terraform
   - sudo ln -s /opt/terraform/terraform /usr/bin/terraform
   - rm -f terraform.zip
-  - sudo apt-get install ansible
+  - sudo pip install ansible
 
 # Travis' Xenial builds run on GCE and do not have any AWS
 # credentials.  Therefore our packer tests must use --syntax-only.
