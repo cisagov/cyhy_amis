@@ -32,7 +32,11 @@ aws --region "$region" ec2 wait instance-terminated --instance-ids "$database_in
 
 terraform apply -var-file="$workspace.tfvars" \
                 -target=aws_instance.cyhy_mongo \
+                -target=aws_iam_role.cyhy_mongo_role \
+                -target=aws_iam_role_policy.archive_cyhy_mongo_policy \
+                -target=aws_iam_role_policy.es_cyhy_mongo_policy \
                 -target=aws_iam_role_policy.s3_cyhy_mongo_policy \
+                -target=aws_iam_instance_profile.cyhy_mongo \
                 -target=aws_network_acl_rule.private_egress_to_mongo_via_mongo \
                 -target=aws_route53_record.cyhy_database_A \
                 -target=aws_route53_record.cyhy_rev_database_PTR \
