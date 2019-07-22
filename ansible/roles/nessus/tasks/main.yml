@@ -84,6 +84,10 @@
     src: cyhy-base-nessus8-policy.xml.j2
     dest: /tmp/cyhy-base-nessus8-policy.xml
 
+- name: Wait for Nessus port to be open
+  wait_for:
+    port: 8834
+
 - name: Run nessus base policy import script
   command: python /tmp/nessus_base.py
 
