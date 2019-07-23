@@ -68,21 +68,25 @@
 - name: Configure nessus base policy to use nessus username
   lineinfile:
     dest: /tmp/nessus_base.py
-    regexp: "USER = ''"
+    regexp: 'USER = ""'
     state: present
-    line: "USER = '{{ username }}'"
+    line: 'USER = "{{ username }}"'
 
 - name: Configure nessus base policy to use nessus password
   lineinfile:
     dest: /tmp/nessus_base.py
-    regexp: "PASSWORD = ''"
+    regexp: 'PASSWORD = ""'
     state: present
-    line: "PASSWORD = '{{ password }}'"
+    line: 'PASSWORD = "{{ password }}"'
 
 - name: Copy base nessus scan policy to instance tmp
   template:
     src: cyhy-base-nessus8-policy.xml.j2
     dest: /tmp/cyhy-base-nessus8-policy.xml
+
+- name: Wait for Nessus port to be open
+  wait_for:
+    port: 8834
 
 - name: Run nessus base policy import script
   command: python /tmp/nessus_base.py

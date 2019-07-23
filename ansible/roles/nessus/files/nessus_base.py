@@ -31,9 +31,9 @@ WAIT_TIME_SEC = 10
 # Would be nice to get this working
 VERIFY_SSL = False
 # Number of times to retry a failed request before giving up
-FAILED_REQUEST_MAX_RETRIES = 10
+FAILED_REQUEST_MAX_RETRIES = 30
 # Seconds to wait between failed request retries
-FAILED_REQUEST_RETRY_WAIT_SEC = 30
+FAILED_REQUEST_RETRY_WAIT_SEC = 10
 
 # Note that we disable LGTM's unreachable statement warning for this
 # particular bit of code
