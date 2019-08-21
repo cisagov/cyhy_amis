@@ -66,9 +66,8 @@ resource "aws_cloudwatch_log_group" "bod_flow_log_group" {
 resource "aws_flow_log" "bod_flow_log" {
   count = var.create_bod_flow_logs ? 1 : 0
 
-  log_group_name = aws_cloudwatch_log_group.bod_flow_log_group[0].name
-  iam_role_arn   = aws_iam_role.bod_flow_log_role[0].arn
-  vpc_id         = aws_vpc.bod_vpc.id
-  traffic_type   = "ALL"
+  log_destination = aws_cloudwatch_log_group.bod_flow_log_group[0].name
+  iam_role_arn    = aws_iam_role.bod_flow_log_role[0].arn
+  vpc_id          = aws_vpc.bod_vpc.id
+  traffic_type    = "ALL"
 }
-

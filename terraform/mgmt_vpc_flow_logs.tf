@@ -66,8 +66,8 @@ resource "aws_cloudwatch_log_group" "mgmt_flow_log_group" {
 resource "aws_flow_log" "mgmt_flow_log" {
   count = var.create_mgmt_flow_logs ? 1 : 0
 
-  log_group_name = aws_cloudwatch_log_group.mgmt_flow_log_group[0].name
-  iam_role_arn   = aws_iam_role.mgmt_flow_log_role[0].arn
-  vpc_id         = aws_vpc.mgmt_vpc[0].id
-  traffic_type   = "ALL"
+  log_destination = aws_cloudwatch_log_group.mgmt_flow_log_group[0].name
+  iam_role_arn    = aws_iam_role.mgmt_flow_log_role[0].arn
+  vpc_id          = aws_vpc.mgmt_vpc[0].id
+  traffic_type    = "ALL"
 }
