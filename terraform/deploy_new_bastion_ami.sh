@@ -26,7 +26,7 @@ bastion_instance_id=$(terraform state show aws_instance.cyhy_bastion | \
                            grep "[[:space:]]id[[:space:]]" | \
                            sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
-# Terminate the existing reporter instance
+# Terminate the existing bastion instance
 aws --region "$region" ec2 terminate-instances --instance-ids "$bastion_instance_id"
 aws --region "$region" ec2 wait instance-terminated --instance-ids "$bastion_instance_id"
 
