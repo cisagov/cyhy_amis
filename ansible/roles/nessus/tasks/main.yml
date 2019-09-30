@@ -1,11 +1,6 @@
 ---
 # tasks file for nessus
 
-- name: Stop the Nessus service
-  service:
-    name: nessusd
-    state: stopped
-
 #
 # Check if a license key is registered and if not register one
 #
@@ -14,49 +9,71 @@
   register: registered
   failed_when: registered.rc not in [0, 1]
 
-- name: Register a license key if necessary
-  command: "/opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}"
-  when: registered.rc != 0
+- name: Retrieve the license key if one is registered
+  block:
+    - name: Get the registered license key
+      command: /opt/nessus/sbin/nessuscli fetch --code-in-use
+      register: key_result
 
-#
-# Create the Nessus scanner user
-#
-- name: Grab the existing Nessus users
-  command: /opt/nessus/sbin/nessuscli lsuser
-  register: users
+    - name: Extract the key in use
+      set_fact:
+        registered_key: "{{ key_result.stdout | regex_search(regexp, '\\1') }}"
+      vars:
+        regexp: '([A-F0-9]{4}(?:\-[A-F0-9]{4}){4})'
 
-# The expect Ansible module requires pexpect
-- name: Install pexpect
-  pip:
-    name:
-      - pexpect
-  when: username not in users.stdout
+    - name: See if the key in use matches the provided one
+      set_fact:
+        matching_key: "{{ nessus_activation_code in registered_key }}"
+    when: registered.rc == 0
 
-- name: Create scanner user if necessary
-  expect:
-    command: "/opt/nessus/sbin/nessuscli adduser {{ username }}"
-    responses:
-      password: "{{ password }}"
-      administrator: y
-      BLANK: ""
-  when: username not in users.stdout
+- name: Register a license key, setup user, and update plugins if necessary
+  block:
+    - name: Stop the Nessus service
+      service:
+        name: nessusd
+        state: stopped
 
-- name: Update plugins
-  command: /opt/nessus/sbin/nessuscli update --plugins-only
-  async: 300
-  poll: 5
-  when: registered.rc != 0
+    - name: Register a license key
+      command: "/opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}"
 
-- name: Rebuild the plugin database
-  command: /opt/nessus/sbin/nessusd -R
-  async: 1200
-  poll: 30
-  when: registered.rc != 0
+    #
+    # Create the Nessus scanner user
+    #
+    - name: Grab the existing Nessus users
+      command: /opt/nessus/sbin/nessuscli lsuser
+      register: users
 
-- name: Start Nessus service
-  service:
-    name: nessusd
-    state: started
+    # The expect Ansible module requires pexpect
+    - name: Install pexpect
+      pip:
+        name:
+          - pexpect
+      when: username not in users.stdout
+
+    - name: Create scanner user if necessary
+      expect:
+        command: "/opt/nessus/sbin/nessuscli adduser {{ username }}"
+        responses:
+          password: "{{ password }}"
+          administrator: y
+          BLANK: ""
+      when: username not in users.stdout
+
+    - name: Update plugins
+      command: /opt/nessus/sbin/nessuscli update --plugins-only
+      async: 300
+      poll: 5
+
+    - name: Rebuild the plugin database
+      command: /opt/nessus/sbin/nessusd -R
+      async: 1200
+      poll: 30
+
+    - name: Start Nessus service
+      service:
+        name: nessusd
+        state: started
+  when: registered.rc != 0 or matching_key|default(false)|bool
 
 # Copy the nessus_base.py to tmp
 - name: Copy the nessus_base python file for importing the base nessus policy
