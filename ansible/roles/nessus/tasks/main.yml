@@ -23,7 +23,8 @@
 
     - name: See if the key in use matches the provided one
       set_fact:
-        matching_key: "{{ nessus_activation_code in registered_key }}"
+        # regex_search() returns a list so we want to compare the one element
+        matching_key: "{{ nessus_activation_code == registered_key[0] }}"
     when: registered.rc == 0
 
 - name: Register a license key, setup user, and update plugins if necessary
