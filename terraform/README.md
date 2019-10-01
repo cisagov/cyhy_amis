@@ -88,6 +88,111 @@ Note that the last `LocalForward` line forwards port 27017 *on any
 interface* to port 27017 on the MongoDB instance.  This allows any
 local Docker containers to take advantage of the port forwarding.
 
+## Creating the management VPC ##
+
+To create the management VPC, first modify your Terraform variables file
+(`<your_workspace>.yml`) such that:
+
+```console
+enable_mgmt_vpc = true
+```
+
+If you want to include one or more Nessus instances in your management VPC,
+ensure that the correct license keys are entered in your Terraform variables
+file:
+
+```console
+mgmt_nessus_activation_codes = [ "LICENSE-KEY-1", "LICENSE-KEY-2" ]
+```
+
+Next, update `configure.py` to include a single management bastion instance and
+if desired, one or more Nessus instances in your workspace.  In the example
+below, there is one Nessus instance:
+
+```console
+WORKSPACE_CONFIGS = {
+    "your-workspace": {
+        "nmap": 1,
+        "nessus": 1,
+        "mongo": 1,
+        "mgmt_bastion": 1,
+        "mgmt_nessus": 1
+      }
+```
+
+Note that the number of `nmap`, `nessus`, and `mongo` instances listed above
+have no bearing on the creation of the management VPC.  They are simply listed
+to show the complete workspace configuration block.
+
+After `configure.py` has been updated, run it to re-configure your Terraform
+environment:
+
+```console
+./configure.py
+```
+
+Next, re-initialize your reconfigured Terraform environment (it's also a good
+idea to add the optional `--upgrade=true` parameter):
+
+```console
+terraform init
+```
+
+At this point, you are ready to create all of the management VPC infrastructure
+by running:
+
+```console
+terraform apply -var-file=<your_workspace>.yml
+```
+
+## Destroying the management VPC ##
+
+To destroy the management VPC, first modify your Terraform variables file
+(`<your_workspace>.yml`) such that:
+
+```console
+enable_mgmt_vpc = false
+```
+
+Next, update `configure.py` to remove the management bastion and any Nessus
+instances from your workspace (i.e. set them to zero):
+
+```console
+WORKSPACE_CONFIGS = {
+    "your-workspace": {
+        "nmap": 1,
+        "nessus": 1,
+        "mongo": 1,
+        "mgmt_bastion": 0,
+        "mgmt_nessus": 0
+      }
+```
+
+Note that the number of `nmap`, `nessus`, and `mongo` instances listed above
+have no bearing on the destruction of the management VPC.  They are simply
+listed to show the complete workspace configuration block.
+
+After `configure.py` has been updated, run it to re-configure your Terraform
+environment:
+
+```console
+./configure.py
+```
+
+Next, re-initialize your reconfigured Terraform environment (it's also a good
+idea to add the optional `--upgrade=true` parameter):
+
+```console
+terraform init
+```
+
+At this point, you are ready to destroy all of the management VPC
+infrastructure by running:
+
+```console
+terraform apply -var-file=<your_workspace>.yml
+```
+
 ## License ##
 
 This project is in the worldwide [public domain](LICENSE.md).
