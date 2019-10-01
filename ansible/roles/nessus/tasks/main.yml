@@ -25,7 +25,7 @@
       set_fact:
         # regex_search() returns a list so we want to compare the one element
         matching_key: "{{ nessus_activation_code == registered_key[0] }}"
-    when: registered.rc == 0
+  when: registered.rc == 0
 
 - name: Register a license key, setup user, and update plugins if necessary
   block:
