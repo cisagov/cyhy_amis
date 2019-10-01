@@ -1,9 +1,10 @@
-# Cyber Hygiene and BOD 18-01 Scanning Terraform Code for AWS :cloud: #
+# Cyber Hygiene and BOD 18-01 Scanning Terraform Code for AWS ☁️ #
 
 ## Building ##
 
 Build Terraform-based infrastructure with:
-```
+
+```console
 ansible-galaxy install -r ansible/requirements.yml
 cd terraform
 terraform workspace select <your_workspace>
@@ -13,9 +14,11 @@ terraform apply -var-file=<your_workspace>.yml
 ```
 
 Also note that
-```
+
+```console
 ansible-galaxy install --force -r ansible/requirements.yml
 ```
+
 will update the roles that are being pulled from external sources.  This
 may be required, for example, if a role that is being pulled from a
 GitHub repository has been updated and you want the new changes.  By
@@ -24,7 +27,8 @@ default `ansible-galaxy install` _will not_ upgrade roles.
 ## Destroying ##
 
 Tear down Terraform-based infrastructure with:
-```
+
+```console
 cd terraform
 terraform workspace select <your_workspace>
 ./configure.py
@@ -36,7 +40,8 @@ terraform destroy -var-file=<your_workspace>.yml
 
 You can use `ssh` to connect directly to the bastion EC2 instances in the
 Cyber Hygiene and BOD VPCs:
-```
+
+```console
 ssh bastion.<your_workspace>.cyhy
 ssh bastion.<your_workspace>.bod
 ```
@@ -45,7 +50,8 @@ Other EC2 instances in these two VPCs can only be connected to by
 proxying the `ssh` connection via the corresponding bastion host.
 This can be done automatically by `ssh` if you add something like the
 following to your `~/.ssh/config`:
-```
+
+```console
 Host *.bod *.cyhy
      User <your_username>
 
@@ -59,7 +65,8 @@ Host !bastion.*.bod *.bod !bastion.*.cyhy *.cyhy
 This `ssh` configuration snippet allows you to `ssh` directly to
 `reporter.<your_workspace>.cyhy` or `docker.<your_workspace>.bod`,
 for example:
-```
+
+```console
 ssh reporter.<your_workspace>.cyhy
 ssh docker.<your_workspace>.bod
 ```
@@ -69,7 +76,8 @@ ssh docker.<your_workspace>.bod
 You may also find it helpful to configure `ssh` to automatically
 forward the Nessus UI and MongoDB ports when connecting to the Cyber
 Hygiene VPC:
-```
+
+```console
 Host bastion.*.cyhy
      LocalForward 8834 vulnscan1:8834
      LocalForward 8835 vulnscan2:8834
