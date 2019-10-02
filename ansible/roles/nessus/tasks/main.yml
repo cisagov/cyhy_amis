@@ -75,7 +75,7 @@
       service:
         name: nessusd
         state: started
-  when: registered.rc != 0 or matching_key|default(false)|bool
+  when: registered.rc != 0 or not matching_key|default(false)|bool
 
 # Copy the nessus_base.py to tmp
 - name: Copy the nessus_base python file for importing the base nessus policy
