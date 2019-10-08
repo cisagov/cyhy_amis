@@ -5,6 +5,23 @@ resource "aws_route53_zone" "mgmt_private_zone" {
   vpc {
     vpc_id = aws_vpc.mgmt_vpc[0].id
   }
+
+  vpc {
+    vpc_id = aws_vpc.cyhy_vpc.id
+  }
+
+  vpc {
+    vpc_id = aws_vpc.bod_vpc.id
+  }
+
+  # Because we're conditionally associating the CyHy and BOD VPCs with
+  # this zone using the aws_route53_zone_association resources below,
+  # this lifecycle bit is required.  See
+  # https://www.terraform.io/docs/providers/aws/r/route53_zone_association.html
+  lifecycle {
+    ignore_changes = [vpc]
+  }
+
   tags = merge(
     var.tags,
     {
@@ -12,6 +29,20 @@ resource "aws_route53_zone" "mgmt_private_zone" {
     },
   )
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
+}
+
+# Associate CyHy VPC with the management private DNS zone
+resource "aws_route53_zone_association" "cyhy_mgmt" {
+  count   = var.enable_mgmt_vpc ? 1 : 0
+  zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
+  vpc_id  = aws_vpc.cyhy_vpc.id
+}
+
+# Associate BOD VPC with the management private DNS zone
+resource "aws_route53_zone_association" "bod_mgmt" {
+  count   = var.enable_mgmt_vpc ? 1 : 0
+  zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
+  vpc_id  = aws_vpc.bod_vpc.id
 }
 
 resource "aws_route53_record" "mgmt_router_A" {
