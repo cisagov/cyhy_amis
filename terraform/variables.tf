@@ -215,3 +215,54 @@ variable "assessment_data_import_ssm_db_password" {
   description = "The name of the parameter in AWS SSM that holds the database password for the user with write permission to the assessment database."
   default     = ""
 }
+
+variable "findings_data_s3_bucket" {
+  type        = string
+  description = "The name of the bucket where the findings data JSON file can be found.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+  default     = ""
+}
+
+variable "findings_data_filename" {
+  type        = string
+  description = "The name of the findings data JSON file that can be found in the findings_data_s3_bucket."
+}
+
+variable "findings_data_import_lambda_s3_bucket" {
+  type        = string
+  description = "The name of the bucket where the findings data import Lambda function can be found.  This bucket should be created with https://github.com/cisagov/findings-data-import-terraform.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+}
+
+variable "findings_data_import_lambda_s3_key" {
+  type        = string
+  description = "The key (name) of the zip file for the findings data import Lambda function inside the S3 bucket."
+}
+
+variable "findings_data_import_db_hostname" {
+  type        = string
+  description = "The hostname that has the database to store the findings data in."
+  default     = ""
+}
+
+variable "findings_data_import_db_port" {
+  type        = string
+  description = "The port that the database server is listening on."
+  default     = ""
+}
+
+variable "findings_data_import_ssm_db_name" {
+  type        = string
+  description = "The name of the parameter in AWS SSM that holds the name of the database to store the findings data in."
+  default     = ""
+}
+
+variable "findings_data_import_ssm_db_user" {
+  type        = string
+  description = "The name of the parameter in AWS SSM that holds the database username with write permission to the findings database."
+  default     = ""
+}
+
+variable "findings_data_import_ssm_db_password" {
+  type        = string
+  description = "The name of the parameter in AWS SSM that holds the database password for the user with write permission to the findings database."
+  default     = ""
+}
