@@ -321,3 +321,14 @@ resource "aws_security_group" "adi_lambda_sg" {
   )
 }
 
+# Security group for the findings data import Lambda portion of the VPC
+resource "aws_security_group" "fdi_lambda_sg" {
+  vpc_id = aws_vpc.cyhy_vpc.id
+
+  tags = merge(
+    var.tags,
+    {
+      "Name" = "Findings Data Import Lambda"
+    },
+  )
+}

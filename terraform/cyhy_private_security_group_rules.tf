@@ -73,6 +73,16 @@ resource "aws_security_group_rule" "private_mongodb_ingress_from_adi_lambda" {
   to_port                  = 27017
 }
 
+# Allow MongoDB ingress from the findings data import Lambda security group
+resource "aws_security_group_rule" "private_mongodb_ingress_from_fdi_lambda" {
+  security_group_id        = aws_security_group.cyhy_private_sg.id
+  type                     = "ingress"
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.fdi_lambda_sg.id
+  from_port                = 27017
+  to_port                  = 27017
+}
+
 # Allow MongoDB egress to Mongo host
 resource "aws_security_group_rule" "private_mongodb_egress_to_mongo_host" {
   security_group_id = aws_security_group.cyhy_private_sg.id
@@ -205,4 +215,3 @@ resource "aws_security_group_rule" "private_egress_all_udp_to_mgmt_vulnscan" {
   from_port = 0
   to_port   = 65535
 }
-
