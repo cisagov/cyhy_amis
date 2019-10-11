@@ -222,9 +222,37 @@ variable "findings_data_s3_bucket" {
   default     = ""
 }
 
-variable "findings_data_filename" {
+variable "findings_data_input_prefix" {
   type        = string
-  description = "The name of the findings data JSON file that can be found in the findings_data_s3_bucket."
+  description = "The prefix used by files found in the findings_data_s3_bucket that contain findings data."
+  default     = ""
+}
+
+variable "findings_data_input_contains" {
+  type        = string
+  description = "The text contained in filesnames used by files found in the findings_data_s3_bucket that contains findings data."
+  default     = ""
+}
+
+variable "findings_data_input_suffix" {
+  type        = string
+  description = "The suffix used by files found in the findings_data_s3_bucket that contain findings data."
+  default     = ".json"
+}
+
+variable "findings_data_fields_mapping_filename" {
+  type        = string
+  description = "The name of the file that contains the field mappings for importing findings data to the database."
+}
+
+variable "findings_data_error_folder" {
+  type        = string
+  description = "The name of the folder to move findings data inputs to in the case of an error."
+}
+
+variable "findings_data_success_folder" {
+  type        = string
+  description = "The name of the folder to move findings data inputs to in the case of successful import."
 }
 
 variable "findings_data_import_lambda_s3_bucket" {
