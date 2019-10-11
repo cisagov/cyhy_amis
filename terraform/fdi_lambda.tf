@@ -90,6 +90,7 @@ data "aws_iam_policy_document" "fdi_lambda_s3_doc" {
     actions = [
       "s3:GetObject",
       "s3:DeleteObject",
+      "s3:PutObject",
     ]
 
     resources = [
