@@ -222,37 +222,31 @@ variable "findings_data_s3_bucket" {
   default     = ""
 }
 
-variable "findings_data_input_prefix" {
-  type        = string
-  description = "The prefix used by files found in the findings_data_s3_bucket that contain findings data."
-  default     = ""
-}
-
-variable "findings_data_input_contains" {
-  type        = string
-  description = "The text contained in filesnames used by files found in the findings_data_s3_bucket that contains findings data."
-  default     = ""
-}
-
 variable "findings_data_input_suffix" {
   type        = string
   description = "The suffix used by files found in the findings_data_s3_bucket that contain findings data."
-  default     = ".json"
 }
 
-variable "findings_data_fields_mapping_filename" {
+variable "findings_data_valid_fields" {
   type        = string
-  description = "The name of the file that contains the field mappings for importing findings data to the database."
+  description = "The key for the file that stores a list of valid field names in JSON format."
 }
 
-variable "findings_data_error_folder" {
+variable "findings_data_field_map" {
   type        = string
-  description = "The name of the folder to move findings data inputs to in the case of an error."
+  description = "The key for the file storing field name mappings in JSON format."
 }
 
-variable "findings_data_success_folder" {
-  type        = string
-  description = "The name of the folder to move findings data inputs to in the case of successful import."
+variable "findings_data_save_failed" {
+  type        = bool
+  description = "Whether or not to save files for imports that have failed."
+  default     = true
+}
+
+variable "findings_data_save_succeeded" {
+  type        = bool
+  description = "Whether or not to save files for imports that have succeeded."
+  default     = false
 }
 
 variable "findings_data_import_lambda_s3_bucket" {

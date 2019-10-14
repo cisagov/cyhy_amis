@@ -176,12 +176,11 @@ resource "aws_lambda_function" "fdi_lambda" {
       s3_bucket       = data.aws_s3_bucket.findings_data.id
       db_hostname     = var.findings_data_import_db_hostname
       db_port         = var.findings_data_import_db_port
-      starts_with     = var.findings_data_input_prefix
-      contains        = var.findings_data_input_contains
-      ends_with       = var.findings_data_input_suffix
-      fields_filename = var.findings_data_fields_mapping_filename
-      error_folder    = var.findings_data_error_folder
-      success_folder  = var.findings_data_success_folder
+      file_suffix     = var.findings_data_input_suffix
+      valid_fields    = var.findings_data_valid_fields
+      field_map       = var.findings_data_field_map
+      save_failed     = var.findings_data_save_failed
+      save_succeeded  = var.findings_data_save_succeeded
       ssm_db_name     = var.findings_data_import_ssm_db_name
       ssm_db_user     = var.findings_data_import_ssm_db_user
       ssm_db_password = var.findings_data_import_ssm_db_password
@@ -208,7 +207,7 @@ resource "aws_s3_bucket_notification" "fdi_bucket_notification" {
 
   lambda_function {
     lambda_function_arn = aws_lambda_function.fdi_lambda.arn
-    events              = ["s3:ObjectCreated:*"]
+    events              = ["s3:ObjectCreated:Put"]
     filter_suffix       = var.findings_data_input_suffix
   }
 }
