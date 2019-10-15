@@ -9,7 +9,6 @@ The AMIs are built like so:
 ansible-galaxy install -r packer/ansible/requirements.yml
 packer build packer/bastion.json
 packer build packer/docker.json
-AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/feeds.json
 packer build packer/mongo.json
 packer build packer/nessus.json
 packer build packer/nmap.json
