@@ -177,7 +177,6 @@ resource "aws_lambda_function" "fdi_lambda" {
       db_hostname     = var.findings_data_import_db_hostname
       db_port         = var.findings_data_import_db_port
       file_suffix     = var.findings_data_input_suffix
-      valid_fields    = var.findings_data_valid_fields
       field_map       = var.findings_data_field_map
       save_failed     = var.findings_data_save_failed
       save_succeeded  = var.findings_data_save_succeeded

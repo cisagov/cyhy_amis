@@ -227,11 +227,6 @@ variable "findings_data_input_suffix" {
   description = "The suffix used by files found in the findings_data_s3_bucket that contain findings data."
 }
 
-variable "findings_data_valid_fields" {
-  type        = string
-  description = "The key for the file that stores a list of valid field names in JSON format."
-}
-
 variable "findings_data_field_map" {
   type        = string
   description = "The key for the file storing field name mappings in JSON format."
