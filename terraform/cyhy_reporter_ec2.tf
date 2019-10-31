@@ -64,6 +64,27 @@ resource "aws_iam_role_policy" "ses_cyhy_reporter_policy" {
   policy = data.aws_iam_policy_document.ses_cyhy_reporter_doc.json
 }
 
+# IAM policy document that allows reading of SSM parameters.  This will
+# be applied to the role we are creating.
+data "aws_iam_policy_document" "ssm_cyhy_reporter_doc" {
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter",
+    ]
+
+    # Limit read access to specific parameter(s)
+    resources = ["arn:aws:ssm:${var.aws_region}:${data.aws_caller_identity.current.account_id}:parameter/cyhy/report/third_party_reports"]
+  }
+}
+
+# The SSM policy for our role
+resource "aws_iam_role_policy" "ssm_cyhy_reporter_policy" {
+  role   = aws_iam_role.cyhy_reporter_role.id
+  policy = data.aws_iam_policy_document.ssm_cyhy_reporter_doc.json
+}
+
 # The instance profile to be used by any EC2 instances that need to
 # send emails via SES.
 resource "aws_iam_instance_profile" "cyhy_reporter" {
