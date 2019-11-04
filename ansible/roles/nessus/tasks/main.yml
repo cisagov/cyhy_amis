@@ -19,8 +19,9 @@
       set_fact:
         registered_key: "{{ key_result.stdout | regex_search(regexp, '\\1') }}"
       vars:
-        # Looking for key in format XXXX-XXXX-XXXX-XXXX-XXXX
-        regexp: '([a-zA-Z0-9]{4}(?:\-[a-zA-Z0-9]{4}){4})'
+        # Looking for key in format:
+        # XXXX-XXXX-XXXX-XXXX or XXXX-XXXX-XXXX-XXXX-XXXX
+        regexp: '([a-zA-Z0-9]{4}(?:\-[a-zA-Z0-9]{4}){3,4})'
 
     - name: See if the key in use matches the provided one
       set_fact:
