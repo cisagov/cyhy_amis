@@ -39,7 +39,7 @@ resource "aws_instance" "mgmt_bastion" {
 # load in the dynamically created provisioner modules
 module "dyn_mgmt_bastion" {
   source                 = "./dyn_mgmt_bastion"
-  mgmt_bastion_public_ip = aws_instance.mgmt_bastion[0].public_ip
+  mgmt_bastion_public_ip = aws_instance.mgmt_bastion[*].public_ip
   remote_ssh_user        = var.remote_ssh_user
 }
 
