@@ -183,7 +183,7 @@ module "cyhy_mongo_ansible_provisioner" {
 resource "aws_ebs_volume" "cyhy_mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type              = "io1"
-  size              = local.production_workspace ? 200 : 20
+  size              = local.production_workspace ? 1024 : 20
   iops              = 1000
   encrypted         = true
 
