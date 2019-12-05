@@ -1,17 +1,16 @@
 #!/usr/bin/env bash
 
-# deploy_new_adi_lambda.sh region workspace_name
+# deploy_new_adi_lambda.sh workspace_name
 
 set -o nounset
 set -o errexit
 set -o pipefail
 
-if [ $# -eq 2 ]
+if [ $# -eq 1 ]
 then
-    region=$1
-    workspace=$2
+    workspace=$1
 else
-    echo "Usage:  deploy_new_adi_lambda.sh region workspace_name"
+    echo "Usage:  deploy_new_adi_lambda.sh workspace_name"
     exit 1
 fi
 
