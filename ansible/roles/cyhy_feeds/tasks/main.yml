@@ -97,7 +97,7 @@
   cron:
     name: Nightly cyhy extract
     hour: '0'
-    minute: '01'
+    minute: '0'
     user: cyhy
     job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy-config /var/cyhy/scripts/cyhy-feeds/cyhy.yml --scan-config /var/cyhy/scripts/cyhy-feeds/scan_reader.yml --assessment-config /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml --aws --cleanup-aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
   when: production_workspace|bool
