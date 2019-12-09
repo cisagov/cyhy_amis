@@ -90,14 +90,22 @@
     ansible_ssh_pipelining: yes
 
 #
-# Create a cron job to run the extract script nightly at 0815 (UTC) as
-# cyhy
+# Create a cron job to run the extract script nightly at 0000 (UTC) as cyhy
+# NOTE:
+# We run at this time to reduce the odds of having documents, specifically
+# tickets, get missed in successive daily extracts. The previous time of 08:15
+# left an eight hour gap between the close of the query window for the script
+# and the start of the extract process. Since we are continuously scanning this
+# resulted in documents being updated and their modification time being updated
+# to fall past the end of the query cutoff. Changes were made to the script in
+# relation to this issue, and more information can be found in the pull request at
+# https://github.com/cisagov/cyhy-feeds/pull/37
 #
 - name: Set up nightly cron job to sync NSD data for MOE extract
   cron:
     name: Nightly cyhy extract
-    hour: '8'
-    minute: '15'
+    hour: '0'
+    minute: '0'
     user: cyhy
     job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy-config /var/cyhy/scripts/cyhy-feeds/cyhy.yml --scan-config /var/cyhy/scripts/cyhy-feeds/scan_reader.yml --assessment-config /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml --aws --cleanup-aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
   when: production_workspace|bool
