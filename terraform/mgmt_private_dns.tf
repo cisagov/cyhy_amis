@@ -31,20 +31,6 @@ resource "aws_route53_zone" "mgmt_private_zone" {
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
-# Associate CyHy VPC with the management private DNS zone
-resource "aws_route53_zone_association" "cyhy_mgmt" {
-  count   = var.enable_mgmt_vpc ? 1 : 0
-  zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
-  vpc_id  = aws_vpc.cyhy_vpc.id
-}
-
-# Associate BOD VPC with the management private DNS zone
-resource "aws_route53_zone_association" "bod_mgmt" {
-  count   = var.enable_mgmt_vpc ? 1 : 0
-  zone_id = aws_route53_zone.mgmt_private_zone[0].zone_id
-  vpc_id  = aws_vpc.bod_vpc.id
-}
-
 resource "aws_route53_record" "mgmt_router_A" {
   count = var.enable_mgmt_vpc ? 1 : 0
 
