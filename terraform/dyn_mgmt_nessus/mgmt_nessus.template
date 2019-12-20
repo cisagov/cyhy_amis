@@ -4,7 +4,7 @@ module "mgmt_nessus_ansible_provisioner_$index" {
 
   arguments = [
     "--user=$${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q $${var.remote_ssh_user}@$${var.mgmt_bastion_public_ip}\"'"
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q $${var.remote_ssh_user}@$${var.mgmt_bastion_public_ip[$index]}\"'"
   ]
   envs = [
     # If you terminate all the existing management Nessus instances
@@ -19,7 +19,7 @@ module "mgmt_nessus_ansible_provisioner_$index" {
     # If you find a better way, please use it and get rid of this
     # affront to basic decency.
     "host=$${length(var.mgmt_nessus_private_ips) > 0 ? element(var.mgmt_nessus_private_ips, $index) : ""}",
-    "bastion_host=$${var.mgmt_bastion_public_ip}",
+    "bastion_host=$${var.mgmt_bastion_public_ip[$index]}",
     "host_groups=nessus",
     "nessus_activation_code=$${var.mgmt_nessus_activation_codes[$index]}"
   ]
