@@ -61,13 +61,13 @@ resource "aws_security_group_rule" "mgmt_bastion_egress_to_scanner_sg_via_truste
 # Allow all ICMP from vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "mgmt_bastion_ingress_all_icmp_from_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc ? 1 : 0
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
 
   security_group_id = aws_security_group.mgmt_bastion_sg[0].id
   type              = "ingress"
   protocol          = "icmp"
   cidr_blocks = [
-    "${aws_instance.mgmt_nessus[0].private_ip}/32",
+    "${aws_instance.mgmt_nessus[count.index].private_ip}/32",
   ]
   from_port = -1
   to_port   = -1
@@ -76,13 +76,13 @@ resource "aws_security_group_rule" "mgmt_bastion_ingress_all_icmp_from_mgmt_vuln
 # Allow all TCP from vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "mgmt_bastion_ingress_all_tcp_from_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc ? 1 : 0
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
 
   security_group_id = aws_security_group.mgmt_bastion_sg[0].id
   type              = "ingress"
   protocol          = "tcp"
   cidr_blocks = [
-    "${aws_instance.mgmt_nessus[0].private_ip}/32",
+    "${aws_instance.mgmt_nessus[count.index].private_ip}/32",
   ]
   from_port = 0
   to_port   = 65535
@@ -91,13 +91,13 @@ resource "aws_security_group_rule" "mgmt_bastion_ingress_all_tcp_from_mgmt_vulns
 # Allow all UDP from vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "mgmt_bastion_ingress_all_udp_from_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc ? 1 : 0
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
 
   security_group_id = aws_security_group.mgmt_bastion_sg[0].id
   type              = "ingress"
   protocol          = "udp"
   cidr_blocks = [
-    "${aws_instance.mgmt_nessus[0].private_ip}/32",
+    "${aws_instance.mgmt_nessus[count.index].private_ip}/32",
   ]
   from_port = 0
   to_port   = 65535
@@ -106,13 +106,13 @@ resource "aws_security_group_rule" "mgmt_bastion_ingress_all_udp_from_mgmt_vulns
 # Allow all ICMP to vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "mgmt_bastion_egress_all_icmp_to_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc ? 1 : 0
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
 
   security_group_id = aws_security_group.mgmt_bastion_sg[0].id
   type              = "egress"
   protocol          = "icmp"
   cidr_blocks = [
-    "${aws_instance.mgmt_nessus[0].private_ip}/32",
+    "${aws_instance.mgmt_nessus[count.index].private_ip}/32",
   ]
   from_port = -1
   to_port   = -1
@@ -121,13 +121,13 @@ resource "aws_security_group_rule" "mgmt_bastion_egress_all_icmp_to_mgmt_vulnsca
 # Allow all TCP to vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "mgmt_bastion_egress_all_tcp_to_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc ? 1 : 0
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
 
   security_group_id = aws_security_group.mgmt_bastion_sg[0].id
   type              = "egress"
   protocol          = "tcp"
   cidr_blocks = [
-    "${aws_instance.mgmt_nessus[0].private_ip}/32",
+    "${aws_instance.mgmt_nessus[count.index].private_ip}/32",
   ]
   from_port = 0
   to_port   = 65535
@@ -136,15 +136,14 @@ resource "aws_security_group_rule" "mgmt_bastion_egress_all_tcp_to_mgmt_vulnscan
 # Allow all UDP to vulnscanner instance in Management VPC,
 # for internal scanning
 resource "aws_security_group_rule" "mgmt_bastion_egress_all_udp_to_mgmt_vulnscan" {
-  count = var.enable_mgmt_vpc ? 1 : 0
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
 
   security_group_id = aws_security_group.mgmt_bastion_sg[0].id
   type              = "egress"
   protocol          = "udp"
   cidr_blocks = [
-    "${aws_instance.mgmt_nessus[0].private_ip}/32",
+    "${aws_instance.mgmt_nessus[count.index].private_ip}/32",
   ]
   from_port = 0
   to_port   = 65535
 }
-

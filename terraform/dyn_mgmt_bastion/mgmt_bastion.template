@@ -7,7 +7,7 @@ module "mgmt_bastion_ansible_provisioner_$index" {
     "--ssh-common-args='-o StrictHostKeyChecking=no'"
   ]
   envs = [
-    "host=$${var.mgmt_bastion_public_ip}",
+    "host=$${var.mgmt_bastion_public_ip[$index]}",
     "host_groups=mgmt_bastion"
   ]
   playbook = "../ansible/playbook.yml"
