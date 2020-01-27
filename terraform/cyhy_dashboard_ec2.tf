@@ -24,7 +24,7 @@ data "aws_ami" "dashboard" {
 # The cyhy dashboard EC2 instance
 resource "aws_instance" "cyhy_dashboard" {
   ami           = data.aws_ami.dashboard.id
-  instance_type = local.production_workspace ? "t3.medium" : "t3.medium" # This is a placeholder for a larger instance type for production
+  instance_type = local.production_workspace ? "c5.large" : "t3.medium"
 
   # This is the private subnet
   subnet_id                   = aws_subnet.cyhy_private_subnet.id
@@ -72,4 +72,3 @@ module "cyhy_dashboard_ansible_provisioner" {
   playbook = "../ansible/playbook.yml"
   dry_run  = false
 }
-
