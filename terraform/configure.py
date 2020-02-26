@@ -9,7 +9,7 @@ keyword the same way resource can.  This leads to a great deal of copying and
 pasting in order to get provisioners and other modules to execute correctly.
 
 This script can be retired once this limitation is removed from Terraform.
-See: https://github.com/hashicorp/terraform/issues/953
+See: https://github.com/hashicorp/terraform/issues/17519
 
 To create a unique configuration for your own workspace edit the
 WORKSPACE_CONFIGS constant below.
