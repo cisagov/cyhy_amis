@@ -90,19 +90,20 @@ resource "aws_iam_role_policy" "es_bod_docker_policy" {
   policy = data.aws_iam_policy_document.es_bod_docker_doc.json
 }
 
-# IAM policy document that allows sending emails via SES.  This will
-# be applied to the role we are creating.
+# IAM policy document that allows us to assume a role that allows
+# sending of emails via SES.  This will be applied to the role we are
+# creating.
 data "aws_iam_policy_document" "ses_bod_docker_doc" {
   statement {
     effect = "Allow"
 
     actions = [
-      "ses:SendRawEmail",
+      "sts:AssumeRole",
     ]
 
-    # There are no resources for SES policies, although there are
-    # conditions
-    resources = ["*"]
+    resources = [
+      var.ses_role_arn,
+    ]
   }
 }
 
@@ -174,6 +175,7 @@ module "bod_docker_ansible_provisioner" {
     # This file will be used to add/override any settings in
     # docker-compose.yml (for cyhy-mailer).
     "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
+    "ses_send_email_role=${var.ses_role_arn}",
   ]
   playbook = "../ansible/playbook.yml"
   dry_run  = false
