@@ -37,7 +37,9 @@
     mode: 0444
     content: |
       [default]
+      credential_source = Ec2InstanceMetadata
       region = {{ ses_aws_region }}
+      role_arn={{ ses_send_email_role }}
 
 # docker-compose will automatically use docker-compose.yml and
 # docker-compose.override.yml, so this is a way for us to tune

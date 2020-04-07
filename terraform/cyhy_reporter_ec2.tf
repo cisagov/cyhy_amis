@@ -42,19 +42,20 @@ resource "aws_iam_role" "cyhy_reporter_role" {
   assume_role_policy = data.aws_iam_policy_document.cyhy_reporter_assume_role_doc.json
 }
 
-# IAM policy document that allows sending emails via SES.  This will
-# be applied to the role we are creating.
+# IAM policy document that allows us to assume a role that allows
+# sending of emails via SES.  This will be applied to the role we are
+# creating.
 data "aws_iam_policy_document" "ses_cyhy_reporter_doc" {
   statement {
     effect = "Allow"
 
     actions = [
-      "ses:SendRawEmail",
+      "sts:AssumeRole",
     ]
 
-    # There are no resources for SES policies, although there are
-    # conditions
-    resources = ["*"]
+    resources = [
+      var.ses_role_arn,
+    ]
   }
 }
 
@@ -121,6 +122,7 @@ module "cyhy_reporter_ansible_provisioner" {
     "production_workspace=${local.production_workspace}",
     "ses_aws_region=${var.ses_aws_region}",
     "docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}",
+    "ses_send_email_role=${var.ses_role_arn}",
   ]
   playbook = "../ansible/playbook.yml"
   dry_run  = false
