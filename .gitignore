@@ -1,5 +1,6 @@
 *~
 playbook.retry
+.python-version
 .terraform
 terraform.tfstate*
 *.tfvars
