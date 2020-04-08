@@ -77,11 +77,6 @@ locals {
   bod_private_domain  = "bod"
   mgmt_private_domain = "mgmt"
 
-  # zones to use for public DNS
-  cyhy_public_zone = "cyber.dhs.gov"
-  bod_public_zone  = "cyber.dhs.gov"
-  mgmt_public_zone = "cyber.dhs.gov"
-
   # subdomains to use in the public_zone.
   # to create records directly in the public_zone set to ""
   # otherwise it must end in a period
@@ -111,4 +106,3 @@ locals {
   # Management Vulnerability Scanner DNS entries
   count_mgmt_vuln_scanner = local.mgmt_nessus_instance_count
 }
-
