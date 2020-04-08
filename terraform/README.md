@@ -1,5 +1,20 @@
 # Cyber Hygiene and BOD 18-01 Scanning Terraform Code for AWS ☁️ #
 
+## Pre-requisites ##
+
+In order to access certain AWS resources, the following AWS profiles must be
+set up in your AWS credentials file:
+
+* `cool-dns-route53resourcechange-cyber.dhs.gov`
+* `cool-terraform-readstate`
+
+The easiest way to set up those profiles is to use our
+[`aws-profile-sync`](https://github.com/cisagov/aws-profile-sync) utility.
+Follow the usage instructions in that repository before continuing with the
+next steps.  Note that you will need to know where your team stores their
+remote profile data in order to use
+[`aws-profile-sync`](https://github.com/cisagov/aws-profile-sync).
+
 ## Building ##
 
 Build Terraform-based infrastructure with:
