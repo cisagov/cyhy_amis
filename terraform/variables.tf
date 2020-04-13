@@ -131,13 +131,19 @@ variable "dmarc_import_aws_region" {
   default     = "us-east-1"
 }
 
-variable "dmarc_import_es_arn" {
-  description = "The ARN of the dmarc-import Elasticsearch database."
+variable "dmarc_import_es_role_arn" {
+  type        = string
+  description = "The ARN of the role that must be assumed in order to read the dmarc-import Elasticsearch database."
 }
 
 variable "ses_aws_region" {
   description = "The AWS region where SES is configured."
   default     = "us-east-1"
+}
+
+variable "ses_role_arn" {
+  type        = string
+  description = "The ARN of the role that must be assumed in order to send emails."
 }
 
 variable "reporter_mailer_override_filename" {
@@ -282,10 +288,5 @@ variable "findings_data_import_ssm_db_password" {
   type        = string
   description = "The name of the parameter in AWS SSM that holds the database password for the user with write permission to the findings database."
   default     = ""
-}
-
-variable "ses_role_arn" {
-  type        = string
-  description = "The ARN of the role that must be assumed in order to send emails."
 }
 
