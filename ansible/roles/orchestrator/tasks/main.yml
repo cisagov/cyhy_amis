@@ -61,8 +61,9 @@
       region = {{ aws_region }}
 
       [profile elasticsearch]
+      credential_source = Ec2InstanceMetadata
       region = {{ dmarc_import_aws_region }}
-
+      role_arn = {{ dmarc_import_es_role }}
 
 #
 # Create a cron job for scanning
