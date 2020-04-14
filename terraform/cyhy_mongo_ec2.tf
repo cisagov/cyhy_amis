@@ -164,6 +164,7 @@ module "cyhy_mongo_ansible_provisioner" {
     "production_workspace=${local.production_workspace}",
     "aws_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
+    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
   ]
   playbook = "../ansible/playbook.yml"
   dry_run  = false
