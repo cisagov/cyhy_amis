@@ -46,20 +46,19 @@ resource "aws_iam_role_policy" "archive_cyhy_mongo_policy" {
   policy = data.aws_iam_policy_document.s3_cyhy_archive_write_doc.json
 }
 
-# IAM policy document that only allows GETting from the dmarc-import
-# Elasticsearch database.  This will be applied to the role we are
-# creating.
+# IAM policy document that allows us to assume a role that allows
+# reading of the dmarc-import Elasticsearch database.  This will be
+# applied to the role we are creating.
 data "aws_iam_policy_document" "es_cyhy_mongo_doc" {
   statement {
     effect = "Allow"
 
     actions = [
-      "es:ESHttpGet",
+      "sts:AssumeRole",
     ]
 
     resources = [
-      var.dmarc_import_es_arn,
-      "${var.dmarc_import_es_arn}/*",
+      var.dmarc_import_es_role_arn,
     ]
   }
 }
@@ -165,6 +164,7 @@ module "cyhy_mongo_ansible_provisioner" {
     "production_workspace=${local.production_workspace}",
     "aws_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
+    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
   ]
   playbook = "../ansible/playbook.yml"
   dry_run  = false
