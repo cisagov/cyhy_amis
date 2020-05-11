@@ -19,15 +19,15 @@ users:
     shell: /bin/bash
     ssh-authorized-keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHJkFgYx58vd/JCikIQRVmQUBNa5k1h9Z+xzM6AjZLqE jeremy.frasier
-  - name: kyle.evers
-    groups: [ sudo ]
-    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
-    shell: /bin/bash
-    ssh-authorized-keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKY5tqMRtnZSkVPwU0X1zKA8L3RnvmhSAR/bHAtd3Vcr kyle.evers
   - name: nicholas.mcdonnell
     groups: [ sudo ]
     sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
     shell: /bin/bash
     ssh-authorized-keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWZgKiUcpnS8PwEJ54sxrb3/bt35mcG6xSb6rv447aj nicholas.mcdonnell
+  - name: hillary.jeffrey
+    groups: [ sudo ]
+    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
+    shell: /bin/bash
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH9/RdY64Hpev7lmDn+Unq2jA/3FP9TBJLzscNwvSWDN hillary.jeffrey
