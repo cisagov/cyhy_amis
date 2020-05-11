@@ -34,7 +34,7 @@
     dest: /var/cyhy/cyhy-mailer/secrets/aws_config
     owner: cyhy
     group: cyhy
-    mode: 0440
+    mode: 0444
     content: |
       [default]
       credential_source = Ec2InstanceMetadata
