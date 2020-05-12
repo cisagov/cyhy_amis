@@ -49,8 +49,11 @@ WORKSPACE_CONFIGS = {
         "mgmt_bastion": 0,
         "mgmt_nessus": 0,
     },
+    "daver": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
     "felddy": {"nmap": 4, "nessus": 1, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
+    "hillary": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
     "jsf9k": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
+    "mcdonnnj": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
 }
 
 # the default configuration if a workspace is not defined above
