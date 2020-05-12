@@ -40,43 +40,39 @@ HEADER = '''###
 # application is compared to the app_regex field.  If it matches it
 # will be included in the associated filename.
 
-# The following CIDR blocks are where our test Qualys scans originate
-# from:
-# 64.39.99.19/32, 64.39.99.20/30, 64.39.99.24/31,
-# 64.39.99.98/31, 64.39.99.100/32, 64.39.99.131/32,
-# 64.39.99.132/30, 64.39.99.136/29, 64.39.99.144/31
+# The following CIDR blocks are where our Cyber Hygiene scans
+# originate from:
+cyhy_ips = (
+    '100.27.42.128/25', '64.69.57.0/24',
+)
+# The following CIDR blocks are where our Qualys web application scans
+# originate from:
+qualys_was_ips = (
+    '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
+    '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
+    '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
+)
 FILE_CONFIGS = \
     [{
         'filename': 'all.txt',
         'app_regex': re.compile('.*'),
-        'static_ips': (
-            '100.27.42.128/25', '64.69.57.0/24',
-            '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
-            '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
-            '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
-        ),
-        'description': 'This file contains a consolidated list of all the IP addresses that VM is currently using for external scanning.'
+        'static_ips': cyhy_ips + qualys_was_ips,
+        'description': 'This file contains a consolidated list of all the IP addresses that VM is currently using for external scanning.',
     }, {
         'filename': 'cyhy.txt',
         'app_regex': re.compile('(Manual )?Cyber Hygiene$'),
-        'static_ips': (
-            '100.27.42.128/25', '64.69.57.0/24',
-        ),
-        'description': 'This file contains a list of all IPs used for Cyber Hygiene scanning.'
+        'static_ips': cyhy_ips,
+        'description': 'This file contains a list of all IPs used for Cyber Hygiene scanning.',
     }, {
         'filename': 'pca.txt',
         'app_regex': re.compile('Phishing Campaign Assessment$'),
         'static_ips': (),
-        'description': 'This file contains a list of all IPs used for Phishing Campaign Assessments'
+        'description': 'This file contains a list of all IPs used for Phishing Campaign Assessments',
     }, {
         'filename': 'was.txt',
         'app_regex': re.compile('Web Application Scanning$'),
-        'static_ips': (
-            '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
-            '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
-            '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
-        ),
-        'description': 'This file contains a list of all IPs used for Web Application Scanning.'
+        'static_ips': qualys_was_ips,
+        'description': 'This file contains a list of all IPs used for Web Application Scanning.',
     },]
 
 
