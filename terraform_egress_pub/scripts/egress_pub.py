@@ -60,9 +60,6 @@ FILE_CONFIGS = \
         'app_regex': re.compile('(Manual )?Cyber Hygiene$'),
         'static_ips': (
             '100.27.42.128/25', '64.69.57.0/24',
-            '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
-            '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
-            '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
         ),
         'description': 'This file contains a list of all IPs used for Cyber Hygiene scanning.'
     }, {
@@ -70,7 +67,16 @@ FILE_CONFIGS = \
         'app_regex': re.compile('Phishing Campaign Assessment$'),
         'static_ips': (),
         'description': 'This file contains a list of all IPs used for Phishing Campaign Assessments'
-    }]
+    }, {
+        'filename': 'was.txt',
+        'app_regex': re.compile('Web Application Scanning$'),
+        'static_ips': (
+            '64.39.99.19/32', '64.39.99.20/30', '64.39.99.24/31',
+            '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
+            '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
+        ),
+        'description': 'This file contains a list of all IPs used for Web Application Scanning.'
+    },]
 
 
 def get_ec2_regions(filter=None):
