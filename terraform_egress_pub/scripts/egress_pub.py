@@ -29,9 +29,9 @@ APPLICATION_TAG = 'Application'
 HEADER = '''###
 # https://{domain}/{filename}
 # {timestamp}
-# DHS National Cybersecurity Assessments & Technical Services (NCATS)
+# CISA Vulnerability Management (VM)
 # {description}
-# Please contact ncats@hq.dhs.gov with any questions
+# Please contact vulnerability@cisa.dhs.gov with any questions
 ###
 '''
 
@@ -54,7 +54,7 @@ FILE_CONFIGS = \
             '64.39.99.98/31', '64.39.99.100/32', '64.39.99.131/32',
             '64.39.99.132/30', '64.39.99.136/29', '64.39.99.144/31',
         ),
-        'description': 'This file contains a consolidated list of all the IP addresses that NCATS is currently using for external scanning.'
+        'description': 'This file contains a consolidated list of all the IP addresses that VM is currently using for external scanning.'
     }, {
         'filename': 'cyhy.txt',
         'app_regex': re.compile('(Manual )?Cyber Hygiene$'),
