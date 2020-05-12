@@ -35,12 +35,13 @@ HEADER = '''###
 ###
 '''
 
-# A list of dictionaries that define the files to be created and published.
-# When an ip is to be published, its assoicated application is compared to the
-# app_regex field.  If it matches it will be included in the associated
-# filename.
+# A list of dictionaries that define the files to be created and
+# published.  When an ip is to be published, its associated
+# application is compared to the app_regex field.  If it matches it
+# will be included in the associated filename.
 
-# The following CIDR blocks are where our test Qualys scans originate from:
+# The following CIDR blocks are where our test Qualys scans originate
+# from:
 # 64.39.99.19/32, 64.39.99.20/30, 64.39.99.24/31,
 # 64.39.99.98/31, 64.39.99.100/32, 64.39.99.131/32,
 # 64.39.99.132/30, 64.39.99.136/29, 64.39.99.144/31
