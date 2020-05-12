@@ -67,7 +67,7 @@ FILE_CONFIGS = \
         'filename': 'pca.txt',
         'app_regex': re.compile('Phishing Campaign Assessment$'),
         'static_ips': (),
-        'description': 'This file contains a list of all IPs used for Phishing Campaign Assessments',
+        'description': 'This file contains a list of all IPs used for Phishing Campaign Assessments.',
     }, {
         'filename': 'was.txt',
         'app_regex': re.compile('Web Application Scanning$'),
