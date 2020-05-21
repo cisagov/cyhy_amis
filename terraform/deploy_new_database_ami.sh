@@ -44,6 +44,7 @@ terraform apply -var-file="$workspace.tfvars" \
                 -target=aws_security_group_rule.fdi_lambda_to_cyhy_mongo \
                 -target=aws_security_group_rule.bastion_egress_to_mongo_via_mongo \
                 -target=aws_security_group_rule.private_mongodb_egress_to_mongo_host \
+                -target=aws_security_group_rule.private_mongodb_ingress \
                 -target=aws_volume_attachment.cyhy_mongo_data_attachment \
                 -target=aws_volume_attachment.cyhy_mongo_journal_attachment \
                 -target=aws_volume_attachment.cyhy_mongo_log_attachment
