@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# deploy_new_database_ami.sh region workspace_name
+# deploy_new_dashboard_ami.sh region workspace_name
 
 set -o nounset
 set -o errexit
