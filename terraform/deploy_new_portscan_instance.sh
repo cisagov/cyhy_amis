@@ -55,6 +55,11 @@ region=$1
 workspace=$2
 start=$3
 
+if [[ (! "$start" =~ ^[0-9]+$) || (! "$stop" =~ ^[0-9]+$) ]]
+then
+    usage
+fi
+
 if [ "$start" -gt "$stop" ]
 then
     usage
