@@ -29,21 +29,21 @@ assert sys.version_info >= (3, 7), "This script requires Python version 3.7 or n
 # NOTE: mgmt_bastion should only be set to 0 or 1
 WORKSPACE_CONFIGS = {
     "production": {
-        "nmap": 64,
+        "nmap": 72,
         "nessus": 3,
         "mongo": 1,
         "mgmt_bastion": 0,
         "mgmt_nessus": 0,
     },
     "prod-a": {
-        "nmap": 64,
+        "nmap": 72,
         "nessus": 3,
         "mongo": 1,
         "mgmt_bastion": 0,
         "mgmt_nessus": 0,
     },
     "prod-b": {
-        "nmap": 64,
+        "nmap": 72,
         "nessus": 3,
         "mongo": 1,
         "mgmt_bastion": 0,
@@ -51,9 +51,21 @@ WORKSPACE_CONFIGS = {
     },
     "daver": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
     "felddy": {"nmap": 4, "nessus": 1, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
-    "hillary": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
+    "hillary": {
+        "nmap": 0,
+        "nessus": 0,
+        "mongo": 1,
+        "mgmt_bastion": 0,
+        "mgmt_nessus": 0,
+    },
     "jsf9k": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
-    "mcdonnnj": {"nmap": 0, "nessus": 0, "mongo": 1, "mgmt_bastion": 0, "mgmt_nessus": 0},
+    "mcdonnnj": {
+        "nmap": 0,
+        "nessus": 0,
+        "mongo": 1,
+        "mgmt_bastion": 0,
+        "mgmt_nessus": 0,
+    },
 }
 
 # the default configuration if a workspace is not defined above
