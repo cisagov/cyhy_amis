@@ -15,6 +15,7 @@ function usage {
 }
 
 function redeploy_instances {
+    tf_args="-var-file=\"$workspace.tfvars\""
     for index in $(seq "$1" "$2")
     do
         # Strip control characters, then look for the text "id" surrounded by
@@ -29,14 +30,15 @@ function redeploy_instances {
         aws --region "$region" ec2 terminate-instances --instance-ids "$nmap_instance_id"
         aws --region "$region" ec2 wait instance-terminated --instance-ids "$nmap_instance_id"
 
-        terraform apply -var-file="$workspace.tfvars" \
-                  -target=aws_eip_association.cyhy_nmap_eip_assocs[$index] \
-                  -target=aws_instance.cyhy_nmap[$index] \
-                  -target=aws_route53_record.cyhy_portscan_A[$index] \
-                  -target=aws_route53_record.cyhy_rev_portscan_PTR[$index] \
-                  -target=aws_volume_attachment.nmap_cyhy_runner_data_attachment[$index] \
-                  -target="module.dyn_nmap.module.cyhy_nmap_ansible_provisioner_$index"
+        tf_args="$tf_args -target=aws_eip_association.cyhy_nmap_eip_assocs[$index]"
+        tf_args="$tf_args -target=aws_instance.cyhy_nmap[$index]"
+        tf_args="$tf_args -target=aws_route53_record.cyhy_portscan_A[$index]"
+        tf_args="$tf_args -target=aws_route53_record.cyhy_rev_portscan_PTR[$index]"
+        tf_args="$tf_args -target=aws_volume_attachment.nmap_cyhy_runner_data_attachment[$index]"
+        tf_args="$tf_args -target=\"module.dyn_nmap.module.cyhy_nmap_ansible_provisioner_$index\""
     done
+
+    terraform apply $tf_args
 }
 
 if [ $# -eq 3 ]
