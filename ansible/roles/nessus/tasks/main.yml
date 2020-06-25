@@ -69,7 +69,7 @@
 
     - name: Rebuild the plugin database
       command: /opt/nessus/sbin/nessusd -R
-      async: 1200
+      async: 1800
       poll: 30
 
     - name: Start Nessus service
