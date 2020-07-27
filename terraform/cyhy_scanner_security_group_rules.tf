@@ -86,3 +86,17 @@ resource "aws_security_group_rule" "scanner_egress_anywhere" {
   to_port   = 0
 }
 
+# Allow all TCP from vulnscanner instance in Management VPC,
+# for internal scanning
+resource "aws_security_group_rule" "scanner_ingress_all_tcp_from_mgmt_vulnscan" {
+  count = var.enable_mgmt_vpc ? local.mgmt_nessus_instance_count : 0
+
+  security_group_id = aws_security_group.cyhy_scanner_sg.id
+  type              = "ingress"
+  protocol          = "tcp"
+  cidr_blocks = [
+    "${aws_instance.mgmt_nessus[count.index].private_ip}/32",
+  ]
+  from_port = 0
+  to_port   = 65535
+}
