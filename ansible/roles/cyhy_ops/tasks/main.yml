@@ -27,4 +27,5 @@
     create: yes
     owner: cyhy_ops
     group: cyhy_ops
+    mode: 0600
   loop: "{{ ops_users }}"
