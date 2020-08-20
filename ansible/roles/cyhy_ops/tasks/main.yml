@@ -25,4 +25,7 @@
     path: /home/cyhy_ops/.ssh/authorized_keys
     line: "{{ lookup('aws_ssm', '/ssh/public_keys/{{ item }}') }}"
     create: yes
+    owner: cyhy_ops
+    group: cyhy_ops
+    mode: 0600
   loop: "{{ ops_users }}"
