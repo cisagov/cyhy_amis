@@ -25,4 +25,7 @@
     path: /home/mgmt_ops/.ssh/authorized_keys
     line: "{{ lookup('aws_ssm', '/ssh/public_keys/{{ item }}') }}"
     create: yes
+    owner: mgmt_ops
+    group: mgmt_ops
+    mode: 0600
   loop: "{{ ops_users }}"
