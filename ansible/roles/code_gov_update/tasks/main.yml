@@ -20,7 +20,6 @@
     content: |
       {
           "agency": "DHS",
-          "organization": "Department of Homeland Security",
           "contact_email": "do_not_email_just_use_github@dhs.gov",
 
           "permissions": {
