@@ -12,6 +12,14 @@
     - banner
     - persist_journald
 
+# Any instances that are built on Debian Buster should have Python 2 removed
+- hosts: bastion
+  name: Remove Python 2
+  become: yes
+  become_method: sudo
+  roles:
+    - remove_python2
+
 # The bastion should have as little installed as possible, since it's
 # exposed to the cruel world
 - hosts: all:!bastion
