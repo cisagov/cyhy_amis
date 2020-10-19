@@ -51,10 +51,20 @@
   ],
   "provisioners": [
     {
-      "extra_arguments": [
-        "--extra-vars",
-        "ansible_python_interpreter=/usr/bin/python3"
+      "groups": [
+        "bastion"
       ],
+      "playbook_file": "packer/ansible/upgrade.yml",
+      "type": "ansible"
+    },
+    {
+      "groups": [
+        "bastion"
+      ],
+      "playbook_file": "packer/ansible/python.yml",
+      "type": "ansible"
+    },
+    {
       "groups": [
         "bastion"
       ],

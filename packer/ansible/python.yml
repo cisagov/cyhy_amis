@@ -1,0 +1,16 @@
+---
+- hosts: all
+  name: Install pip3/python3
+  become: yes
+  become_method: sudo
+  roles:
+    - pip
+    - python
+
+# Any instances that are built on Debian Buster should have Python 2 removed
+- hosts: bastion
+  name: Remove pip2/python2
+  become: yes
+  become_method: sudo
+  roles:
+    - remove_python2
