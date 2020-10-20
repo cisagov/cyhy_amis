@@ -13,7 +13,7 @@ variable "aws_availability_zone" {
 variable "tags" {
   type = map(string)
   default = {
-    Team        = "NCATS OIS - Development"
+    Team        = "VM Fusion - Development"
     Application = "Manual Cyber Hygiene"
   }
   description = "Tags to apply to all AWS resources created"

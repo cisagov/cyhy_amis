@@ -44,7 +44,7 @@
         "Base_AMI_Name": "{{ .SourceAMIName }}",
         "OS_Version": "Debian Stretch",
         "Release": "Latest",
-        "Team": "NCATS OIS - Development"
+        "Team": "VM Fusion - Development"
       },
       "type": "amazon-ebs"
     }
