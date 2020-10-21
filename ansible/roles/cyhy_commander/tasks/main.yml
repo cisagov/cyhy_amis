@@ -83,6 +83,7 @@
   get_url:
     url: "https://raw.githubusercontent.com/cisagov/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
     dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
+    mode: 0644
 
 - name: Check if cyhy.conf already exists
   stat:
