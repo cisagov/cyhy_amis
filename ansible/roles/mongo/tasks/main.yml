@@ -6,20 +6,12 @@
   register: checkifmongousers
   changed_when: false
 
-# HACK ALERT - Part 1: Install pymongo 3.5 in order to use the Ansible
-# mongodb_user module
-#
-# Note that pymongo > 3.5 will fail right now, so we have to enforce
-# an old version:
-# * https://jira.mongodb.org/browse/SERVER-34820
-# * https://github.com/ansible/ansible/issues/38998
-#
-# The forced installation of 3.5 should be removed once this issue
-# gets resolved.
-- name: Install pymongo 3.5.  This should be changed to install the latest once that is possible.
+# HACK ALERT - Part 1:
+# Install pymongo 3.6 in order to use the Ansible mongodb_user module.
+- name: Install pymongo 3.6
   pip:
     name: pymongo
-    version: '3.5'
+    version: '3.6'
 
 - name: Create admin user in admin db (first user, no authentication)
   mongodb_user:
@@ -55,7 +47,8 @@
   # Loop over all the users *except* for admin
   loop: "{{ non_admin_users }}"
 
-# HACK ALERT - Part 2: Revert to older pymongo, needed for cyhy-core
+# HACK ALERT - Part 2:
+# Revert to older pymongo, needed for cyhy-core
 - name: Downgrade to pymongo 2.9.5
   pip:
     name: pymongo
