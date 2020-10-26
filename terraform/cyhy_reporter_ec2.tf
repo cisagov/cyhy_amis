@@ -82,7 +82,7 @@ resource "aws_instance" "cyhy_reporter" {
 
   root_block_device {
     volume_type           = "gp2"
-    volume_size           = 20
+    volume_size           = 50
     delete_on_termination = true
   }
 
@@ -141,7 +141,7 @@ module "cyhy_reporter_ansible_provisioner" {
 resource "aws_ebs_volume" "cyhy_reporter_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type              = "io1"
-  size              = local.production_workspace ? 200 : 5
+  size              = local.production_workspace ? 500 : 5
   iops              = 100
   encrypted         = true
 
