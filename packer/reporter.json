@@ -1,59 +1,75 @@
 {
-    "builders": [{
-        "type": "amazon-ebs",
-        "region": "us-east-2",
-        "source_ami_filter": {
-            "filters": {
-                "virtualization-type": "hvm",
-                "name": "debian-stretch-hvm-x86_64-gp2-*",
-                "root-device-type": "ebs"
-            },
-            "owners": [
-                "379101102735"
-            ],
-            "most_recent": true
-        },
-        "instance_type": "t3.medium",
-        "ssh_username": "admin",
-        "ami_name": "cyhy-reporter-hvm-{{timestamp}}-x86_64-ebs",
-        "ami_regions": [
-            "us-east-1",
-            "us-west-1",
-            "us-west-2"
-        ],
-
-        "ami_block_device_mappings": [{
-            "device_name": "xvda",
-            "volume_size": 8,
-            "volume_type": "gp2",
-            "encrypted": true,
-            "delete_on_termination": true
-        }],
-
-        "launch_block_device_mappings": [{
-            "device_name": "xvda",
-            "volume_size": 8,
-            "volume_type": "gp2",
-            "encrypted": true,
-            "delete_on_termination": true
-        }],
-
-        "tags": {
-            "Team": "NCATS OIS - Development",
-            "Application": "Cyber Hygiene",
-            "OS_Version": "Debian Stretch",
-            "Release": "Latest",
-            "Base_AMI_Name": "{{ .SourceAMIName }}"
-        }
-    }],
-
-    "provisioners": [
+  "builders": [
+    {
+      "ami_block_device_mappings": [
         {
-            "type": "ansible",
-            "playbook_file": "packer/ansible/playbook.yml",
-            "groups": [
-                "cyhy_reporter"
-            ]
+          "delete_on_termination": true,
+          "device_name": "xvda",
+          "encrypted": true,
+          "volume_size": 8,
+          "volume_type": "gp2"
         }
-    ]
+      ],
+      "ami_name": "cyhy-reporter-hvm-{{timestamp}}-x86_64-ebs",
+      "ami_regions": [
+        "us-east-1",
+        "us-west-1",
+        "us-west-2"
+      ],
+      "instance_type": "t3.medium",
+      "launch_block_device_mappings": [
+        {
+          "delete_on_termination": true,
+          "device_name": "xvda",
+          "encrypted": true,
+          "volume_size": 8,
+          "volume_type": "gp2"
+        }
+      ],
+      "region": "us-east-2",
+      "source_ami_filter": {
+        "filters": {
+          "name": "debian-stretch-hvm-x86_64-gp2-*",
+          "root-device-type": "ebs",
+          "virtualization-type": "hvm"
+        },
+        "most_recent": true,
+        "owners": [
+          "379101102735"
+        ]
+      },
+      "ssh_username": "admin",
+      "tags": {
+        "Application": "Cyber Hygiene",
+        "Base_AMI_Name": "{{ .SourceAMIName }}",
+        "OS_Version": "Debian Stretch",
+        "Release": "Latest",
+        "Team": "VM Fusion - Development"
+      },
+      "type": "amazon-ebs"
+    }
+  ],
+  "provisioners": [
+    {
+      "groups": [
+        "reporter"
+      ],
+      "playbook_file": "packer/ansible/upgrade.yml",
+      "type": "ansible"
+    },
+    {
+      "groups": [
+        "reporter"
+      ],
+      "playbook_file": "packer/ansible/python.yml",
+      "type": "ansible"
+    },
+    {
+      "groups": [
+        "cyhy_reporter"
+      ],
+      "playbook_file": "packer/ansible/playbook.yml",
+      "type": "ansible"
+    }
+  ]
 }

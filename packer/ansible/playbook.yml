@@ -6,8 +6,6 @@
   become: yes
   become_method: sudo
   roles:
-    - upgrade
-    - python
     - nvme
     - banner
     - persist_journald
