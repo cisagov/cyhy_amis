@@ -29,6 +29,12 @@ function check_dependencies {
 
 function redeploy_instances {
     tf_args=()
+    # Get all portscan instance IDs as a JSON array of dicts in the form:
+    # {
+    #   index: instance_index,
+    #   id: instance_id
+    # }
+    # Any previously removed instances are ignored (.deposed_key == null)
     portscanner_ids_json=$(terraform show -json | \
         jq '.values.root_module.resources[] | select(.address == "aws_instance.cyhy_nmap" and .deposed_key == null) | {index, id: .values.id}' \
         | jq -n '[inputs]')
@@ -36,9 +42,8 @@ function redeploy_instances {
 
     for index in $(seq "$1" "$2")
     do
-        # Strip control characters, then look for the text "id" surrounded by
-        # space characters, then extract only the ID from that line.
-        # The first sed line has been carefully crafted to work with BSD sed.
+        # Check the list of instances and get the ID of the index we are working
+        # on for this iteration
         nmap_instance_ids+=("$(echo "$portscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")")
 
         tf_args+=("-target=aws_instance.cyhy_nmap[$index]")
