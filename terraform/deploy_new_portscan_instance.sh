@@ -1,19 +1,27 @@
 #!/usr/bin/env bash
-
+#
+# (Re)deploy portscan instances in the current Terraform environment.
+# Usage:
 # deploy_new_portscan_instance.sh region workspace_name instance_index
-# deploy_new_portscan_instance.sh region workspace_name first_instance last_instance
+# deploy_new_portscan_instance.sh region workspace_name first_index last_index
 
 set -o nounset
 set -o errexit
 set -o pipefail
 
+# Print usage information and exit.
 function usage {
     echo "Usage:"
     echo "  ${0##*/} region workspace_name instance_index"
-    echo "  ${0##*/} region workspace_name first_instance last_instance"
+    echo "  ${0##*/} region workspace_name first_index last_index"
+    echo
+    echo "Notes:"
+    echo "  - When giving a first and last index the range is inclusive."
     exit 1
 }
 
+# Check for required external programs. If any are missing output a list of all
+# requirements and then exit.
 function check_dependencies {
     if [ -z "$(command -v terraform)" ] || \
         [ -z "$(command -v aws)" ] || \
@@ -27,6 +35,8 @@ function check_dependencies {
     fi
 }
 
+# Terminate running instances and (re)deploy their Terraform resources in the
+# given range of instance indices [first, last].
 function redeploy_instances {
     tf_args=()
     # Get all portscan instance IDs as a JSON array of dicts in the form:
