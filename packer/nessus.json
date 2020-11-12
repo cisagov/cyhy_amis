@@ -42,7 +42,7 @@
       "tags": {
         "Application": "Cyber Hygiene",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
-        "OS_Version": "Debian Stretch",
+        "OS_Version": "Debian Buster",
         "Release": "Latest",
         "Team": "VM Fusion - Development"
       },
