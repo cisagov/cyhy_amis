@@ -178,26 +178,26 @@ class NessusController:
         )
         if response.status_code == OK_STATUS:
             return response.json()
-        raise Warning("Policy import failed; response={!r}".format(response.text))
+        raise Warning(f"Policy import failed; response={response.text}")
 
     def upload_file(self, files):
         response = self.__make_request(FILE_UPLOAD, "POST", files=files)
         if response.status_code == OK_STATUS:
             return response.json()
-        raise Warning("File upload failed; response={!r}".format(response.text))
+        raise Warning(f"File upload failed; response={response.text}")
 
     def policy_list(self):
         response = self.__make_request(POLICY_BASE, "GET")
         if response.status_code == OK_STATUS:
             return response.json()
-        raise Warning("Policy list failed; response={!r}".format(response.text))
+        raise Warning(f"Policy list failed; response={response.text}")
 
     def destroy_session(self):
         response = self.__make_request(LOGIN, "DELETE")
         if response.status_code == OK_STATUS:
             return response
         raise Warning(
-            "Session destruction failed; response={!r}".format(response.text)
+            f"Session destruction failed; response={response.text}"
         )
 
 
