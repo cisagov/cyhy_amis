@@ -93,7 +93,7 @@ class NessusController:
             # If we are already logged in, add the token to the
             # headers
             if self.token:
-                headers["X-Cookie"] = "token={!s}".format(self.token)
+                headers["X-Cookie"] = f"token={self.token}"
 
             if method == "GET":
                 response = requests.get(
@@ -106,7 +106,7 @@ class NessusController:
                 if files:
                     # This reassigning of headers is to remove the
                     # content type assignment
-                    headers = {"X-Cookie": "token={!s}".format(self.token)}
+                    headers = {"X-Cookie": f"token={self.token}"}
                     response = requests.post(
                         self.url + target,
                         headers=headers,
