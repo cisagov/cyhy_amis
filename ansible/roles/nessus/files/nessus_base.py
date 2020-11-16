@@ -1,10 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
+# Standard Python Libraries
 import json
 import logging
-import requests
 import sys
 import time
+
+# Third-Party Libraries
+import requests
 
 USER = ""
 PASSWORD = ""
@@ -38,7 +41,8 @@ FAILED_REQUEST_RETRY_WAIT_SEC = 10
 # Note that we disable LGTM's unreachable statement warning for this
 # particular bit of code
 if DEBUG:
-    import httplib as http_client  # lgtm[py/unreachable-statement]
+    # Standard Python Libraries
+    import http.client as http_client  # lgtm[py/unreachable-statement]
 
     http_client.HTTPConnection.debuglevel = 1
     logging.basicConfig()
@@ -60,7 +64,7 @@ def setup_logging():
     handler.setFormatter(formatter)
 
 
-class NessusController(object):
+class NessusController:
     def __init__(self, nessus_url):
         self.url = nessus_url
         self.token = None
@@ -72,9 +76,7 @@ class NessusController(object):
 
         while num_retries < FAILED_REQUEST_MAX_RETRIES:
             if num_retries > 0:
-                LOGGER.warning(
-                    "Waiting {!r} seconds...".format(FAILED_REQUEST_RETRY_WAIT_SEC)
-                )
+                LOGGER.warning("Waiting %d seconds...", FAILED_REQUEST_RETRY_WAIT_SEC)
                 time.sleep(FAILED_REQUEST_RETRY_WAIT_SEC)
 
             # Send everything as json content
@@ -135,18 +137,18 @@ class NessusController(object):
                 return response
 
             LOGGER.warning(
-                "Request failed ({!r} {!r}, attempt #{!r}); "
-                "response={!r}".format(
-                    method, self.url + target, num_retries + 1, response.text
-                )
+                "Request failed (%s %s, attempt #%d); response=%s",
+                method,
+                self.url + target,
+                num_retries + 1,
+                response.text,
             )
             if self.token and response.status_code == INVALID_CREDS_STATUS:
                 LOGGER.warning(
-                    "Invalid credentials error; " "Nessus session probably expired."
+                    "Invalid credentials error; Nessus session probably expired."
                 )
                 LOGGER.warning(
-                    "Attempting to establish new Nessus "
-                    "session (username: {!r})".format(USER)
+                    "Attempting to establish new Nessus session (username: %s)", USER
                 )
                 # Clear token to force re-login on next loop
                 self.token = None
@@ -160,16 +162,15 @@ class NessusController(object):
         sys.exit(num_retries)
 
     def find_policy(self, policy_name):
-        """Attempts to grab the policy ID for a name"""
+        """Attempt to grab the policy ID for a name."""
         policies = self.policy_list()
         if policies.get("policies"):
-            for p in policies["policies"]:
-                if p["name"] == policy_name:
-                    return p
+            for policy in policies["policies"]:
+                if policy["name"] == policy_name:
+                    return policy
             # If no matching policy name is found, return None
             return None
-        else:
-            return None
+        return None
 
     def import_policy(self, filename):
         response = self.__make_request(
@@ -177,40 +178,34 @@ class NessusController(object):
         )
         if response.status_code == OK_STATUS:
             return response.json()
-        else:
-            raise Warning(
-                "Policy import failed; response=" "{!r}".format(response.text)
-            )
+        raise Warning("Policy import failed; response={!r}".format(response.text))
 
     def upload_file(self, files):
         response = self.__make_request(FILE_UPLOAD, "POST", files=files)
         if response.status_code == OK_STATUS:
             return response.json()
-        else:
-            raise Warning("File upload failed; response=" "{!r}".format(response.text))
+        raise Warning("File upload failed; response={!r}".format(response.text))
 
     def policy_list(self):
         response = self.__make_request(POLICY_BASE, "GET")
         if response.status_code == OK_STATUS:
             return response.json()
-        else:
-            raise Warning("Policy list failed; response=" "{!r}".format(response.text))
+        raise Warning("Policy list failed; response={!r}".format(response.text))
 
     def destroy_session(self):
         response = self.__make_request(LOGIN, "DELETE")
         if response.status_code == OK_STATUS:
             return response
-        else:
-            raise Warning(
-                "Session destruction failed; response=" "{!r}".format(response.text)
-            )
+        raise Warning(
+            "Session destruction failed; response={!r}".format(response.text)
+        )
 
 
 def main():
     setup_logging()
     LOGGER.info("Nessus job starting")
 
-    LOGGER.info("Instantiating Nessus controller at: {!s}".format(URL))
+    LOGGER.info("Instantiating Nessus controller at: %s", URL)
     controller = NessusController(URL)
 
     # create new policy
@@ -224,10 +219,14 @@ def main():
             )
         }
         upload_response = controller.upload_file(files)
-        assert upload_response, "Response empty, upload failed"
+        if not upload_response:
+            LOGGER.error("Response empty, upload failed")
+            return -1
         LOGGER.info("Policy Uploaded to Nessus Server")
         import_response = controller.import_policy(upload_response["fileuploaded"])
-        assert import_response, "Response empty, policy upload failed"
+        if not import_response:
+            LOGGER.error("Response empty, policy upload failed")
+            return -1
         LOGGER.info("Base Policy Imported to Nessus Server Policies")
     else:
         LOGGER.info("Policy already exists")
@@ -235,13 +234,15 @@ def main():
     # destroy session
     LOGGER.info("Destroying session")
     result = controller.destroy_session()
-    assert result, "Session not properly destroyed"
+    if not result:
+        LOGGER.error("Session not properly destroyed")
+        return -1
     LOGGER.info("Session destroyed successfully")
 
     # great success!
     LOGGER.info("Policy Created. (GREAT SUCCESS!)")
-    sys.exit(0)
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
