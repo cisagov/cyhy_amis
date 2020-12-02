@@ -83,7 +83,7 @@
   copy:
     src: nessus_base.py
     dest: /tmp/nessus_base.py
-    mode: 0744
+    mode: 0644
 
 - name: Configure nessus base policy to use nessus username
   lineinfile:
@@ -109,7 +109,7 @@
     port: 8834
 
 - name: Run nessus base policy import script
-  command: python /tmp/nessus_base.py
+  command: python3 /tmp/nessus_base.py
 
 #
 # Clean up

@@ -8,7 +8,7 @@
     - python
 
 # Any instances that are built on Debian Buster should have Python 2 removed
-- hosts: bastion
+- hosts: bastion,nessus,nmap
   name: Remove pip2/python2
   become: yes
   become_method: sudo
