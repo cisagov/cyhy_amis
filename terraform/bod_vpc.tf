@@ -297,4 +297,3 @@ resource "aws_security_group" "bod_bastion_sg" {
     },
   )
 }
-

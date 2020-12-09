@@ -289,4 +289,3 @@ variable "findings_data_import_ssm_db_password" {
   description = "The name of the parameter in AWS SSM that holds the database password for the user with write permission to the findings database."
   default     = ""
 }
-

@@ -214,4 +214,3 @@ resource "aws_cloudwatch_log_group" "adi_lambda_logs" {
 
   tags = var.tags
 }
-

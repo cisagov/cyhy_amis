@@ -96,4 +96,3 @@ data "template_cloudinit_config" "ssh_and_mongo_cloud_init_tasks" {
     content      = data.template_file.set_hostname.rendered
   }
 }
-

@@ -49,4 +49,3 @@ resource "aws_iam_user_policy" "moe_read_policy" {
   user   = aws_iam_user.moe_user_read.name
   policy = data.aws_iam_policy_document.moe_read_doc.json
 }
-

@@ -33,4 +33,3 @@ resource "aws_instance" "bod_bastion" {
     },
   )
 }
-

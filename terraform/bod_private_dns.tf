@@ -202,4 +202,3 @@ resource "aws_route53_record" "bod_rev_docker_PTR" {
     "docker.${aws_route53_zone.bod_private_zone.name}",
   ]
 }
-

@@ -20,4 +20,3 @@ data "aws_ami" "bastion" {
   owners      = [data.aws_caller_identity.current.account_id] # This is us
   most_recent = true
 }
-

@@ -41,4 +41,3 @@ resource "aws_route53_record" "rev_4_PTR" {
   ttl     = 300
   records = ["fw02.ncats.cyber.dhs.gov."]
 }
-

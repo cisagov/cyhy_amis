@@ -9,4 +9,3 @@ terraform {
     key            = "route_53/terraform.tfstate"
   }
 }
-

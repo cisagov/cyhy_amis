@@ -40,11 +40,11 @@ do
     set +o errexit; set +o pipefail
     non_nvme_device_name=$(nvme id-ctrl -v $nvme_device | grep -o ${device_name})
     set -o errexit; set -o pipefail
-    
+
     if [ "$non_nvme_device_name" = "${device_name}" ]
     then
         # We've found our device
-        
+
         # Create a file system on the EBS volume if one was not
         # already there.
         blkid -c /dev/null $nvme_device || mkfs -t ${fs_type} -L ${label} $nvme_device

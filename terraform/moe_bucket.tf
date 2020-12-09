@@ -13,4 +13,3 @@ resource "aws_s3_bucket" "moe_bucket" {
     prevent_destroy = true
   }
 }
-

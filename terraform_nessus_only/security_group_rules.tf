@@ -34,4 +34,3 @@ resource "aws_security_group_rule" "egress_anywhere" {
   from_port = 0
   to_port   = 0
 }
-

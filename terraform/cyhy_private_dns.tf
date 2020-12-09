@@ -331,4 +331,3 @@ resource "aws_route53_record" "cyhy_rev_dashboard_PTR" {
   ttl     = 300
   records = ["dashboard.${aws_route53_zone.cyhy_private_zone.name}"]
 }
-

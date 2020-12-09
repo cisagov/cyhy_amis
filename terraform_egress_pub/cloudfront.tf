@@ -70,4 +70,3 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
     ssl_support_method       = "sni-only"
   }
 }
-

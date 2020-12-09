@@ -26,4 +26,3 @@ data "template_cloudinit_config" "cyhy_ssh_cloud_init_tasks" {
     content      = data.template_file.set_hostname.rendered
   }
 }
-

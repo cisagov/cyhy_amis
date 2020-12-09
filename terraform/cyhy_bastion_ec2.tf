@@ -49,4 +49,3 @@ module "cyhy_bastion_ansible_provisioner" {
   playbook = "../ansible/playbook.yml"
   dry_run  = false
 }
-
