@@ -7,4 +7,3 @@ terraform {
     key            = "cyhy_amis/terraform_nessus_only.tfstate"
   }
 }
-

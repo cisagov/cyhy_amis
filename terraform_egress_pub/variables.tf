@@ -28,4 +28,3 @@ variable "root_object" {
   description = "The root object to serve when no path is provided, or an error occurs"
   default     = "all.txt"
 }
-

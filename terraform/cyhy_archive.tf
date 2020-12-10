@@ -28,4 +28,3 @@ data "aws_iam_policy_document" "s3_cyhy_archive_write_doc" {
     ]
   }
 }
-

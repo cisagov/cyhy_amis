@@ -156,7 +156,7 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   # in a destroy provisioner; this gracefully shuts down the instance and
   # allows terraform to successfully destroy the volume attachments.
   provisioner "local-exec" {
-    when = destroy
+    when       = destroy
     command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_nessus[count.index].id}"
     on_failure = continue
   }

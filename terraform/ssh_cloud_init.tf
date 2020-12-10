@@ -23,4 +23,3 @@ data "template_cloudinit_config" "ssh_cloud_init_tasks" {
     content      = data.template_file.set_hostname.rendered
   }
 }
-

@@ -76,4 +76,3 @@ resource "aws_network_acl_rule" "portscanner_ingress_all_from_mgmt_private" {
   from_port      = 0
   to_port        = 0
 }
-

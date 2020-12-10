@@ -11,4 +11,3 @@ resource "aws_security_group_rule" "lambda_anywhere" {
   from_port = local.bod_lambda_egress_anywhere_ports[count.index]
   to_port   = local.bod_lambda_egress_anywhere_ports[count.index]
 }
-

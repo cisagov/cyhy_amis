@@ -57,4 +57,3 @@ resource "aws_network_acl_rule" "scanner_egress_to_anywhere_via_any_port" {
   from_port      = 0
   to_port        = 0
 }
-

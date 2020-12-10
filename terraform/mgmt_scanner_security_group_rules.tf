@@ -89,4 +89,3 @@ resource "aws_security_group_rule" "mgmt_scanner_https_egress_to_anywhere" {
   from_port         = local.mgmt_scanner_egress_anywhere_ports[count.index]
   to_port           = local.mgmt_scanner_egress_anywhere_ports[count.index]
 }
-

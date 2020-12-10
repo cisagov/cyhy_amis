@@ -7,4 +7,3 @@ terraform {
     key            = "egress_pub/terraform.tfstate"
   }
 }
-

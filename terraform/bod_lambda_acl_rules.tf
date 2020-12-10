@@ -23,4 +23,3 @@ resource "aws_network_acl_rule" "lambda_egress_anywhere" {
   from_port      = local.bod_lambda_egress_anywhere_ports[count.index]
   to_port        = local.bod_lambda_egress_anywhere_ports[count.index]
 }
-

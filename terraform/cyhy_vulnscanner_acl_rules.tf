@@ -78,4 +78,3 @@ resource "aws_network_acl_rule" "vulnscanner_ingress_all_from_mgmt_vpc" {
   from_port      = 0
   to_port        = 0
 }
-

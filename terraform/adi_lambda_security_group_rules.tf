@@ -19,4 +19,3 @@ resource "aws_security_group_rule" "adi_lambda_https_egress_anywhere" {
   from_port         = 443
   to_port           = 443
 }
-

@@ -22,4 +22,3 @@ resource "aws_s3_bucket" "rules_bucket" {
     },
   )
 }
-

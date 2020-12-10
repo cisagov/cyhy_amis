@@ -246,4 +246,3 @@ resource "aws_route53_record" "mail_SPF" {
   ttl     = 300
   records = ["v=spf1 include:amazonses.com -all"]
 }
-

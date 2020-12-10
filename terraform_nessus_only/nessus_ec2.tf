@@ -23,10 +23,10 @@ data "aws_ami" "nessus" {
 resource "aws_instance" "nessus" {
   ami               = data.aws_ami.nessus.id
   instance_type     = "m5.large"
-  count             = local.nessus_instance_count   # Set by configure.py
+  count             = local.nessus_instance_count # Set by configure.py
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  subnet_id                   = aws_subnet.nessus_scanner_subnet.id
+  subnet_id = aws_subnet.nessus_scanner_subnet.id
 
   root_block_device {
     volume_type           = "gp2"

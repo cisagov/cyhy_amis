@@ -10,9 +10,9 @@ provider "aws" {
 # to assume the role below via Terraform remote state.  For details see:
 # https://github.com/cisagov/pca-teamserver-aws/pull/30#discussion_r400610194
 provider "aws" {
-  alias = "public_dns"
+  alias   = "public_dns"
   profile = "cool-dns-route53resourcechange-cyber.dhs.gov"
-  region = var.aws_region
+  region  = var.aws_region
 }
 
 # The AWS account ID being used

@@ -124,4 +124,3 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 
   tags = var.tags
 }
-

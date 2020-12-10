@@ -124,4 +124,3 @@ resource "aws_network_acl_rule" "cyhy_private_egress_all_to_mgmt_private" {
   from_port      = 0
   to_port        = 0
 }
-
