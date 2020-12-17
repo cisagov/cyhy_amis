@@ -1,7 +1,6 @@
 # NCATS AWS AMIs :dvd: #
 
-[![Build
-Status](https://travis-ci.com/cisagov/cyhy_amis.svg?branch=develop)](https://travis-ci.com/cisagov/cyhy_amis)
+[![GitHub Build Status](https://github.com/cisagov/cyhy_amis/workflows/build/badge.svg)](https://github.com/cisagov/cyhy_amis/actions)
 
 ## Building the AMIs ##
 The AMIs are built like so:
@@ -55,9 +54,14 @@ terraform init
 terraform destroy -var-file=<your_workspace>.yml
 ```
 
+## Contributing ##
+
+We welcome contributions!  Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for
+details.
+
 ## License ##
 
-This project is in the worldwide [public domain](LICENSE.md).
+This project is in the worldwide [public domain](LICENSE).
 
 This project is in the public domain within the United States, and
 copyright and related rights in the work worldwide are waived through
