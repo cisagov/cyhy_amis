@@ -1,7 +1,11 @@
-*~
-playbook.retry
+__pycache__
+.coverage
+.mypy_cache
+.pytest_cache
 .python-version
 .terraform
-terraform.tfstate*
-*.tfvars
 *.dyn.tf
+*.tfvars
+packer_cache
+terraform.tfstate
+terraform.tfstate.backup
