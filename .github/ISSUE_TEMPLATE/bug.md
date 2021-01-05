@@ -1,27 +1,29 @@
 ---
 name: 🐛 Bug report
-about: Create a report to help us improve
+about: Describe a bug, error, unexpected behavior, or other problem
 ---
 
-# 🐛 Bug Report
+# 🐛 Summary #
 
-A clear and concise description of what the bug is.
+What's wrong? Please be specific.
 
-## To Reproduce
+## To reproduce ##
 
 Steps to reproduce the behavior:
 
-- Do this
-- Then this
+1. Do this
+1. Then this
 
-## Expected behavior
+## Expected behavior ##
 
-A clear and concise description of what you expected to happen.
+What did you expect to happen that didn't?
 
-## Any helpful log output
+## Any helpful log output or screenshots ##
 
 Paste the results here:
 
-```bash
+```console
 
 ```
+
+Add any screenshots of the problem here.
