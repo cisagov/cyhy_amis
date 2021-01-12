@@ -30,21 +30,21 @@ assert sys.version_info >= (3, 7), "This script requires Python version 3.7 or n
 WORKSPACE_CONFIGS = {
     "production": {
         "nmap": 80,
-        "nessus": 3,
+        "nessus": 4,
         "mongo": 1,
         "mgmt_bastion": 0,
         "mgmt_nessus": 0,
     },
     "prod-a": {
         "nmap": 80,
-        "nessus": 3,
+        "nessus": 4,
         "mongo": 1,
         "mgmt_bastion": 0,
         "mgmt_nessus": 0,
     },
     "prod-b": {
         "nmap": 80,
-        "nessus": 3,
+        "nessus": 4,
         "mongo": 1,
         "mgmt_bastion": 0,
         "mgmt_nessus": 0,
