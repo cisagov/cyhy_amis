@@ -9,6 +9,7 @@
     - nvme
     - banner
     - persist_journald
+    - clamav
 
 # The bastion should have as little installed as possible, since it's
 # exposed to the cruel world

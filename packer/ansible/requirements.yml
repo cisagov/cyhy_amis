@@ -1,5 +1,7 @@
 - src: https://github.com/cisagov/ansible-role-banner
   name: banner
+- src: https://github.com/cisagov/ansible-role-clamav
+  name: clamav
 - src: https://github.com/cisagov/ansible-role-client-cert-update
   name: client_cert_update
 - src: https://github.com/cisagov/ansible-role-code-gov-update
