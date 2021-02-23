@@ -2,7 +2,7 @@
 # The instance types used for almost all the instances expose EBS
 # volumes as NVMe block devices, so that's why we need nvme here.
 - hosts: all
-  name: Update the base image, install python, add banner, persist journald
+  name: Install NVMe support, add banner, persist journald, and install ClamAV
   become: yes
   become_method: sudo
   roles:
