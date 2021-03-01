@@ -19,8 +19,8 @@ set -o pipefail
 
 while [ `lsblk | grep -c " disk"` -lt ${num_disks} ]
 do
-    echo Waiting for disks to attach...
-    sleep 5
+  echo Waiting for disks to attach...
+  sleep 5
 done
 
 # Create a file system on the EBS volume if one was not already there.
