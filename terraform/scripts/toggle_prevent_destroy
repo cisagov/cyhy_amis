@@ -9,23 +9,23 @@ sed_script=scripts/toggle_prevent_destroy_sed_command.sh
 
 while getopts ":htf" opt
 do
-    case ${opt} in
-        h)
-            echo "Usage:"
-            echo "    toggle_prevent_destroy -h        Display this help message."
-            echo "    toggle_prevent_destroy -t        Set prevent_destroy true everywhere."
-            echo "    toggle_prevent_destroy -f        Set prevent_destroy false everywhere."
-            exit 0
-            ;;
-        f)
-            before=true
-            after=false
-            ;;
-        \?)
-            echo "Invalid option: -$OPTARG" 1>&2
-            exit 1
-            ;;
-    esac
+  case ${opt} in
+    h)
+      echo "Usage:"
+      echo "    toggle_prevent_destroy -h        Display this help message."
+      echo "    toggle_prevent_destroy -t        Set prevent_destroy true everywhere."
+      echo "    toggle_prevent_destroy -f        Set prevent_destroy false everywhere."
+      exit 0
+      ;;
+    f)
+      before=true
+      after=false
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" 1>&2
+      exit 1
+      ;;
+  esac
 done
 shift $((OPTIND - 1))
 
