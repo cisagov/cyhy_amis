@@ -14,12 +14,12 @@ ip_addr=$(hostname --all-ip-addresses | cut --delimiter=' ' --fields=1)
 # into place.
 while ! hostinfo=$(host "$ip_addr")
 do
-    echo Waiting for IP to resolve to an address...
-    sleep 5
+  echo Waiting for IP to resolve to an address...
+  sleep 5
 done
 
 name=$(echo "$hostinfo" | \
-           cut --delimiter=' ' --fields=5 | \
-           sed 's/\([^\.]*\)\.\([^\.]*\)\./\1/')
+    cut --delimiter=' ' --fields=5 | \
+  sed 's/\([^\.]*\)\.\([^\.]*\)\./\1/')
 
 hostnamectl set-hostname --no-ask-password "$name"
