@@ -8,10 +8,10 @@ set -o pipefail
 
 if [ $# -eq 1 ]
 then
-    workspace=$1
+  workspace=$1
 else
-    echo "Usage:  deploy_new_fdi_lambda.sh workspace_name"
-    exit 1
+  echo "Usage:  deploy_new_fdi_lambda.sh workspace_name"
+  exit 1
 fi
 
 terraform workspace select "$workspace"
@@ -21,7 +21,7 @@ terraform taint "aws_lambda_function.fdi_lambda"
 
 # recreate the new lambda instance
 terraform apply -var-file="$workspace.tfvars" \
-          -target=aws_lambda_function.fdi_lambda \
-          -target=aws_lambda_permission.fdi_lambda_allow_bucket \
-          -target=aws_s3_bucket_notification.bucket_notification \
-          -target=aws_cloudwatch_log_group.fdi_lambda_logs
+  -target=aws_lambda_function.fdi_lambda \
+  -target=aws_lambda_permission.fdi_lambda_allow_bucket \
+  -target=aws_s3_bucket_notification.bucket_notification \
+  -target=aws_cloudwatch_log_group.fdi_lambda_logs
