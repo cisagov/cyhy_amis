@@ -11,5 +11,5 @@ set -o pipefail
 
 for region in us-east-1 us-east-2 us-west-1 us-west-2
 do
-    aws --region=$region ssm put-parameter "$@"
+  aws --region=$region ssm put-parameter "$@"
 done
