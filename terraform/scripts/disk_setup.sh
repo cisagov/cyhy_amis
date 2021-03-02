@@ -19,8 +19,8 @@ set -o pipefail
 
 while [ `lsblk | grep -c " disk"` -lt ${num_disks} ]
 do
-    echo Waiting for disks to attach...
-    sleep 5
+  echo Waiting for disks to attach...
+  sleep 5
 done
 
 nvme_devices=$(find /dev | grep -i 'nvme[0-9][1-9]\?n1$')
@@ -34,30 +34,30 @@ nvme_devices=$(find /dev | grep -i 'nvme[0-9][1-9]\?n1$')
 # non-deterministic.
 for nvme_device in $nvme_devices
 do
-    # Turn off pipefail and errexit for this one command.  This
-    # command will always fail if the NVMe disk isn't the one we're
-    # looking for.
-    set +o errexit; set +o pipefail
-    non_nvme_device_name=$(nvme id-ctrl -v $nvme_device | grep -o ${device_name})
-    set -o errexit; set -o pipefail
+  # Turn off pipefail and errexit for this one command.  This
+  # command will always fail if the NVMe disk isn't the one we're
+  # looking for.
+  set +o errexit; set +o pipefail
+  non_nvme_device_name=$(nvme id-ctrl -v $nvme_device | grep -o ${device_name})
+  set -o errexit; set -o pipefail
 
-    if [ "$non_nvme_device_name" = "${device_name}" ]
-    then
-        # We've found our device
+  if [ "$non_nvme_device_name" = "${device_name}" ]
+  then
+    # We've found our device
 
-        # Create a file system on the EBS volume if one was not
-        # already there.
-        blkid -c /dev/null $nvme_device || mkfs -t ${fs_type} -L ${label} $nvme_device
+    # Create a file system on the EBS volume if one was not
+    # already there.
+    blkid -c /dev/null $nvme_device || mkfs -t ${fs_type} -L ${label} $nvme_device
 
-        # Grab the UUID of this volume
-        uuid=$(blkid -s UUID -o value $nvme_device)
+    # Grab the UUID of this volume
+    uuid=$(blkid -s UUID -o value $nvme_device)
 
-        # Mount the file system
-        mount UUID="$uuid" -o ${mount_options} ${mount_point}
+    # Mount the file system
+    mount UUID="$uuid" -o ${mount_options} ${mount_point}
 
-        # Save the mount point in fstab, so the file system is
-        # remounted if the instance is rebooted
-        echo "# ${label}" >> /etc/fstab
-        echo "UUID=$uuid ${mount_point} ${fs_type} ${mount_options} 0 2" >> /etc/fstab
-    fi
+    # Save the mount point in fstab, so the file system is
+    # remounted if the instance is rebooted
+    echo "# ${label}" >> /etc/fstab
+    echo "UUID=$uuid ${mount_point} ${fs_type} ${mount_options} 0 2" >> /etc/fstab
+  fi
 done
