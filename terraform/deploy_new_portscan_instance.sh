@@ -58,6 +58,8 @@ function redeploy_instances {
     if [ -n "$instance_id" ]
     then
       nmap_instance_ids+=("$instance_id")
+    else
+      echo "No instance ID found for portscan$(($index+1))"
     fi
 
     tf_args+=("-target=aws_eip_association.cyhy_nmap_eip_assocs[$index]")

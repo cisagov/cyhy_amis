@@ -58,6 +58,8 @@ function redeploy_instances {
     if [ -n "$instance_id" ]
     then
       nessus_instance_ids+=("$instance_id")
+    else
+      echo "No instance ID found for vulnscan$(($index+1))"
     fi
 
     tf_args+=("-target=aws_eip_association.cyhy_nessus_eip_assocs[$index]")
