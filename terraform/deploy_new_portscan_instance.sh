@@ -53,8 +53,12 @@ function redeploy_instances {
   for index in $(seq "$1" "$2")
   do
     # Check the list of instances and get the ID of the index we are working
-    # on for this iteration
-    nmap_instance_ids+=("$(echo "$portscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")")
+    # on for this iteration and add it to the array of IDs if found
+    instance_id="$(echo "$portscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")"
+    if [ -n "$instance_id" ]
+    then
+      nmap_instance_ids+=("$instance_id")
+    fi
 
     tf_args+=("-target=aws_eip_association.cyhy_nmap_eip_assocs[$index]")
     tf_args+=("-target=aws_instance.cyhy_nmap[$index]")
