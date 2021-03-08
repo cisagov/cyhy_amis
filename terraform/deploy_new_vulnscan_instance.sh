@@ -53,8 +53,14 @@ function redeploy_instances {
   for index in $(seq "$1" "$2")
   do
     # Check the list of instances and get the ID of the index we are working
-    # on for this iteration
-    nessus_instance_ids+=("$(echo "$vulnscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")")
+    # on for this iteration and add it to the array of IDs if found
+    instance_id="$(echo "$vulnscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")"
+    if [ -n "$instance_id" ]
+    then
+      nessus_instance_ids+=("$instance_id")
+    else
+      echo "No instance ID found for vulnscan$(($index+1))"
+    fi
 
     tf_args+=("-target=aws_eip_association.cyhy_nessus_eip_assocs[$index]")
     tf_args+=("-target=aws_instance.cyhy_nessus[$index]")
