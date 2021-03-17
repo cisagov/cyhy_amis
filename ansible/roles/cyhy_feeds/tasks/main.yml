@@ -79,9 +79,10 @@
   vars:
     ansible_ssh_pipelining: yes
   loop:
-    - "{{ public_gpg_key }}"
-    - "{{ private_gpg_key }}"
+    - "{{ ncps_ae_public_gpg_key }}"
     - "{{ nsd_public_gpg_key }}"
+    - "{{ private_gpg_key }}"
+    - "{{ public_gpg_key }}"
   loop_control:
     label: "<key redacted>"
 
