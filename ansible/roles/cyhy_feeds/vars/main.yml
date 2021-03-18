@@ -10,6 +10,8 @@ public_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/public') }}"
 private_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/private') }}"
 # NSD public GPG key
 nsd_public_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/nsd_public') }}"
+# NCPS Analytics Environment public GPG key
+ncps_ae_public_gpg_key: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/ncps_ae_public') }}"
 
 # cyhy-feeds GPG trust
 gpg_trust: "{{ lookup('aws_ssm', '/cyhy/feeds/gpg/trust') }}"
