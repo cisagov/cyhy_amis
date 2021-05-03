@@ -23,7 +23,7 @@ module "security_header_lambda" {
   # TF 0.12 doesn't know about 14.x, so we're stuck with 12.x until we
   # can upgrade.
   runtime = "nodejs12.x"
-  # tags
+  tags    = merge(var.tags, { "Application" = "Egress Publish" })
 }
 
 resource "aws_cloudfront_distribution" "rules_s3_distribution" {
@@ -91,4 +91,6 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
     minimum_protocol_version = "TLSv1.1_2016"
     ssl_support_method       = "sni-only"
   }
+
+  tags = merge(var.tags, { "Application" = "Egress Publish" })
 }
