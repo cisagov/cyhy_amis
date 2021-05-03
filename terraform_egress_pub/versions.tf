@@ -5,6 +5,7 @@ terraform {
   # Pin to the latest 2.x AWS provider, since the 3.x provider is
   # unstable and causing problems.
   required_providers {
-    aws = "~> 2.0"
+    aws     = "~> 2.0"
+    archive = "~> 2.1"
   }
 }
