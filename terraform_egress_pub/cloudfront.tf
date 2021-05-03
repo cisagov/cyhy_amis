@@ -7,7 +7,7 @@ data "aws_acm_certificate" "rules_cert" {
   domain      = var.distribution_domain
   most_recent = true
   statuses    = ["ISSUED"]
-  types       = ["IMPORTED"]
+  types       = ["AMAZON_ISSUED"]
 }
 
 resource "aws_cloudfront_distribution" "rules_s3_distribution" {
@@ -66,7 +66,7 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
 
   viewer_certificate {
     acm_certificate_arn      = data.aws_acm_certificate.rules_cert.arn
-    minimum_protocol_version = "TLSv1_2016"
+    minimum_protocol_version = "TLSv1.1_2016"
     ssl_support_method       = "sni-only"
   }
 }
