@@ -7,7 +7,21 @@ data "aws_acm_certificate" "rules_cert" {
   domain      = var.distribution_domain
   most_recent = true
   statuses    = ["ISSUED"]
-  types       = ["IMPORTED"]
+  types       = ["AMAZON_ISSUED"]
+}
+
+/* A Lambda@Edge for injecting security headers */
+module "security_header_lambda" {
+  source = "transcend-io/lambda-at-edge/aws"
+  # We are stuck with this ancient version until we upgrade to
+  # Terraform version 0.13 or higher.
+  version = "0.0.2"
+
+  description            = "Adds HSTS and other security headers to the response"
+  lambda_code_source_dir = "${path.root}/add_security_headers"
+  name                   = "add_security_headers"
+  runtime                = "nodejs14.x"
+  tags                   = merge(var.tags, { "Application" = "Egress Publish" })
 }
 
 resource "aws_cloudfront_distribution" "rules_s3_distribution" {
@@ -24,8 +38,14 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
   aliases = [var.distribution_domain]
 
   default_cache_behavior {
-    allowed_methods  = ["GET", "HEAD"]
-    cached_methods   = ["GET", "HEAD"]
+    allowed_methods = ["GET", "HEAD"]
+    cached_methods  = ["GET", "HEAD"]
+    lambda_function_association {
+      # Inject security headers via Lambda@Edge
+      event_type   = "origin-response"
+      include_body = false
+      lambda_arn   = module.security_header_lambda.arn
+    }
     target_origin_id = local.s3_origin_id
 
     forwarded_values {
@@ -66,7 +86,9 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
 
   viewer_certificate {
     acm_certificate_arn      = data.aws_acm_certificate.rules_cert.arn
-    minimum_protocol_version = "TLSv1_2016"
+    minimum_protocol_version = "TLSv1.1_2016"
     ssl_support_method       = "sni-only"
   }
+
+  tags = merge(var.tags, { "Application" = "Egress Publish" })
 }
