@@ -17,7 +17,7 @@ module "security_header_lambda" {
   # Terraform version 0.13 or higher.
   version = "0.0.2"
 
-  description            = "Adds HSTS security header to the response"
+  description            = "Adds HSTS and other security headers to the response"
   lambda_code_source_dir = "${path.root}/add_security_headers"
   name                   = "add_security_headers"
   # The 2.x versions of the AWS Terraform provider don't know about
