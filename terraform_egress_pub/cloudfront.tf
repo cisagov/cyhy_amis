@@ -20,8 +20,8 @@ module "security_header_lambda" {
   description            = "Adds HSTS security header to the response"
   lambda_code_source_dir = "${path.root}/add_security_headers"
   name                   = "add_security_headers"
-  # TF 0.12 doesn't know about 14.x, so we're stuck with 12.x until we
-  # can upgrade.
+  # The 2.x versions of the AWS Terraform provider don't know about
+  # 14.x, so we're stuck with 12.x until we can upgrade to 3.x.
   runtime = "nodejs12.x"
   tags    = merge(var.tags, { "Application" = "Egress Publish" })
 }
