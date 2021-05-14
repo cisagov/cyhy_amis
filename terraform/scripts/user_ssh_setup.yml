@@ -18,7 +18,7 @@ users:
     sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
     shell: /bin/bash
     ssh-authorized-keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHJkFgYx58vd/JCikIQRVmQUBNa5k1h9Z+xzM6AjZLqE jeremy.frasier
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIB2SnDo9/RjnqT7mNjq7a5uMcpzaoY2mHjgp17l+voSf jeremy.frasier
   - name: nicholas.mcdonnell
     groups: [ sudo ]
     sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
