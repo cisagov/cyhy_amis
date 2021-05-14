@@ -25,9 +25,3 @@ users:
     shell: /bin/bash
     ssh-authorized-keys:
       - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFWZgKiUcpnS8PwEJ54sxrb3/bt35mcG6xSb6rv447aj nicholas.mcdonnell
-  - name: hillary.jeffrey
-    groups: [ sudo ]
-    sudo: [ "ALL=(ALL) NOPASSWD:ALL" ]
-    shell: /bin/bash
-    ssh-authorized-keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH9/RdY64Hpev7lmDn+Unq2jA/3FP9TBJLzscNwvSWDN hillary.jeffrey
