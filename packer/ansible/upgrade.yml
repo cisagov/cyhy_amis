@@ -5,3 +5,11 @@
   become_method: sudo
   roles:
     - upgrade
+
+# Any instances that have internet access should install security updates
+- hosts: bastion,docker,nessus,nmap
+  name: Enable automated security updates
+  become: yes
+  become_method: sudo
+  roles:
+    - automated_security_updates
