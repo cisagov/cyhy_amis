@@ -9,15 +9,17 @@ assignees: mcdonnnj
 
 ## Procedure ##
 
-Add the following to the [`Redeployments` tracker](https://github.com/cisagov/cyhy_amis/issues/272)
+Add the following to the [redeployments tracker](https://github.com/cisagov/cyhy_amis/issues/272):
 
-```
+```markdown
 - [ ] [202X-XX](https://github.com/cisagov/cyhy_amis/issues/###)
 ```
 
 Follow the [build and deploy instructions](https://github.com/cisagov/cyhy_amis#building-the-amis).
 
-Check off each service as it is redeployed to track the overall status. Once all services have been redeployed and functionality confirmed, close this issue and check off the month on the [`Redeployments` tracker](https://github.com/cisagov/cyhy_amis/issues/272).
+Check off each instance type as it is redeployed to track the overall status.
+Once all instances have been redeployed and functionality has been confirmed,
+close this issue and check off the entry on the [redeployments tracker](https://github.com/cisagov/cyhy_amis/issues/272).
 
 ## Status ##
 
