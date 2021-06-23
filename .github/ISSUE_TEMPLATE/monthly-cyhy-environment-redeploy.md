@@ -3,7 +3,7 @@ name: Monthly CyHy Environment Redeploy
 about: Monthly redeploy of the CyHy Environment
 title: 202X-XX Redeploy CyHy Environment
 labels: ''
-assignees: hillaryj, mcdonnnj
+assignees: mcdonnnj
 
 ---
 
