@@ -1,6 +1,6 @@
 ---
-name: Monthly CyHy Environment Redeploy
-about: Monthly redeploy of the CyHy Environment
+name: Quarterly CyHy Environment Redeploy
+about: Quarterly redeploy of the CyHy Environment
 title: 202X-XX Redeploy CyHy Environment
 labels: ''
 assignees: mcdonnnj
