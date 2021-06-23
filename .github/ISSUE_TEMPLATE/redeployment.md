@@ -1,10 +1,9 @@
 ---
-name: Quarterly CyHy Environment Redeploy
-about: Quarterly redeploy of the CyHy Environment
-title: 202X-XX Redeploy CyHy Environment
+name: Quarterly CyHy Environment Redeployment
+about: Quarterly redeployment of the CyHy Environment
+title: 202X-XX CyHy Environment Redeployment
 labels: ''
 assignees: mcdonnnj
-
 ---
 
 ## Procedure ##
