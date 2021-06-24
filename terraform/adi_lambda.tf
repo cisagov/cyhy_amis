@@ -156,7 +156,7 @@ resource "aws_lambda_function" "adi_lambda" {
   function_name = format("assessment_data_import-%s", terraform.workspace)
   role          = aws_iam_role.adi_lambda_role.arn
   handler       = "lambda_handler.handler"
-  runtime       = "python3.6"
+  runtime       = "python3.8"
   timeout       = 300
   memory_size   = 128
   description   = "Lambda function for importing assessment data"
