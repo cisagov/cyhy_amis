@@ -54,6 +54,7 @@
   roles:
     - xfs
     - orchestrator
+    - vdp_scanner
     - cyhy_mailer
 
 - hosts: code_gov
