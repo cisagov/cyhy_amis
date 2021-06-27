@@ -1,16 +1,7 @@
 ---
 # tasks file for vdp_scanner
 
-#
 # Create a cron job for scanning
-#
-- name: Add /usr/local/bin to cron's path
-  cron:
-    env: yes
-    name: PATH
-    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-    user: cyhy
-  when: production_workspace|bool
 # This cron job runs at midnight UTC on Monday mornings, so it
 # should be done in time to be sent Monday morning.
 - name: Create a cron job for BOD 20-01 (VDP) scanning
