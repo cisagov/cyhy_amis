@@ -1,7 +1,7 @@
 # The bastion EC2 instance
 resource "aws_instance" "bod_bastion" {
   ami               = data.aws_ami.bastion.id
-  instance_type     = "t3.micro"
+  instance_type     = "t3.small"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the public subnet
