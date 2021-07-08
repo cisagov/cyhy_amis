@@ -74,7 +74,7 @@
 # The --batch flag makes sure that gpg2 doesn't attempt to do anything
 # interactive.
 - name: Import gpg keys
-  shell: "echo '{{ item }}' | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
+  shell: "echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
