@@ -30,14 +30,23 @@ repos:
       - id: trailing-whitespace
 
   # Text file hooks
+<<<<<<< HEAD
   # - repo: https://github.com/igorshubovych/markdownlint-cli
   #   rev: v0.27.1
   #   hooks:
   #     - id: markdownlint
   #       args:
   #         - --config=.mdl_config.json
+=======
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.27.1
+    hooks:
+      - id: markdownlint
+        args:
+          - --config=.mdl_config.yaml
+>>>>>>> 81cdb4da942f97a0e09efedb9b46483a99c98371
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v2.3.0
+    rev: v2.3.2
     hooks:
       - id: prettier
   # - repo: https://github.com/adrienverge/yamllint
@@ -47,14 +56,22 @@ repos:
   #       args:
   #         - --strict
 
-  # Shell script hooks
-  - repo: https://github.com/lovesegfault/beautysh
-    rev: v6.1.0
+  # pre-commit hooks
+  - repo: https://github.com/pre-commit/pre-commit
+    rev: v2.13.0
     hooks:
-      - id: beautysh
+      - id: validate_manifest
+
+  # Shell script hooks
+  - repo: https://github.com/cisagov/pre-commit-shfmt
+    rev: v0.0.2
+    hooks:
+      - id: shfmt
         args:
-          - --indent-size
+          # Indent by two spaces
+          - -i
           - '2'
+<<<<<<< HEAD
   # - repo: https://github.com/detailyang/pre-commit-shell
   #   rev: 1.0.5
   #   hooks:
@@ -89,6 +106,48 @@ repos:
   #   rev: v2.19.1
   #   hooks:
   #     - id: pyupgrade
+=======
+          # Binary operators may start a line
+          - -bn
+          # Switch cases are indented
+          - -ci
+          # Redirect operators are followed by a space
+          - -sr
+  - repo: https://github.com/detailyang/pre-commit-shell
+    rev: 1.0.5
+    hooks:
+      - id: shell-lint
+
+  # Python hooks
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.7.0
+    hooks:
+      - id: bandit
+        args:
+          - --config=.bandit.yml
+  - repo: https://github.com/psf/black
+    rev: 21.7b0
+    hooks:
+      - id: black
+  - repo: https://gitlab.com/pycqa/flake8
+    rev: 3.9.2
+    hooks:
+      - id: flake8
+        additional_dependencies:
+          - flake8-docstrings
+  - repo: https://github.com/PyCQA/isort
+    rev: 5.9.2
+    hooks:
+      - id: isort
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v0.910
+    hooks:
+      - id: mypy
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.21.2
+    hooks:
+      - id: pyupgrade
+>>>>>>> 81cdb4da942f97a0e09efedb9b46483a99c98371
 
   # Ansible hooks
   # - repo: https://github.com/ansible-community/ansible-lint
@@ -122,10 +181,17 @@ repos:
       # - id: terraform_validate
 
   # Docker hooks
+<<<<<<< HEAD
   # - repo: https://github.com/IamTheFij/docker-pre-commit
   #   rev: v2.0.0
   #   hooks:
   #     - id: docker-compose-check
+=======
+  - repo: https://github.com/IamTheFij/docker-pre-commit
+    rev: v2.0.1
+    hooks:
+      - id: docker-compose-check
+>>>>>>> 81cdb4da942f97a0e09efedb9b46483a99c98371
 
   # Packer hooks
   - repo: https://github.com/cisagov/pre-commit-packer
