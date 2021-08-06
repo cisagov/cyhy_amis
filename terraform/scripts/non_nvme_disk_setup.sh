@@ -17,8 +17,7 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-while [ `lsblk | grep -c " disk"` -lt ${num_disks} ]
-do
+while [ $(lsblk | grep -c " disk") -lt ${num_disks} ]; do
   echo Waiting for disks to attach...
   sleep 5
 done

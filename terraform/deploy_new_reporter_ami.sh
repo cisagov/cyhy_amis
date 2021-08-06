@@ -6,8 +6,7 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-if [ $# -eq 2 ]
-then
+if [ $# -eq 2 ]; then
   region=$1
   workspace=$2
 else
@@ -21,10 +20,10 @@ terraform workspace select "$workspace"
 # space characters, then extract only the ID from that line.
 #
 # The first sed line has been carefully crafted to work with BSD sed.
-reporter_instance_id=$(terraform state show aws_instance.cyhy_reporter | \
-    sed $'s,\x1b\\[[0-9;]*[[:alpha:]],,g' | \
-    grep "[[:space:]]id[[:space:]]" | \
-  sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
+reporter_instance_id=$(terraform state show aws_instance.cyhy_reporter \
+  | sed $'s,\x1b\\[[0-9;]*[[:alpha:]],,g' \
+  | grep "[[:space:]]id[[:space:]]" \
+  | sed "s/[[:space:]]*id[[:space:]]*= \"\(.*\)\"/\1/")
 
 # Terminate the existing reporter instance
 aws --region "$region" ec2 terminate-instances --instance-ids "$reporter_instance_id"

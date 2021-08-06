@@ -23,10 +23,9 @@ function usage {
 # Check for required external programs. If any are missing output a list of all
 # requirements and then exit.
 function check_dependencies {
-  if [ -z "$(command -v terraform)" ] || \
-    [ -z "$(command -v aws)" ] || \
-    [ -z "$(command -v jq)" ]
-  then
+  if [ -z "$(command -v terraform)" ] \
+    || [ -z "$(command -v aws)" ] \
+    || [ -z "$(command -v jq)" ]; then
     echo "This script requires the following tools to run:"
     echo "- terraform"
     echo "- aws (AWS CLI)"
@@ -45,21 +44,19 @@ function redeploy_instances {
   #   id: instance_id
   # }
   # Any previously removed instances are ignored (.deposed_key == null)
-  vulnscanner_ids_json=$(terraform show -json | \
-      jq '.values.root_module.resources[] | select(.address == "aws_instance.cyhy_nessus" and .deposed_key == null) | {index, id: .values.id}' \
+  vulnscanner_ids_json=$(terraform show -json \
+    | jq '.values.root_module.resources[] | select(.address == "aws_instance.cyhy_nessus" and .deposed_key == null) | {index, id: .values.id}' \
     | jq -n '[inputs]')
   nessus_instance_ids=()
 
-  for index in $(seq "$1" "$2")
-  do
+  for index in $(seq "$1" "$2"); do
     # Check the list of instances and get the ID of the index we are working
     # on for this iteration and add it to the array of IDs if found
     instance_id="$(echo "$vulnscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")"
-    if [ -n "$instance_id" ]
-    then
+    if [ -n "$instance_id" ]; then
       nessus_instance_ids+=("$instance_id")
     else
-      echo "No instance ID found for vulnscan$(($index+1))"
+      echo "No instance ID found for vulnscan$(($index + 1))"
     fi
 
     tf_args+=("-target=aws_eip_association.cyhy_nessus_eip_assocs[$index]")
@@ -70,8 +67,7 @@ function redeploy_instances {
     tf_args+=("-target=module.dyn_nessus.module.cyhy_nessus_ansible_provisioner_$index")
   done
 
-  if [ ${#nessus_instance_ids[@]} -ne 0 ]
-  then
+  if [ ${#nessus_instance_ids[@]} -ne 0 ]; then
     # Terminate the existing nessus instance
     aws --region "$region" ec2 terminate-instances --instance-ids "${nessus_instance_ids[@]}"
     aws --region "$region" ec2 wait instance-terminated --instance-ids "${nessus_instance_ids[@]}"
@@ -79,11 +75,9 @@ function redeploy_instances {
   terraform apply -var-file="$workspace.tfvars" "${tf_args[@]}"
 }
 
-if [ $# -eq 3 ]
-then
+if [ $# -eq 3 ]; then
   stop=$3
-elif [ $# -eq 4 ]
-then
+elif [ $# -eq 4 ]; then
   stop=$4
 else
   usage
@@ -93,13 +87,11 @@ region=$1
 workspace=$2
 start=$3
 
-if [[ (! "$start" =~ ^[0-9]+$) || (! "$stop" =~ ^[0-9]+$) ]]
-then
+if [[ (! "$start" =~ ^[0-9]+$) || (! "$stop" =~ ^[0-9]+$) ]]; then
   usage
 fi
 
-if [ "$start" -gt "$stop" ]
-then
+if [ "$start" -gt "$stop" ]; then
   usage
 fi
 

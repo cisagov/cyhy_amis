@@ -9,8 +9,8 @@ set -o pipefail
 # openssl rand seems to require the RANDFILE bit, otherwise it fails
 # with the error message "unable to write 'random state'".
 export RANDFILE=/dev/null
-stat /var/lib/mongodb/keyFile || \
-  openssl rand -out /var/lib/mongodb/keyFile -base64 741
+stat /var/lib/mongodb/keyFile \
+  || openssl rand -out /var/lib/mongodb/keyFile -base64 741
 
 # Set the permissions on the keyFile
 chmod 600 /var/lib/mongodb/keyFile
