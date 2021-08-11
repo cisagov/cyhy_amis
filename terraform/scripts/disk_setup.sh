@@ -17,8 +17,7 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-while [ `lsblk | grep -c " disk"` -lt ${num_disks} ]
-do
+while [ $(lsblk | grep -c " disk") -lt ${num_disks} ]; do
   echo Waiting for disks to attach...
   sleep 5
 done
@@ -32,17 +31,17 @@ nvme_devices=$(find /dev | grep -i 'nvme[0-9][1-9]\?n1$')
 #
 # This is important because with multiple NVMe devices the order is
 # non-deterministic.
-for nvme_device in $nvme_devices
-do
+for nvme_device in $nvme_devices; do
   # Turn off pipefail and errexit for this one command.  This
   # command will always fail if the NVMe disk isn't the one we're
   # looking for.
-  set +o errexit; set +o pipefail
+  set +o errexit
+  set +o pipefail
   non_nvme_device_name=$(nvme id-ctrl -v $nvme_device | grep -o ${device_name})
-  set -o errexit; set -o pipefail
+  set -o errexit
+  set -o pipefail
 
-  if [ "$non_nvme_device_name" = "${device_name}" ]
-  then
+  if [ "$non_nvme_device_name" = "${device_name}" ]; then
     # We've found our device
 
     # Create a file system on the EBS volume if one was not

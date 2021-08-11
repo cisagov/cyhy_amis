@@ -7,8 +7,7 @@ after=true
 # https://stackoverflow.com/questions/15030563/redirecting-stdout-with-find-exec-and-without-creating-new-shell
 sed_script=scripts/toggle_prevent_destroy_sed_command.sh
 
-while getopts ":htf" opt
-do
+while getopts ":htf" opt; do
   case ${opt} in
     h)
       echo "Usage:"

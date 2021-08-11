@@ -6,8 +6,7 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-if [ $# -eq 1 ]
-then
+if [ $# -eq 1 ]; then
   workspace=$1
 else
   echo "Usage:  deploy_new_fdi_lambda.sh workspace_name"

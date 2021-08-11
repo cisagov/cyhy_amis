@@ -8,15 +8,13 @@ set -o errexit
 set -o pipefail
 
 workspace=prod-a
-if [ $# -ge 1 ]
-then
+if [ $# -ge 1 ]; then
   workspace=$1
 fi
 
 terraform workspace select "$workspace"
 
-for i in $(seq 0 2)
-do
+for i in $(seq 0 2); do
   terraform taint "aws_lambda_function.lambdas[$i]"
 done
 
