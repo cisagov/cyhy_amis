@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-import boto3
+# Standard Python Libraries
 from datetime import datetime
 from ipaddress import collapse_addresses, ip_network
 import re
+
+# Third-Party Libraries
+import boto3
 
 """
 This script will gather and publish the public ips of ec2 instances that

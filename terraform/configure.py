@@ -16,10 +16,11 @@ To create a unique configuration for your own workspace edit the
 WORKSPACE_CONFIGS constant below.
 """
 
+# Standard Python Libraries
 import glob
 import os
-import subprocess
 from string import Template
+import subprocess
 import sys
 
 # This script uses a subprocess feature added in python 3.7
