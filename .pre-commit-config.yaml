@@ -98,10 +98,10 @@ repos:
   #   rev: v0.910
   #   hooks:
   #     - id: mypy
-  # - repo: https://github.com/asottile/pyupgrade
-  #   rev: v2.21.2
-  #   hooks:
-  #     - id: pyupgrade
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v2.21.2
+    hooks:
+      - id: pyupgrade
 
   # Ansible hooks
   # - repo: https://github.com/ansible-community/ansible-lint

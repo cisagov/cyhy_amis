@@ -176,7 +176,7 @@ def main():
 
     # initialize a set to accumulate ips for each file
     for config in FILE_CONFIGS:
-        config["ip_set"] = set(ip_network(i) for i in config["static_ips"])
+        config["ip_set"] = {ip_network(i) for i in config["static_ips"]}
 
     # loop through the region list and fetch the public ec2 ips
     for region in regions:
@@ -189,7 +189,7 @@ def main():
                     config["ip_set"].add(ip_network(public_ip))
 
     # use a single timestamp for all files
-    now = "{0:%a %b %d %H:%M:%S UTC %Y}".format(datetime.utcnow())
+    now = "{:%a %b %d %H:%M:%S UTC %Y}".format(datetime.utcnow())
 
     # update each file in the bucket
     for config in FILE_CONFIGS:

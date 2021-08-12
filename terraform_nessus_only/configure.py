@@ -83,11 +83,11 @@ def create_dynamic_files(template, path, name, count):
 def create_dynamic_locals(config):
     """Create a dynamic locals file from configuration."""
     with open(LOCALS_FILE, mode="wb") as f:
-        f.write("locals {\n".encode("utf-8"))
+        f.write(b"locals {\n")
         for key, variable_name in LOCAL_DEFS.items():
             value = config.get(key)
             f.write(f"    {variable_name} = {value}\n".encode("utf-8"))
-        f.write("}\n".encode("utf-8"))
+        f.write(b"}\n")
 
 
 def main():
