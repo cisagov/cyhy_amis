@@ -101,7 +101,7 @@ def get_ec2_regions(filter=None):
 
 def get_ec2_ips(region):
     """create a set of public IPs for the given region
-       yields (application tag value, public_ip) tuples"""
+    yields (application tag value, public_ip) tuples"""
 
     ec2 = boto3.resource("ec2", region_name=region)
     instances = ec2.instances.filter(

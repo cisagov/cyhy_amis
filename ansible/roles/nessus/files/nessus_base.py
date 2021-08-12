@@ -194,9 +194,7 @@ class NessusController:
         response = self.__make_request(LOGIN, "DELETE")
         if response.status_code == OK_STATUS:
             return response
-        raise Warning(
-            f"Session destruction failed; response={response.text}"
-        )
+        raise Warning(f"Session destruction failed; response={response.text}")
 
 
 def main():
