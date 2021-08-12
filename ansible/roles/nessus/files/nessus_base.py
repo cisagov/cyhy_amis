@@ -1,3 +1,5 @@
+"""Configure the local Nessus server with a base policy."""
+
 # Standard Python Libraries
 import json
 import logging
@@ -51,6 +53,7 @@ if DEBUG:
 
 
 def setup_logging():
+    """Configure logging for the script."""
     global LOGGER
     # Added to capture InsecureRequestWarnings
     logging.captureWarnings(True)
@@ -63,11 +66,15 @@ def setup_logging():
 
 
 class NessusController:
+    """Manage interactions with the running Nessus web interface."""
+
     def __init__(self, nessus_url):
+        """Initialize a NessusController object."""
         self.url = nessus_url
         self.token = None
 
     def __make_request(self, target, method, payload=None, files=None):
+        """Make a request to the Nessus web interface."""
         num_retries = 0
         if payload:
             payload = json.dumps(payload)
@@ -171,6 +178,7 @@ class NessusController:
         return None
 
     def import_policy(self, filename):
+        """Attempt to import a policy from the given filename."""
         response = self.__make_request(
             POLICY_IMPORT, "POST", payload={"file": filename}
         )
@@ -179,18 +187,21 @@ class NessusController:
         raise Warning(f"Policy import failed; response={response.text}")
 
     def upload_file(self, files):
+        """Upload a file."""
         response = self.__make_request(FILE_UPLOAD, "POST", files=files)
         if response.status_code == OK_STATUS:
             return response.json()
         raise Warning(f"File upload failed; response={response.text}")
 
     def policy_list(self):
+        """Get a list of policies."""
         response = self.__make_request(POLICY_BASE, "GET")
         if response.status_code == OK_STATUS:
             return response.json()
         raise Warning(f"Policy list failed; response={response.text}")
 
     def destroy_session(self):
+        """Destroy the HTTP session."""
         response = self.__make_request(LOGIN, "DELETE")
         if response.status_code == OK_STATUS:
             return response
@@ -198,6 +209,7 @@ class NessusController:
 
 
 def main():
+    """Create a base policy using the running Nessus web interface."""
     setup_logging()
     LOGGER.info("Nessus job starting")
 

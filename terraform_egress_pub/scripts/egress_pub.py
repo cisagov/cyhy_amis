@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+"""Gather and publich the list of IPs of EC2 instances tagged for publication."""
+
 # Standard Python Libraries
 from datetime import datetime
 from ipaddress import collapse_addresses, ip_network
@@ -6,11 +9,6 @@ import re
 
 # Third-Party Libraries
 import boto3
-
-"""
-This script will gather and publish the public ips of ec2 instances that
-have been tagged for publication.
-"""
 
 # name of the bucket to publish into
 BUCKET_NAME = "s3-cdn.rules.ncats.cyber.dhs.gov"
@@ -94,8 +92,7 @@ FILE_CONFIGS = [
 
 
 def get_ec2_regions(filter=None):
-    """get a filtered list of all the regions with ec2 support"""
-
+    """Get a filtered list of all the regions with EC2 support."""
     ec2 = boto3.client("ec2")
     response = ec2.describe_regions(Filters=filter)
     result = [x["RegionName"] for x in response["Regions"]]
@@ -103,9 +100,10 @@ def get_ec2_regions(filter=None):
 
 
 def get_ec2_ips(region):
-    """create a set of public IPs for the given region
-    yields (application tag value, public_ip) tuples"""
+    """Create a set of public IPs for the given region.
 
+    yields (application tag value, public_ip) tuples
+    """
     ec2 = boto3.resource("ec2", region_name=region)
     instances = ec2.instances.filter(
         Filters=[{"Name": "instance-state-name", "Values": ["running"]}]
@@ -143,8 +141,7 @@ def get_ec2_ips(region):
 
 
 def update_bucket(bucket_name, filename, bucket_contents):
-    """update the s3 bucket with the new contents"""
-
+    """Update the s3 bucket with the new contents."""
     s3 = boto3.resource("s3")
 
     # get the bucket
@@ -168,6 +165,7 @@ def update_bucket(bucket_name, filename, bucket_contents):
 
 
 def main():
+    """Get the list of IPs to publish and upload them to the S3 bucket."""
     # get a list of all the regions
     regions = get_ec2_regions(REGION_FILTERS)
 

@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-"""
-This script will configure the terraform environment based on the active
-workspace.
+"""Configure the Terraform environment based on the active workspace.
 
 Due to a terraform limitation, modules can not be scaled with the "count"
 keyword the same way resource can.  This leads to a great deal of copying and
@@ -91,7 +89,7 @@ TERRAFORM_WORKSPACE_CMD = "terraform workspace show"
 
 
 def get_terraform_workspace():
-    """returns the current workspace"""
+    """Return the current workspace."""
     completed_process = subprocess.run(
         TERRAFORM_WORKSPACE_CMD, capture_output=True, shell=True
     )
@@ -99,11 +97,12 @@ def get_terraform_workspace():
 
 
 def find_templates():
+    """Find all template files."""
     return glob.iglob("**/*" + TEMPLATE_EXTENSION, recursive=True)
 
 
 def read_template(filename):
-    """read in the template, returns a Template object"""
+    """Read in the template and return a Template object."""
     # read in the template
     with open(filename) as f:
         template = f.readlines()
@@ -112,13 +111,13 @@ def read_template(filename):
 
 
 def remove_dynamic_files():
-    """delete all the previously created dynamic files"""
+    """Delete all the previously created dynamic files."""
     for filename in glob.iglob(DELETE_GLOB, recursive=True):
         os.unlink(filename)
 
 
 def create_dynamic_files(template, path, name, count):
-    """create count number files using the template"""
+    """Create count number files using the template."""
     for i in range(count):
         filename = ".".join([name, str(i), DYNAMIC_EXTENSION[1:]])
         full_path = os.path.join(path, filename)
@@ -128,7 +127,7 @@ def create_dynamic_files(template, path, name, count):
 
 
 def create_dynamic_locals(config):
-    """create a dynamic locals file from configuration"""
+    """Create a dynamic locals file from configuration."""
     with open(LOCALS_FILE, mode="wb") as f:
         f.write(b"locals {\n")
         for key, variable_name in LOCAL_DEFS.items():
@@ -138,6 +137,7 @@ def create_dynamic_locals(config):
 
 
 def main():
+    """Configure the environment based on the current workspace."""
     # get workspace
     workspace = get_terraform_workspace()
     print("Current Terraform workspace = ", workspace)
