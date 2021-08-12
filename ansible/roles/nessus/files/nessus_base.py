@@ -10,10 +10,10 @@ import time
 import requests
 
 USER = ""
-PASSWORD = ""
+PASSWORD = ""  # nosec
 URL = "https://localhost:8834"
 BASE_POLICY_NAME = "cyhy-base"
-BASE_POLICY_FILE_NAME = "/tmp/cyhy-base-nessus8-policy.xml"
+BASE_POLICY_FILE_NAME = "/tmp/cyhy-base-nessus8-policy.xml"  # nosec
 
 DEBUG = False
 LOGIN = "/session"

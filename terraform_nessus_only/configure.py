@@ -17,11 +17,13 @@ WORKSPACE_CONFIGS constant below.
 import glob
 import os
 from string import Template
-import subprocess
+import subprocess  # nosec
 import sys
 
-# This script uses a subprocess feature added in python 3.7
-assert sys.version_info >= (3, 7), "This script requires Python 3.7 or newer"
+# This script uses a subprocess feature added in Python 3.7
+if sys.version_info < (3, 7):
+    print("This script requires Python version 3.7 or newer", file=sys.stderr)
+    sys.exit(1)
 
 # for each workspace, set the number of instances to create for each template
 WORKSPACE_CONFIGS = {"production": {"nessus": 1}}
@@ -45,7 +47,7 @@ TERRAFORM_WORKSPACE_CMD = "terraform workspace show"
 def get_terraform_workspace():
     """Return the current workspace."""
     completed_process = subprocess.run(
-        TERRAFORM_WORKSPACE_CMD, capture_output=True, shell=True
+        TERRAFORM_WORKSPACE_CMD, capture_output=True, shell=True  # nosec
     )
     return completed_process.stdout.decode().strip()
 
