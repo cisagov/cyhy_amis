@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-import boto3
+
+"""Gather and publish the list of IPs of EC2 instances tagged for publication."""
+
+# Standard Python Libraries
 from datetime import datetime
 from ipaddress import collapse_addresses, ip_network
 import re
 
-"""
-This script will gather and publish the public ips of ec2 instances that
-have been tagged for publication.
-"""
+# Third-Party Libraries
+import boto3
 
 # name of the bucket to publish into
 BUCKET_NAME = "s3-cdn.rules.ncats.cyber.dhs.gov"
@@ -91,8 +92,7 @@ FILE_CONFIGS = [
 
 
 def get_ec2_regions(filter=None):
-    """get a filtered list of all the regions with ec2 support"""
-
+    """Get a filtered list of all the regions with EC2 support."""
     ec2 = boto3.client("ec2")
     response = ec2.describe_regions(Filters=filter)
     result = [x["RegionName"] for x in response["Regions"]]
@@ -100,9 +100,10 @@ def get_ec2_regions(filter=None):
 
 
 def get_ec2_ips(region):
-    """create a set of public IPs for the given region
-       yields (application tag value, public_ip) tuples"""
+    """Create a set of public IPs for the given region.
 
+    yields (application tag value, public_ip) tuples
+    """
     ec2 = boto3.resource("ec2", region_name=region)
     instances = ec2.instances.filter(
         Filters=[{"Name": "instance-state-name", "Values": ["running"]}]
@@ -140,8 +141,7 @@ def get_ec2_ips(region):
 
 
 def update_bucket(bucket_name, filename, bucket_contents):
-    """update the s3 bucket with the new contents"""
-
+    """Update the s3 bucket with the new contents."""
     s3 = boto3.resource("s3")
 
     # get the bucket
@@ -165,6 +165,7 @@ def update_bucket(bucket_name, filename, bucket_contents):
 
 
 def main():
+    """Get the list of IPs to publish and upload them to the S3 bucket."""
     # get a list of all the regions
     regions = get_ec2_regions(REGION_FILTERS)
 
@@ -173,7 +174,7 @@ def main():
 
     # initialize a set to accumulate ips for each file
     for config in FILE_CONFIGS:
-        config["ip_set"] = set(ip_network(i) for i in config["static_ips"])
+        config["ip_set"] = {ip_network(i) for i in config["static_ips"]}
 
     # loop through the region list and fetch the public ec2 ips
     for region in regions:
@@ -186,7 +187,7 @@ def main():
                     config["ip_set"].add(ip_network(public_ip))
 
     # use a single timestamp for all files
-    now = "{0:%a %b %d %H:%M:%S UTC %Y}".format(datetime.utcnow())
+    now = "{:%a %b %d %H:%M:%S UTC %Y}".format(datetime.utcnow())
 
     # update each file in the bucket
     for config in FILE_CONFIGS:
