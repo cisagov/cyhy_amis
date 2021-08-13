@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""Gather and publich the list of IPs of EC2 instances tagged for publication."""
+"""Gather and publish the list of IPs of EC2 instances tagged for publication."""
 
 # Standard Python Libraries
 from datetime import datetime
