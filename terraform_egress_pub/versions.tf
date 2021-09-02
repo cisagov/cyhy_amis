@@ -1,6 +1,6 @@
 terraform {
-  # We want to hold off on 0.13 until we have tested it.
-  required_version = "~> 0.12.0"
+  # We want to hold off on 0.14 until we have tested it.
+  required_version = "~> 0.13.0"
 
   required_providers {
     aws     = "~> 3.0"
