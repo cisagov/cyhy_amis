@@ -5,7 +5,13 @@ terraform {
   # Pin to the latest 2.x AWS provider, since the 3.x provider is
   # unstable and causing problems.
   required_providers {
-    aws      = "~> 2.0"
-    template = "~> 2.1"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 2.0"
+    }
+    template = {
+      source  = "hashicorp/template"
+      version = "~> 2.1"
+    }
   }
 }
