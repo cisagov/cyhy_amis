@@ -208,24 +208,5 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
   volume_id   = aws_ebs_volume.bod_report_data.id
   instance_id = aws_instance.bod_docker.id
 
-  # Terraform attempts to destroy the volume attachments before it
-  # attempts to destroy the EC2 instance they are attached to.  EC2
-  # does not like that and it results in the failed destruction of the
-  # volume attachments.  To get around this, we explicitly terminate
-  # the bod_report volume via the AWS CLI in a destroy provisioner;
-  # this gracefully shuts down the instance and allows terraform to
-  # successfully destroy the volume attachments.
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.bod_docker.id}"
-    on_failure = continue
-  }
-
-  # Wait until bod_report instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.bod_docker.id}"
-  }
-
   skip_destroy = true
 }

@@ -242,24 +242,6 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_data.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  # Terraform attempts to destroy the volume attachments before it attempts to
-  # destroy the EC2 instance they are attached to.  EC2 does not like that and
-  # it results in the failed destruction of the volume attachments.  To get
-  # around this, we explicitly terminate the cyhy_mongo volume via the AWS CLI
-  # in a destroy provisioner; this gracefully shuts down the instance and
-  # allows terraform to successfully destroy the volume attachments.
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_mongo instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-  }
-
   skip_destroy = true
 }
 
@@ -268,18 +250,6 @@ resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_journal.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_mongo instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-  }
-
   skip_destroy = true
 }
 
@@ -287,18 +257,6 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   device_name = var.mongo_disks["log"]
   volume_id   = aws_ebs_volume.cyhy_mongo_log.id
   instance_id = aws_instance.cyhy_mongo[0].id
-
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_mongo instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-  }
 
   skip_destroy = true
 }

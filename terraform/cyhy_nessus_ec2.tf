@@ -149,24 +149,6 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   volume_id   = aws_ebs_volume.nessus_cyhy_runner_data[count.index].id
   instance_id = aws_instance.cyhy_nessus[count.index].id
 
-  # Terraform attempts to destroy the volume attachment before it attempts to
-  # destroy the EC2 instance it is attached to.  EC2 does not like that and it
-  # results in the failed destruction of the volume attachment.  To get around
-  # this, we explicitly terminate the cyhy_nessus instance via the AWS CLI
-  # in a destroy provisioner; this gracefully shuts down the instance and
-  # allows terraform to successfully destroy the volume attachments.
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_nessus[count.index].id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_nessus instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_nessus[count.index].id}"
-  }
-
   skip_destroy = true
   depends_on   = [aws_ebs_volume.nessus_cyhy_runner_data]
 }
