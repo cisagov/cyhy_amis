@@ -23,7 +23,7 @@ data "aws_ami" "nessus" {
 resource "aws_instance" "nessus" {
   ami               = data.aws_ami.nessus.id
   instance_type     = "m5.large"
-  count             = local.nessus_instance_count # Set by configure.py
+  count             = var.nessus_instance_count
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = aws_subnet.nessus_scanner_subnet.id
@@ -104,10 +104,32 @@ resource "aws_eip_association" "nessus_eip_assocs" {
   )
 }
 
-# load in the dynamically created provisioner modules
-module "dyn_nessus" {
-  source                  = "./dyn_nessus"
-  nessus_public_ips       = aws_eip_association.nessus_eip_assocs[*].public_ip
-  nessus_activation_codes = var.nessus_activation_codes
-  remote_ssh_user         = var.remote_ssh_user
+# Provision a Nessus EC2 instance via Ansible
+module "nessus_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+  count  = length(aws_instance.nessus)
+
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no'"
+  ]
+
+  envs = [
+    # If you terminate all the existing Nessus instances and then run apply,
+    # the list aws_eip_association.nessus_eip_assocs is empty at that time.
+    # Then there is an error condition when Terraform evaluates what must be
+    # done for the apply because you are trying to use element() to reference
+    # indices in an empty list.  The list will be populated with the actual
+    # values as the apply runs, so we just need to get past the pre-apply
+    # stage.  Therefore this ugly hack works.
+    #
+    # If you find a better way, please use it and get rid of this
+    # affront to basic decency.
+    "host=${length(aws_eip_association.nessus_eip_assocs[*].public_ip) > 0 ? element(aws_eip_association.nessus_eip_assocs[*].public_ip, count.index) : ""}",
+    "host_groups=nessus",
+    "nessus_activation_code=${var.nessus_activation_codes[count.index]}"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
 }
