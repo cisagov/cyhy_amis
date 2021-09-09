@@ -38,6 +38,11 @@ variable "nessus_cyhy_runner_disk" {
   default     = "/dev/xvdb"
 }
 
+variable "nessus_instance_count" {
+  description = "The number of Nessus instances to create."
+  type        = number
+}
+
 # This should be overridden by a production.tfvars file,
 # most likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {

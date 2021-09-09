@@ -23,7 +23,7 @@ data "aws_ami" "nessus" {
 resource "aws_instance" "cyhy_nessus" {
   ami               = data.aws_ami.nessus.id
   instance_type     = local.production_workspace ? "m5.2xlarge" : "m5.large"
-  count             = local.nessus_instance_count
+  count             = var.nessus_instance_count
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   subnet_id = aws_subnet.cyhy_vulnscanner_subnet.id
@@ -153,11 +153,32 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   depends_on   = [aws_ebs_volume.nessus_cyhy_runner_data]
 }
 
-# load in the dynamically created provisioner modules
-module "dyn_nessus" {
-  source                  = "./dyn_nessus"
-  bastion_public_ip       = aws_instance.cyhy_bastion.public_ip
-  nessus_private_ips      = aws_instance.cyhy_nessus[*].private_ip
-  nessus_activation_codes = var.nessus_activation_codes
-  remote_ssh_user         = var.remote_ssh_user
+# Provision a Nessus EC2 instance via Ansible
+module "cyhy_nessus_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+  count  = length(aws_instance.cyhy_nessus)
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    # If you terminate all the existing management Nessus instances
+    # and then run apply, the list var.nessus_private_ips is empty at
+    # that time.  Then there is an error condition when Terraform
+    # evaluates what must be done for the apply because you are trying
+    # to use element() to reference indices in an empty list.  The
+    # list will be populated with the actual values as the apply runs,
+    # so we just need to get past the pre-apply stage.  Therefore this
+    # ugly hack works.
+    #
+    # If you find a better way, please use it and get rid of this
+    # affront to basic decency.
+    "host=${length(aws_instance.cyhy_nessus[*].private_ip) > 0 ? element(aws_instance.cyhy_nessus[*].private_ip, count.index) : ""}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner,nessus",
+    "nessus_activation_code=${var.nessus_activation_codes[count.index]}"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
 }
