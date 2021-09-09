@@ -23,7 +23,7 @@ data "aws_ami" "nmap" {
 resource "aws_instance" "cyhy_nmap" {
   ami           = data.aws_ami.nmap.id
   instance_type = local.production_workspace ? "t3.small" : "t3.small"
-  count         = local.nmap_instance_count
+  count         = var.nmap_instance_count
 
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
@@ -156,10 +156,31 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   depends_on   = [aws_ebs_volume.nmap_cyhy_runner_data]
 }
 
-# load in the dynamically created provisioner modules
-module "dyn_nmap" {
-  source            = "./dyn_nmap"
-  bastion_public_ip = aws_instance.cyhy_bastion.public_ip
-  nmap_private_ips  = aws_instance.cyhy_nmap[*].private_ip
-  remote_ssh_user   = var.remote_ssh_user
+# Provision an nmap EC2 instance via Ansible
+module "cyhy_nmap_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+  count  = length(aws_instance.cyhy_nmap)
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
+  ]
+  envs = [
+    # If you terminate all the existing management Nessus instances
+    # and then run apply, the list var.nmap_private_ips is empty at
+    # that time.  Then there is an error condition when Terraform
+    # evaluates what must be done for the apply because you are trying
+    # to use element() to reference indices in an empty list.  The
+    # list will be populated with the actual values as the apply runs,
+    # so we just need to get past the pre-apply stage.  Therefore this
+    # ugly hack works.
+    #
+    # If you find a better way, please use it and get rid of this
+    # affront to basic decency.
+    "host=${length(aws_instance.cyhy_nmap[*].private_ip) > 0 ? element(aws_instance.cyhy_nmap[*].private_ip, count.index) : ""}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=cyhy_runner,nmap"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
 }

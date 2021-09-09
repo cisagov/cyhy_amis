@@ -43,6 +43,11 @@ variable "nessus_instance_count" {
   type        = number
 }
 
+variable "nmap_instance_count" {
+  description = "The number of nmap instances to create."
+  type        = number
+}
+
 # This should be overridden by a production.tfvars file,
 # most likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {
