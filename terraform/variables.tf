@@ -14,6 +14,11 @@ variable "tags" {
   default     = {}
 }
 
+variable "mgmt_nessus_instance_count" {
+  description = "The number of Nessus instances to create if a management environment is set to be created."
+  type        = number
+}
+
 variable "mongo_disks" {
   type = map(string)
   default = {

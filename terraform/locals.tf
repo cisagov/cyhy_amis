@@ -104,5 +104,5 @@ locals {
   count_database = local.mongo_instance_count
 
   # Management Vulnerability Scanner DNS entries
-  count_mgmt_vuln_scanner = local.mgmt_nessus_instance_count
+  count_mgmt_vuln_scanner = var.mgmt_nessus_instance_count
 }
