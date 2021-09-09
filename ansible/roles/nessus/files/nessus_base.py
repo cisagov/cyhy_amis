@@ -44,7 +44,13 @@ if DEBUG:
     # Standard Python Libraries
     import http.client as http_client  # lgtm[py/unreachable-statement]
 
-    http_client.HTTPConnection.debuglevel = 1
+    # This leverages an unofficial means to set the debug level for HTTPConnection
+    # objects. The official way is to use <HTTPConnection object>.set_debuglevel()
+    # but since we are using the requests library we do not have access to use the
+    # correct method. We must use this hack to get debugging information but it
+    # fails mypy because there are no type stubs to support this method. As a
+    # result we must disable typechecking for this line.
+    http_client.HTTPConnection.debuglevel = 1  # type: ignore
     logging.basicConfig()
     logging.getLogger().setLevel(logging.DEBUG)
     requests_log = logging.getLogger("requests.packages.urllib3")
