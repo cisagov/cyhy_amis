@@ -23,6 +23,11 @@ variable "mongo_disks" {
   }
 }
 
+variable "mongo_instance_count" {
+  description = "The number of Mongo instances to create."
+  type        = number
+}
+
 variable "nmap_cyhy_runner_disk" {
   description = "The cyhy-runner data volume for the nmap instance(s)"
   default     = "/dev/nvme1n1"

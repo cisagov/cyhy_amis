@@ -110,7 +110,7 @@ resource "aws_iam_instance_profile" "cyhy_mongo" {
 }
 
 resource "aws_instance" "cyhy_mongo" {
-  count                       = local.mongo_instance_count
+  count                       = var.mongo_instance_count
   ami                         = data.aws_ami.cyhy_mongo.id
   instance_type               = local.production_workspace ? "m5.12xlarge" : "t3.small"
   availability_zone           = "${var.aws_region}${var.aws_availability_zone}"
@@ -145,10 +145,9 @@ resource "aws_instance" "cyhy_mongo" {
 }
 
 # Provision the mongo EC2 instance via Ansible
-# TODO when we start using multiple mongo, move this to a dyn_mongo module
-# TODO see pattern of nmap and nessus
 module "cyhy_mongo_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
+  count  = length(aws_instance.cyhy_mongo)
 
   arguments = [
     "--user=${var.remote_ssh_user}",
@@ -156,7 +155,7 @@ module "cyhy_mongo_ansible_provisioner" {
   ]
   envs = [
     "ANSIBLE_SSH_RETRIES=5",
-    "host=${aws_instance.cyhy_mongo[0].private_ip}",
+    "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
