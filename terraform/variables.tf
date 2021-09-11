@@ -15,6 +15,7 @@ variable "tags" {
 }
 
 variable "mgmt_nessus_instance_count" {
+  default     = 1
   description = "The number of Nessus instances to create if a management environment is set to be created."
   type        = number
 }
