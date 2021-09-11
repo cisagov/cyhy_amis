@@ -39,7 +39,7 @@ resource "aws_instance" "mgmt_bastion" {
 # Provision a Management Bastion EC2 instance via Ansible
 module "mgmt_bastion_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
-  count  = length(aws_instance.mgmt_bastion)
+  count  = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
 
   arguments = [
     "--user=${var.remote_ssh_user}",

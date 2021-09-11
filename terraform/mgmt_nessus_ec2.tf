@@ -41,7 +41,7 @@ resource "aws_instance" "mgmt_nessus" {
 # Provision a Management Nessus EC2 instance via Ansible
 module "mgmt_nessus_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
-  count  = length(aws_instance.mgmt_nessus)
+  count  = var.enable_mgmt_vpc ? length(aws_instance.mgmt_nessus) : 0
 
   arguments = [
     "--user=${var.remote_ssh_user}",
