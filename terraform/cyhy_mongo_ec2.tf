@@ -142,6 +142,18 @@ resource "aws_instance" "cyhy_mongo" {
   # We add some explicit tags to the Mongo volumes below, so we don't
   # want to use volume_tags here
   # volume_tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
+  #
+  # With Terraform 0.13 and the 3.x version of the AWS provider these now need
+  # to be declared here. These are the same tags used in
+  # aws_ebs_volume.cyhy_mongo_log below to prevent a Terraform 0.13 apply from
+  # removing existing tags.
+
+  volume_tags = merge(
+    var.tags,
+    {
+      "Name" = "CyHy Mongo Log"
+    },
+  )
 }
 
 # Provision the mongo EC2 instance via Ansible
