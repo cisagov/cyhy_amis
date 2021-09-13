@@ -117,12 +117,12 @@ module "nessus_ansible_provisioner" {
 
   envs = [
     # If you terminate all the existing Nessus instances and then run apply,
-    # the list aws_eip_association.nessus_eip_assocs is empty at that time.
-    # Then there is an error condition when Terraform evaluates what must be
-    # done for the apply because you are trying to use element() to reference
-    # indices in an empty list.  The list will be populated with the actual
-    # values as the apply runs, so we just need to get past the pre-apply
-    # stage.  Therefore this ugly hack works.
+    # the list aws_eip_association.nessus_eip_assocs[*].public_ip is empty at
+    # that time.  Then there is an error condition when Terraform evaluates
+    # what must be done for the apply because you are trying to use element()
+    # to reference indices in an empty list.  The list will be populated with
+    # the actual values as the apply runs, so we just need to get past the
+    # pre-apply stage.  Therefore this ugly hack works.
     #
     # If you find a better way, please use it and get rid of this
     # affront to basic decency.

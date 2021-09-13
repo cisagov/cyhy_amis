@@ -163,14 +163,13 @@ module "cyhy_nessus_ansible_provisioner" {
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
-    # If you terminate all the existing management Nessus instances
-    # and then run apply, the list var.nessus_private_ips is empty at
-    # that time.  Then there is an error condition when Terraform
-    # evaluates what must be done for the apply because you are trying
-    # to use element() to reference indices in an empty list.  The
-    # list will be populated with the actual values as the apply runs,
-    # so we just need to get past the pre-apply stage.  Therefore this
-    # ugly hack works.
+    # If you terminate all the existing Nessus instances and then run apply,
+    # the list aws_instance.cyhy_nessus[*].private_ip is empty at that time.
+    # Then there is an error condition when Terraform evaluates what must be
+    # done for the apply because you are trying to use element() to reference
+    # indices in an empty list.  The list will be populated with the actual
+    # values as the apply runs, so we just need to get past the pre-apply
+    # stage.  Therefore this ugly hack works.
     #
     # If you find a better way, please use it and get rid of this
     # affront to basic decency.
