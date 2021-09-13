@@ -30,6 +30,7 @@ variable "mongo_disks" {
 }
 
 variable "mongo_instance_count" {
+  default     = 1
   description = "The number of Mongo instances to create."
   type        = number
 }
