@@ -110,7 +110,7 @@ resource "aws_iam_instance_profile" "cyhy_mongo" {
 }
 
 resource "aws_instance" "cyhy_mongo" {
-  count                       = local.mongo_instance_count
+  count                       = var.mongo_instance_count
   ami                         = data.aws_ami.cyhy_mongo.id
   instance_type               = local.production_workspace ? "m5.12xlarge" : "t3.small"
   availability_zone           = "${var.aws_region}${var.aws_availability_zone}"
@@ -142,13 +142,24 @@ resource "aws_instance" "cyhy_mongo" {
   # We add some explicit tags to the Mongo volumes below, so we don't
   # want to use volume_tags here
   # volume_tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
+  #
+  # With Terraform 0.13 and the 3.x version of the AWS provider these now need
+  # to be declared here. These are the same tags used in
+  # aws_ebs_volume.cyhy_mongo_log below to prevent a Terraform 0.13 apply from
+  # removing existing tags.
+
+  volume_tags = merge(
+    var.tags,
+    {
+      "Name" = "CyHy Mongo Log"
+    },
+  )
 }
 
 # Provision the mongo EC2 instance via Ansible
-# TODO when we start using multiple mongo, move this to a dyn_mongo module
-# TODO see pattern of nmap and nessus
 module "cyhy_mongo_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
+  count  = length(aws_instance.cyhy_mongo)
 
   arguments = [
     "--user=${var.remote_ssh_user}",
@@ -156,7 +167,7 @@ module "cyhy_mongo_ansible_provisioner" {
   ]
   envs = [
     "ANSIBLE_SSH_RETRIES=5",
-    "host=${aws_instance.cyhy_mongo[0].private_ip}",
+    "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
@@ -242,24 +253,6 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_data.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  # Terraform attempts to destroy the volume attachments before it attempts to
-  # destroy the EC2 instance they are attached to.  EC2 does not like that and
-  # it results in the failed destruction of the volume attachments.  To get
-  # around this, we explicitly terminate the cyhy_mongo volume via the AWS CLI
-  # in a destroy provisioner; this gracefully shuts down the instance and
-  # allows terraform to successfully destroy the volume attachments.
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_mongo instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-  }
-
   skip_destroy = true
 }
 
@@ -268,18 +261,6 @@ resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_journal.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_mongo instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-  }
-
   skip_destroy = true
 }
 
@@ -287,18 +268,6 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   device_name = var.mongo_disks["log"]
   volume_id   = aws_ebs_volume.cyhy_mongo_log.id
   instance_id = aws_instance.cyhy_mongo[0].id
-
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_mongo instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_mongo[0].id}"
-  }
 
   skip_destroy = true
 }

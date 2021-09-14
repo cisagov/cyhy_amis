@@ -36,9 +36,19 @@ resource "aws_instance" "mgmt_bastion" {
   )
 }
 
-# load in the dynamically created provisioner modules
-module "dyn_mgmt_bastion" {
-  source                 = "./dyn_mgmt_bastion"
-  mgmt_bastion_public_ip = aws_instance.mgmt_bastion[*].public_ip
-  remote_ssh_user        = var.remote_ssh_user
+# Provision a Management Bastion EC2 instance via Ansible
+module "mgmt_bastion_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+  count  = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no'"
+  ]
+  envs = [
+    "host=${aws_instance.mgmt_bastion[*].public_ip[count.index]}",
+    "host_groups=mgmt_bastion"
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
 }

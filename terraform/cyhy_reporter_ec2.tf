@@ -155,24 +155,5 @@ resource "aws_volume_attachment" "cyhy_reporter_data_attachment" {
   volume_id   = aws_ebs_volume.cyhy_reporter_data.id
   instance_id = aws_instance.cyhy_reporter.id
 
-  # Terraform attempts to destroy the volume attachments before it
-  # attempts to destroy the EC2 instance they are attached to.  EC2
-  # does not like that and it results in the failed destruction of the
-  # volume attachments.  To get around this, we explicitly terminate
-  # the cyhy_reporter volume via the AWS CLI in a destroy provisioner;
-  # this gracefully shuts down the instance and allows terraform to
-  # successfully destroy the volume attachments.
-  provisioner "local-exec" {
-    when       = destroy
-    command    = "aws --region=${var.aws_region} ec2 terminate-instances --instance-ids ${aws_instance.cyhy_reporter.id}"
-    on_failure = continue
-  }
-
-  # Wait until cyhy_reporter instance is terminated before continuing on
-  provisioner "local-exec" {
-    when    = destroy
-    command = "aws --region=${var.aws_region} ec2 wait instance-terminated --instance-ids ${aws_instance.cyhy_reporter.id}"
-  }
-
   skip_destroy = true
 }

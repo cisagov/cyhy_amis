@@ -14,6 +14,12 @@ variable "tags" {
   default     = {}
 }
 
+variable "mgmt_nessus_instance_count" {
+  default     = 1
+  description = "The number of Nessus instances to create if a management environment is set to be created."
+  type        = number
+}
+
 variable "mongo_disks" {
   type = map(string)
   default = {
@@ -21,6 +27,12 @@ variable "mongo_disks" {
     journal = "/dev/xvdc"
     log     = "/dev/xvdd"
   }
+}
+
+variable "mongo_instance_count" {
+  default     = 1
+  description = "The number of Mongo instances to create."
+  type        = number
 }
 
 variable "nmap_cyhy_runner_disk" {
@@ -31,6 +43,16 @@ variable "nmap_cyhy_runner_disk" {
 variable "nessus_cyhy_runner_disk" {
   description = "The cyhy-runner data volume for the nessus instance(s)"
   default     = "/dev/xvdb"
+}
+
+variable "nessus_instance_count" {
+  description = "The number of Nessus instances to create."
+  type        = number
+}
+
+variable "nmap_instance_count" {
+  description = "The number of nmap instances to create."
+  type        = number
 }
 
 # This should be overridden by a production.tfvars file,

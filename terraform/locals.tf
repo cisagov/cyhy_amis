@@ -95,14 +95,14 @@ locals {
   # the reverse zone names.
 
   # Port Scanners DNS entries
-  count_port_scanner = local.nmap_instance_count
+  count_port_scanner = var.nmap_instance_count
 
   # Vulnerability Scanners DNS entries
-  count_vuln_scanner = local.nessus_instance_count
+  count_vuln_scanner = var.nessus_instance_count
 
   # Database DNS entries
-  count_database = local.mongo_instance_count
+  count_database = var.mongo_instance_count
 
   # Management Vulnerability Scanner DNS entries
-  count_mgmt_vuln_scanner = local.mgmt_nessus_instance_count
+  count_mgmt_vuln_scanner = var.mgmt_nessus_instance_count
 }
