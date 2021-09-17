@@ -1,7 +1,7 @@
 
 terraform {
-  # We want to hold off on 0.14 until we have tested it.
-  required_version = "~> 0.13.0"
+  # We want to hold off on 0.15+ until we have tested it.
+  required_version = "~> 0.14.0"
 
   # If you use any other providers you should also pin them to the
   # major version currently being used.  This practice will help us
