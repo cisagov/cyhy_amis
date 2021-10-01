@@ -1,40 +1,35 @@
-cyhy_dashboard
-==============
+# cyhy_dashboard #
 
 A role for configuring cyhy-dashboard hosts.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: dashboards
-      become: yes
-      become_method: sudo
-      roles:
-         - cyhy_dashboard
+```yaml
+- hosts: dashboards
+  become: yes
+  become_method: sudo
+  roles:
+     - cyhy_dashboard
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Kyle Evers <kyle.evers@beta.dhs.gov>
