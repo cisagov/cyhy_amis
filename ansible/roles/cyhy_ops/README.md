@@ -1,40 +1,35 @@
-cyhy_ops
-========
+# cyhy_ops #
 
 A role for adding the cyhy_ops user.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: db
-      become: yes
-      become_method: sudo
-      roles:
-         - cyhy_ops
+```yaml
+- hosts: db
+  become: yes
+  become_method: sudo
+  roles:
+     - cyhy_ops
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>
