@@ -1,41 +1,36 @@
-cyhy_mailer
-===========
+# cyhy_mailer #
 
 An Ansible role for configuring a host to perform emailing of Cyber
 Hygiene or BOD 18-01 reports.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: bod_docker
-      become: yes
-      become_method: sudo
-      roles:
-         - cyhy_mailer
+```yaml
+- hosts: bod_docker
+  become: yes
+  become_method: sudo
+  roles:
+     - cyhy_mailer
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>
