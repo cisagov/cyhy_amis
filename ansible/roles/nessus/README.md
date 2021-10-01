@@ -1,40 +1,35 @@
-nessus
-======
+# nessus #
 
 A role for configuring Nessus hosts.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: nessus
-      become: yes
-      become_method: sudo
-      roles:
-         - nessus
+```yaml
+- hosts: nessus
+  become: yes
+  become_method: sudo
+  roles:
+     - nessus
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>
