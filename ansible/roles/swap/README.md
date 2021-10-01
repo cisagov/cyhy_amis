@@ -1,29 +1,23 @@
-Role Name
-=========
+# swap #
 
 Enables swap on a machine.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
-* `swapfile_size` [default: `2GiB`]: the swapfile size specified for `fallocate`
+- `swapfile_size` [default: `2GiB`]: the swapfile size specified for `fallocate`
+- `swapfile_location` [default: `/swapfile`]: the location of of the swap file
 
-* `swapfile_location` [default: `/swapfile`]: the location of of the swap file
-
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
-```
+```yaml
 - hosts: nmap
   name: Configure nmap scanning hosts
   become: yes
