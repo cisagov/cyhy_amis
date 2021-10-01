@@ -1,40 +1,35 @@
-cyhy_ops
-========
+# mgmt_ops #
 
 A role for adding the mgmt_ops user.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: db
-      become: yes
-      become_method: sudo
-      roles:
-         - mgmt_ops
+```yaml
+- hosts: db
+  become: yes
+  become_method: sudo
+  roles:
+     - mgmt_ops
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 David Redmin <david.redmin@beta.dhs.gov>
