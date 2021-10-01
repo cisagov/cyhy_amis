@@ -1,41 +1,36 @@
-chown_cyhy_dirs
-===============
+# chown_cyhy_dirs #
 
 An Ansible role for chowning the CyHy directories for cyhy-runner and
 cyhy-commander hosts.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: cyhy
-      become: yes
-      become_method: sudo
-      roles:
-        - chown_cyhy_dirs
+```yaml
+- hosts: cyhy
+  become: yes
+  become_method: sudo
+  roles:
+    - chown_cyhy_dirs
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>
