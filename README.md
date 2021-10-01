@@ -1,10 +1,12 @@
-# NCATS AWS AMIs :dvd: #
+# NCATS AWS AMIs 📀 #
 
 [![GitHub Build Status](https://github.com/cisagov/cyhy_amis/workflows/build/badge.svg)](https://github.com/cisagov/cyhy_amis/actions)
 
 ## Building the AMIs ##
+
 The AMIs are built like so:
-```
+
+```console
 ansible-galaxy install -r packer/ansible/requirements.yml
 packer build packer/bastion.json
 packer build packer/docker.json
@@ -22,17 +24,21 @@ to be copied, as discussed
 [here](https://github.com/hashicorp/packer/issues/6536#issuecomment-407925535).
 
 Also note that
-```
+
+```console
 ansible-galaxy install --force -r packer/ansible/requirements.yml
 ```
+
 will update the roles that are being pulled from external sources.  This
 may be required, for example, if a role that is being pulled from a
 GitHub repository has been updated and you want the new changes.  By
 default `ansible-galaxy install` _will not_ upgrade roles.
 
 ## Building the Terraform-based infrastructure ##
+
 The Terraform-based infrastructure is built like so:
-```
+
+```console
 ansible-galaxy install -r ansible/requirements.yml
 cd terraform
 terraform workspace select <your_workspace>
@@ -45,8 +51,10 @@ Again, in some cases you may find it useful to add the `--force` flag
 to the `ansible-galaxy` command.
 
 ## Tearing down the Terraform-based infrastructure ##
+
 The Terraform-based infrastructure is torn down like so:
-```
+
+```console
 cd terraform
 terraform workspace select <your_workspace>
 ./configure.py
