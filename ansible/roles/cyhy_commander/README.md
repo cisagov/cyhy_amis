@@ -1,40 +1,35 @@
-cyhy_commander
-==============
+# cyhy_commander #
 
 A role for configuring cyhy-commander hosts.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: commanders
-      become: yes
-      become_method: sudo
-      roles:
-         - cyhy_commander
+```yaml
+- hosts: commanders
+  become: yes
+  become_method: sudo
+  roles:
+     - cyhy_commander
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Kyle Evers <kyle.evers@beta.dhs.gov>

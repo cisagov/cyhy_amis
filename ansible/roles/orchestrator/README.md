@@ -1,41 +1,36 @@
-orchestrator
-============
+# orchestrator #
 
 An Ansible role for configuring a host to perform BOD 18-01 (HTTPS and
 Trustworthy Email) scanning and reporting.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: bod_docker
-      become: yes
-      become_method: sudo
-      roles:
-         - orchestrator
+```yaml
+- hosts: bod_docker
+  become: yes
+  become_method: sudo
+  roles:
+     - orchestrator
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>

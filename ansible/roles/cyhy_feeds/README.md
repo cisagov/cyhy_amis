@@ -1,40 +1,35 @@
-cyhy_feeds
-=====
+# cyhy_feeds #
 
 A role for installing and configuring cyhy_feeds instance.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: cyhy_feeds
-      become: yes
-      become_method: sudo
-      roles:
-         - cyhy_feeds
+```yaml
+- hosts: cyhy_feeds
+  become: yes
+  become_method: sudo
+  roles:
+     - cyhy_feeds
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Kyle Evers <kyle.evers@beta.dhs.gov>

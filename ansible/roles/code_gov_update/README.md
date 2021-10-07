@@ -1,41 +1,36 @@
-code_gov_update
-===============
+# code_gov_update #
 
 An Ansible role for configuring a host to generate updated code.gov
 JSON files and email them.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: bod_docker
-      become: yes
-      become_method: sudo
-      roles:
-         - code_gov_update
+```yaml
+- hosts: bod_docker
+  become: yes
+  become_method: sudo
+  roles:
+     - code_gov_update
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@trio.dhs.gov>

@@ -1,41 +1,36 @@
-groups
-======
+# groups #
 
 An Ansible role for adding users to groups after now that cloud-init
 has run.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: all
-      become: yes
-      become_method: sudo
-      roles:
-         - groups
+```yaml
+- hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+     - groups
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>

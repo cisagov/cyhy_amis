@@ -1,40 +1,35 @@
-cyhy_reporter
-=============
+# cyhy_reporter #
 
 A role for configuring cyhy-reports hosts.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: reporters
-      become: yes
-      become_method: sudo
-      roles:
-         - cyhy_reporter
+```yaml
+- hosts: reporters
+  become: yes
+  become_method: sudo
+  roles:
+     - cyhy_reporter
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>

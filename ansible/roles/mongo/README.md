@@ -1,40 +1,35 @@
-mongo
-=====
+# mongo #
 
 A role for installing and configuring MongoDB servers.
 
-Requirements
-------------
+## Requirements ##
 
 None
 
-Role Variables
---------------
+## Role Variables ##
 
 None
 
-Dependencies
-------------
+## Dependencies ##
 
 None
 
-Example Playbook
-----------------
+## Example Playbook ##
 
 Here's how to use it in a playbook:
 
-    - hosts: mongo
-      become: yes
-      become_method: sudo
-      roles:
-         - mongo
+```yaml
+- hosts: mongo
+  become: yes
+  become_method: sudo
+  roles:
+     - mongo
+```
 
-License
--------
+## License ##
 
 BSD
 
-Author Information
-------------------
+## Author Information ##
 
 Shane Frasier <jeremy.frasier@beta.dhs.gov>
