@@ -56,13 +56,13 @@
 
 #
 # The cron job below generates and emails CyHy notifications;
-# it runs at 1000 UTC every day.
+# it runs at 0800 UTC every day.
 #
 - name: Create cron job for daily CyHy notifications
   cron:
     name: "Generate and send daily CyHy notifications"
     minute: '0'
-    hour: '10'
+    hour: '8'
     user: cyhy
     job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
   when: production_workspace|bool
