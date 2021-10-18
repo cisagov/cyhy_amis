@@ -1,7 +1,7 @@
 # cloud-init commands for configuring ssh and mongo
 
 data "template_file" "mongo_data_disk_setup" {
-  template = file("${path.module}/scripts/disk_setup.sh")
+  template = file("${path.module}/cloud-init/disk_setup.tpl.sh")
 
   vars = {
     num_disks     = 4
@@ -14,7 +14,7 @@ data "template_file" "mongo_data_disk_setup" {
 }
 
 data "template_file" "mongo_journal_disk_setup" {
-  template = file("${path.module}/scripts/disk_setup.sh")
+  template = file("${path.module}/cloud-init/disk_setup.tpl.sh")
 
   vars = {
     num_disks   = 4
@@ -29,7 +29,7 @@ data "template_file" "mongo_journal_disk_setup" {
 }
 
 data "template_file" "mongo_log_disk_setup" {
-  template = file("${path.module}/scripts/disk_setup.sh")
+  template = file("${path.module}/cloud-init/disk_setup.tpl.sh")
 
   vars = {
     num_disks     = 4
@@ -42,11 +42,11 @@ data "template_file" "mongo_log_disk_setup" {
 }
 
 data "template_file" "mongo_journal_mountpoint_setup" {
-  template = file("${path.module}/scripts/mongo_journal_mountpoint_setup.sh")
+  template = file("${path.module}/cloud-init/mongo_journal_mountpoint_setup.tpl.sh")
 }
 
 data "template_file" "mongo_dir_setup" {
-  template = file("${path.module}/scripts/mongo_dir_setup.sh")
+  template = file("${path.module}/cloud-init/mongo_dir_setup.tpl.sh")
 }
 
 data "template_cloudinit_config" "ssh_and_mongo_cloud_init_tasks" {

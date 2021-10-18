@@ -1,7 +1,7 @@
 # cloud-init commands for configuring ssh
 
 data "template_file" "cyhy_user_ssh_setup" {
-  template = file("scripts/cyhy_user_ssh_setup.yml")
+  template = file("${path.module}/cloud-init/cyhy_user_ssh_setup.tpl.yml")
 }
 
 data "template_cloudinit_config" "cyhy_ssh_cloud_init_tasks" {

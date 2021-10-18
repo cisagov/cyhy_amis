@@ -1,11 +1,11 @@
 # cloud-init commands for configuring ssh
 
 data "template_file" "user_ssh_setup" {
-  template = file("scripts/user_ssh_setup.yml")
+  template = file("${path.module}/cloud-init/user_ssh_setup.tpl.yml")
 }
 
 data "template_file" "set_hostname" {
-  template = file("${path.module}/scripts/set_hostname.sh")
+  template = file("${path.module}/cloud-init/set_hostname.tpl.sh")
 }
 
 data "template_cloudinit_config" "ssh_cloud_init_tasks" {

@@ -1,7 +1,7 @@
 # cloud-init commands for configuring ssh and cyhy-runner
 
 data "template_file" "nmap_disk_setup" {
-  template = file("${path.module}/scripts/disk_setup.sh")
+  template = file("${path.module}/cloud-init/disk_setup.tpl.sh")
 
   vars = {
     num_disks     = 2
