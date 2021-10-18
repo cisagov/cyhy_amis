@@ -17,19 +17,33 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-while [ $(lsblk | grep -c " disk") -lt ${num_disks} ]; do
+# This is a Terraform template file, and the num_disks variable is passed in via
+# templatefile().
+#
+# shellcheck disable=SC2154
+while [ "$(lsblk | grep -c ' disk')" -lt "${num_disks}" ]; do
   echo Waiting for disks to attach...
   sleep 5
 done
 
 # Create a file system on the EBS volume if one was not already there.
-blkid -c /dev/null ${device_name} || mkfs -t ${fs_type} -L ${label} ${device_name}
+#
+# This is a Terraform template file, and the device_name, fs_type, and label
+# variables are passed in via templatefile().
+#
+# shellcheck disable=SC2154
+blkid -c /dev/null "${device_name}" || mkfs -t "${fs_type}" -L "${label}" "${device_name}"
 
 # Grab the UUID of this volume
-uuid=$(blkid -s UUID -o value ${device_name})
+uuid=$(blkid -s UUID -o value "${device_name}")
 
 # Mount the file system
-mount UUID="$uuid" -o ${mount_options} ${mount_point}
+#
+# This is a Terraform template file, and the mount_options and mount_point
+# variables are passed in via templatefile().
+#
+# shellcheck disable=SC2154
+mount UUID="$uuid" -o "${mount_options}" "${mount_point}"
 
 # Save the mount point in fstab, so the file system is remounted if
 # the instance is rebooted
