@@ -17,7 +17,11 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-while [ $(lsblk | grep -c " disk") -lt ${num_disks} ]; do
+# This is a Terraform template file, and the num_disks variable is passed in via
+# templatefile().
+#
+# shellcheck disable=SC2154
+while [ "$(lsblk | grep -c ' disk')" -lt "${num_disks}" ]; do
   echo Waiting for disks to attach...
   sleep 5
 done
@@ -37,7 +41,11 @@ for nvme_device in $nvme_devices; do
   # looking for.
   set +o errexit
   set +o pipefail
-  non_nvme_device_name=$(nvme id-ctrl -v $nvme_device | grep -o ${device_name})
+  # This is a Terraform template file, and the device_name variable is passed
+  # in via templatefile().
+  #
+  # shellcheck disable=SC2154
+  non_nvme_device_name=$(nvme id-ctrl -v "$nvme_device" | grep -o "${device_name}")
   set -o errexit
   set -o pipefail
 
@@ -46,13 +54,23 @@ for nvme_device in $nvme_devices; do
 
     # Create a file system on the EBS volume if one was not
     # already there.
-    blkid -c /dev/null $nvme_device || mkfs -t ${fs_type} -L ${label} $nvme_device
+    #
+    # This is a Terraform template file, and the fs_type and label variables
+    # are passed in via templatefile().
+    #
+    # shellcheck disable=SC2154
+    blkid -c /dev/null "$nvme_device" || mkfs -t "${fs_type}" -L "${label}" "$nvme_device"
 
     # Grab the UUID of this volume
-    uuid=$(blkid -s UUID -o value $nvme_device)
+    uuid=$(blkid -s UUID -o value "$nvme_device")
 
     # Mount the file system
-    mount UUID="$uuid" -o ${mount_options} ${mount_point}
+    #
+    # This is a Terraform template file, and the mount_options and mount_point
+    # variables are passed in via templatefile().
+    #
+    # shellcheck disable=SC2154
+    mount UUID="$uuid" -o "${mount_options}" "${mount_point}"
 
     # Save the mount point in fstab, so the file system is
     # remounted if the instance is rebooted
