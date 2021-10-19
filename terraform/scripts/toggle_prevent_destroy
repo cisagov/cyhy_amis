@@ -7,12 +7,12 @@ after=true
 # https://stackoverflow.com/questions/15030563/redirecting-stdout-with-find-exec-and-without-creating-new-shell
 sed_script=scripts/toggle_prevent_destroy_sed_command.sh
 
-while getopts ":htf" opt; do
+while getopts ":hf" opt; do
   case ${opt} in
     h)
       echo "Usage:"
+      echo "    toggle_prevent_destroy           Set prevent_destroy true everywhere."
       echo "    toggle_prevent_destroy -h        Display this help message."
-      echo "    toggle_prevent_destroy -t        Set prevent_destroy true everywhere."
       echo "    toggle_prevent_destroy -f        Set prevent_destroy false everywhere."
       exit 0
       ;;
@@ -30,7 +30,7 @@ shift $((OPTIND - 1))
 
 regex="s/\(prevent_destroy[[:space:]]*=[[:space:]]*\)$before/\1$after/g"
 tmp_file=$(mktemp)
-find . -maxdepth 1 -name "*.tf" -exec $sed_script $regex {} $tmp_file \;
+find . -maxdepth 1 -name "*.tf" -exec $sed_script "$regex" {} "$tmp_file" \;
 
 # Cleanup
-rm $tmp_file
+rm "$tmp_file"
