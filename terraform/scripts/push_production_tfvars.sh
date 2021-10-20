@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Push your current local version of production.tfvars to the correct
 # S3 bucket so that it can be used by others
@@ -9,4 +9,4 @@ TERRAFORM_DIR="terraform"
 TFVARS_FILE="prod-a.tfvars"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-aws s3 cp ${SCRIPT_DIR}/../${TFVARS_FILE} s3://${TERRAFORM_TFVARS_S3_BUCKET}/${TERRAFORM_DIR}/${TFVARS_FILE}
+aws s3 cp "${SCRIPT_DIR}"/../${TFVARS_FILE} s3://${TERRAFORM_TFVARS_S3_BUCKET}/${TERRAFORM_DIR}/${TFVARS_FILE}
