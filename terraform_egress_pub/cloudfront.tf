@@ -15,7 +15,7 @@ module "security_header_lambda" {
   source = "transcend-io/lambda-at-edge/aws"
   # We are stuck with this ancient version until we upgrade to
   # Terraform version 0.13 or higher.
-  version = "0.0.2"
+  version = "0.3.1"
 
   description            = "Adds HSTS and other security headers to the response"
   lambda_code_source_dir = "${path.root}/add_security_headers"
