@@ -12,7 +12,7 @@ data "aws_acm_certificate" "rules_cert" {
 
 # An S3 bucket where artifacts for the Lambda@Edge can be stored
 resource "aws_s3_bucket" "lambda_artifact_bucket" {
-  bucket_prefix = "cyhy_egress_lambda_at_edge"
+  bucket_prefix = "cyhy-egress-lambda-at-edge"
   server_side_encryption_configuration {
     rule {
       apply_server_side_encryption_by_default {
