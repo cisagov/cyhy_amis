@@ -10,17 +10,42 @@ data "aws_acm_certificate" "rules_cert" {
   types       = ["AMAZON_ISSUED"]
 }
 
-/* A Lambda@Edge for injecting security headers */
+# An S3 bucket where artifacts for the Lambda@Edge can be stored
+resource "aws_s3_bucket" "lambda_artifact_bucket" {
+  bucket_prefix = "cyhy_egress_lambda_at_edge"
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+  versioning {
+    enabled = true
+  }
+}
+
+# This blocks ANY public access to the bucket or the objects it
+# contains, even if misconfigured to allow public access.
+resource "aws_s3_bucket_public_access_block" "lambda_artifact_bucket" {
+  bucket = aws_s3_bucket.lambda_artifact_bucket.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# A Lambda@Edge for injecting security headers
 module "security_header_lambda" {
-  source = "transcend-io/lambda-at-edge/aws"
-  # We are stuck with this ancient version until we upgrade to
-  # Terraform version 0.13 or higher.
+  source  = "transcend-io/lambda-at-edge/aws"
   version = "0.3.1"
 
   description            = "Adds HSTS and other security headers to the response"
   lambda_code_source_dir = "${path.root}/add_security_headers"
   name                   = "add_security_headers"
   runtime                = "nodejs14.x"
+  s3_artifact_bucket     = aws_s3_bucket.lambda_artifact_bucket.id
   tags                   = merge(var.tags, { "Application" = "Egress Publish" })
 }
 
