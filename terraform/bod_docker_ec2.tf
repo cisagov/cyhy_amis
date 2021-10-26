@@ -129,9 +129,8 @@ resource "aws_instance" "bod_docker" {
   subnet_id = aws_subnet.bod_docker_subnet.id
 
   root_block_device {
-    volume_type           = "gp2"
-    volume_size           = 200
-    delete_on_termination = true
+    volume_size = 200
+    volume_type = "gp3"
   }
 
   vpc_security_group_ids = [

@@ -118,9 +118,8 @@ resource "aws_instance" "cyhy_mongo" {
   associate_public_ip_address = false
 
   root_block_device {
-    volume_type           = "gp2"
-    volume_size           = 100
-    delete_on_termination = true
+    volume_size = 100
+    volume_type = "gp3"
   }
 
   vpc_security_group_ids = [
