@@ -138,7 +138,7 @@ module "cyhy_reporter_ansible_provisioner" {
 # (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "cyhy_reporter_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
-  type              = "io1"
+  type              = "io2"
   size              = local.production_workspace ? 500 : 5
   iops              = 100
   encrypted         = true

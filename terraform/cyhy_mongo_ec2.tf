@@ -182,7 +182,7 @@ module "cyhy_mongo_ansible_provisioner" {
 # (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "cyhy_mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
-  type              = "io1"
+  type              = "io2"
   size              = local.production_workspace ? 1024 : 20
   iops              = 1000
   encrypted         = true
@@ -196,7 +196,7 @@ resource "aws_ebs_volume" "cyhy_mongo_data" {
 
 resource "aws_ebs_volume" "cyhy_mongo_journal" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
-  type              = "io1"
+  type              = "io2"
   size              = 8
   iops              = 250
   encrypted         = true
@@ -210,7 +210,7 @@ resource "aws_ebs_volume" "cyhy_mongo_journal" {
 
 resource "aws_ebs_volume" "cyhy_mongo_log" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
-  type              = "io1"
+  type              = "io2"
   size              = 8
   iops              = 100
   encrypted         = true
