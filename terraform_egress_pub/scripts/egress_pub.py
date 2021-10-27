@@ -44,8 +44,9 @@ HEADER = """###
 # The following CIDR blocks are where our Cyber Hygiene scans
 # originate from:
 cyhy_ips = (
-    "100.27.42.128/25",
+    "52.6.133.213/32",  # CyHy "manual scan" instance (env2)
     "64.69.57.0/24",
+    "100.27.42.128/25",
 )
 # The following CIDR blocks are where our Qualys web application scans
 # originate from:
