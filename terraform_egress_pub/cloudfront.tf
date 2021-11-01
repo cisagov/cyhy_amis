@@ -39,7 +39,7 @@ resource "aws_s3_bucket_public_access_block" "lambda_artifact_bucket" {
 # A Lambda@Edge for injecting security headers
 module "security_header_lambda" {
   source  = "transcend-io/lambda-at-edge/aws"
-  version = "0.3.1"
+  version = "0.4.0"
 
   description            = "Adds HSTS and other security headers to the response"
   lambda_code_source_dir = "${path.root}/add_security_headers"
