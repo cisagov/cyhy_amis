@@ -32,12 +32,23 @@ data "aws_iam_policy_document" "lambda_cloudwatch_docs" {
 
     actions = [
       "logs:CreateLogGroup",
+    ]
+
+    resources = [
+      aws_cloudwatch_log_group.lambda_logs[count.index].arn
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
 
     resources = [
-      aws_cloudwatch_log_group.lambda_logs[count.index].arn,
+      "${aws_cloudwatch_log_group.lambda_logs[count.index].arn}:*",
     ]
   }
 }

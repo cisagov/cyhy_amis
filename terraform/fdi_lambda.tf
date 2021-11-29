@@ -30,12 +30,23 @@ data "aws_iam_policy_document" "fdi_lambda_cloudwatch_doc" {
 
     actions = [
       "logs:CreateLogGroup",
+    ]
+
+    resources = [
+      aws_cloudwatch_log_group.fdi_lambda_logs.arn
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
 
     resources = [
-      aws_cloudwatch_log_group.fdi_lambda_logs.arn,
+      "${aws_cloudwatch_log_group.fdi_lambda_logs.arn}:*",
     ]
   }
 }
