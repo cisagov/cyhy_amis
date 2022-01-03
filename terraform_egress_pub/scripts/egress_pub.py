@@ -51,10 +51,10 @@ cyhy_ips = (
 # The following CIDR blocks are where our Qualys web application scans
 # originate from:
 qualys_was_ips = (
+    "64.39.99.0/24",
     "64.39.108.103/32",
     "64.39.108.104/29",
     "64.39.108.112/28",
-    "64.39.99.0/24",
 )
 FILE_CONFIGS = [
     {
