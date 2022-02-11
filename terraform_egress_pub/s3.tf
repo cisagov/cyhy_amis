@@ -15,10 +15,5 @@ resource "aws_s3_bucket" "rules_bucket" {
     error_document = "error.html"
   }
 
-  tags = merge(
-    var.tags,
-    {
-      "Application" = "Egress Publish"
-    },
-  )
+  tags = { "Application" = "Egress Publish" }
 }
