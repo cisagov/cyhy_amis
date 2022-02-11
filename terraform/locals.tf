@@ -10,9 +10,7 @@ data "aws_caller_identity" "current" {}
 # not yet inherit the default tags from the provider.  See
 # hashicorp/terraform-provider-aws#19188 for more details.
 # ------------------------------------------------------------------------------
-data "aws_default_tags" "default" {
-  provider = aws
-}
+data "aws_default_tags" "default" {}
 
 locals {
   # This is a goofy but necessary way to determine if
