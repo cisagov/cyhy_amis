@@ -5,12 +5,7 @@ resource "aws_vpc" "mgmt_vpc" {
   cidr_block           = "10.10.14.0/23"
   enable_dns_hostnames = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management"
-    },
-  )
+  tags = { "Name" = "Management" }
 }
 
 # Setup DHCP so we can resolve our private domain
@@ -21,12 +16,7 @@ resource "aws_vpc_dhcp_options" "mgmt_dhcp_options" {
   domain_name_servers = [
     "AmazonProvidedDNS",
   ]
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management"
-    },
-  )
+  tags = { "Name" = "Management" }
 }
 
 # Associate the DHCP options above with the VPC
@@ -47,12 +37,7 @@ resource "aws_subnet" "mgmt_private_subnet" {
 
   depends_on = [aws_internet_gateway.mgmt_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management Private"
-    },
-  )
+  tags = { "Name" = "Management Private" }
 }
 
 # Public subnet of the VPC
@@ -65,12 +50,7 @@ resource "aws_subnet" "mgmt_public_subnet" {
 
   depends_on = [aws_internet_gateway.mgmt_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management Public"
-    },
-  )
+  tags = { "Name" = "Management Public" }
 }
 
 # Elastic IP for the NAT gateway
@@ -81,12 +61,7 @@ resource "aws_eip" "mgmt_eip" {
 
   depends_on = [aws_internet_gateway.mgmt_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management NATGW IP"
-    },
-  )
+  tags = { "Name" = "Management NATGW IP" }
 }
 
 # The NAT gateway for the VPC
@@ -98,12 +73,7 @@ resource "aws_nat_gateway" "mgmt_nat_gw" {
 
   depends_on = [aws_internet_gateway.mgmt_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management NATGW"
-    },
-  )
+  tags = { "Name" = "Management NATGW" }
 }
 
 # The internet gateway for the VPC
@@ -112,12 +82,7 @@ resource "aws_internet_gateway" "mgmt_igw" {
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management IGW"
-    },
-  )
+  tags = { "Name" = "Management IGW" }
 }
 
 # Default route table
@@ -126,12 +91,7 @@ resource "aws_default_route_table" "mgmt_default_route_table" {
 
   default_route_table_id = aws_vpc.mgmt_vpc[0].default_route_table_id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management default route table"
-    },
-  )
+  tags = { "Name" = "Management default route table" }
 }
 
 # Route all CyHy traffic through the CyHy-Management VPC peering connection
@@ -167,12 +127,7 @@ resource "aws_route_table" "mgmt_public_route_table" {
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management public route table"
-    },
-  )
+  tags = { "Name" = "Management public route table" }
 }
 
 # Route all external traffic through the internet gateway
@@ -201,12 +156,7 @@ resource "aws_network_acl" "mgmt_private_acl" {
     aws_subnet.mgmt_private_subnet[0].id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management Private"
-    },
-  )
+  tags = { "Name" = "Management Private" }
 }
 
 # ACL for the public subnet of the VPC
@@ -218,12 +168,7 @@ resource "aws_network_acl" "mgmt_public_acl" {
     aws_subnet.mgmt_public_subnet[0].id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management Public"
-    },
-  )
+  tags = { "Name" = "Management Public" }
 }
 
 # Security group for scanner hosts (private subnet)
@@ -232,12 +177,7 @@ resource "aws_security_group" "mgmt_scanner_sg" {
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management Scanner"
-    },
-  )
+  tags = { "Name" = "Management Scanner" }
 }
 
 # Security group for the bastion host (public subnet)
@@ -246,10 +186,5 @@ resource "aws_security_group" "mgmt_bastion_sg" {
 
   vpc_id = aws_vpc.mgmt_vpc[0].id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Management Bastion"
-    },
-  )
+  tags = { "Name" = "Management Bastion" }
 }

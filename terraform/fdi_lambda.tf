@@ -196,8 +196,6 @@ resource "aws_lambda_function" "fdi_lambda" {
       ssm_db_password = var.findings_data_import_ssm_db_password
     }
   }
-
-  tags = var.tags
 }
 
 # Permission to allow the lambda to get notifications from our
@@ -226,6 +224,4 @@ resource "aws_s3_bucket_notification" "fdi_bucket_notification" {
 resource "aws_cloudwatch_log_group" "fdi_lambda_logs" {
   name              = "/aws/lambda/${aws_lambda_function.fdi_lambda.function_name}"
   retention_in_days = 30
-
-  tags = var.tags
 }

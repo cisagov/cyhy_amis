@@ -42,14 +42,13 @@ resource "aws_instance" "cyhy_dashboard" {
 
   user_data_base64 = data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Dashboard"
-    },
-  )
+  tags = { "Name" = "CyHy Dashboard" }
+
+  # volume_tags does not yet inherit the default tags from the
+  # provider.  See hashicorp/terraform-provider-aws#19188 for more
+  # details.
   volume_tags = merge(
-    var.tags,
+    data.aws_default_tags.default.tags,
     {
       "Name" = "CyHy Dashboard"
     },

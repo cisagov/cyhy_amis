@@ -40,15 +40,16 @@ resource "aws_instance" "cyhy_nessus" {
 
   user_data_base64 = data.template_cloudinit_config.ssh_and_nessus_cyhy_runner_cloud_init_tasks.rendered
 
-  tags = merge(
-    var.tags,
-    {
-      "Name"           = format("CyHy Nessus - vulnscan%d", count.index + 1)
-      "Publish Egress" = "True"
-    },
-  )
+  tags = {
+    "Name"           = format("CyHy Nessus - vulnscan%d", count.index + 1)
+    "Publish Egress" = "True"
+  }
+
+  # volume_tags does not yet inherit the default tags from the
+  # provider.  See hashicorp/terraform-provider-aws#19188 for more
+  # details.
   volume_tags = merge(
-    var.tags,
+    data.aws_default_tags.default.tags,
     {
       "Name" = format("CyHy Nessus - vulnscan%d", count.index + 1)
     },
@@ -77,13 +78,10 @@ data "aws_eip" "cyhy_nessus_eips" {
 resource "aws_eip" "cyhy_nessus_random_eips" {
   count = local.production_workspace ? 0 : length(aws_instance.cyhy_nessus)
   vpc   = true
-  tags = merge(
-    var.tags,
-    {
-      "Name"           = format("CyHy Nessus EIP %d", count.index + 1)
-      "Publish Egress" = "True"
-    },
-  )
+  tags = {
+    "Name"           = format("CyHy Nessus EIP %d", count.index + 1)
+    "Publish Egress" = "True"
+  }
 }
 
 # Associate the appropriate Elastic IPs above with the CyHy Nessus
@@ -131,12 +129,7 @@ resource "aws_ebs_volume" "nessus_cyhy_runner_data" {
   size      = local.production_workspace ? 2 : 1
   encrypted = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = format("CyHy Nessus - vulnscan%d", count.index + 1)
-    },
-  )
+  tags = { "Name" = format("CyHy Nessus - vulnscan%d", count.index + 1) }
 
   lifecycle {
     prevent_destroy = true

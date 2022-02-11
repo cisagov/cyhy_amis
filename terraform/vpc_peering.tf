@@ -3,12 +3,7 @@ resource "aws_vpc_peering_connection" "cyhy_bod_peering_connection" {
   peer_vpc_id = aws_vpc.cyhy_vpc.id
   auto_accept = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy and BOD 18-01"
-    },
-  )
+  tags = { "Name" = "CyHy and BOD 18-01" }
 }
 
 resource "aws_vpc_peering_connection_options" "cyhy_bod_peering_connection" {
@@ -30,12 +25,7 @@ resource "aws_vpc_peering_connection" "cyhy_mgmt_peering_connection" {
   peer_vpc_id = aws_vpc.cyhy_vpc.id
   auto_accept = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy and Management"
-    },
-  )
+  tags = { "Name" = "CyHy and Management" }
 }
 
 resource "aws_vpc_peering_connection_options" "cyhy_mgmt_peering_connection" {
@@ -59,12 +49,7 @@ resource "aws_vpc_peering_connection" "bod_mgmt_peering_connection" {
   peer_vpc_id = aws_vpc.bod_vpc.id
   auto_accept = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 and Management"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 and Management" }
 }
 
 resource "aws_vpc_peering_connection_options" "bod_mgmt_peering_connection" {

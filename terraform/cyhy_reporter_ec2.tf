@@ -93,14 +93,13 @@ resource "aws_instance" "cyhy_reporter" {
   user_data_base64     = data.template_cloudinit_config.ssh_and_reporter_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_reporter.name
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Reporter"
-    },
-  )
+  tags = { "Name" = "CyHy Reporter" }
+
+  # volume_tags does not yet inherit the default tags from the
+  # provider.  See hashicorp/terraform-provider-aws#19188 for more
+  # details.
   volume_tags = merge(
-    var.tags,
+    data.aws_default_tags.default.tags,
     {
       "Name" = "CyHy Reporter"
     },

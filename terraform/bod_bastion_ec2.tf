@@ -20,14 +20,13 @@ resource "aws_instance" "bod_bastion" {
 
   user_data_base64 = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Bastion"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Bastion" }
+
+  # volume_tags does not yet inherit the default tags from the
+  # provider.  See hashicorp/terraform-provider-aws#19188 for more
+  # details.
   volume_tags = merge(
-    var.tags,
+    data.aws_default_tags.default.tags,
     {
       "Name" = "BOD 18-01 Bastion"
     },

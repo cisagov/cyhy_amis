@@ -4,6 +4,16 @@ data "aws_availability_zones" "all" {}
 # The AWS account ID being used
 data "aws_caller_identity" "current" {}
 
+# ------------------------------------------------------------------------------
+# Retrieve the default tags for the default provider.  These are
+# used to create volume tags for EC2 instances, since volume_tags does
+# not yet inherit the default tags from the provider.  See
+# hashicorp/terraform-provider-aws#19188 for more details.
+# ------------------------------------------------------------------------------
+data "aws_default_tags" "default" {
+  provider = aws
+}
+
 locals {
   # This is a goofy but necessary way to determine if
   # terraform.workspace contains the substring "prod"
