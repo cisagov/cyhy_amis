@@ -40,13 +40,10 @@ resource "aws_instance" "nessus" {
 
   user_data_base64 = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
 
-  tags = merge(
-    var.tags,
-    {
-      "Name"           = format("Manual CyHy Nessus %02d", count.index + 1)
-      "Publish Egress" = "True"
-    },
-  )
+  tags = {
+    "Name"           = format("Manual CyHy Nessus %02d", count.index + 1)
+    "Publish Egress" = "True"
+  }
 
   lifecycle {
     prevent_destroy = true
@@ -69,13 +66,11 @@ data "aws_eip" "nessus_eips" {
 resource "aws_eip" "nessus_random_eips" {
   count = local.production_workspace ? 0 : length(aws_instance.nessus)
   vpc   = true
-  tags = merge(
-    var.tags,
-    {
-      "Name"           = format("Manual CyHy Nessus EIP %d", count.index + 1)
-      "Publish Egress" = "True"
-    },
-  )
+
+  tags = {
+    "Name"           = format("Manual CyHy Nessus EIP %d", count.index + 1)
+    "Publish Egress" = "True"
+  }
 }
 
 # Associate the appropriate Elastic IPs above with the Nessus instances.
