@@ -64,7 +64,7 @@ proxying the `ssh` connection via the corresponding bastion host.
 This can be done automatically by `ssh` if you add something like the
 following to your `~/.ssh/config`:
 
-```console
+```ssh-config
 Host *.bod *.cyhy
      User <your_username>
 
@@ -90,7 +90,7 @@ You may also find it helpful to configure `ssh` to automatically
 forward the Nessus UI and MongoDB ports when connecting to the Cyber
 Hygiene VPC:
 
-```console
+```ssh-config
 Host bastion.*.cyhy
      LocalForward 8834 vulnscan1:8834
      LocalForward 8835 vulnscan2:8834
@@ -106,7 +106,7 @@ local Docker containers to take advantage of the port forwarding.
 To create the management VPC, first modify your Terraform variables file
 (`<your_workspace>.tfvars`) such that:
 
-```console
+```hcl
 enable_mgmt_vpc = true
 ```
 
@@ -114,7 +114,7 @@ If you want to include one or more Nessus instances in your management VPC,
 ensure that the correct license keys are entered in your Terraform variables
 file:
 
-```console
+```hcl
 mgmt_nessus_activation_codes = [ "LICENSE-KEY-1", "LICENSE-KEY-2" ]
 ```
 
@@ -130,7 +130,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 To destroy the management VPC, first modify your Terraform variables file
 (`<your_workspace>.tfvars`) such that:
 
-```console
+```hcl
 enable_mgmt_vpc = false
 ```
 
