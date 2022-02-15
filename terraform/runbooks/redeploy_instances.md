@@ -5,9 +5,9 @@ the current working directory is `cyhy_amis/terraform`.
 
 - Force install all `ansible` and `packer/ansible` requirements:
 
-  ```bash
-  ansible-galaxy install --force -r ../ansible/requirements.yml
-  ansible-galaxy install --force -r ../packer/ansible/requirements.yml
+  ```console
+  ansible-galaxy install --force --role-file ../ansible/requirements.yml
+  ansible-galaxy install --force --role-file ../packer/ansible/requirements.yml
   ```
 
 - If any Nessus keys are being re-used, reset them via the
@@ -17,7 +17,7 @@ the current working directory is `cyhy_amis/terraform`.
 
 - ssh to the `database1` instance and stop the `cyhy-commander` service:
 
-  ```bash
+  ```console
   sudo systemctl stop cyhy-commander.service
   ```
 
@@ -26,41 +26,28 @@ the current working directory is `cyhy_amis/terraform`.
 
 - Select the appropriate Production workspace:
 
-  ```bash
+  ```console
   terraform workspace select <PRODUCTION-WORKSPACE-NAME>
   ```
 
-- Configure the terraform environment:
+- Make sure you have the latest version of the Production Terraform variables
+  file
 
-  ```bash
-  ./configure
-  ```
-
-- Fetch the latest version of the Production terraform variables file:
-
-  ```bash
-  ./scripts/fetch_production_tfvars.sh
-  ```
-
-- Review the Production terraform variables file to ensure it is correct
+- Review the Production Terraform variables file to ensure it is correct
 
 - Terraform the Production environment
 
-  ```bash
-  terraform apply -var-file=<PRODUCTION-VARIABLES-FILE>
+  ```console
+  terraform apply -var-file=<PRODUCTION-WORKSPACE-NAME>.tfvars
   ```
 
-- Push the Production terraform variables file (only necessary if you
-  modified the file):
-
-  ```bash
-  ./scripts/push_production_tfvars.sh
-  ```
+- Update the stored Production Terraform variables file (only necessary if you
+  modified the file)
 
 - ssh to the `database1` instance and verify that the `cyhy-commander`
   service started up and is running as expected:
 
-  ```bash
+  ```console
   systemctl status cyhy-commander.service
   tail -f /var/log/cyhy/commander.log
   ```
