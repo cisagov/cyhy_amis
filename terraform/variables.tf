@@ -206,7 +206,7 @@ variable "assessment_data_filename" {
 
 variable "assessment_data_import_lambda_s3_bucket" {
   type        = string
-  description = "The name of the bucket where the assessment data import Lambda function can be found.  This bucket should be created with https://github.com/cisagov/assessment-data-import-terraform.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+  description = "The name of the bucket where the assessment data import Lambda function can be found.  This bucket should be created with the cisagov/assessment-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
 }
 
 variable "assessment_data_import_lambda_s3_key" {
@@ -274,7 +274,7 @@ variable "findings_data_save_succeeded" {
 
 variable "findings_data_import_lambda_s3_bucket" {
   type        = string
-  description = "The name of the bucket where the findings data import Lambda function can be found.  This bucket should be created with https://github.com/cisagov/findings-data-import-terraform.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+  description = "The name of the bucket where the findings data import Lambda function can be found.  This bucket should be created with the cisagov/findings-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
 }
 
 variable "findings_data_import_lambda_s3_key" {
