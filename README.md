@@ -7,26 +7,21 @@
 The AMIs are built like so:
 
 ```console
-ansible-galaxy install -r packer/ansible/requirements.yml
-packer build packer/bastion.json
-packer build packer/docker.json
-packer build packer/mongo.json
-packer build packer/nessus.json
-packer build packer/nmap.json
-AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/reporter.json
-AWS_MAX_ATTEMPTS=60 AWS_POLL_DELAY_SECONDS=60 packer build packer/dashboard.json
+cd packer
+ansible-galaxy install --role-file ansible/requirements.yml
+packer build bastion.json
+packer build dashboard.json
+packer build docker.json
+packer build mongo.json
+packer build nessus.json
+packer build nmap.json
+packer build reporter.json
 ```
-
-Note the environment variables in the `packer` command lines
-corresponding to `feeds.json` and `reporter.json`.  They are present
-because the AMIs produced by those lines are large and need extra time
-to be copied, as discussed
-[here](https://github.com/hashicorp/packer/issues/6536#issuecomment-407925535).
 
 Also note that
 
 ```console
-ansible-galaxy install --force -r packer/ansible/requirements.yml
+ansible-galaxy install --force --role-file ansible/requirements.yml
 ```
 
 will update the roles that are being pulled from external sources.  This

@@ -54,21 +54,21 @@
       "groups": [
         "dashboard"
       ],
-      "playbook_file": "packer/ansible/upgrade.yml",
+      "playbook_file": "ansible/upgrade.yml",
       "type": "ansible"
     },
     {
       "groups": [
         "dashboard"
       ],
-      "playbook_file": "packer/ansible/python.yml",
+      "playbook_file": "ansible/python.yml",
       "type": "ansible"
     },
     {
       "groups": [
         "cyhy_dashboard"
       ],
-      "playbook_file": "packer/ansible/playbook.yml",
+      "playbook_file": "ansible/playbook.yml",
       "type": "ansible"
     }
   ]
