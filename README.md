@@ -34,12 +34,11 @@ default `ansible-galaxy install` _will not_ upgrade roles.
 The Terraform-based infrastructure is built like so:
 
 ```console
-ansible-galaxy install -r ansible/requirements.yml
+ansible-galaxy install --role-file ansible/requirements.yml
 cd terraform
 terraform workspace select <your_workspace>
-./configure.py
 terraform init
-terraform apply -var-file=<your_workspace>.yml
+terraform apply -var-file=<your_workspace>.tfvars
 ```
 
 Again, in some cases you may find it useful to add the `--force` flag
@@ -52,9 +51,8 @@ The Terraform-based infrastructure is torn down like so:
 ```console
 cd terraform
 terraform workspace select <your_workspace>
-./configure.py
 terraform init
-terraform destroy -var-file=<your_workspace>.yml
+terraform destroy -var-file=<your_workspace>.tfvars
 ```
 
 ## Contributing ##
