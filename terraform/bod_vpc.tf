@@ -3,12 +3,7 @@ resource "aws_vpc" "bod_vpc" {
   cidr_block           = "10.11.0.0/21"
   enable_dns_hostnames = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01"
-    },
-  )
+  tags = { "Name" = "BOD 18-01" }
 }
 
 # Setup DHCP so we can resolve our private domain
@@ -17,12 +12,7 @@ resource "aws_vpc_dhcp_options" "bod_dhcp_options" {
   domain_name_servers = [
     "AmazonProvidedDNS",
   ]
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD"
-    },
-  )
+  tags = { "Name" = "BOD" }
 }
 
 # Associate the DHCP options above with the VPC
@@ -39,12 +29,7 @@ resource "aws_subnet" "bod_docker_subnet" {
 
   depends_on = [aws_internet_gateway.bod_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Docker"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Docker" }
 }
 
 # Lambda subnet of the VPC
@@ -55,12 +40,7 @@ resource "aws_subnet" "bod_lambda_subnet" {
 
   depends_on = [aws_internet_gateway.bod_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Lambda"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Lambda" }
 }
 
 # Public subnet of the VPC
@@ -71,12 +51,7 @@ resource "aws_subnet" "bod_public_subnet" {
 
   depends_on = [aws_internet_gateway.bod_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Public"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Public" }
 }
 
 # The Elastic IP for the *production* NAT gateway
@@ -92,12 +67,7 @@ resource "aws_eip" "bod_nonproduction_eip" {
 
   depends_on = [aws_internet_gateway.bod_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 NATGW IP"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 NATGW IP" }
 }
 
 # The NAT gateway for the VPC
@@ -128,36 +98,21 @@ resource "aws_nat_gateway" "bod_nat_gw" {
 
   depends_on = [aws_internet_gateway.bod_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 NATGW"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 NATGW" }
 }
 
 # The internet gateway for the VPC
 resource "aws_internet_gateway" "bod_igw" {
   vpc_id = aws_vpc.bod_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 IGW"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 IGW" }
 }
 
 # Default route table
 resource "aws_default_route_table" "bod_default_route_table" {
   default_route_table_id = aws_vpc.bod_vpc.default_route_table_id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 default route table"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 default route table" }
 }
 
 # Route all CyHy traffic through the VPC peering connection
@@ -187,12 +142,7 @@ resource "aws_route" "bod_route_external_traffic_through_nat_gateway" {
 resource "aws_route_table" "bod_public_route_table" {
   vpc_id = aws_vpc.bod_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 public route table"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 public route table" }
 }
 
 # Route all Management VPC traffic through the VPC peering connection
@@ -224,12 +174,7 @@ resource "aws_network_acl" "bod_docker_acl" {
     aws_subnet.bod_docker_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Docker"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Docker" }
 }
 
 # ACL for the Lambda subnet of the VPC
@@ -239,12 +184,7 @@ resource "aws_network_acl" "bod_lambda_acl" {
     aws_subnet.bod_lambda_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Lambda"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Lambda" }
 }
 
 # ACL for the public subnet of the VPC
@@ -254,46 +194,26 @@ resource "aws_network_acl" "bod_public_acl" {
     aws_subnet.bod_public_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Public"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Public" }
 }
 
 # Security group for the Docker portion of the VPC
 resource "aws_security_group" "bod_docker_sg" {
   vpc_id = aws_vpc.bod_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Docker"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Docker" }
 }
 
 # Security group for the Lambda portion of the VPC
 resource "aws_security_group" "bod_lambda_sg" {
   vpc_id = aws_vpc.bod_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Lambda"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Lambda" }
 }
 
 # Security group for the bastion portion of the VPC
 resource "aws_security_group" "bod_bastion_sg" {
   vpc_id = aws_vpc.bod_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD 18-01 Bastion"
-    },
-  )
+  tags = { "Name" = "BOD 18-01 Bastion" }
 }

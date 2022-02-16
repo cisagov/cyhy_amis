@@ -3,24 +3,15 @@ resource "aws_vpc" "cyhy_vpc" {
   cidr_block           = "10.10.10.0/23"
   enable_dns_hostnames = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy"
-    },
-  )
+  tags = { "Name" = "CyHy" }
 }
 
 # Setup DHCP so we can resolve our private domain
 resource "aws_vpc_dhcp_options" "cyhy_dhcp_options" {
   domain_name         = local.cyhy_private_domain
   domain_name_servers = ["AmazonProvidedDNS"]
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy"
-    },
-  )
+
+  tags = { "Name" = "CyHy" }
 }
 
 # Associate the DHCP options above with the CyHy VPC
@@ -38,12 +29,7 @@ resource "aws_subnet" "cyhy_private_subnet" {
 
   depends_on = [aws_internet_gateway.cyhy_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Private"
-    },
-  )
+  tags = { "Name" = "CyHy Private" }
 }
 
 # Port scanner subnet of the VPC
@@ -52,12 +38,7 @@ resource "aws_subnet" "cyhy_portscanner_subnet" {
   cidr_block        = "10.10.11.0/25"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Port Scanners"
-    },
-  )
+  tags = { "Name" = "CyHy Port Scanners" }
 }
 
 # Vuln scanner subnet of the VPC
@@ -66,12 +47,7 @@ resource "aws_subnet" "cyhy_vulnscanner_subnet" {
   cidr_block        = "10.10.11.128/25"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Vuln Scanners"
-    },
-  )
+  tags = { "Name" = "CyHy Vuln Scanners" }
 }
 
 # Public subnet of the VPC
@@ -86,12 +62,7 @@ resource "aws_subnet" "cyhy_public_subnet" {
 
   depends_on = [aws_internet_gateway.cyhy_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Public"
-    },
-  )
+  tags = { "Name" = "CyHy Public" }
 }
 
 # Elastic IP for the NAT gateway
@@ -100,12 +71,7 @@ resource "aws_eip" "cyhy_eip" {
 
   depends_on = [aws_internet_gateway.cyhy_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy NAT GW IP"
-    },
-  )
+  tags = { "Name" = "CyHy NAT GW IP" }
 }
 
 # The NAT gateway for the VPC
@@ -115,24 +81,14 @@ resource "aws_nat_gateway" "cyhy_nat_gw" {
 
   depends_on = [aws_internet_gateway.cyhy_igw]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy NAT GW"
-    },
-  )
+  tags = { "Name" = "CyHy NAT GW" }
 }
 
 # The internet gateway for the VPC
 resource "aws_internet_gateway" "cyhy_igw" {
   vpc_id = aws_vpc.cyhy_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy IGW"
-    },
-  )
+  tags = { "Name" = "CyHy IGW" }
 }
 
 # Default route table for VPC, which routes all external traffic
@@ -140,12 +96,7 @@ resource "aws_internet_gateway" "cyhy_igw" {
 resource "aws_default_route_table" "cyhy_default_route_table" {
   default_route_table_id = aws_vpc.cyhy_vpc.default_route_table_id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Port Scanners"
-    },
-  )
+  tags = { "Name" = "CyHy Port Scanners" }
 }
 
 # Default route: Route all external traffic through the internet
@@ -173,12 +124,7 @@ resource "aws_route" "cyhy_default_route_mgmt_traffic_through_mgmt_vpc_peering_c
 resource "aws_route_table" "cyhy_private_route_table" {
   vpc_id = aws_vpc.cyhy_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Private"
-    },
-  )
+  tags = { "Name" = "CyHy Private" }
 }
 
 # Private route: Route all BOD traffic through the VPC peering
@@ -220,12 +166,7 @@ resource "aws_network_acl" "cyhy_private_acl" {
     aws_subnet.cyhy_private_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Private"
-    },
-  )
+  tags = { "Name" = "CyHy Private" }
 }
 
 # ACL for the portscanner subnet of the VPC
@@ -235,12 +176,7 @@ resource "aws_network_acl" "cyhy_portscanner_acl" {
     aws_subnet.cyhy_portscanner_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Port Scanners"
-    },
-  )
+  tags = { "Name" = "CyHy Port Scanners" }
 }
 
 # ACL for the vulnscanner subnet of the VPC
@@ -250,12 +186,7 @@ resource "aws_network_acl" "cyhy_vulnscanner_acl" {
     aws_subnet.cyhy_vulnscanner_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Vuln Scanners"
-    },
-  )
+  tags = { "Name" = "CyHy Vuln Scanners" }
 }
 
 # ACL for the public subnet of the VPC
@@ -265,70 +196,40 @@ resource "aws_network_acl" "cyhy_public_acl" {
     aws_subnet.cyhy_public_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Public"
-    },
-  )
+  tags = { "Name" = "CyHy Public" }
 }
 
 # Security group for the private portion of the VPC
 resource "aws_security_group" "cyhy_private_sg" {
   vpc_id = aws_vpc.cyhy_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Private"
-    },
-  )
+  tags = { "Name" = "CyHy Private" }
 }
 
 # Security group for the scanner portion of the VPC
 resource "aws_security_group" "cyhy_scanner_sg" {
   vpc_id = aws_vpc.cyhy_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Scanners"
-    },
-  )
+  tags = { "Name" = "CyHy Scanners" }
 }
 
 # Security group for the bastion host
 resource "aws_security_group" "cyhy_bastion_sg" {
   vpc_id = aws_vpc.cyhy_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Bastion"
-    },
-  )
+  tags = { "Name" = "CyHy Bastion" }
 }
 
 # Security group for the assessment data import Lambda portion of the VPC
 resource "aws_security_group" "adi_lambda_sg" {
   vpc_id = aws_vpc.cyhy_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Assessment Data Import Lambda"
-    },
-  )
+  tags = { "Name" = "Assessment Data Import Lambda" }
 }
 
 # Security group for the findings data import Lambda portion of the VPC
 resource "aws_security_group" "fdi_lambda_sg" {
   vpc_id = aws_vpc.cyhy_vpc.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Findings Data Import Lambda"
-    },
-  )
+  tags = { "Name" = "Findings Data Import Lambda" }
 }

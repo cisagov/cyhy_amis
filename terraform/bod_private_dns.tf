@@ -17,12 +17,8 @@ resource "aws_route53_zone" "bod_private_zone" {
     ignore_changes = [vpc]
   }
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD Private Zone"
-    },
-  )
+  tags = { "Name" = "BOD Private Zone" }
+
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
@@ -105,12 +101,9 @@ resource "aws_route53_zone" "bod_public_zone_reverse" {
   vpc {
     vpc_id = aws_vpc.bod_vpc.id
   }
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD Public Reverse Zone"
-    },
-  )
+
+  tags = { "Name" = "BOD Public Reverse Zone" }
+
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
@@ -177,12 +170,8 @@ resource "aws_route53_zone" "bod_private_zone_reverse" {
   vpc {
     vpc_id = aws_vpc.bod_vpc.id
   }
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "BOD Private Reverse Zone"
-    },
-  )
+  tags = { "Name" = "BOD Private Reverse Zone" }
+
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 

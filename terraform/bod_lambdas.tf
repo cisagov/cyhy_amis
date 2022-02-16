@@ -122,8 +122,6 @@ resource "aws_lambda_function" "lambdas" {
       aws_security_group.bod_lambda_sg.id,
     ]
   }
-
-  tags = var.tags
 }
 
 # The Cloudwatch log groups for the Lambda functions
@@ -132,6 +130,4 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 
   name              = "/aws/lambda/${aws_lambda_function.lambdas[count.index].function_name}"
   retention_in_days = 30
-
-  tags = var.tags
 }

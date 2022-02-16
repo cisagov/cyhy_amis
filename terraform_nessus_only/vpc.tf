@@ -1,8 +1,6 @@
 # Use the default VPC for our region
 resource "aws_default_vpc" "default" {
-  tags = {
-    Name = "Default VPC"
-  }
+  tags = { Name = "Default VPC" }
 }
 
 # VPC subnet for Nessus scanner
@@ -12,12 +10,7 @@ resource "aws_subnet" "nessus_scanner_subnet" {
   cidr_block        = "172.31.192.0/24"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Manual CyHy Nessus Scanners"
-    },
-  )
+  tags = { "Name" = "Manual CyHy Nessus Scanners" }
 }
 
 # ACL for the Nessus scanner subnet of the VPC
@@ -28,22 +21,12 @@ resource "aws_network_acl" "nessus_scanner_acl" {
     aws_subnet.nessus_scanner_subnet.id,
   ]
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Manual CyHy Nessus Scanners"
-    },
-  )
+  tags = { "Name" = "Manual CyHy Nessus Scanners" }
 }
 
 # Security group for the Nessus scanner
 resource "aws_security_group" "nessus_scanner_sg" {
   vpc_id = aws_default_vpc.default.id
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "Manual CyHy Nessus Scanners"
-    },
-  )
+  tags = { "Name" = "Manual CyHy Nessus Scanners" }
 }

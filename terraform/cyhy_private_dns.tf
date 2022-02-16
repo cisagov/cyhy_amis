@@ -17,12 +17,8 @@ resource "aws_route53_zone" "cyhy_private_zone" {
     ignore_changes = [vpc]
   }
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Private Zone"
-    },
-  )
+  tags = { "Name" = "CyHy Private Zone" }
+
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
@@ -133,12 +129,9 @@ resource "aws_route53_zone" "cyhy_scanner_zone_reverse" {
   vpc {
     vpc_id = aws_vpc.cyhy_vpc.id
   }
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Portcanner/Vulnscanner Reverse Zone"
-    },
-  )
+
+  tags = { "Name" = "CyHy Portcanner/Vulnscanner Reverse Zone" }
+
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 
@@ -262,12 +255,9 @@ resource "aws_route53_zone" "cyhy_public_private_zone_reverse" {
   vpc {
     vpc_id = aws_vpc.cyhy_vpc.id
   }
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Public/Private Reverse Zone"
-    },
-  )
+
+  tags = { "Name" = "CyHy Public/Private Reverse Zone" }
+
   comment = "Terraform Workspace: ${lookup(var.tags, "Workspace", "Undefined")}"
 }
 

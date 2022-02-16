@@ -46,7 +46,7 @@ module "security_header_lambda" {
   name                   = "add_security_headers"
   runtime                = "nodejs14.x"
   s3_artifact_bucket     = aws_s3_bucket.lambda_artifact_bucket.id
-  tags                   = merge(var.tags, { "Application" = "Egress Publish" })
+  tags                   = { "Application" = "Egress Publish" }
 }
 
 resource "aws_cloudfront_distribution" "rules_s3_distribution" {
@@ -115,5 +115,5 @@ resource "aws_cloudfront_distribution" "rules_s3_distribution" {
     ssl_support_method       = "sni-only"
   }
 
-  tags = merge(var.tags, { "Application" = "Egress Publish" })
+  tags = { "Application" = "Egress Publish" }
 }

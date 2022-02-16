@@ -9,8 +9,6 @@ resource "aws_s3_bucket" "cyhy_archive" {
       }
     }
   }
-
-  tags = var.tags
 }
 
 # IAM policy document that that allows S3 PutObject (write) on our

@@ -133,23 +133,13 @@ resource "aws_instance" "cyhy_mongo" {
   # extracts
   iam_instance_profile = aws_iam_instance_profile.cyhy_mongo.name
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Mongo, Commander"
-    },
-  )
-  # We add some explicit tags to the Mongo volumes below, so we don't
-  # want to use volume_tags here
-  # volume_tags = "${merge(var.tags, map("Name", "CyHy Mongo"))}"
-  #
-  # With Terraform 0.13 and the 3.x version of the AWS provider these now need
-  # to be declared here. These are the same tags used in
-  # aws_ebs_volume.cyhy_mongo_log below to prevent a Terraform 0.13 apply from
-  # removing existing tags.
+  tags = { "Name" = "CyHy Mongo, Commander" }
 
+  # volume_tags does not yet inherit the default tags from the
+  # provider.  See hashicorp/terraform-provider-aws#19188 for more
+  # details.
   volume_tags = merge(
-    var.tags,
+    data.aws_default_tags.default.tags,
     {
       "Name" = "CyHy Mongo Log"
     },
@@ -198,12 +188,7 @@ resource "aws_ebs_volume" "cyhy_mongo_data" {
   iops              = 1000
   encrypted         = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Mongo Data"
-    },
-  )
+  tags = { "Name" = "CyHy Mongo Data" }
 
   lifecycle {
     prevent_destroy = true
@@ -217,12 +202,7 @@ resource "aws_ebs_volume" "cyhy_mongo_journal" {
   iops              = 250
   encrypted         = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Mongo Journal"
-    },
-  )
+  tags = { "Name" = "CyHy Mongo Journal" }
 
   lifecycle {
     prevent_destroy = true
@@ -236,12 +216,7 @@ resource "aws_ebs_volume" "cyhy_mongo_log" {
   iops              = 100
   encrypted         = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "CyHy Mongo Log"
-    },
-  )
+  tags = { "Name" = "CyHy Mongo Log" }
 
   lifecycle {
     prevent_destroy = true

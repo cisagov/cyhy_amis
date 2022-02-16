@@ -45,15 +45,16 @@ resource "aws_instance" "cyhy_nmap" {
 
   user_data_base64 = data.template_cloudinit_config.ssh_and_nmap_cyhy_runner_cloud_init_tasks.rendered
 
-  tags = merge(
-    var.tags,
-    {
-      "Name"           = format("CyHy Nmap - portscan%d", count.index + 1)
-      "Publish Egress" = "True"
-    },
-  )
+  tags = {
+    "Name"           = format("CyHy Nmap - portscan%d", count.index + 1)
+    "Publish Egress" = "True"
+  }
+
+  # volume_tags does not yet inherit the default tags from the
+  # provider.  See hashicorp/terraform-provider-aws#19188 for more
+  # details.
   volume_tags = merge(
-    var.tags,
+    data.aws_default_tags.default.tags,
     {
       "Name" = format("CyHy Nmap - portscan%d", count.index + 1)
     },
@@ -79,13 +80,10 @@ data "aws_eip" "cyhy_nmap_eips" {
 resource "aws_eip" "cyhy_nmap_random_eips" {
   count = local.production_workspace ? 0 : length(aws_instance.cyhy_nmap)
   vpc   = true
-  tags = merge(
-    var.tags,
-    {
-      "Name"           = format("CyHy Nmap EIP %d", count.index + 1)
-      "Publish Egress" = "True"
-    },
-  )
+  tags = {
+    "Name"           = format("CyHy Nmap EIP %d", count.index + 1)
+    "Publish Egress" = "True"
+  }
 }
 
 # Associate the appropriate Elastic IP above with the CyHy nmap
@@ -134,12 +132,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
   size      = local.production_workspace ? 2 : 1
   encrypted = true
 
-  tags = merge(
-    var.tags,
-    {
-      "Name" = format("CyHy Nmap - portscan%d", count.index + 1)
-    },
-  )
+  tags = { "Name" = format("CyHy Nmap - portscan%d", count.index + 1) }
 
   lifecycle {
     prevent_destroy = true
