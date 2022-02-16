@@ -195,7 +195,7 @@ variable "enable_mgmt_vpc" {
 
 variable "assessment_data_s3_bucket" {
   type        = string
-  description = "The name of the bucket where the assessment data JSON file can be found.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+  description = "The name of the bucket where the assessment data JSON file can be found.  Note that in production Terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
   default     = ""
 }
 
@@ -246,7 +246,7 @@ variable "assessment_data_import_ssm_db_password" {
 
 variable "findings_data_s3_bucket" {
   type        = string
-  description = "The name of the bucket where the findings data JSON file can be found.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
+  description = "The name of the bucket where the findings data JSON file can be found.  Note that in production Terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
   default     = ""
 }
 
