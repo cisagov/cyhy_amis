@@ -71,7 +71,7 @@ if [ "$geoip_remote_md5" != "$geoip_local_md5" ]; then
   exit
 fi
 
-scp "$geoip_local_file" "$target_name":
+scp -p "$geoip_local_file" "$target_name":
 # Disable SC22029 "Note that, unescaped, this expands on the client side." check
 # because we are populating values from the client side to use on the remote
 # side.
