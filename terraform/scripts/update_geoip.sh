@@ -71,6 +71,7 @@ if [ "$geoip_remote_md5" != "$geoip_local_md5" ]; then
   exit
 fi
 
+# Copy the file to the remote host while preserving the file's timestamps (-p)
 scp -p "$geoip_local_file" "$target_name":
 # Disable SC22029 "Note that, unescaped, this expands on the client side." check
 # because we are populating values from the client side to use on the remote
