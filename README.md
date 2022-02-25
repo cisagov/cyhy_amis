@@ -27,7 +27,7 @@ ansible-galaxy install --force --role-file ansible/requirements.yml
 will update the roles that are being pulled from external sources.  This
 may be required, for example, if a role that is being pulled from a
 GitHub repository has been updated and you want the new changes.  By
-default `ansible-galaxy install` _will not_ upgrade roles.
+default `ansible-galaxy install` *will not* upgrade roles.
 
 ## Building the Terraform-based infrastructure ##
 
