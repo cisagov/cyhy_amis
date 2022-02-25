@@ -614,11 +614,11 @@ terraform apply -var-file=<your_workspace>.tfvars
 | assessment\_data\_s3\_bucket | The name of the bucket where the assessment data JSON file can be found.  Note that in production Terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace\_name>' will be appended to the bucket name. | `string` | `""` | no |
 | aws\_availability\_zone | The AWS availability zone to deploy into (e.g. a, b, c, etc.). | `string` | `"a"` | no |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
-| bod\_nat\_gateway\_eip | The IP corresponding to the EIP to be used for the BOD 18-01 NAT gateway in production.  In a non-production workspace an EIP will be created.. | `string` | `""` | no |
+| bod\_nat\_gateway\_eip | The IP corresponding to the EIP to be used for the BOD 18-01 NAT gateway in production.  In a non-production workspace an EIP will be created. | `string` | `""` | no |
 | create\_bod\_flow\_logs | Whether or not to create flow logs for the BOD 18-01 VPC. | `bool` | `false` | no |
 | create\_cyhy\_flow\_logs | Whether or not to create flow logs for the CyHy VPC. | `bool` | `false` | no |
 | create\_mgmt\_flow\_logs | Whether or not to create flow logs for the Management VPC. | `bool` | `false` | no |
-| cyhy\_archive\_bucket\_name | S3 bucket for storing compressed archive files created by cyhy-archive | `string` | `"ncats-cyhy-archive"` | no |
+| cyhy\_archive\_bucket\_name | S3 bucket for storing compressed archive files created by cyhy-archive. | `string` | `"ncats-cyhy-archive"` | no |
 | cyhy\_elastic\_ip\_cidr\_block | The CIDR block of elastic addresses available for use by CyHy scanner instances. | `string` | `""` | no |
 | cyhy\_portscan\_first\_elastic\_ip\_offset | The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy portscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first portscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional portscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available. | `number` | `0` | no |
 | cyhy\_vulnscan\_first\_elastic\_ip\_offset | The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy vulnscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first vulnscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional vulnscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available. | `number` | `1` | no |
@@ -641,23 +641,23 @@ terraform apply -var-file=<your_workspace>.tfvars
 | lambda\_function\_bucket | The name of the S3 bucket where the Lambda function zip files reside.  Terraform cannot access buckets that are not in the provider's region, so the region name will be appended to the bucket name to obtain the actual bucket where the zips are stored.  So if we are working in region us-west-1 and this variable has the value buckethead, then the zips will be looked for in the bucket buckethead-us-west-1. | `string` | n/a | yes |
 | lambda\_function\_keys | The keys (names) of the zip files for the Lambda functions inside the S3 bucket.  The keys for the map are the values in scan\_types. | `map(string)` | n/a | yes |
 | lambda\_function\_names | The names to use for the Lambda functions.  The keys are the values in scan\_types. | `map(string)` | n/a | yes |
-| mgmt\_nessus\_activation\_codes | A list of strings containing Nessus activation codes used in the management VPC | `list(string)` | n/a | yes |
+| mgmt\_nessus\_activation\_codes | A list of strings containing Nessus activation codes used in the management VPC. | `list(string)` | n/a | yes |
 | mgmt\_nessus\_instance\_count | The number of Nessus instances to create if a management environment is set to be created. | `number` | `1` | no |
-| mongo\_disks | n/a | `map(string)` | ```{ "data": "/dev/xvdb", "journal": "/dev/xvdc", "log": "/dev/xvdd" }``` | no |
+| mongo\_disks | The data volumes for the mongo instance(s). | `map(string)` | ```{ "data": "/dev/xvdb", "journal": "/dev/xvdc", "log": "/dev/xvdd" }``` | no |
 | mongo\_instance\_count | The number of Mongo instances to create. | `number` | `1` | no |
-| nessus\_activation\_codes | A list of strings containing Nessus activation codes | `list(string)` | n/a | yes |
-| nessus\_cyhy\_runner\_disk | The cyhy-runner data volume for the nessus instance(s) | `string` | `"/dev/xvdb"` | no |
+| nessus\_activation\_codes | A list of strings containing Nessus activation codes. | `list(string)` | n/a | yes |
+| nessus\_cyhy\_runner\_disk | The cyhy-runner data volume for the Nessus instance(s). | `string` | `"/dev/xvdb"` | no |
 | nessus\_instance\_count | The number of Nessus instances to create. | `number` | n/a | yes |
-| nmap\_cyhy\_runner\_disk | The cyhy-runner data volume for the nmap instance(s) | `string` | `"/dev/nvme1n1"` | no |
-| nmap\_instance\_count | The number of nmap instances to create. | `number` | n/a | yes |
-| remote\_ssh\_user | The username to use when sshing to the EC2 instances | `any` | n/a | yes |
+| nmap\_cyhy\_runner\_disk | The cyhy-runner data volume for the Nmap instance(s). | `string` | `"/dev/nvme1n1"` | no |
+| nmap\_instance\_count | The number of Nmap instances to create. | `number` | n/a | yes |
+| remote\_ssh\_user | The username to use when sshing to the EC2 instances. | `string` | n/a | yes |
 | reporter\_mailer\_override\_filename | This file is used to add/override any docker-compose settings for cyhy-mailer for the reporter EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.cyhy.yml"` | no |
 | scan\_types | The scan types that can be run. | `list(string)` | n/a | yes |
 | ses\_aws\_region | The AWS region where SES is configured. | `string` | `"us-east-1"` | no |
 | ses\_role\_arn | The ARN of the role that must be assumed in order to send emails. | `string` | n/a | yes |
-| tags | Tags to apply to all AWS resources created | `map(string)` | `{}` | no |
-| trusted\_ingress\_networks\_ipv4 | IPv4 CIDR blocks from which to allow ingress to the bastion server | `list(string)` | ```[ "0.0.0.0/0" ]``` | no |
-| trusted\_ingress\_networks\_ipv6 | IPv6 CIDR blocks from which to allow ingress to the bastion server | `list(string)` | ```[ "::/0" ]``` | no |
+| tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
+| trusted\_ingress\_networks\_ipv4 | IPv4 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "0.0.0.0/0" ]``` | no |
+| trusted\_ingress\_networks\_ipv6 | IPv6 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "::/0" ]``` | no |
 
 ## Outputs ##
 

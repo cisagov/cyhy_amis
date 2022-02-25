@@ -60,12 +60,12 @@ variable "lambda_function_names" {
 }
 
 variable "mgmt_nessus_activation_codes" {
-  description = "A list of strings containing Nessus activation codes used in the management VPC"
+  description = "A list of strings containing Nessus activation codes used in the management VPC."
   type        = list(string)
 }
 
 variable "nessus_activation_codes" {
-  description = "A list of strings containing Nessus activation codes"
+  description = "A list of strings containing Nessus activation codes."
   type        = list(string)
 }
 
@@ -75,12 +75,12 @@ variable "nessus_instance_count" {
 }
 
 variable "nmap_instance_count" {
-  description = "The number of nmap instances to create."
+  description = "The number of Nmap instances to create."
   type        = number
 }
 
 variable "remote_ssh_user" {
-  description = "The username to use when sshing to the EC2 instances"
+  description = "The username to use when sshing to the EC2 instances."
   type        = string
 }
 
@@ -150,7 +150,7 @@ variable "aws_region" {
 
 variable "bod_nat_gateway_eip" {
   default     = ""
-  description = "The IP corresponding to the EIP to be used for the BOD 18-01 NAT gateway in production.  In a non-production workspace an EIP will be created.."
+  description = "The IP corresponding to the EIP to be used for the BOD 18-01 NAT gateway in production.  In a non-production workspace an EIP will be created."
   type        = string
 }
 
@@ -174,7 +174,7 @@ variable "create_mgmt_flow_logs" {
 
 variable "cyhy_archive_bucket_name" {
   default     = "ncats-cyhy-archive"
-  description = "S3 bucket for storing compressed archive files created by cyhy-archive"
+  description = "S3 bucket for storing compressed archive files created by cyhy-archive."
   type        = string
 }
 
@@ -295,13 +295,13 @@ variable "mongo_instance_count" {
 
 variable "nessus_cyhy_runner_disk" {
   default     = "/dev/xvdb"
-  description = "The cyhy-runner data volume for the nessus instance(s)"
+  description = "The cyhy-runner data volume for the Nessus instance(s)."
   type        = string
 }
 
 variable "nmap_cyhy_runner_disk" {
   default     = "/dev/nvme1n1"
-  description = "The cyhy-runner data volume for the nmap instance(s)"
+  description = "The cyhy-runner data volume for the Nmap instance(s)."
   type        = string
 }
 
@@ -319,7 +319,7 @@ variable "ses_aws_region" {
 
 variable "tags" {
   default     = {}
-  description = "Tags to apply to all AWS resources created"
+  description = "Tags to apply to all AWS resources created."
   type        = map(string)
 }
 
@@ -327,12 +327,12 @@ variable "tags" {
 # most likely stored outside of version control
 variable "trusted_ingress_networks_ipv4" {
   default     = ["0.0.0.0/0"]
-  description = "IPv4 CIDR blocks from which to allow ingress to the bastion server"
+  description = "IPv4 CIDR blocks from which to allow ingress to the bastion server."
   type        = list(string)
 }
 
 variable "trusted_ingress_networks_ipv6" {
   default     = ["::/0"]
-  description = "IPv6 CIDR blocks from which to allow ingress to the bastion server"
+  description = "IPv6 CIDR blocks from which to allow ingress to the bastion server."
   type        = list(string)
 }

@@ -24,24 +24,24 @@ variable "aws_region" {
 
 variable "distribution_domain" {
   default     = "rules.ncats.cyber.dhs.gov"
-  description = "The domain name of the cloudfront distribution and certificate."
+  description = "The domain name of the CloudFront distribution and certificate."
   type        = string
 }
 
 variable "root_object" {
   default     = "all.txt"
-  description = "The root object to serve when no path is provided, or an error occurs"
+  description = "The root object to serve when no path is provided, or an error occurs."
   type        = string
 }
 
 variable "rules_bucket_name" {
   default     = "s3-cdn.rules.ncats.cyber.dhs.gov"
-  description = "The name of the bucket to store egress IP addresses"
+  description = "The name of the bucket to store egress IP addresses."
   type        = string
 }
 
 variable "tags" {
   default     = {}
-  description = "Tags to apply to all AWS resources created"
+  description = "Tags to apply to all AWS resources created."
   type        = map(string)
 }

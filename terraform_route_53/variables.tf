@@ -24,6 +24,6 @@ variable "aws_region" {
 
 variable "tags" {
   default     = {}
-  description = "Tags to apply to all AWS resources created"
+  description = "Tags to apply to all AWS resources created."
   type        = map(string)
 }
