@@ -3,7 +3,7 @@ data "aws_ami" "reporter" {
   filter {
     name = "name"
     values = [
-      "cyhy-reporter-hvm-*-x86_64-ebs",
+      "${var.ami_prefixes.reporter}-reporter-hvm-*-x86_64-ebs",
     ]
   }
 

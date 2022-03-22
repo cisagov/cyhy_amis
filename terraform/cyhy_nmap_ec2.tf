@@ -2,7 +2,7 @@ data "aws_ami" "nmap" {
   filter {
     name = "name"
     values = [
-      "cyhy-nmap-hvm-*-x86_64-ebs",
+      "${var.ami_prefixes.nmap}-nmap-hvm-*-x86_64-ebs",
     ]
   }
 
