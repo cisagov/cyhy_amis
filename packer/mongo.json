@@ -10,7 +10,7 @@
           "volume_type": "gp2"
         }
       ],
-      "ami_name": "cyhy-mongo-hvm-{{timestamp}}-x86_64-ebs",
+      "ami_name": "{{user `ami_prefix`}}-mongo-hvm-{{timestamp}}-x86_64-ebs",
       "ami_regions": [
         "us-east-1",
         "us-west-1",
@@ -73,5 +73,8 @@
       "playbook_file": "ansible/playbook.yml",
       "type": "ansible"
     }
-  ]
+  ],
+  "variables": {
+    "ami_prefix": "cyhy"
+  }
 }
