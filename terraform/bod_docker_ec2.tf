@@ -30,6 +30,25 @@ resource "aws_instance" "bod_docker" {
   # This is the private subnet
   subnet_id = aws_subnet.bod_docker_subnet.id
 
+  # AWS Instance Meta-Data Service (IMDS) options
+  metadata_options {
+    # Enable IMDS (this is the default value)
+    http_endpoint = "enabled"
+    # Normally we restrict put responses from IMDS to a single hop
+    # (this is the default value).  This effectively disallows the
+    # retrieval of an IMDSv2 token via this machine from anywhere
+    # else.
+    #
+    # In this case we set the hop limit to two, since the BOD 18-01
+    # scanning orchestration and cisagov/cyhy-mailer Docker containers
+    # hosted on this instance need to retrieve credentials from IMDS to
+    # access the dmarc-import Elasticsearch database and send email
+    # using SES.
+    http_put_response_hop_limit = 2
+    # Require IMDS tokens AKA require the use of IMDSv2
+    http_tokens = "required"
+  }
+
   root_block_device {
     volume_size = 200
     volume_type = "gp3"

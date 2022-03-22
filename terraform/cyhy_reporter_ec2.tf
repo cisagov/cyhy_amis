@@ -30,6 +30,23 @@ resource "aws_instance" "cyhy_reporter" {
   subnet_id                   = aws_subnet.cyhy_private_subnet.id
   associate_public_ip_address = false
 
+  # AWS Instance Meta-Data Service (IMDS) options
+  metadata_options {
+    # Enable IMDS (this is the default value)
+    http_endpoint = "enabled"
+    # Normally we restrict put responses from IMDS to a single hop
+    # (this is the default value).  This effectively disallows the
+    # retrieval of an IMDSv2 token via this machine from anywhere
+    # else.
+    #
+    # In this case we set the hop limit to two, since the
+    # cisagov/cyhy-mailer Docker container hosted on this instance
+    # needs to retrieve credentials from IMDS to send email using SES.
+    http_put_response_hop_limit = 2
+    # Require IMDS tokens AKA require the use of IMDSv2
+    http_tokens = "required"
+  }
+
   root_block_device {
     volume_size = 50
     volume_type = "gp3"
