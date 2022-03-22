@@ -1,9 +1,15 @@
+- src: https://github.com/cisagov/ansible-role-amazon-ssm-agent
+  name: amazon_ssm_agent
 - src: https://github.com/cisagov/ansible-role-banner
   name: banner
 - src: https://github.com/cisagov/ansible-role-clamav
   name: clamav
+- src: https://github.com/cisagov/ansible-role-chrony-aws
+  name: chrony_aws
 - src: https://github.com/cisagov/ansible-role-client-cert-update
   name: client_cert_update
+- src: https://github.com/cisagov/ansible-role-cloudwatch-agent
+  name: cloudwatch_agent
 - src: https://github.com/cisagov/ansible-role-code-gov-update
   name: code_gov_update
 - src: https://github.com/cisagov/ansible-role-cyhy-archive

@@ -1,0 +1,12 @@
+---
+- hosts: all
+  name: AWS-specific roles
+  become: yes
+  become_method: sudo
+  roles:
+    - amazon_ssm_agent
+    - chrony_aws
+    - cloudwatch_agent
+    # The instance types used for almost all the instances expose EBS
+    # volumes as NVMe block devices, so that's why we need nvme here.
+    - nvme
