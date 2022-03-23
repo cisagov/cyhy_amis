@@ -37,7 +37,8 @@ resource "aws_instance" "cyhy_nessus" {
     aws_security_group.cyhy_scanner_sg.id,
   ]
 
-  user_data_base64 = data.template_cloudinit_config.ssh_and_nessus_cyhy_runner_cloud_init_tasks.rendered
+  user_data_base64     = data.template_cloudinit_config.ssh_and_nessus_cyhy_runner_cloud_init_tasks.rendered
+  iam_instance_profile = aws_iam_instance_profile.cyhy_nessus.name
 
   tags = {
     "Name"           = format("CyHy Nessus - vulnscan%d", count.index + 1)

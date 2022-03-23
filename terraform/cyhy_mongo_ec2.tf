@@ -20,95 +20,6 @@ data "aws_ami" "cyhy_mongo" {
   most_recent = true
 }
 
-# IAM assume role policy document for the Mongo IAM role to be used by
-# the Mongo EC2 instance
-data "aws_iam_policy_document" "cyhy_mongo_assume_role_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["ec2.amazonaws.com"]
-    }
-  }
-}
-
-# The Mongo IAM role to be used by the Mongo EC2 instance
-resource "aws_iam_role" "cyhy_mongo_role" {
-  assume_role_policy = data.aws_iam_policy_document.cyhy_mongo_assume_role_doc.json
-}
-
-# The cyhy-archive S3 policy for our role
-resource "aws_iam_role_policy" "archive_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_role.id
-  policy = data.aws_iam_policy_document.s3_cyhy_archive_write_doc.json
-}
-
-# IAM policy document that allows us to assume a role that allows
-# reading of the dmarc-import Elasticsearch database.  This will be
-# applied to the role we are creating.
-data "aws_iam_policy_document" "es_cyhy_mongo_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-    ]
-
-    resources = [
-      var.dmarc_import_es_role_arn,
-    ]
-  }
-}
-
-# The Elasticsearch policy for our role
-resource "aws_iam_role_policy" "es_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_role.id
-  policy = data.aws_iam_policy_document.es_cyhy_mongo_doc.json
-}
-
-# IAM policy document that that allows write permissions on the MOE
-# bucket.  This will be applied to the role we are creating.
-data "aws_iam_policy_document" "s3_cyhy_mongo_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "s3:ListBucket",
-    ]
-
-    resources = [
-      aws_s3_bucket.moe_bucket.arn,
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "s3:DeleteObject",
-      "s3:PutObject",
-    ]
-
-    resources = [
-      "${aws_s3_bucket.moe_bucket.arn}/*",
-    ]
-  }
-}
-
-# The S3 policy for our role
-resource "aws_iam_role_policy" "s3_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_role.id
-  policy = data.aws_iam_policy_document.s3_cyhy_mongo_doc.json
-}
-
-# The instance profile to be used by the CyHy Mongo EC2 instance.
-resource "aws_iam_instance_profile" "cyhy_mongo" {
-  role = aws_iam_role.cyhy_mongo_role.name
-}
-
 resource "aws_instance" "cyhy_mongo" {
   count                       = var.mongo_instance_count
   ami                         = data.aws_ami.cyhy_mongo.id
@@ -126,10 +37,7 @@ resource "aws_instance" "cyhy_mongo" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
-  user_data_base64 = data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered
-
-  # Give this instance the access needed for archiving and doing daily
-  # extracts
+  user_data_base64     = data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_mongo.name
 
   tags = { "Name" = "CyHy Mongo, Commander" }

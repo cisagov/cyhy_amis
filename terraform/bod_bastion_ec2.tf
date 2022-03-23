@@ -17,7 +17,8 @@ resource "aws_instance" "bod_bastion" {
     aws_security_group.bod_bastion_sg.id,
   ]
 
-  user_data_base64 = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
+  user_data_base64     = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
+  iam_instance_profile = aws_iam_instance_profile.bod_bastion.name
 
   tags = { "Name" = "BOD 18-01 Bastion" }
 
