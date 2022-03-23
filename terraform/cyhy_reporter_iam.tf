@@ -33,6 +33,7 @@ data "aws_iam_policy_document" "ses_cyhy_reporter_doc" {
 
     actions = [
       "sts:AssumeRole",
+      "sts:TagSession",
     ]
 
     resources = [

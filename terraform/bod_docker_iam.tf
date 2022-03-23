@@ -58,6 +58,7 @@ data "aws_iam_policy_document" "es_bod_docker_doc" {
 
     actions = [
       "sts:AssumeRole",
+      "sts:TagSession",
     ]
 
     resources = [
@@ -81,6 +82,7 @@ data "aws_iam_policy_document" "ses_bod_docker_doc" {
 
     actions = [
       "sts:AssumeRole",
+      "sts:TagSession",
     ]
 
     resources = [

@@ -39,6 +39,7 @@ data "aws_iam_policy_document" "es_cyhy_mongo_doc" {
 
     actions = [
       "sts:AssumeRole",
+      "sts:TagSession",
     ]
 
     resources = [

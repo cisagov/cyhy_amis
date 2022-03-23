@@ -6,7 +6,10 @@ data "aws_iam_policy_document" "fdi_lambda_assume_role_doc" {
   statement {
     effect = "Allow"
 
-    actions = ["sts:AssumeRole"]
+    actions = [
+      "sts:AssumeRole",
+      "sts:TagSession",
+    ]
 
     principals {
       type        = "Service"
