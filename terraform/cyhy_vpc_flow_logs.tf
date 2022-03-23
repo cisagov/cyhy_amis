@@ -1,29 +1,10 @@
-# IAM assume role policy document for the role we're creating
-data "aws_iam_policy_document" "cyhy_flow_log_assume_role_doc" {
-  count = var.create_cyhy_flow_logs ? 1 : 0
-
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession",
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = ["vpc-flow-logs.amazonaws.com"]
-    }
-  }
-}
-
 # The IAM role for flow logs
 resource "aws_iam_role" "cyhy_flow_log_role" {
   count = var.create_cyhy_flow_logs ? 1 : 0
 
   name = "cyhy_flow_log_role_${terraform.workspace}"
 
-  assume_role_policy = data.aws_iam_policy_document.cyhy_flow_log_assume_role_doc[0].json
+  assume_role_policy = data.aws_iam_policy_document.vpc_flow_log_service_assume_role_doc[0].json
 }
 
 # IAM policy document that that allows some permissions for flow logs.
