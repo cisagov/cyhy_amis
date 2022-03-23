@@ -37,6 +37,12 @@ resource "aws_instance" "cyhy_mongo" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
+  # The cyhy-commander needs these instances available to pull/push work
+  depends_on = [
+    aws_instance.cyhy_nessus,
+    aws_instance.cyhy_nmap,
+  ]
+
   user_data_base64     = data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_mongo.name
 
