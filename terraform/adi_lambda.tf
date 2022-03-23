@@ -1,26 +1,9 @@
 # Infrastructure related to the assessment data import lambda
 
-# IAM assume role policy document for the roles we're creating for the
-# lambda function
-data "aws_iam_policy_document" "adi_lambda_assume_role_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession",
-    ]
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
 # The role we're creating for the lambda function
 resource "aws_iam_role" "adi_lambda_role" {
-  assume_role_policy = data.aws_iam_policy_document.adi_lambda_assume_role_doc.json
+  name               = format("adi_lambda_role_%s", local.production_workspace ? "production" : terraform.workspace)
+  assume_role_policy = data.aws_iam_policy_document.lambda_service_assume_role_doc.json
 }
 
 # IAM policy document that that allows some Cloudwatch permissions
