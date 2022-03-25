@@ -2,7 +2,7 @@ data "aws_ami" "nessus" {
   filter {
     name = "name"
     values = [
-      "cyhy-nessus-hvm-*-x86_64-ebs",
+      "${var.ami_prefixes.nessus}-nessus-hvm-*-x86_64-ebs",
     ]
   }
 

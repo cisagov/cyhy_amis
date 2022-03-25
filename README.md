@@ -18,6 +18,13 @@ packer build nmap.json
 packer build reporter.json
 ```
 
+If building a non-default image (for testing as an example) the prefix for the
+created AMI can be changed from the default value of `cyhy` like so:
+
+```console
+packer build -var ami_prefix=testing bastion.json
+```
+
 Also note that
 
 ```console

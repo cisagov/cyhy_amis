@@ -3,7 +3,7 @@ data "aws_ami" "bastion" {
   filter {
     name = "name"
     values = [
-      "cyhy-bastion-hvm-*-x86_64-ebs",
+      "${var.ami_prefixes.bastion}-bastion-hvm-*-x86_64-ebs",
     ]
   }
 

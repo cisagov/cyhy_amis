@@ -20,6 +20,12 @@ variable "remote_ssh_user" {
 # These parameters have reasonable defaults.
 # ------------------------------------------------------------------------------
 
+variable "ami_prefix" {
+  default     = "cyhy"
+  description = "The prefix for the AMI that is used for the manual Nessus instance."
+  type        = string
+}
+
 variable "aws_availability_zone" {
   default     = "a"
   description = "The AWS availability zone to deploy into (e.g. a, b, c, etc.)."

@@ -3,7 +3,7 @@ data "aws_ami" "dashboard" {
   filter {
     name = "name"
     values = [
-      "cyhy-dashboard-hvm-*-x86_64-ebs",
+      "${var.ami_prefixes.dashboard}-dashboard-hvm-*-x86_64-ebs",
     ]
   }
 

@@ -100,6 +100,20 @@ variable "ses_role_arn" {
 # These parameters have reasonable defaults.
 # ------------------------------------------------------------------------------
 
+variable "ami_prefixes" {
+  default = {
+    bastion   = "cyhy",
+    dashboard = "cyhy",
+    docker    = "cyhy",
+    mongo     = "cyhy",
+    nessus    = "cyhy",
+    nmap      = "cyhy",
+    reporter  = "cyhy",
+  }
+  description = "An object whose keys are the types of Packer images (defined in the `packer/` directory in the root of the repository) and whose values are the prefix to use for the corresponding AMI. The default for all images is \"cyhy\"."
+  type        = object({ bastion = string, dashboard = string, docker = string, mongo = string, nessus = string, nmap = string, reporter = string })
+}
+
 variable "assessment_data_import_db_hostname" {
   default     = ""
   description = "The hostname that has the database to store the assessment data in."

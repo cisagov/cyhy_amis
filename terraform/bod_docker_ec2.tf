@@ -3,7 +3,7 @@ data "aws_ami" "bod_docker" {
   filter {
     name = "name"
     values = [
-      "cyhy-docker-hvm-*-x86_64-ebs",
+      "${var.ami_prefixes.docker}-docker-hvm-*-x86_64-ebs",
     ]
   }
 
