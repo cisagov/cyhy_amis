@@ -146,18 +146,14 @@ resource "aws_iam_role_policy" "fdi_lambda_ssm_policy" {
 # Terraform code for this bucket is in:
 #   https://github.com/cisagov/findings-data-import-terraform
 data "aws_s3_bucket" "findings_data" {
-  bucket = local.production_workspace ? format("%s-production", var.findings_data_s3_bucket) : format("%s-%s", var.findings_data_s3_bucket, terraform.workspace)
+  bucket = format("%s-%s", var.findings_data_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
 # The S3 bucket where the findings data import lambda function is stored
 # Terraform code for this bucket is in:
 #   https://github.com/cisagov/findings-data-import-terraform
 data "aws_s3_bucket" "fdi_lambda" {
-  bucket = local.production_workspace ? format("%s-production", var.findings_data_import_lambda_s3_bucket) : format(
-    "%s-%s",
-    var.findings_data_import_lambda_s3_bucket,
-    terraform.workspace,
-  )
+  bucket = format("%s-%s", var.findings_data_import_lambda_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
 # The AWS Lambda function that imports the findings data to our database
