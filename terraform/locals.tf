@@ -13,9 +13,9 @@ data "aws_caller_identity" "current" {}
 data "aws_default_tags" "default" {}
 
 locals {
-  # This is a goofy but necessary way to determine if
-  # terraform.workspace contains the substring "prod"
-  production_workspace = replace(terraform.workspace, "prod", "") != terraform.workspace
+  # Determine if this is a Production workspace by checking
+  # if terraform.workspace begins with "prod"
+  production_workspace = length(regexall("^prod", terraform.workspace)) == 1
 
   # Note: some locals are generated dynamically by the configure.py script and
   # are not part of this file.  e.g.; *_instance_count  Please run configure.py

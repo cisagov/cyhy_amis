@@ -145,18 +145,14 @@ resource "aws_iam_role_policy" "adi_lambda_ssm_policy" {
 # Terraform code for this bucket is in:
 #   https://github.com/cisagov/assessment-data-import-terraform
 data "aws_s3_bucket" "assessment_data" {
-  bucket = local.production_workspace ? format("%s-production", var.assessment_data_s3_bucket) : format("%s-%s", var.assessment_data_s3_bucket, terraform.workspace)
+  bucket = format("%s-%s", var.assessment_data_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
 # The S3 bucket where the assessment data import lambda function is stored
 # Terraform code for this bucket is in:
 #   https://github.com/cisagov/assessment-data-import-terraform
 data "aws_s3_bucket" "adi_lambda" {
-  bucket = local.production_workspace ? format("%s-production", var.assessment_data_import_lambda_s3_bucket) : format(
-    "%s-%s",
-    var.assessment_data_import_lambda_s3_bucket,
-    terraform.workspace,
-  )
+  bucket = format("%s-%s", var.assessment_data_import_lambda_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
 # The AWS Lambda function that imports the assessment data to our database
