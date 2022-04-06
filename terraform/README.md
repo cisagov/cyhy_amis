@@ -156,6 +156,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | aws | ~> 3.38 |
 | aws.public\_dns | ~> 3.38 |
 | cloudinit | ~> 2.0 |
+| null | n/a |
 | terraform | n/a |
 
 ## Modules ##
@@ -566,6 +567,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_vpc_peering_connection_options.bod_mgmt_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
 | [aws_vpc_peering_connection_options.cyhy_bod_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
 | [aws_vpc_peering_connection_options.cyhy_mgmt_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
+| [null_resource.cyhy_nessus_pub_PTR](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_ami.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.bod_docker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
