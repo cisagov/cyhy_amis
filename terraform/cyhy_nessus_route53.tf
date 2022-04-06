@@ -1,3 +1,17 @@
+# Public DNS records
+resource "aws_route53_record" "cyhy_nessus_pub_A" {
+  count    = var.nessus_instance_count
+  provider = aws.public_dns
+
+  zone_id = data.terraform_remote_state.dns.outputs.cyber_dhs_gov_zone.id
+  name    = "vulnscan${count.index + 1}.${terraform.workspace}.${local.cyhy_public_subdomain}${data.terraform_remote_state.dns.outputs.cyber_dhs_gov_zone.name}"
+  type    = "A"
+  ttl     = 30
+  records = [
+    local.nessus_public_ips[count.index],
+  ]
+}
+
 # Private DNS records
 resource "aws_route53_record" "cyhy_vulnscan_A" {
   count   = local.count_vuln_scanner
