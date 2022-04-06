@@ -17,6 +17,8 @@ locals {
   # if terraform.workspace begins with "prod"
   production_workspace = length(regexall("^prod", terraform.workspace)) == 1
 
+  bod_lambda_types = toset(keys(var.bod_lambda_functions))
+
   # Note: some locals are generated dynamically by the configure.py script and
   # are not part of this file.  e.g.; *_instance_count  Please run configure.py
   # to generate these in a separate file.
