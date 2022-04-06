@@ -56,6 +56,29 @@ qualys_was_ips = (
     "64.39.108.104/29",
     "64.39.108.112/28",
 )
+# The following CIDR blocks are where the STRIGA traffic originates
+# from:
+striga_ips = (
+    "3.210.85.203/32",
+    "3.213.50.150/32",
+    "3.221.55.63/32",
+    "3.224.90.16/32",
+    "3.229.208.240/32",
+    "18.214.120.80/32",
+    "18.234.81.132/32",
+    "34.194.139.213/32",
+    "34.200.127.160/32",
+    "34.232.73.230/32",
+    "34.233.244.247/32",
+    "34.234.104.81/32",
+    "44.196.3.157/32",
+    "44.199.219.43/32",
+    "52.2.88.50/32",
+    "52.20.114.134/32",
+    "54.173.213.152/32",
+    "54.205.21.104/32",
+)
+
 FILE_CONFIGS = [
     {
         "filename": "all.txt",
@@ -80,6 +103,12 @@ FILE_CONFIGS = [
         "app_regex": re.compile("Web Application Scanning$"),
         "static_ips": qualys_was_ips,
         "description": "This file contains a list of all IPs used for Web Application Scanning.",
+    },
+    {
+        "filename": "striga.txt",
+        "app_regex": re.compile("STRIGA$"),
+        "static_ips": striga_ips,
+        "description": "This file contains a consolidated list of all the IP addresses that VM is currently using for STRIGA external testing.",
     },
 ]
 
