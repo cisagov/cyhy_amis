@@ -7,7 +7,7 @@
           "device_name": "/dev/xvda",
           "encrypted": true,
           "volume_size": 8,
-          "volume_type": "gp2"
+          "volume_type": "gp3"
         }
       ],
       "ami_name": "{{user `ami_prefix`}}-nessus-hvm-{{timestamp}}-x86_64-ebs",
@@ -23,7 +23,7 @@
           "device_name": "/dev/xvda",
           "encrypted": true,
           "volume_size": 8,
-          "volume_type": "gp2"
+          "volume_type": "gp3"
         }
       ],
       "region": "us-east-2",

@@ -34,9 +34,8 @@ resource "aws_instance" "cyhy_nmap" {
   subnet_id = aws_subnet.cyhy_portscanner_subnet.id
 
   root_block_device {
-    volume_type           = "gp2"
-    volume_size           = local.production_workspace ? 20 : 8
-    delete_on_termination = true
+    volume_size = local.production_workspace ? 20 : 8
+    volume_type = "gp3"
   }
 
   vpc_security_group_ids = [
@@ -128,7 +127,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # availability_zone = "${element(data.aws_availability_zones.all.names, count.index)}"
-  type      = "gp2"
+  type      = "gp3"
   size      = local.production_workspace ? 2 : 1
   encrypted = true
 

@@ -8,9 +8,8 @@ resource "aws_instance" "mgmt_nessus" {
   subnet_id = aws_subnet.mgmt_private_subnet[0].id
 
   root_block_device {
-    volume_type           = "gp2"
-    volume_size           = local.production_workspace ? 100 : 16
-    delete_on_termination = true
+    volume_size = local.production_workspace ? 100 : 16
+    volume_type = "gp3"
   }
 
   vpc_security_group_ids = [

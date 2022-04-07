@@ -29,9 +29,8 @@ resource "aws_instance" "cyhy_nessus" {
   subnet_id = aws_subnet.cyhy_vulnscanner_subnet.id
 
   root_block_device {
-    volume_type           = "gp2"
-    volume_size           = local.production_workspace ? 100 : 16
-    delete_on_termination = true
+    volume_size = local.production_workspace ? 100 : 16
+    volume_type = "gp3"
   }
 
   vpc_security_group_ids = [
@@ -125,7 +124,7 @@ resource "aws_ebs_volume" "nessus_cyhy_runner_data" {
   count             = length(aws_instance.cyhy_nessus)
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
-  type      = "gp2"
+  type      = "gp3"
   size      = local.production_workspace ? 2 : 1
   encrypted = true
 
