@@ -4,7 +4,7 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   for_each = local.db_instances
 
   name    = "NVD Sync Failure Count - ${each.value.hostname}"
-  pattern = "nvdsync error"
+  pattern = "cyhy-nvdsync ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.
   log_group_name = "/instance-logs/${each.value.hostname}/syslog"

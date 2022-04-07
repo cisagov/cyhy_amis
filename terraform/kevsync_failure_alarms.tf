@@ -4,7 +4,7 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
   for_each = local.db_instances
 
   name    = "KEV Sync Failure Count - ${each.value.hostname}"
-  pattern = "kevsync error"
+  pattern = "cyhy-kevsync ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.
   log_group_name = "/instance-logs/${each.value.hostname}/syslog"
