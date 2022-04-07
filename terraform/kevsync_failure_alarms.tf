@@ -3,7 +3,14 @@
 resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
   for_each = local.db_instances
 
-  name    = "KEV Sync Failure Count - ${each.value.hostname}"
+  name = "KEV Sync Failure Count - ${each.value.hostname}"
+  # Note that this pattern relies on:
+  # 1. A logging.exception() call for any uncaught exceptions in the
+  #    main() method of the cyhy-kevsync script in cisagov/cyhy-core
+  # 2. The stdout and stderr of the cyhy-kevsync script being piped
+  #    into the system logger with the tag "cyhy-kevsync" when that
+  #    script is run, similar to what for the cyhy-nvdsync script here:
+  #    https://github.com/cisagov/cyhy_amis/blob/0f5974229edd909befc90ff5f4cf639327d373d8/ansible/roles/cyhy_commander/tasks/main.yml#L160
   pattern = "cyhy-kevsync ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.

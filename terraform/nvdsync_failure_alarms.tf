@@ -3,7 +3,14 @@
 resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   for_each = local.db_instances
 
-  name    = "NVD Sync Failure Count - ${each.value.hostname}"
+  name = "NVD Sync Failure Count - ${each.value.hostname}"
+  # Note that this pattern relies on:
+  # 1. A logging.exception() call for any uncaught exceptions in the
+  #    main() method of the cyhy-nvdsync script in cisagov/cyhy-core
+  # 2. The stdout and stderr of the cyhy-nvdsync script being piped
+  #    into the system logger with the tag "cyhy-nvdsync" when that
+  #    script is run, as is done in
+  #    https://github.com/cisagov/cyhy_amis/blob/0f5974229edd909befc90ff5f4cf639327d373d8/ansible/roles/cyhy_commander/tasks/main.yml#L160
   pattern = "cyhy-nvdsync ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.
