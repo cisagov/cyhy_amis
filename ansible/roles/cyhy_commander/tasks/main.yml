@@ -158,3 +158,14 @@
     minute: '15'
     user: cyhy
     job: /usr/local/bin/cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger -t cyhy-nvdsync
+
+#
+# Run cyhy-kevsync daily at 0845 (UTC) as cyhy user
+#
+- name: Set up nightly cron job to sync KEV data
+  cron:
+    name: Nightly cyhy-kevsync
+    hour: '8'
+    minute: '45'
+    user: cyhy
+    job: /usr/local/bin/cyhy-kevsync 2>&1 | /usr/bin/logger -t cyhy-kevsync
