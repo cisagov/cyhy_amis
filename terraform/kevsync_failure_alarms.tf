@@ -9,7 +9,7 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
   #    main() method of the cyhy-kevsync script in cisagov/cyhy-core
   # 2. The stdout and stderr of the cyhy-kevsync script being piped
   #    into the system logger with the tag "cyhy-kevsync" when that
-  #    script is run, similar to what for the cyhy-nvdsync script here:
+  #    script is run, similar to what is done for the cyhy-nvdsync script here:
   #    https://github.com/cisagov/cyhy_amis/blob/0f5974229edd909befc90ff5f4cf639327d373d8/ansible/roles/cyhy_commander/tasks/main.yml#L160
   pattern = "cyhy-kevsync ERROR"
   # The instances' CloudWatch Agent's configurations define what the
