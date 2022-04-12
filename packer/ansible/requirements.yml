@@ -62,10 +62,13 @@
   name: persist_journald
 - src: https://github.com/cisagov/ansible-role-pip
   name: pip
+  version: change/install_pip_on_debian_buster
 - src: https://github.com/cisagov/ansible-role-python
   name: python
+  version: change/install_python2_on_debian_buster
 - src: https://github.com/cisagov/ansible-role-remove-python2
   name: remove_python2
+  version: change/keep_python2_on_debian_buster
 - src: https://github.com/cisagov/ansible-role-upgrade
   name: upgrade
 - src: https://github.com/cisagov/ansible-role-vdp-scanner
