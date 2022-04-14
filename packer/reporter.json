@@ -46,6 +46,7 @@
         "Release": "Latest",
         "Team": "VM Fusion - Development"
       },
+      "temporary_key_pair_type": "ed25519",
       "type": "amazon-ebs"
     }
   ],
