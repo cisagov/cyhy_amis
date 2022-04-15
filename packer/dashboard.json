@@ -52,6 +52,10 @@
   ],
   "provisioners": [
     {
+      "extra_arguments": [
+        "--extra-vars",
+        "ansible_python_interpreter=auto_legacy_silent"
+      ],
       "groups": [
         "dashboard"
       ],
@@ -59,6 +63,10 @@
       "type": "ansible"
     },
     {
+      "extra_arguments": [
+        "--extra-vars",
+        "ansible_python_interpreter=auto_legacy_silent"
+      ],
       "groups": [
         "dashboard"
       ],
@@ -66,6 +74,10 @@
       "type": "ansible"
     },
     {
+      "extra_arguments": [
+        "--extra-vars",
+        "ansible_python_interpreter=auto_legacy_silent"
+      ],
       "groups": [
         "cyhy_dashboard"
       ],
