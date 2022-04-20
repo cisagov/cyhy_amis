@@ -1,4 +1,4 @@
-# The roles we're creating for the lambda functions
+# The roles we're creating for the Lambda functions
 resource "aws_iam_role" "lambda_roles" {
   count = length(var.scan_types)
 
@@ -6,9 +6,9 @@ resource "aws_iam_role" "lambda_roles" {
   assume_role_policy = data.aws_iam_policy_document.lambda_service_assume_role_doc.json
 }
 
-# IAM policy documents that that allows some Cloudwatch permissions
+# IAM policy documents that that allows some CloudWatch permissions
 # for our Lambda functions.  This will allow the Lambda functions to
-# generate log output in Cloudwatch.  These will be applied to the
+# generate log output in CloudWatch.  These will be applied to the
 # roles we are creating.
 data "aws_iam_policy_document" "lambda_cloudwatch_docs" {
   count = length(aws_cloudwatch_log_group.lambda_logs)
@@ -110,7 +110,7 @@ resource "aws_lambda_function" "lambdas" {
   }
 }
 
-# The Cloudwatch log groups for the Lambda functions
+# The CloudWatch log groups for the Lambda functions
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   count = length(aws_lambda_function.lambdas)
 
