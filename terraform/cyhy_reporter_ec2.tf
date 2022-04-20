@@ -64,6 +64,10 @@ resource "aws_instance" "cyhy_reporter" {
 module "cyhy_reporter_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
 
+  depends_on = [
+    aws_volume_attachment.cyhy_reporter_data_attachment,
+  ]
+
   arguments = [
     "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",

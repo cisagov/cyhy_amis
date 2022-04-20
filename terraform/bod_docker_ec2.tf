@@ -64,6 +64,10 @@ resource "aws_instance" "bod_docker" {
 module "bod_docker_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
 
+  depends_on = [
+    aws_volume_attachment.bod_report_data_attachment,
+  ]
+
   arguments = [
     "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'",
