@@ -154,6 +154,11 @@ module "cyhy_nmap_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
   count  = length(aws_instance.cyhy_nmap)
 
+  # Ensure all EBS volumes are attached before running Ansible
+  depends_on = [
+    aws_volume_attachment.nmap_cyhy_runner_data_attachment,
+  ]
+
   arguments = [
     "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"

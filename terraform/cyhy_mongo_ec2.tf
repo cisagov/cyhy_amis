@@ -64,6 +64,13 @@ module "cyhy_mongo_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
   count  = length(aws_instance.cyhy_mongo)
 
+  # Ensure all EBS volumes are attached before running Ansible
+  depends_on = [
+    aws_volume_attachment.cyhy_mongo_data_attachment,
+    aws_volume_attachment.cyhy_mongo_journal_attachment,
+    aws_volume_attachment.cyhy_mongo_log_attachment,
+  ]
+
   arguments = [
     "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
