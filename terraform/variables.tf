@@ -168,6 +168,14 @@ variable "bod_nat_gateway_eip" {
   type        = string
 }
 
+variable "cloudwatch_alarm_emails" {
+  default = [
+    "cisa-cool-group+cyhy@trio.dhs.gov",
+  ]
+  description = "A list of the emails to which alerts should be sent if any CloudWatch Alarm is triggered."
+  type        = list(string)
+}
+
 variable "create_bod_flow_logs" {
   default     = false
   description = "Whether or not to create flow logs for the BOD 18-01 VPC."

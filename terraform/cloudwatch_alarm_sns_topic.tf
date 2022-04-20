@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Create the SNS topic that allows email to be sent for CloudWatch
-# alarms.  Subscribe the account email to the new SNS topic.
+# alarms.
 # ------------------------------------------------------------------------------
 
 resource "aws_sns_topic" "cloudwatch_alarm" {
@@ -9,7 +9,9 @@ resource "aws_sns_topic" "cloudwatch_alarm" {
 }
 
 resource "aws_sns_topic_subscription" "account_email" {
-  endpoint  = "cisa-cool-group+cyhy@trio.dhs.gov"
+  for_each = toset(var.cloudwatch_alarm_emails)
+
+  endpoint  = each.value
   protocol  = "email"
   topic_arn = aws_sns_topic.cloudwatch_alarm.arn
 }
