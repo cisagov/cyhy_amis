@@ -29,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "kevsync_failure" {
 
   alarm_actions             = [aws_sns_topic.kevsync_failure_alarm.arn, aws_sns_topic.cloudwatch_alarm.arn]
   alarm_description         = "Monitor KEV sync failures"
-  alarm_name                = "kevsync_failure_${each.value.hostname}"
+  alarm_name                = format("kevsync_failure_%s_%s", each.value.hostname, local.production_workspace ? "production" : terraform.workspace)
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   insufficient_data_actions = [aws_sns_topic.cloudwatch_alarm.arn]

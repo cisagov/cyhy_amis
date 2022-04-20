@@ -29,7 +29,7 @@ resource "aws_cloudwatch_metric_alarm" "nvdsync_failure" {
 
   alarm_actions             = [aws_sns_topic.cloudwatch_alarm.arn, ]
   alarm_description         = "Monitor NVD sync failures"
-  alarm_name                = "nvdsync_failure_${each.value.hostname}"
+  alarm_name                = format("nvdsync_failure_%s_%s", each.value.hostname, local.production_workspace ? "production" : terraform.workspace)
   comparison_operator       = "GreaterThanThreshold"
   evaluation_periods        = 1
   insufficient_data_actions = [aws_sns_topic.cloudwatch_alarm.arn, ]
