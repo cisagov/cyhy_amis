@@ -119,4 +119,16 @@ locals {
 
   # Management Vulnerability Scanner DNS entries
   count_mgmt_vuln_scanner = var.mgmt_nessus_instance_count
+
+  # This is necessary since aws_instance.cyhy_mongo uses count, but we
+  # don't want the kevsync and nvdsync alarm resources to depend on
+  # the order of the database instances.  On the other hand, we _do_
+  # need to use the index of the instance into aws_instance.cyhy_mongo
+  # to reconstruct the hostname.
+  db_instances = {
+    for index, instance in aws_instance.cyhy_mongo :
+    instance.id => {
+      hostname = "database${index + 1}.${aws_route53_zone.cyhy_private_zone.name}",
+    }
+  }
 }

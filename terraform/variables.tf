@@ -168,6 +168,14 @@ variable "bod_nat_gateway_eip" {
   type        = string
 }
 
+variable "cloudwatch_alarm_emails" {
+  default = [
+    "cisa-cool-group+cyhy@trio.dhs.gov",
+  ]
+  description = "A list of the emails to which alerts should be sent if any CloudWatch Alarm is triggered."
+  type        = list(string)
+}
+
 variable "create_bod_flow_logs" {
   default     = false
   description = "Whether or not to create flow logs for the BOD 18-01 VPC."
@@ -283,6 +291,15 @@ variable "findings_data_save_succeeded" {
   default     = false
   description = "Whether or not to save files for imports that have succeeded."
   type        = bool
+}
+
+variable "kevsync_failure_emails" {
+  default = [
+    "cyberdirectives@cisa.dhs.gov",
+    "vulnerability@cisa.dhs.gov",
+  ]
+  description = "A list of the emails to which alerts should be sent if KEV synchronization fails."
+  type        = list(string)
 }
 
 variable "mgmt_nessus_instance_count" {
