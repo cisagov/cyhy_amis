@@ -9,10 +9,7 @@ resource "aws_sns_topic" "kevsync_failure_alarm" {
 }
 
 resource "aws_sns_topic_subscription" "kevsync_failure_email" {
-  for_each = toset([
-    "cyberdirectives@cisa.dhs.gov",
-    "vulnerability@cisa.dhs.gov",
-  ])
+  for_each = toset(var.kevsync_failure_emails)
 
   endpoint  = each.value
   protocol  = "email"
