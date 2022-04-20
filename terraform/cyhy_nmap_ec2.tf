@@ -42,7 +42,8 @@ resource "aws_instance" "cyhy_nmap" {
     aws_security_group.cyhy_scanner_sg.id,
   ]
 
-  user_data_base64 = data.template_cloudinit_config.ssh_and_nmap_cyhy_runner_cloud_init_tasks.rendered
+  user_data_base64     = data.template_cloudinit_config.ssh_and_nmap_cyhy_runner_cloud_init_tasks.rendered
+  iam_instance_profile = aws_iam_instance_profile.cyhy_nmap.name
 
   tags = {
     "Name"           = format("CyHy Nmap - portscan%d", count.index + 1)

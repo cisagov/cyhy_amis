@@ -1,12 +1,12 @@
 ---
-# The instance types used for almost all the instances expose EBS
-# volumes as NVMe block devices, so that's why we need nvme here.
+- name: Import AWS playbook
+  ansible.builtin.import_playbook: aws.yml
+
 - hosts: all
-  name: Install NVMe support, add banner, persist journald, and install ClamAV
+  name: Add a banner, persist journald, and install ClamAV
   become: yes
   become_method: sudo
   roles:
-    - nvme
     - banner
     - persist_journald
     - clamav

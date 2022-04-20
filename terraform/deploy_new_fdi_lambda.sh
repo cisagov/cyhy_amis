@@ -15,10 +15,10 @@ fi
 
 terraform workspace select "$workspace"
 
-# taint the existing lambda instance
+# taint the existing Lambda instance
 terraform taint "aws_lambda_function.fdi_lambda"
 
-# recreate the new lambda instance
+# recreate the new Lambda instance
 terraform apply -var-file="$workspace.tfvars" \
   -target=aws_lambda_function.fdi_lambda \
   -target=aws_lambda_permission.fdi_lambda_allow_bucket \

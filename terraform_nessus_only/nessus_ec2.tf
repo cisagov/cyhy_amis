@@ -37,7 +37,8 @@ resource "aws_instance" "nessus" {
     aws_security_group.nessus_scanner_sg.id,
   ]
 
-  user_data_base64 = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
+  user_data_base64     = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
+  iam_instance_profile = aws_iam_instance_profile.nessus.name
 
   tags = {
     "Name"           = format("Manual CyHy Nessus %02d", count.index + 1)

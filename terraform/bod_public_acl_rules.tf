@@ -16,9 +16,9 @@ resource "aws_network_acl_rule" "bod_public_ingress_from_docker" {
   to_port        = local.bod_docker_egress_anywhere_ports[count.index]
 }
 
-# Allow ingress from the lambda subnet via HTTP and HTTPS (for pshtt),
+# Allow ingress from the Lambda subnet via HTTP and HTTPS (for pshtt),
 # as well as SMTP (for trustymail).  This allows EC2 instances in the
-# lambda subnet to send the traffic they want via the NAT gateway,
+# Lambda subnet to send the traffic they want via the NAT gateway,
 # subject to their own security group and network ACL restrictions.
 resource "aws_network_acl_rule" "bod_public_ingress_from_lambda" {
   count = length(local.bod_lambda_egress_anywhere_ports)

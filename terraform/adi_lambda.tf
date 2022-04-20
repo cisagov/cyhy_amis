@@ -1,28 +1,14 @@
 # Infrastructure related to the assessment data import lambda
 
-# IAM assume role policy document for the roles we're creating for the
-# lambda function
-data "aws_iam_policy_document" "adi_lambda_assume_role_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-  }
-}
-
-# The role we're creating for the lambda function
+# The role we're creating for the Lambda function
 resource "aws_iam_role" "adi_lambda_role" {
-  assume_role_policy = data.aws_iam_policy_document.adi_lambda_assume_role_doc.json
+  name               = format("adi_lambda_role_%s", local.production_workspace ? "production" : terraform.workspace)
+  assume_role_policy = data.aws_iam_policy_document.lambda_service_assume_role_doc.json
 }
 
-# IAM policy document that that allows some Cloudwatch permissions
+# IAM policy document that that allows some CloudWatch permissions
 # for our Lambda function.  This will allow the Lambda function to
-# generate log output in Cloudwatch.  This will be applied to the
+# generate log output in CloudWatch.  This will be applied to the
 # role we are creating.
 data "aws_iam_policy_document" "adi_lambda_cloudwatch_doc" {
   statement {
@@ -83,7 +69,7 @@ data "aws_iam_policy_document" "adi_lambda_ec2_doc" {
   }
 }
 
-# The EC2 policy for our role (needed to run the lambda from within our VPC)
+# The EC2 policy for our role (needed to run the Lambda from within our VPC)
 resource "aws_iam_role_policy" "adi_lambda_ec2_policy" {
   role   = aws_iam_role.adi_lambda_role.id
   policy = data.aws_iam_policy_document.adi_lambda_ec2_doc.json
@@ -148,7 +134,7 @@ data "aws_s3_bucket" "assessment_data" {
   bucket = format("%s-%s", var.assessment_data_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
-# The S3 bucket where the assessment data import lambda function is stored
+# The S3 bucket where the assessment data import Lambda function is stored
 # Terraform code for this bucket is in:
 #   https://github.com/cisagov/assessment-data-import-terraform
 data "aws_s3_bucket" "adi_lambda" {
@@ -156,7 +142,7 @@ data "aws_s3_bucket" "adi_lambda" {
 }
 
 # The AWS Lambda function that imports the assessment data to our database
-# Note that this lambda runs from within the CyHy private subnet
+# Note that this Lambda runs from within the CyHy private subnet
 resource "aws_lambda_function" "adi_lambda" {
   s3_bucket     = data.aws_s3_bucket.adi_lambda.id
   s3_key        = var.assessment_data_import_lambda_s3_key
@@ -190,7 +176,7 @@ resource "aws_lambda_function" "adi_lambda" {
   }
 }
 
-# Permission to allow the lambda to get notifications from our
+# Permission to allow the Lambda to get notifications from our
 # assessment data bucket
 resource "aws_lambda_permission" "adi_lambda_allow_bucket" {
   statement_id  = "AllowExecutionFromS3Bucket"
@@ -200,7 +186,7 @@ resource "aws_lambda_permission" "adi_lambda_allow_bucket" {
   source_arn    = data.aws_s3_bucket.assessment_data.arn
 }
 
-# Create the notification that triggers our lambda function to run whenever
+# Create the notification that triggers our Lambda function to run whenever
 # an object is created in our assessment data bucket
 resource "aws_s3_bucket_notification" "bucket_notification" {
   bucket = data.aws_s3_bucket.assessment_data.id
@@ -212,7 +198,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   }
 }
 
-# The Cloudwatch log group for the Lambda functions
+# The CloudWatch log group for the Lambda functions
 resource "aws_cloudwatch_log_group" "adi_lambda_logs" {
   name              = "/aws/lambda/${aws_lambda_function.adi_lambda.function_name}"
   retention_in_days = 30
