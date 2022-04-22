@@ -30,6 +30,8 @@
   name: cyhy_reports
 - src: https://github.com/cisagov/ansible-role-cyhy-runner
   name: cyhy_runner
+- src: https://github.com/cisagov/ansible-role-dev-ssh-access
+  name: dev_ssh_access
 - src: https://github.com/cisagov/ansible-role-disable-numa
   name: disable_numa
 - src: https://github.com/GekoCloud/ansible-role-disable-thp

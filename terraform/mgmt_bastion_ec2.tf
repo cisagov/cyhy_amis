@@ -19,7 +19,7 @@ resource "aws_instance" "mgmt_bastion" {
     aws_security_group.mgmt_bastion_sg[0].id,
   ]
 
-  user_data_base64 = data.template_cloudinit_config.ssh_cloud_init_tasks.rendered
+  user_data_base64 = data.template_cloudinit_config.set_hostname_cloud_init_tasks.rendered
 
   tags = { "Name" = "Management Bastion" }
 
