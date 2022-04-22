@@ -1,7 +1,11 @@
 ---
 - hosts: all
-  name: Upgrade base image
+  name: >
+    Set up apt over HTTPS, upgrade base image, and enable automated security
+    updates
   become: yes
   become_method: sudo
   roles:
+    - apt_over_https
     - upgrade
+    - automated_security_updates
