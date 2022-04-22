@@ -54,12 +54,6 @@ data "template_cloudinit_config" "ssh_and_mongo_cloud_init_tasks" {
   base64_encode = true
 
   part {
-    filename     = "user_ssh_setup.yml"
-    content_type = "text/cloud-config"
-    content      = data.template_file.user_ssh_setup.rendered
-  }
-
-  part {
     filename     = "cyhy_user_ssh_setup.yml"
     content_type = "text/cloud-config"
     content      = data.template_file.cyhy_user_ssh_setup.rendered
