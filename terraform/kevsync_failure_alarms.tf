@@ -25,7 +25,7 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
 
 # Alarm each time syslog indicates a failure in the KEV sync cron job.
 resource "aws_cloudwatch_metric_alarm" "kevsync_failure" {
-  for_each = aws_cloudwatch_log_metric_filter.kevsync_failure
+  for_each = local.db_instances
 
   alarm_actions             = [aws_sns_topic.kevsync_failure_alarm.arn, aws_sns_topic.cloudwatch_alarm.arn]
   alarm_description         = "Monitor KEV sync failures"
@@ -43,7 +43,7 @@ resource "aws_cloudwatch_metric_alarm" "kevsync_failure" {
     id = "kevsync_failure_count_${each.value.hostname}"
     metric {
       dimensions = {
-        InstanceId = each.value
+        InstanceId = each.key
       }
       metric_name = "kevsync_failure_count_${each.value.hostname}"
       namespace   = "DataIngestion"

@@ -25,7 +25,7 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
 
 # Alarm each time syslog indicates a failure in the NVD sync cron job.
 resource "aws_cloudwatch_metric_alarm" "nvdsync_failure" {
-  for_each = aws_cloudwatch_log_metric_filter.nvdsync_failure
+  for_each = local.db_instances
 
   alarm_actions             = [aws_sns_topic.cloudwatch_alarm.arn, ]
   alarm_description         = "Monitor NVD sync failures"
@@ -43,7 +43,7 @@ resource "aws_cloudwatch_metric_alarm" "nvdsync_failure" {
     id = "nvdsync_failure_count_${each.value.hostname}"
     metric {
       dimensions = {
-        InstanceId = each.value
+        InstanceId = each.key
       }
       metric_name = "nvdsync_failure_count_${each.value.hostname}"
       namespace   = "DataIngestion"
