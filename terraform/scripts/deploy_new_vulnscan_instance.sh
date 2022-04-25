@@ -45,7 +45,7 @@ function redeploy_instances {
   # }
   # Any previously removed instances are ignored (.deposed_key == null)
   vulnscanner_ids_json=$(terraform show -json \
-    | jq '.values.root_module.resources[] | select(.address == "aws_instance.cyhy_nessus" and .deposed_key == null) | {index, id: .values.id}' \
+    | jq '.values.root_module.resources[] | select((.address | startswith("aws_instance.cyhy_nessus")) and .deposed_key == null) | {index, id: .values.id}' \
     | jq -n '[inputs]')
   nessus_instance_ids=()
 
@@ -64,7 +64,7 @@ function redeploy_instances {
     tf_args+=("-target=aws_route53_record.cyhy_vulnscan_A[$index]")
     tf_args+=("-target=aws_route53_record.cyhy_rev_vulnscan_PTR[$index]")
     tf_args+=("-target=aws_volume_attachment.nessus_cyhy_runner_data_attachment[$index]")
-    tf_args+=("-target=module.dyn_nessus.module.cyhy_nessus_ansible_provisioner[$index]")
+    tf_args+=("-target=module.cyhy_nessus_ansible_provisioner[$index]")
   done
 
   if [ ${#nessus_instance_ids[@]} -ne 0 ]; then

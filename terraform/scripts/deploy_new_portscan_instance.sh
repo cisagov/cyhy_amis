@@ -45,7 +45,7 @@ function redeploy_instances {
   # }
   # Any previously removed instances are ignored (.deposed_key == null)
   portscanner_ids_json=$(terraform show -json \
-    | jq '.values.root_module.resources[] | select(.address == "aws_instance.cyhy_nmap" and .deposed_key == null) | {index, id: .values.id}' \
+    | jq '.values.root_module.resources[] | select((.address | startswith("aws_instance.cyhy_nmap")) and .deposed_key == null) | {index, id: .values.id}' \
     | jq -n '[inputs]')
   nmap_instance_ids=()
 
@@ -64,7 +64,7 @@ function redeploy_instances {
     tf_args+=("-target=aws_route53_record.cyhy_portscan_A[$index]")
     tf_args+=("-target=aws_route53_record.cyhy_rev_portscan_PTR[$index]")
     tf_args+=("-target=aws_volume_attachment.nmap_cyhy_runner_data_attachment[$index]")
-    tf_args+=("-target=module.dyn_nmap.module.cyhy_nmap_ansible_provisioner[$index]")
+    tf_args+=("-target=module.cyhy_nmap_ansible_provisioner[$index]")
   done
 
   if [ ${#nmap_instance_ids[@]} -ne 0 ]; then
