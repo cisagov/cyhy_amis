@@ -21,9 +21,10 @@ resource "null_resource" "cyhy_nessus_pub_PTR" {
     region            = var.aws_region,
   }
 
-  # Set up a corresponding PTR record for the EIP once the A record has been created
+  # Set up a corresponding PTR record for the EIP once the A record has been
+  # created, then loop until the PTR record creation has been verified.
   provisioner "local-exec" {
-    command = "aws --region ${self.triggers.region} ec2 modify-address-attribute --allocation-id ${self.triggers.eip_allocation_id} --domain-name ${self.triggers.eip_a_record}"
+    command = "aws --region ${self.triggers.region} ec2 modify-address-attribute --allocation-id ${self.triggers.eip_allocation_id} --domain-name ${self.triggers.eip_a_record} && until aws --region ${self.triggers.region} ec2 describe-addresses-attribute --allocation-id ${self.triggers.eip_allocation_id} --attribute domain-name | grep PtrRecord | grep --quiet ${self.triggers.eip_a_record}; do sleep 5s; done"
   }
 
   # The PTR records we create for the EIP need to be destroyed at some point,
@@ -31,7 +32,7 @@ resource "null_resource" "cyhy_nessus_pub_PTR" {
   # like a suitable time to do so.
   provisioner "local-exec" {
     when    = destroy
-    command = "aws --region ${self.triggers.region} ec2 reset-address-attribute --allocation-id ${self.triggers.eip_allocation_id} --attribute domain-name"
+    command = "aws --region ${self.triggers.region} ec2 reset-address-attribute --allocation-id ${self.triggers.eip_allocation_id} --attribute domain-name && until aws --region ${self.triggers.region} ec2 describe-addresses-attribute --allocation-id ${self.triggers.eip_allocation_id} --attribute domain-name | grep --quiet '\"Addresses\": \\[\\]'; do sleep 5s; done"
   }
 }
 
