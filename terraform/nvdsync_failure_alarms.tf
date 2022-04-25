@@ -17,7 +17,8 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   log_group_name = "/instance-logs/${each.value.hostname}/syslog"
 
   metric_transformation {
-    name      = "nvdsync_failure_count_${each.value.hostname}"
+    # See below for explanation of the following substitution.
+    name      = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
     namespace = "DataIngestion"
     value     = 1
   }
@@ -34,18 +35,22 @@ resource "aws_cloudwatch_metric_alarm" "nvdsync_failure" {
   evaluation_periods        = 1
   insufficient_data_actions = [aws_sns_topic.cloudwatch_alarm.arn, ]
   metric_query {
-    id          = "nvdsync_failure_rate_${each.value.hostname}"
-    expression  = "RATE(nvdsync_failure_count_${each.value.hostname})"
+    # Replace periods in the hostname with underscores in order to avoid
+    # "ValidationError: Invalid metrics list" errors.
+    id          = replace("nvdsync_failure_rate_${each.value.hostname}", ".", "_")
+    expression  = replace("RATE(nvdsync_failure_count_${each.value.hostname})", ".", "_")
     label       = "NVD Sync Failure Rate of Change - ${each.value.hostname}"
     return_data = true
   }
   metric_query {
-    id = "nvdsync_failure_count_${each.value.hostname}"
+    # Replace periods in the hostname with underscores in order to avoid
+    # "ValidationError: Invalid metrics list" errors.
+    id = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
     metric {
       dimensions = {
         InstanceId = each.key
       }
-      metric_name = "nvdsync_failure_count_${each.value.hostname}"
+      metric_name = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
       namespace   = "DataIngestion"
       period      = 60
       stat        = "Maximum"
