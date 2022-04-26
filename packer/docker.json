@@ -4,7 +4,7 @@
       "ami_block_device_mappings": [
         {
           "delete_on_termination": true,
-          "device_name": "xvda",
+          "device_name": "/dev/xvda",
           "encrypted": true,
           "volume_size": 10,
           "volume_type": "gp3"
@@ -20,7 +20,7 @@
       "launch_block_device_mappings": [
         {
           "delete_on_termination": true,
-          "device_name": "xvda",
+          "device_name": "/dev/xvda",
           "encrypted": true,
           "volume_size": 10,
           "volume_type": "gp3"
@@ -29,28 +29,33 @@
       "region": "us-east-2",
       "source_ami_filter": {
         "filters": {
-          "name": "debian-stretch-hvm-x86_64-gp2-*",
+          "name": "debian-10-amd64-*",
           "root-device-type": "ebs",
           "virtualization-type": "hvm"
         },
         "most_recent": true,
         "owners": [
-          "379101102735"
+          "136693071363"
         ]
       },
       "ssh_username": "admin",
       "tags": {
         "Application": "Cyber Hygiene",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
-        "OS_Version": "Debian Stretch",
+        "OS_Version": "Debian Buster",
         "Release": "Latest",
         "Team": "VM Fusion - Development"
       },
+      "temporary_key_pair_type": "ed25519",
       "type": "amazon-ebs"
     }
   ],
   "provisioners": [
     {
+      "extra_arguments": [
+        "--extra-vars",
+        "ansible_python_interpreter=auto_legacy_silent"
+      ],
       "groups": [
         "docker"
       ],
@@ -58,6 +63,10 @@
       "type": "ansible"
     },
     {
+      "extra_arguments": [
+        "--extra-vars",
+        "ansible_python_interpreter=auto_legacy_silent"
+      ],
       "groups": [
         "docker"
       ],
@@ -65,6 +74,10 @@
       "type": "ansible"
     },
     {
+      "extra_arguments": [
+        "--extra-vars",
+        "ansible_python_interpreter=auto_legacy_silent"
+      ],
       "groups": [
         "bod",
         "code_gov",

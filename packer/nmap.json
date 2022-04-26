@@ -29,7 +29,7 @@
       "region": "us-east-2",
       "source_ami_filter": {
         "filters": {
-          "name": "debian-10-amd64-*",
+          "name": "debian-11-amd64-*",
           "root-device-type": "ebs",
           "virtualization-type": "hvm"
         },
@@ -42,10 +42,11 @@
       "tags": {
         "Application": "Cyber Hygiene",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
-        "OS_Version": "Debian Buster",
+        "OS_Version": "Debian Bullseye",
         "Release": "Latest",
         "Team": "VM Fusion - Development"
       },
+      "temporary_key_pair_type": "ed25519",
       "type": "amazon-ebs"
     }
   ],
