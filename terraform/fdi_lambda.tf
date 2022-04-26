@@ -154,6 +154,12 @@ resource "aws_lambda_function" "fdi_lambda" {
   timeout       = 300
   memory_size   = 128
   description   = "Lambda function for importing findings data"
+
+  # This Lambda requires the database to function
+  depends_on = [
+    aws_instance.cyhy_mongo,
+  ]
+
   vpc_config {
     subnet_ids = [
       aws_subnet.cyhy_private_subnet.id,

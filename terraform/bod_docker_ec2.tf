@@ -39,9 +39,10 @@ resource "aws_instance" "bod_docker" {
     aws_security_group.bod_docker_sg.id,
   ]
 
-  # BOD 18-01 scanning needs the database available to function
+  # BOD 18-01 scanning needs the BOD Lambdas and the database available to function
   depends_on = [
     aws_instance.cyhy_mongo,
+    aws_lambda_function.lambdas,
   ]
 
   user_data_base64     = data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered
