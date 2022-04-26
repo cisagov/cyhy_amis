@@ -59,38 +59,6 @@ resource "aws_instance" "cyhy_mongo" {
   )
 }
 
-# Provision the mongo EC2 instance via Ansible
-module "cyhy_mongo_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-  count  = length(aws_instance.cyhy_mongo)
-
-  # Ensure all EBS volumes are attached before running Ansible
-  depends_on = [
-    aws_volume_attachment.cyhy_mongo_data_attachment,
-    aws_volume_attachment.cyhy_mongo_journal_attachment,
-    aws_volume_attachment.cyhy_mongo_log_attachment,
-  ]
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
-  ]
-  envs = [
-    "ANSIBLE_SSH_RETRIES=5",
-    "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
-    "cyhy_archive_s3_bucket_region=${var.aws_region}",
-    "host_groups=mongo,cyhy_commander,cyhy_archive",
-    "production_workspace=${local.production_workspace}",
-    "aws_region=${var.aws_region}",
-    "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run  = false
-}
-
 # Note that the EBS volumes contain production data. Therefore we need
 # these resources to be immortal in the "production" workspace, and so
 # I am using the prevent_destroy lifecycle element to disallow the
@@ -165,4 +133,36 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   instance_id = aws_instance.cyhy_mongo[0].id
 
   skip_destroy = true
+}
+
+# Provision the mongo EC2 instance via Ansible
+module "cyhy_mongo_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+  count  = length(aws_instance.cyhy_mongo)
+
+  # Ensure all EBS volumes are attached before running Ansible
+  depends_on = [
+    aws_volume_attachment.cyhy_mongo_data_attachment,
+    aws_volume_attachment.cyhy_mongo_journal_attachment,
+    aws_volume_attachment.cyhy_mongo_log_attachment,
+  ]
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
+  ]
+  envs = [
+    "ANSIBLE_SSH_RETRIES=5",
+    "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
+    "cyhy_archive_s3_bucket_region=${var.aws_region}",
+    "host_groups=mongo,cyhy_commander,cyhy_archive",
+    "production_workspace=${local.production_workspace}",
+    "aws_region=${var.aws_region}",
+    "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
+    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
 }
