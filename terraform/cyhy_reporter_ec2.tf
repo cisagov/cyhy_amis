@@ -94,7 +94,7 @@ resource "aws_volume_attachment" "cyhy_reporter_data_attachment" {
 module "cyhy_reporter_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
 
-  # Ensure all EBS volumes are attached before running Ansible
+  # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.cyhy_reporter_data_attachment,
   ]

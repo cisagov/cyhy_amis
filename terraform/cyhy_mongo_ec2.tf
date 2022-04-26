@@ -140,7 +140,7 @@ module "cyhy_mongo_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
   count  = length(aws_instance.cyhy_mongo)
 
-  # Ensure all EBS volumes are attached before running Ansible
+  # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.cyhy_mongo_data_attachment,
     aws_volume_attachment.cyhy_mongo_journal_attachment,

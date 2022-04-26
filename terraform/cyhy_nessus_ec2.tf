@@ -150,7 +150,7 @@ module "cyhy_nessus_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
   count  = length(aws_instance.cyhy_nessus)
 
-  # Ensure all EBS volumes are attached before running Ansible
+  # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.nessus_cyhy_runner_data_attachment,
   ]
