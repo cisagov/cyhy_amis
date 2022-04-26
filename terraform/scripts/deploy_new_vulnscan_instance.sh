@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# (Re)deploy portscan instances in the current Terraform environment.
+# (Re)deploy vulnscan instances in the current Terraform environment.
 # Usage:
-# deploy_new_portscan_instance.sh region workspace_name instance_index
-# deploy_new_portscan_instance.sh region workspace_name first_index last_index
+# deploy_new_vulnscan_instance.sh region workspace_name instance_index
+# deploy_new_vulnscan_instance.sh region workspace_name first_index last_index
 
 set -o nounset
 set -o errexit
@@ -38,39 +38,39 @@ function check_dependencies {
 # given range of instance indices [first, last].
 function redeploy_instances {
   tf_args=()
-  # Get all portscan instance IDs as a JSON array of dicts in the form:
+  # Get all vulnscan instance IDs as a JSON array of dicts in the form:
   # {
   #   index: instance_index,
   #   id: instance_id
   # }
   # Any previously removed instances are ignored (.deposed_key == null)
-  portscanner_ids_json=$(terraform show -json \
-    | jq '.values.root_module.resources[] | select(.address == "aws_instance.cyhy_nmap" and .deposed_key == null) | {index, id: .values.id}' \
+  vulnscanner_ids_json=$(terraform show -json \
+    | jq '.values.root_module.resources[] | select((.address | startswith("aws_instance.cyhy_nessus")) and .deposed_key == null) | {index, id: .values.id}' \
     | jq -n '[inputs]')
-  nmap_instance_ids=()
+  nessus_instance_ids=()
 
   for index in $(seq "$1" "$2"); do
     # Check the list of instances and get the ID of the index we are working
     # on for this iteration and add it to the array of IDs if found
-    instance_id="$(echo "$portscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")"
+    instance_id="$(echo "$vulnscanner_ids_json" | jq --raw-output ".[] | select(.index == $index) | .id")"
     if [ -n "$instance_id" ]; then
-      nmap_instance_ids+=("$instance_id")
+      nessus_instance_ids+=("$instance_id")
     else
-      echo "No instance ID found for portscan$((index + 1))"
+      echo "No instance ID found for vulnscan$((index + 1))"
     fi
 
-    tf_args+=("-target=aws_eip_association.cyhy_nmap_eip_assocs[$index]")
-    tf_args+=("-target=aws_instance.cyhy_nmap[$index]")
-    tf_args+=("-target=aws_route53_record.cyhy_portscan_A[$index]")
-    tf_args+=("-target=aws_route53_record.cyhy_rev_portscan_PTR[$index]")
-    tf_args+=("-target=aws_volume_attachment.nmap_cyhy_runner_data_attachment[$index]")
-    tf_args+=("-target=module.dyn_nmap.module.cyhy_nmap_ansible_provisioner[$index]")
+    tf_args+=("-target=aws_eip_association.cyhy_nessus_eip_assocs[$index]")
+    tf_args+=("-target=aws_instance.cyhy_nessus[$index]")
+    tf_args+=("-target=aws_route53_record.cyhy_vulnscan_A[$index]")
+    tf_args+=("-target=aws_route53_record.cyhy_rev_vulnscan_PTR[$index]")
+    tf_args+=("-target=aws_volume_attachment.nessus_cyhy_runner_data_attachment[$index]")
+    tf_args+=("-target=module.cyhy_nessus_ansible_provisioner[$index]")
   done
 
-  if [ ${#nmap_instance_ids[@]} -ne 0 ]; then
-    # Terminate the existing nmap instance
-    aws --region "$region" ec2 terminate-instances --instance-ids "${nmap_instance_ids[@]}"
-    aws --region "$region" ec2 wait instance-terminated --instance-ids "${nmap_instance_ids[@]}"
+  if [ ${#nessus_instance_ids[@]} -ne 0 ]; then
+    # Terminate the existing nessus instance
+    aws --region "$region" ec2 terminate-instances --instance-ids "${nessus_instance_ids[@]}"
+    aws --region "$region" ec2 wait instance-terminated --instance-ids "${nessus_instance_ids[@]}"
   fi
   terraform apply -var-file="$workspace.tfvars" "${tf_args[@]}"
 }
