@@ -17,7 +17,8 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
   log_group_name = "/instance-logs/${each.value.hostname}/syslog"
 
   metric_transformation {
-    name      = "kevsync_failure_count_${each.value.hostname}"
+    # See below for explanation of the following substitution.
+    name      = replace("kevsync_failure_count_${each.value.hostname}", ".", "_")
     namespace = "DataIngestion"
     value     = 1
   }
@@ -25,7 +26,7 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
 
 # Alarm each time syslog indicates a failure in the KEV sync cron job.
 resource "aws_cloudwatch_metric_alarm" "kevsync_failure" {
-  for_each = aws_cloudwatch_log_metric_filter.kevsync_failure
+  for_each = local.db_instances
 
   alarm_actions             = [aws_sns_topic.kevsync_failure_alarm.arn, aws_sns_topic.cloudwatch_alarm.arn]
   alarm_description         = "Monitor KEV sync failures"
@@ -34,18 +35,22 @@ resource "aws_cloudwatch_metric_alarm" "kevsync_failure" {
   evaluation_periods        = 1
   insufficient_data_actions = [aws_sns_topic.cloudwatch_alarm.arn]
   metric_query {
-    id          = "kevsync_failure_rate_${each.value.hostname}"
-    expression  = "RATE(kevsync_failure_count_${each.value.hostname})"
+    # Replace periods in the hostname with underscores in order to avoid
+    # "ValidationError: Invalid metrics list" errors.
+    id          = replace("kevsync_failure_rate_${each.value.hostname}", ".", "_")
+    expression  = replace("RATE(kevsync_failure_count_${each.value.hostname})", ".", "_")
     label       = "KEV Sync Failure Rate of Change - ${each.value.hostname}"
     return_data = true
   }
   metric_query {
-    id = "kevsync_failure_count_${each.value.hostname}"
+    # Replace periods in the hostname with underscores in order to avoid
+    # "ValidationError: Invalid metrics list" errors.
+    id = replace("kevsync_failure_count_${each.value.hostname}", ".", "_")
     metric {
       dimensions = {
-        InstanceId = each.value
+        InstanceId = each.key
       }
-      metric_name = "kevsync_failure_count_${each.value.hostname}"
+      metric_name = replace("kevsync_failure_count_${each.value.hostname}", ".", "_")
       namespace   = "DataIngestion"
       period      = 60
       stat        = "Maximum"
