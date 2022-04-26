@@ -143,7 +143,6 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   instance_id = aws_instance.cyhy_nessus[count.index].id
 
   skip_destroy = true
-  depends_on   = [aws_ebs_volume.nessus_cyhy_runner_data]
 }
 
 # Provision a Nessus EC2 instance via Ansible
