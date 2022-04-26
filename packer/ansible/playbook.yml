@@ -3,13 +3,14 @@
   ansible.builtin.import_playbook: aws.yml
 
 - hosts: all
-  name: Add a banner, persist journald, and install ClamAV
+  name: Add a banner, persist journald, install ClamAV, and setup dev team ssh
   become: yes
   become_method: sudo
   roles:
     - banner
     - persist_journald
     - clamav
+    - dev_ssh_access
 
 # The bastion should have as little installed as possible, since it's
 # exposed to the cruel world
