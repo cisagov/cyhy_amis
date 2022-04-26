@@ -51,6 +51,11 @@ resource "aws_instance" "bod_docker" {
     aws_security_group.bod_docker_sg.id,
   ]
 
+  # BOD 18-01 scanning needs the database available to function
+  depends_on = [
+    aws_instance.cyhy_mongo,
+  ]
+
   user_data_base64     = data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.bod_docker.name
 
@@ -70,6 +75,10 @@ resource "aws_instance" "bod_docker" {
 # Provision the Docker EC2 instance via Ansible
 module "bod_docker_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
+
+  depends_on = [
+    aws_volume_attachment.bod_report_data_attachment,
+  ]
 
   arguments = [
     "--user=${var.remote_ssh_user}",

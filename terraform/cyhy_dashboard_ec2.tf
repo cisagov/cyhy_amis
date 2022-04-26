@@ -51,6 +51,11 @@ resource "aws_instance" "cyhy_dashboard" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
+  # The dashboard needs the database available to function
+  depends_on = [
+    aws_instance.cyhy_mongo,
+  ]
+
   user_data_base64     = data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_dashboard.name
 

@@ -51,6 +51,11 @@ resource "aws_instance" "cyhy_reporter" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
+  # Reporting needs the database available to function
+  depends_on = [
+    aws_instance.cyhy_mongo,
+  ]
+
   user_data_base64     = data.template_cloudinit_config.ssh_and_reporter_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_reporter.name
 
@@ -70,6 +75,10 @@ resource "aws_instance" "cyhy_reporter" {
 # Provision the reporter EC2 instance via Ansible
 module "cyhy_reporter_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
+
+  depends_on = [
+    aws_volume_attachment.cyhy_reporter_data_attachment,
+  ]
 
   arguments = [
     "--user=${var.remote_ssh_user}",
