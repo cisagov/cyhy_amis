@@ -39,6 +39,12 @@ resource "aws_instance" "bod_docker" {
     aws_security_group.bod_docker_sg.id,
   ]
 
+  # BOD 18-01 scanning needs the BOD Lambdas and the database available to function
+  depends_on = [
+    aws_instance.cyhy_mongo,
+    aws_lambda_function.lambdas,
+  ]
+
   user_data_base64     = data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.bod_docker.name
 
@@ -53,32 +59,6 @@ resource "aws_instance" "bod_docker" {
       "Name" = "BOD 18-01 Docker host"
     },
   )
-}
-
-# Provision the Docker EC2 instance via Ansible
-module "bod_docker_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'",
-  ]
-  envs = [
-    "host=${aws_instance.bod_docker.private_ip}",
-    "bastion_host=${aws_instance.bod_bastion.public_ip}",
-    "host_groups=docker,bod_docker",
-    "production_workspace=${local.production_workspace}",
-    "aws_region=${var.aws_region}",
-    "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
-    "ses_aws_region=${var.ses_aws_region}",
-    "ses_send_email_role=${var.ses_role_arn}",
-    # This file will be used to add/override any settings in
-    # docker-compose.yml (for cyhy-mailer).
-    "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
 
 # Note that the EBS volumes contain production data. Therefore we need
@@ -109,4 +89,35 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
   instance_id = aws_instance.bod_docker.id
 
   skip_destroy = true
+}
+
+# Provision the Docker EC2 instance via Ansible
+module "bod_docker_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+
+  # Ensure any EBS volumes are attached before running Ansible
+  depends_on = [
+    aws_volume_attachment.bod_report_data_attachment,
+  ]
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'",
+  ]
+  envs = [
+    "host=${aws_instance.bod_docker.private_ip}",
+    "bastion_host=${aws_instance.bod_bastion.public_ip}",
+    "host_groups=docker,bod_docker",
+    "production_workspace=${local.production_workspace}",
+    "aws_region=${var.aws_region}",
+    "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
+    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
+    "ses_aws_region=${var.ses_aws_region}",
+    "ses_send_email_role=${var.ses_role_arn}",
+    # This file will be used to add/override any settings in
+    # docker-compose.yml (for cyhy-mailer).
+    "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
 }

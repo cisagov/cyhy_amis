@@ -39,6 +39,11 @@ resource "aws_instance" "cyhy_reporter" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
+  # Reporting needs the database available to function
+  depends_on = [
+    aws_instance.cyhy_mongo,
+  ]
+
   user_data_base64     = data.template_cloudinit_config.ssh_and_reporter_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_reporter.name
 
@@ -53,27 +58,6 @@ resource "aws_instance" "cyhy_reporter" {
       "Name" = "CyHy Reporter"
     },
   )
-}
-
-# Provision the reporter EC2 instance via Ansible
-module "cyhy_reporter_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-
-  arguments = [
-    "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
-  ]
-  envs = [
-    "host=${aws_instance.cyhy_reporter.private_ip}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=docker,cyhy_reporter",
-    "production_workspace=${local.production_workspace}",
-    "ses_aws_region=${var.ses_aws_region}",
-    "docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}",
-    "ses_send_email_role=${var.ses_role_arn}",
-  ]
-  playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
 
 # Note that the EBS volumes contain production data. Therefore we need
@@ -104,4 +88,30 @@ resource "aws_volume_attachment" "cyhy_reporter_data_attachment" {
   instance_id = aws_instance.cyhy_reporter.id
 
   skip_destroy = true
+}
+
+# Provision the reporter EC2 instance via Ansible
+module "cyhy_reporter_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+
+  # Ensure any EBS volumes are attached before running Ansible
+  depends_on = [
+    aws_volume_attachment.cyhy_reporter_data_attachment,
+  ]
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
+  ]
+  envs = [
+    "host=${aws_instance.cyhy_reporter.private_ip}",
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host_groups=docker,cyhy_reporter",
+    "production_workspace=${local.production_workspace}",
+    "ses_aws_region=${var.ses_aws_region}",
+    "docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}",
+    "ses_send_email_role=${var.ses_role_arn}",
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
 }

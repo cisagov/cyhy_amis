@@ -146,13 +146,17 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   instance_id = aws_instance.cyhy_nmap[count.index].id
 
   skip_destroy = true
-  depends_on   = [aws_ebs_volume.nmap_cyhy_runner_data]
 }
 
 # Provision an nmap EC2 instance via Ansible
 module "cyhy_nmap_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
   count  = length(aws_instance.cyhy_nmap)
+
+  # Ensure any EBS volumes are attached before running Ansible
+  depends_on = [
+    aws_volume_attachment.nmap_cyhy_runner_data_attachment,
+  ]
 
   arguments = [
     "--user=${var.remote_ssh_user}",
