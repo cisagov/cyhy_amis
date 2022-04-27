@@ -44,7 +44,7 @@ resource "aws_instance" "cyhy_dashboard" {
     aws_instance.cyhy_mongo,
   ]
 
-  user_data_base64     = data.template_cloudinit_config.cyhy_ssh_cloud_init_tasks.rendered
+  user_data_base64     = data.cloudinit_config.cyhy_dashboard_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_dashboard.name
 
   tags = { "Name" = "CyHy Dashboard" }

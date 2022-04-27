@@ -14,9 +14,9 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.38"
     }
-    template = {
-      source  = "hashicorp/template"
-      version = "~> 2.1"
+    cloudinit = {
+      source  = "hashicorp/cloudinit"
+      version = "~> 2.0"
     }
   }
 }

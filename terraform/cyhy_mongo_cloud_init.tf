@@ -1,92 +1,81 @@
-# cloud-init commands for configuring ssh and mongo
+# cloud-init commands for configuring the cyhy user, configuring mongo volumes,
+# and setting the hostname
 
-data "template_file" "mongo_data_disk_setup" {
-  template = file("${path.module}/cloud-init/disk_setup.tpl.sh")
+data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
+  count = var.mongo_instance_count
 
-  vars = {
-    num_disks     = 4
-    device_name   = var.mongo_disks["data"]
-    mount_point   = "/var/lib/mongodb"
-    label         = "mongo_data"
-    fs_type       = "xfs"
-    mount_options = "defaults"
-  }
-}
-
-data "template_file" "mongo_journal_disk_setup" {
-  template = file("${path.module}/cloud-init/disk_setup.tpl.sh")
-
-  vars = {
-    num_disks   = 4
-    device_name = var.mongo_disks["journal"]
-    mount_point = "/var/lib/mongodb/journal"
-    label       = "mongo_journal"
-    fs_type     = "ext4"
-    # The x-systemd.requires bit forces the Mongo data disk to be
-    # mounted before this one
-    mount_options = "defaults,x-systemd.requires=/var/lib/mongodb"
-  }
-}
-
-data "template_file" "mongo_log_disk_setup" {
-  template = file("${path.module}/cloud-init/disk_setup.tpl.sh")
-
-  vars = {
-    num_disks     = 4
-    device_name   = var.mongo_disks["log"]
-    mount_point   = "/var/log/mongodb"
-    label         = "mongo_log"
-    fs_type       = "ext4"
-    mount_options = "defaults"
-  }
-}
-
-data "template_file" "mongo_journal_mountpoint_setup" {
-  template = file("${path.module}/cloud-init/mongo_journal_mountpoint_setup.tpl.sh")
-}
-
-data "template_file" "mongo_dir_setup" {
-  template = file("${path.module}/cloud-init/mongo_dir_setup.tpl.sh")
-}
-
-data "template_cloudinit_config" "ssh_and_mongo_cloud_init_tasks" {
-  gzip          = true
   base64_encode = true
+  gzip          = true
 
   part {
-    filename     = "cyhy_user_ssh_setup.yml"
+    content      = file("${path.module}/cloud-init/cyhy_user_ssh_setup.tpl.yml")
     content_type = "text/cloud-config"
-    content      = data.template_file.cyhy_user_ssh_setup.rendered
+    filename     = "cyhy_user_ssh_setup.yml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
   }
 
   part {
+    content = templatefile("${path.module}/cloud-init/disk_setup.tpl.sh", {
+      device_name   = var.mongo_disks["data"]
+      fs_type       = "xfs"
+      label         = "mongo_data"
+      mount_options = "defaults"
+      mount_point   = "/var/lib/mongodb"
+      num_disks     = 4
+    })
     content_type = "text/x-shellscript"
-    content      = data.template_file.mongo_data_disk_setup.rendered
+    filename     = "mongo_data_disk_setup.sh"
   }
 
   part {
+    content      = file("${path.module}/cloud-init/mongo_journal_mountpoint_setup.tpl.sh")
     content_type = "text/x-shellscript"
-    content      = data.template_file.mongo_journal_mountpoint_setup.rendered
+    filename     = "mongo_journal_mountpoint_setup.sh"
   }
 
   part {
+    content = templatefile("${path.module}/cloud-init/disk_setup.tpl.sh", {
+      device_name = var.mongo_disks["journal"]
+      fs_type     = "ext4"
+      label       = "mongo_journal"
+      # The x-systemd.requires bit forces the Mongo data disk to be
+      # mounted before this one
+      mount_options = "defaults,x-systemd.requires=/var/lib/mongodb"
+      mount_point   = "/var/lib/mongodb/journal"
+      num_disks     = 4
+    })
     content_type = "text/x-shellscript"
-    content      = data.template_file.mongo_journal_disk_setup.rendered
+    filename     = "mongo_journal_disk_setup.sh"
   }
 
   part {
+    content = templatefile("${path.module}/cloud-init/disk_setup.tpl.sh", {
+      device_name   = var.mongo_disks["log"]
+      fs_type       = "ext4"
+      label         = "mongo_log"
+      mount_options = "defaults"
+      mount_point   = "/var/log/mongodb"
+      num_disks     = 4
+    })
     content_type = "text/x-shellscript"
-    content      = data.template_file.mongo_log_disk_setup.rendered
+    filename     = "mongo_log_disk_setup.sh"
   }
 
   part {
+    content      = file("${path.module}/cloud-init/mongo_dir_setup.tpl.sh")
     content_type = "text/x-shellscript"
-    content      = data.template_file.mongo_dir_setup.rendered
+    filename     = "mongo_dir_setup.sh"
   }
 
   part {
-    content_type = "text/x-shellscript"
-    content      = data.template_file.set_hostname.rendered
+    content = templatefile("${path.module}/cloud-init/set_hostname.tpl.yml", {
+      # Note that the hostname here is identical to what is set in
+      # the corresponding DNS A record.
+      fqdn     = "database${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
+      hostname = "database${count.index + 1}"
+    })
+    content_type = "text/cloud-config"
+    filename     = "set_hostname.yml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
   }
 }

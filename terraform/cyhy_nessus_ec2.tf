@@ -37,7 +37,7 @@ resource "aws_instance" "cyhy_nessus" {
     aws_security_group.cyhy_scanner_sg.id,
   ]
 
-  user_data_base64     = data.template_cloudinit_config.ssh_and_nessus_cyhy_runner_cloud_init_tasks.rendered
+  user_data_base64     = data.cloudinit_config.cyhy_nessus_cloud_init_tasks[count.index].rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_nessus.name
 
   tags = {
