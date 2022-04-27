@@ -8,7 +8,7 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
   gzip          = true
 
   part {
-    content      = file("${path.module}/cloud-init/cyhy_user_ssh_setup.tpl.yml")
+    content      = file("${path.module}/cloud-init/cyhy_user_ssh_setup.yml")
     content_type = "text/cloud-config"
     filename     = "cyhy_user_ssh_setup.yml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
@@ -28,7 +28,7 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
   }
 
   part {
-    content      = file("${path.module}/cloud-init/mongo_journal_mountpoint_setup.tpl.sh")
+    content      = file("${path.module}/cloud-init/mongo_journal_mountpoint_setup.sh")
     content_type = "text/x-shellscript"
     filename     = "mongo_journal_mountpoint_setup.sh"
   }
@@ -62,7 +62,7 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
   }
 
   part {
-    content      = file("${path.module}/cloud-init/mongo_dir_setup.tpl.sh")
+    content      = file("${path.module}/cloud-init/mongo_dir_setup.sh")
     content_type = "text/x-shellscript"
     filename     = "mongo_dir_setup.sh"
   }

@@ -8,7 +8,7 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
   gzip          = true
 
   part {
-    content      = file("${path.module}/cloud-init/cyhy_user_ssh_setup.tpl.yml")
+    content      = file("${path.module}/cloud-init/cyhy_user_ssh_setup.yml")
     content_type = "text/cloud-config"
     filename     = "cyhy_user_ssh_setup.yml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
