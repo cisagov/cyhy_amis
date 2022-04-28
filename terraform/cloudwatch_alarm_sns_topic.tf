@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
 resource "aws_sns_topic" "cloudwatch_alarm" {
-  name         = "cloudwatch-alarms"
+  name         = format("cloudwatch-alarms_%s", local.production_workspace ? "production" : terraform.workspace)
   display_name = "cloudwatch_alarms"
 }
 
