@@ -22,16 +22,12 @@
   name: cyhy_commander
 - src: https://github.com/cisagov/ansible-role-cyhy-core
   name: cyhy_core
-  version: epic/bod-22-01
 - src: https://github.com/cisagov/ansible-role-cyhy-feeds
   name: cyhy_feeds
-  version: improvement/add-kevs-and-networks
 - src: https://github.com/cisagov/ansible-role-cyhy-mailer
   name: cyhy_mailer
-  version: improvement/send-urgent-tickets-csvs
 - src: https://github.com/cisagov/ansible-role-cyhy-reports
   name: cyhy_reports
-  version: epic/bod-22-01
 - src: https://github.com/cisagov/ansible-role-cyhy-runner
   name: cyhy_runner
 - src: https://github.com/cisagov/ansible-role-disable-numa
