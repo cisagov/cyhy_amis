@@ -21,7 +21,7 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   #
   # We have to account for the fact that the local hostname on the
   # instance drops the local domain name.
-  log_group_name = "/instance-logs/${split(".", each.value.hostname)}"
+  log_group_name = "/instance-logs/${split(".", each.value.hostname)[0]}"
 
   metric_transformation {
     default_value = 0
