@@ -18,7 +18,7 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
   pattern = "\"cyhy-kevsync\" ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.
-  log_group_name = "/instance-logs/${each.value.hostname}/syslog"
+  log_group_name = "/instance-logs/${each.value.hostname}"
 
   metric_transformation {
     # See below for explanation of the following substitution.
