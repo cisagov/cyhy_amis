@@ -11,12 +11,20 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   #    into the system logger with the tag "cyhy-nvdsync" when that
   #    script is run, as is done in
   #    https://github.com/cisagov/cyhy_amis/blob/0f5974229edd909befc90ff5f4cf639327d373d8/ansible/roles/cyhy_commander/tasks/main.yml#L160
-  pattern = "cyhy-nvdsync ERROR"
+  #
+  # The quotes around cyhy-nvdsync are necessary because the hyphen is
+  # a special character in the log metric filter syntax:
+  # https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
+  pattern = "\"cyhy-nvdsync\" ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.
-  log_group_name = "/instance-logs/${each.value.hostname}/syslog"
+  #
+  # We have to account for the fact that the local hostname on the
+  # instance drops the local domain name.
+  log_group_name = "/instance-logs/${split(".", each.value.hostname)}"
 
   metric_transformation {
+    default_value = 0
     # See below for explanation of the following substitution.
     name      = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
     namespace = "DataIngestion"
@@ -48,7 +56,7 @@ resource "aws_cloudwatch_metric_alarm" "nvdsync_failure" {
     id = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
     metric {
       dimensions = {
-        InstanceId = each.key
+        InstanceId = each.value
       }
       metric_name = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
       namespace   = "DataIngestion"
