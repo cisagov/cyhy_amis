@@ -18,7 +18,10 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   pattern = "\"cyhy-nvdsync\" ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.
-  log_group_name = "/instance-logs/${each.value.hostname}"
+  #
+  # We have to account for the fact that the local hostname on the
+  # instance drops the local domain name.
+  log_group_name = "/instance-logs/${split(".", each.value.hostname)}"
 
   metric_transformation {
     # See below for explanation of the following substitution.
