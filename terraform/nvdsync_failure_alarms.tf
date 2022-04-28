@@ -55,7 +55,7 @@ resource "aws_cloudwatch_metric_alarm" "nvdsync_failure" {
     id = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
     metric {
       dimensions = {
-        InstanceId = each.key
+        InstanceId = each.value
       }
       metric_name = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
       namespace   = "DataIngestion"
