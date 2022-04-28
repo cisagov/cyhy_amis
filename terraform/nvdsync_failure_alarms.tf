@@ -24,6 +24,7 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   log_group_name = "/instance-logs/${split(".", each.value.hostname)}"
 
   metric_transformation {
+    default_value = 0
     # See below for explanation of the following substitution.
     name      = replace("nvdsync_failure_count_${each.value.hostname}", ".", "_")
     namespace = "DataIngestion"
