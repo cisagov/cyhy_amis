@@ -11,7 +11,11 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
   #    into the system logger with the tag "cyhy-kevsync" when that
   #    script is run, similar to what is done for the cyhy-nvdsync script here:
   #    https://github.com/cisagov/cyhy_amis/blob/0f5974229edd909befc90ff5f4cf639327d373d8/ansible/roles/cyhy_commander/tasks/main.yml#L160
-  pattern = "cyhy-kevsync ERROR"
+  #
+  # The quotes around cyhy-kevsync are necessary because the hyphen is
+  # a special character in the log metric filter syntax:
+  # https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
+  pattern = "\"cyhy-kevsync\" ERROR"
   # The instances' CloudWatch Agent's configurations define what the
   # log group name looks like.
   log_group_name = "/instance-logs/${each.value.hostname}/syslog"
