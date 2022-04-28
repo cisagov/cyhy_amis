@@ -55,9 +55,6 @@ resource "aws_cloudwatch_metric_alarm" "kevsync_failure" {
     # "ValidationError: Invalid metrics list" errors.
     id = replace("kevsync_failure_count_${each.value.hostname}", ".", "_")
     metric {
-      dimensions = {
-        InstanceId = each.value
-      }
       metric_name = replace("kevsync_failure_count_${each.value.hostname}", ".", "_")
       namespace   = "DataIngestion"
       period      = 60
