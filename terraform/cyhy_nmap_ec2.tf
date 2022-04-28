@@ -42,7 +42,7 @@ resource "aws_instance" "cyhy_nmap" {
     aws_security_group.cyhy_scanner_sg.id,
   ]
 
-  user_data_base64     = data.template_cloudinit_config.ssh_and_nmap_cyhy_runner_cloud_init_tasks.rendered
+  user_data_base64     = data.cloudinit_config.cyhy_nmap_cloud_init_tasks[count.index].rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_nmap.name
 
   tags = {

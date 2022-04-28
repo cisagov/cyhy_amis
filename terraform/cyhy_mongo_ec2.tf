@@ -43,7 +43,7 @@ resource "aws_instance" "cyhy_mongo" {
     aws_instance.cyhy_nmap,
   ]
 
-  user_data_base64     = data.template_cloudinit_config.ssh_and_mongo_cloud_init_tasks.rendered
+  user_data_base64     = data.cloudinit_config.cyhy_mongo_cloud_init_tasks[count.index].rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_mongo.name
 
   tags = { "Name" = "CyHy Mongo, Commander" }

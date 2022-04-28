@@ -147,7 +147,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 |------|---------|
 | terraform | ~> 1.0 |
 | aws | ~> 3.38 |
-| template | ~> 2.1 |
+| cloudinit | ~> 2.0 |
 
 ## Providers ##
 
@@ -155,7 +155,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 |------|---------|
 | aws | ~> 3.38 |
 | aws.public\_dns | ~> 3.38 |
-| template | ~> 2.1 |
+| cloudinit | ~> 2.0 |
 | terraform | n/a |
 
 ## Modules ##
@@ -606,24 +606,16 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_s3_bucket.assessment_data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_s3_bucket.fdi_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_s3_bucket.findings_data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
-| [template_cloudinit_config.cyhy_ssh_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_cloudinit_config.set_hostname_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_cloudinit_config.ssh_and_docker_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_cloudinit_config.ssh_and_mongo_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_cloudinit_config.ssh_and_nessus_cyhy_runner_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_cloudinit_config.ssh_and_nmap_cyhy_runner_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_cloudinit_config.ssh_and_reporter_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/cloudinit_config) | data source |
-| [template_file.cyhy_user_ssh_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.docker_disk_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.mongo_data_disk_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.mongo_dir_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.mongo_journal_disk_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.mongo_journal_mountpoint_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.mongo_log_disk_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.nessus_disk_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.nmap_disk_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.reporter_disk_setup](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
-| [template_file.set_hostname](https://registry.terraform.io/providers/hashicorp/template/latest/docs/data-sources/file) | data source |
+| [cloudinit_config.bod_bastion_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.bod_docker_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.cyhy_bastion_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.cyhy_dashboard_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.cyhy_mongo_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.cyhy_nessus_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.cyhy_nmap_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.cyhy_reporter_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.mgmt_bastion_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
+| [cloudinit_config.mgmt_nessus_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 | [terraform_remote_state.dns](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 
 ## Inputs ##

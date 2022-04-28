@@ -17,7 +17,7 @@ resource "aws_instance" "cyhy_bastion" {
     aws_security_group.cyhy_bastion_sg.id,
   ]
 
-  user_data_base64     = data.template_cloudinit_config.set_hostname_cloud_init_tasks.rendered
+  user_data_base64     = data.cloudinit_config.cyhy_bastion_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_bastion.name
 
   tags = { "Name" = "CyHy Bastion" }

@@ -1,0 +1,8 @@
+---
+
+# Set the hostname and FQDN
+#
+# For an explanation of these variables, see here:
+# https://cloudinit.readthedocs.io/en/latest/topics/modules.html#set-hostname
+fqdn: "${fqdn}"
+hostname: "${hostname}"

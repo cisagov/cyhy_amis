@@ -45,7 +45,7 @@ resource "aws_instance" "bod_docker" {
     aws_lambda_function.lambdas,
   ]
 
-  user_data_base64     = data.template_cloudinit_config.ssh_and_docker_cloud_init_tasks.rendered
+  user_data_base64     = data.cloudinit_config.bod_docker_cloud_init_tasks.rendered
   iam_instance_profile = aws_iam_instance_profile.bod_docker.name
 
   tags = { "Name" = "BOD 18-01 Docker host" }
