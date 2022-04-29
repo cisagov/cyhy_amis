@@ -159,7 +159,8 @@ module "cyhy_nessus_ansible_provisioner" {
     "host=${length(aws_instance.cyhy_nessus[*].private_ip) > 0 ? element(aws_instance.cyhy_nessus[*].private_ip, count.index) : ""}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_runner,nessus",
-    "nessus_activation_code=${var.nessus_activation_codes[count.index]}"
+    "nessus_activation_code=${var.nessus_activation_codes[count.index]}",
+    "smtp_hostname=${aws_route53_record.cyhy_nessus_pub_A[count.index].name}"
   ]
   playbook = "../ansible/playbook.yml"
   dry_run  = false
