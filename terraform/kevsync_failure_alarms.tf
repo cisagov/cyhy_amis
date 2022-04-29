@@ -15,13 +15,8 @@ resource "aws_cloudwatch_log_metric_filter" "kevsync_failure" {
   # The quotes around cyhy-kevsync are necessary because the hyphen is
   # a special character in the log metric filter syntax:
   # https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
-  pattern = "\"cyhy-kevsync\" ERROR"
-  # The instances' CloudWatch Agent's configurations define what the
-  # log group name looks like.
-  #
-  # We have to account for the fact that the local hostname on the
-  # instance drops the local domain name.
-  log_group_name = "/instance-logs/${split(".", each.value)[0]}"
+  pattern        = "\"cyhy-kevsync\" ERROR"
+  log_group_name = aws_cloudwatch_log_group.instance_logs[each.value].name
 
   metric_transformation {
     default_value = 0

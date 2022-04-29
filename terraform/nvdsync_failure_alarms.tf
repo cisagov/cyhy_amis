@@ -1,3 +1,15 @@
+# Force the creation of the expected log group
+resource "aws_cloudwatch_log_group" "instance_logs" {
+  for_each = local.db_instance_hostnames
+
+  # The instances' CloudWatch Agent's configurations define what the
+  # log group name looks like.
+  #
+  # We have to account for the fact that the local hostname on the
+  # instance drops the local domain name.
+  name = "/instance-logs/${split(".", each.value)[0]}"
+}
+
 # Create a log metric filter that bumps a metric when a syslog
 # message indicates a failure in the NVD sync cron job.
 resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
@@ -15,13 +27,8 @@ resource "aws_cloudwatch_log_metric_filter" "nvdsync_failure" {
   # The quotes around cyhy-nvdsync are necessary because the hyphen is
   # a special character in the log metric filter syntax:
   # https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
-  pattern = "\"cyhy-nvdsync\" ERROR"
-  # The instances' CloudWatch Agent's configurations define what the
-  # log group name looks like.
-  #
-  # We have to account for the fact that the local hostname on the
-  # instance drops the local domain name.
-  log_group_name = "/instance-logs/${split(".", each.value)[0]}"
+  pattern        = "\"cyhy-nvdsync\" ERROR"
+  log_group_name = aws_cloudwatch_log_group.instance_logs[each.value].name
 
   metric_transformation {
     default_value = 0
