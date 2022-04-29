@@ -19,10 +19,23 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
       label         = "report_data"
       mount_options = "defaults"
       mount_point   = "/var/cyhy/orchestrator/output"
-      num_disks     = 2
+      num_disks     = 3
     })
     content_type = "text/x-shellscript"
     filename     = "orchestrator_disk_setup.sh"
+  }
+
+  part {
+    content = templatefile("${path.module}/cloud-init/disk_setup.tpl.sh", {
+      device_name   = "/dev/xvdc"
+      fs_type       = "xfs"
+      label         = "vdp_data"
+      mount_options = "defaults"
+      mount_point   = "/var/cyhy/vdp/output"
+      num_disks     = 3
+    })
+    content_type = "text/x-shellscript"
+    filename     = "vdp_disk_setup.sh"
   }
 
   part {
