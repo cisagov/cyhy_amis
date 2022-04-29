@@ -90,30 +90,11 @@ resource "aws_eip" "cyhy_nessus_random_eips" {
 }
 
 # Associate the appropriate Elastic IPs above with the CyHy Nessus
-# instances.  Since our elastic IPs are handled differently in
-# production vs. non-production workspaces, their corresponding
-# terraform resources (data.aws_eip.cyhy_nessus_eips,
-# data.aws_eip.cyhy_nessus_random_eips) may or may not be created.  To
-# handle that, we use "splat syntax" (the *), which resolves to either
-# an empty list (if the resource is not present in the current
-# workspace) or a valid list (if the resource is present).  Then we
-# use coalescelist() to choose the (non-empty) list containing the
-# valid eip.id. Finally, we use element() to choose the appropriate
-# element in that non-empty list, which is the allocation_id of our
-# elastic IP.  See
-# https://github.com/hashicorp/terraform/issues/11566#issuecomment-289417805
-#
-# VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
+# instances.
 resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
-  count       = var.nessus_instance_count
-  instance_id = aws_instance.cyhy_nessus[count.index].id
-  allocation_id = element(
-    coalescelist(
-      data.aws_eip.cyhy_nessus_eips[*].id,
-      aws_eip.cyhy_nessus_random_eips[*].id,
-    ),
-    count.index,
-  )
+  count         = var.nessus_instance_count
+  instance_id   = aws_instance.cyhy_nessus[count.index].id
+  allocation_id = local.nessus_public_ips[count.index].id
 }
 
 # Note that the EBS volume contains production data. Therefore we need
