@@ -145,7 +145,7 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   volume_id   = aws_ebs_volume.nmap_cyhy_runner_data[count.index].id
   instance_id = aws_instance.cyhy_nmap[count.index].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Provision an nmap EC2 instance via Ansible

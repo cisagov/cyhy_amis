@@ -130,7 +130,7 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_data.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
@@ -138,7 +138,7 @@ resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_journal.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
@@ -146,7 +146,7 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_log.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Provision the mongo EC2 instance via Ansible

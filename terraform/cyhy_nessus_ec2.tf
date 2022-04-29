@@ -142,7 +142,7 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   volume_id   = aws_ebs_volume.nessus_cyhy_runner_data[count.index].id
   instance_id = aws_instance.cyhy_nessus[count.index].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Provision a Nessus EC2 instance via Ansible

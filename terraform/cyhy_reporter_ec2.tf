@@ -87,7 +87,7 @@ resource "aws_volume_attachment" "cyhy_reporter_data_attachment" {
   volume_id   = aws_ebs_volume.cyhy_reporter_data.id
   instance_id = aws_instance.cyhy_reporter.id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Provision the reporter EC2 instance via Ansible

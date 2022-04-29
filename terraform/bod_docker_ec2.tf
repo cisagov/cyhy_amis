@@ -88,7 +88,7 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
   volume_id   = aws_ebs_volume.bod_report_data.id
   instance_id = aws_instance.bod_docker.id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Note that the EBS volumes contain production data. Therefore we need
