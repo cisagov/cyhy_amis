@@ -126,7 +126,7 @@ locals {
   # need to use the index of the instance into aws_instance.cyhy_mongo
   # to reconstruct the hostname.
   db_instance_hostnames = toset([
-    for index, instance in aws_instance.cyhy_mongo :
+    for index in range(var.mongo_instance_count) :
     "database${index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
   ])
 }
