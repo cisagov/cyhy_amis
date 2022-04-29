@@ -125,10 +125,8 @@ locals {
   # the order of the database instances.  On the other hand, we _do_
   # need to use the index of the instance into aws_instance.cyhy_mongo
   # to reconstruct the hostname.
-  db_instances = {
+  db_instance_hostnames = [
     for index, instance in aws_instance.cyhy_mongo :
-    instance.id => {
-      hostname = "database${index + 1}.${aws_route53_zone.cyhy_private_zone.name}",
-    }
-  }
+    "database${index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
+  ]
 }
