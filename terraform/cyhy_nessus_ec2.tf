@@ -65,7 +65,7 @@ resource "aws_instance" "cyhy_nessus" {
 # EIPs can be created via dhs-ncats/elastic-ips-terraform or manually,
 # and are intended to be a public IP address that rarely changes.
 data "aws_eip" "cyhy_nessus_eips" {
-  count = local.production_workspace ? length(aws_instance.cyhy_nessus) : 0
+  count = local.production_workspace ? var.nessus_instance_count : 0
   public_ip = cidrhost(
     var.cyhy_elastic_ip_cidr_block,
     var.cyhy_vulnscan_first_elastic_ip_offset + count.index,
@@ -76,7 +76,7 @@ data "aws_eip" "cyhy_nessus_eips" {
 # These EIPs are only created in *non-production* workspaces and are
 # randomly-assigned public IP address for temporary use.
 resource "aws_eip" "cyhy_nessus_random_eips" {
-  count = local.production_workspace ? 0 : length(aws_instance.cyhy_nessus)
+  count = local.production_workspace ? 0 : var.nessus_instance_count
   vpc   = true
   tags = {
     "Name"           = format("CyHy Nessus EIP %d", count.index + 1)
@@ -100,7 +100,7 @@ resource "aws_eip" "cyhy_nessus_random_eips" {
 #
 # VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
 resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
-  count       = length(aws_instance.cyhy_nessus)
+  count       = var.nessus_instance_count
   instance_id = aws_instance.cyhy_nessus[count.index].id
   allocation_id = element(
     coalescelist(
@@ -122,7 +122,7 @@ resource "aws_eip_association" "cyhy_nessus_eip_assocs" {
 # inside of the lifecycle block
 # (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "nessus_cyhy_runner_data" {
-  count             = length(aws_instance.cyhy_nessus)
+  count             = var.nessus_instance_count
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   type      = "gp3"
@@ -137,7 +137,7 @@ resource "aws_ebs_volume" "nessus_cyhy_runner_data" {
 }
 
 resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
-  count       = length(aws_instance.cyhy_nessus)
+  count       = var.nessus_instance_count
   device_name = "/dev/xvdb"
   volume_id   = aws_ebs_volume.nessus_cyhy_runner_data[count.index].id
   instance_id = aws_instance.cyhy_nessus[count.index].id
