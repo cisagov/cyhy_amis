@@ -86,6 +86,18 @@ locals {
     "egress",
   ]
 
+  # Get the public IPs associated with our nessus instances.
+  # Since our elastic IPs are handled differently in
+  # production vs. non-production workspaces, their corresponding
+  # Terraform resources (data.aws_eip.cyhy_nessus_eips,
+  # data.aws_eip.cyhy_nessus_random_eips) may or may not be created.  To
+  # handle that, we use coalescelist() to choose the (non-empty) list
+  # containing the valid eip objects.
+  nessus_public_ips = coalescelist(
+    data.aws_eip.cyhy_nessus_eips,
+    aws_eip.cyhy_nessus_random_eips,
+  )
+
   # domain names to use for internal DNS
   cyhy_private_domain = "cyhy"
   bod_private_domain  = "bod"

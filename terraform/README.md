@@ -156,6 +156,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | aws | ~> 3.62 |
 | aws.public\_dns | ~> 3.62 |
 | cloudinit | ~> 2.0 |
+| null | n/a |
 | terraform | n/a |
 
 ## Modules ##
@@ -395,6 +396,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_route53_record.cyhy_bastion_pub_A](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.cyhy_dashboard_A](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.cyhy_database_A](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
+| [aws_route53_record.cyhy_nessus_pub_A](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.cyhy_ns_A](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.cyhy_portscan_A](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.cyhy_reporter_A](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
@@ -567,6 +569,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_vpc_peering_connection_options.bod_mgmt_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
 | [aws_vpc_peering_connection_options.cyhy_bod_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
 | [aws_vpc_peering_connection_options.cyhy_mgmt_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
+| [null_resource.cyhy_nessus_pub_PTR](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_ami.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.bod_docker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
