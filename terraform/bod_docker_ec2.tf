@@ -39,8 +39,10 @@ resource "aws_instance" "bod_docker" {
     aws_security_group.bod_docker_sg.id,
   ]
 
-  # BOD 18-01 scanning needs the BOD Lambdas and the database available to function
   depends_on = [
+    # This volume is needed for BOD 18-01 scanning output
+    aws_ebs_volume.bod_report_data,
+    # BOD 18-01 scanning needs the BOD Lambdas and the database available to function
     aws_instance.cyhy_mongo,
     aws_lambda_function.lambdas,
   ]
@@ -88,7 +90,7 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
   volume_id   = aws_ebs_volume.bod_report_data.id
   instance_id = aws_instance.bod_docker.id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Note that the EBS volumes contain production data. Therefore we need

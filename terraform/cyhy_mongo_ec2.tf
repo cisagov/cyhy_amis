@@ -51,8 +51,11 @@ resource "aws_instance" "cyhy_mongo" {
     # log group that each instance depends on, I just list the whole
     # set here.  The effect is the same.
     aws_cloudwatch_log_group.instance_logs,
-    # The cyhy-commander needs these instances available to pull/push
-    # work
+    # These volumes are needed for MongoDB to function
+    aws_ebs_volume.cyhy_mongo_data,
+    aws_ebs_volume.cyhy_mongo_journal,
+    aws_ebs_volume.cyhy_mongo_log,
+    # The cyhy-commander needs these instances available to pull/push work
     aws_instance.cyhy_nessus,
     aws_instance.cyhy_nmap,
   ]
@@ -130,7 +133,7 @@ resource "aws_volume_attachment" "cyhy_mongo_data_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_data.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
@@ -138,7 +141,7 @@ resource "aws_volume_attachment" "cyhy_mongo_journal_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_journal.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
@@ -146,7 +149,7 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
   volume_id   = aws_ebs_volume.cyhy_mongo_log.id
   instance_id = aws_instance.cyhy_mongo[0].id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Provision the mongo EC2 instance via Ansible

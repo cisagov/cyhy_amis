@@ -39,8 +39,10 @@ resource "aws_instance" "cyhy_reporter" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
-  # Reporting needs the database available to function
   depends_on = [
+    # This volume is needed for cyhy-reports data
+    aws_ebs_volume.cyhy_reporter_data,
+    # Reporting needs the database available to function
     aws_instance.cyhy_mongo,
   ]
 
@@ -87,7 +89,7 @@ resource "aws_volume_attachment" "cyhy_reporter_data_attachment" {
   volume_id   = aws_ebs_volume.cyhy_reporter_data.id
   instance_id = aws_instance.cyhy_reporter.id
 
-  skip_destroy = true
+  stop_instance_before_detaching = true
 }
 
 # Provision the reporter EC2 instance via Ansible

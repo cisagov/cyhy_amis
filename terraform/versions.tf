@@ -7,12 +7,14 @@ terraform {
   # major version currently being used.  This practice will help us
   # avoid unwelcome surprises.
   required_providers {
-    # Version 3.38.0 of the Terraform AWS provider is the first
-    # version to support default tags.
-    # https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider
+    # Version 3.62.0 of the Terraform AWS provider adds the
+    # `stop_instance_before_detaching` argument to the `aws_volume_attachment`
+    # resource.
+    # https://github.com/hashicorp/terraform-provider-aws/pull/21144
+    # https://github.com/hashicorp/terraform-provider-aws/blob/main/CHANGELOG.md#3620-october-08-2021
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.38"
+      version = "~> 3.62"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
