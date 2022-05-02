@@ -51,8 +51,11 @@ resource "aws_instance" "cyhy_mongo" {
     # log group that each instance depends on, I just list the whole
     # set here.  The effect is the same.
     aws_cloudwatch_log_group.instance_logs,
-    # The cyhy-commander needs these instances available to pull/push
-    # work
+    # These volumes are needed for MongoDB to function
+    aws_ebs_volume.cyhy_mongo_data,
+    aws_ebs_volume.cyhy_mongo_journal,
+    aws_ebs_volume.cyhy_mongo_log,
+    # The cyhy-commander needs these instances available to pull/push work
     aws_instance.cyhy_nessus,
     aws_instance.cyhy_nmap,
   ]

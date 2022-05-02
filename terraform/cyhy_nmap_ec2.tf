@@ -42,6 +42,11 @@ resource "aws_instance" "cyhy_nmap" {
     aws_security_group.cyhy_scanner_sg.id,
   ]
 
+  depends_on = [
+    # This volume is needed for cyhy-runner jobs
+    aws_ebs_volume.nmap_cyhy_runner_data,
+  ]
+
   user_data_base64     = data.cloudinit_config.cyhy_nmap_cloud_init_tasks[count.index].rendered
   iam_instance_profile = aws_iam_instance_profile.cyhy_nmap.name
 

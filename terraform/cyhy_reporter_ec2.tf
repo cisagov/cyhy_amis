@@ -39,8 +39,10 @@ resource "aws_instance" "cyhy_reporter" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
-  # Reporting needs the database available to function
   depends_on = [
+    # This volume is needed for cyhy-reports data
+    aws_ebs_volume.cyhy_reporter_data,
+    # Reporting needs the database available to function
     aws_instance.cyhy_mongo,
   ]
 

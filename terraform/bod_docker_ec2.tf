@@ -39,8 +39,10 @@ resource "aws_instance" "bod_docker" {
     aws_security_group.bod_docker_sg.id,
   ]
 
-  # BOD 18-01 scanning needs the BOD Lambdas and the database available to function
   depends_on = [
+    # This volume is needed for BOD 18-01 scanning output
+    aws_ebs_volume.bod_report_data,
+    # BOD 18-01 scanning needs the BOD Lambdas and the database available to function
     aws_instance.cyhy_mongo,
     aws_lambda_function.lambdas,
   ]
