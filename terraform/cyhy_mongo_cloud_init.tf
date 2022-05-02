@@ -24,13 +24,13 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
       num_disks     = 4
     })
     content_type = "text/x-shellscript"
-    filename     = "mongo_data_disk_setup.sh"
+    filename     = "01_mongo_data_disk_setup.sh"
   }
 
   part {
     content      = file("${path.module}/cloud-init/mongo_journal_mountpoint_setup.sh")
     content_type = "text/x-shellscript"
-    filename     = "mongo_journal_mountpoint_setup.sh"
+    filename     = "02_mongo_journal_mountpoint_setup.sh"
   }
 
   part {
@@ -45,7 +45,7 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
       num_disks     = 4
     })
     content_type = "text/x-shellscript"
-    filename     = "mongo_journal_disk_setup.sh"
+    filename     = "03_mongo_journal_disk_setup.sh"
   }
 
   part {
@@ -58,13 +58,13 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
       num_disks     = 4
     })
     content_type = "text/x-shellscript"
-    filename     = "mongo_log_disk_setup.sh"
+    filename     = "04_mongo_log_disk_setup.sh"
   }
 
   part {
     content      = file("${path.module}/cloud-init/mongo_dir_setup.sh")
     content_type = "text/x-shellscript"
-    filename     = "mongo_dir_setup.sh"
+    filename     = "05_mongo_dir_setup.sh"
   }
 
   part {
