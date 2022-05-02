@@ -91,6 +91,39 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
   skip_destroy = true
 }
 
+# Note that the EBS volumes contain production data. Therefore we need
+# these resources to be immortal in the "production" workspace, and so
+# I am using the prevent_destroy lifecycle element to disallow the
+# destruction of it via terraform in that case.
+#
+# I'd like to use "${terraform.workspace == "production" ? true :
+# false}", so the prevent_destroy only applies to the production
+# workspace, but it appears that interpolations are not supported
+# inside of the lifecycle block
+# (https://github.com/hashicorp/terraform/issues/3116).
+#
+# We use the minimum size for io2 volumes because the output of the VDP process
+# is small.
+resource "aws_ebs_volume" "vdp_report_data" {
+  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
+  type              = "io2"
+  size              = 4
+  iops              = 100
+  encrypted         = true
+
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
+resource "aws_volume_attachment" "vdp_report_data_attachment" {
+  device_name = "/dev/xvdc"
+  volume_id   = aws_ebs_volume.vdp_report_data.id
+  instance_id = aws_instance.bod_docker.id
+
+  skip_destroy = true
+}
+
 # Provision the Docker EC2 instance via Ansible
 module "bod_docker_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
@@ -98,6 +131,7 @@ module "bod_docker_ansible_provisioner" {
   # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.bod_report_data_attachment,
+    aws_volume_attachment.vdp_report_data_attachment,
   ]
 
   arguments = [
