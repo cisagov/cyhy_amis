@@ -4,7 +4,7 @@
 # ------------------------------------------------------------------------------
 
 resource "aws_sns_topic" "kevsync_failure_alarm" {
-  name         = "kevsync-failure-alarms"
+  name         = format("kevsync-failure-alarms_%s", local.production_workspace ? "production" : terraform.workspace)
   display_name = "kevsync_failure_alarms"
 }
 

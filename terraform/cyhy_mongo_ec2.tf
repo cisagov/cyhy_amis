@@ -37,8 +37,22 @@ resource "aws_instance" "cyhy_mongo" {
     aws_security_group.cyhy_private_sg.id,
   ]
 
-  # The cyhy-commander needs these instances available to pull/push work
   depends_on = [
+    # The CloudWatch Agent running on these instances will create
+    # these log groups when they start up, but the CloudWatch log
+    # metric filters we create for detecting NVD and KEV sync failures
+    # require that they exist; therefore we create the log groups via
+    # Terraform.  At the same time, we want to avoid a race condition
+    # where these instances start up and create the log groups before
+    # the Terraform code can; hence, we add the log group resources to
+    # the depends_on clause for the instances.
+    #
+    # Instead of coming up with a clever way to isolate the particular
+    # log group that each instance depends on, I just list the whole
+    # set here.  The effect is the same.
+    aws_cloudwatch_log_group.instance_logs,
+    # The cyhy-commander needs these instances available to pull/push
+    # work
     aws_instance.cyhy_nessus,
     aws_instance.cyhy_nmap,
   ]
