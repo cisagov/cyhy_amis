@@ -24,34 +24,16 @@ resource "aws_iam_role_policy_attachment" "ssm_agent_policy_attachment_cyhy_mong
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Attach the dmarc-import Elasticsearch assume role policy to this role as well
+resource "aws_iam_role_policy_attachment" "dmarc_es_assume_role_policy_attachment_cyhy_mongo" {
+  role       = aws_iam_role.cyhy_mongo_instance_role.id
+  policy_arn = aws_iam_policy.dmarc_es_assume_role_policy.arn
+}
+
 # The cyhy-archive S3 policy for our role
 resource "aws_iam_role_policy" "archive_cyhy_mongo_policy" {
   role   = aws_iam_role.cyhy_mongo_instance_role.id
   policy = data.aws_iam_policy_document.s3_cyhy_archive_write_doc.json
-}
-
-# IAM policy document that allows us to assume a role that allows
-# reading of the dmarc-import Elasticsearch database.  This will be
-# applied to the role we are creating.
-data "aws_iam_policy_document" "es_cyhy_mongo_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession",
-    ]
-
-    resources = [
-      var.dmarc_import_es_role_arn,
-    ]
-  }
-}
-
-# The Elasticsearch policy for our role
-resource "aws_iam_role_policy" "es_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_instance_role.id
-  policy = data.aws_iam_policy_document.es_cyhy_mongo_doc.json
 }
 
 # IAM policy document that that allows write permissions on the MOE
