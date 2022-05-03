@@ -26,3 +26,10 @@ data "aws_iam_policy_document" "s3_cyhy_archive_write_doc" {
     ]
   }
 }
+
+# Create a policy that can be attached to any role that needs to write to the
+# cyhy-archive S3 bucket.
+resource "aws_iam_policy" "s3_cyhy_archive_write_policy" {
+  name   = format("s3_cyhy_archive_write_%s", local.production_workspace ? "production" : terraform.workspace)
+  policy = data.aws_iam_policy_document.s3_cyhy_archive_write_doc.json
+}

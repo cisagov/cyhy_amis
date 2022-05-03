@@ -30,10 +30,10 @@ resource "aws_iam_role_policy_attachment" "dmarc_es_assume_role_policy_attachmen
   policy_arn = aws_iam_policy.dmarc_es_assume_role_policy.arn
 }
 
-# The cyhy-archive S3 policy for our role
-resource "aws_iam_role_policy" "archive_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_instance_role.id
-  policy = data.aws_iam_policy_document.s3_cyhy_archive_write_doc.json
+# Attach the cyhy-archive S3 write policy to this role as well
+resource "aws_iam_role_policy_attachment" "s3_cyhy_archive_write_policy_attachment_cyhy_mongo" {
+  role       = aws_iam_role.cyhy_mongo_instance_role.id
+  policy_arn = aws_iam_policy.s3_cyhy_archive_write_policy.arn
 }
 
 # IAM policy document that that allows write permissions on the MOE
