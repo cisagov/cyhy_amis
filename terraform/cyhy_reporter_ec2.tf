@@ -75,7 +75,7 @@ resource "aws_instance" "cyhy_reporter" {
 resource "aws_ebs_volume" "cyhy_reporter_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type              = "io2"
-  size              = local.production_workspace ? 500 : 5
+  size              = local.production_workspace ? 1000 : 5
   iops              = 100
   encrypted         = true
 
