@@ -24,6 +24,12 @@ resource "aws_iam_role_policy_attachment" "ssm_agent_policy_attachment_bod_docke
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
+# Attach the SES assume role policy to this role as well
+resource "aws_iam_role_policy_attachment" "ses_assume_role_policy_attachment_bod_docker" {
+  role       = aws_iam_role.bod_docker_instance_role.id
+  policy_arn = aws_iam_policy.ses_assume_role_policy.arn
+}
+
 # IAM policy document that that allows the invocation of our Lambda
 # functions.  This will be applied to the role we are creating.
 data "aws_iam_policy_document" "lambda_bod_docker_doc" {
@@ -71,28 +77,4 @@ data "aws_iam_policy_document" "es_bod_docker_doc" {
 resource "aws_iam_role_policy" "es_bod_docker_policy" {
   role   = aws_iam_role.bod_docker_instance_role.id
   policy = data.aws_iam_policy_document.es_bod_docker_doc.json
-}
-
-# IAM policy document that allows us to assume a role that allows
-# sending of emails via SES.  This will be applied to the role we are
-# creating.
-data "aws_iam_policy_document" "ses_bod_docker_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession",
-    ]
-
-    resources = [
-      var.ses_role_arn,
-    ]
-  }
-}
-
-# The SES policy for our role
-resource "aws_iam_role_policy" "ses_bod_docker_policy" {
-  role   = aws_iam_role.bod_docker_instance_role.id
-  policy = data.aws_iam_policy_document.ses_bod_docker_doc.json
 }
