@@ -6,6 +6,7 @@
   become: yes
   become_method: sudo
   roles:
+    - backports
     - apt_over_https
     - upgrade
     - automated_security_updates
