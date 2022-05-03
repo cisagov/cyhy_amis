@@ -26,6 +26,39 @@ data "cloudinit_config" "cyhy_reporter_cloud_init_tasks" {
   }
 
   part {
+    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
+      group          = "cyhy"
+      is_mount_point = true
+      owner          = "cyhy"
+      path           = "/var/cyhy/reports/output"
+    })
+    content_type = "text/x-shellscript"
+    filename     = "cyhy_reports_chown_reports_output_directory.sh"
+  }
+
+  part {
+    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
+      group          = "cyhy"
+      is_mount_point = false
+      owner          = "cyhy"
+      path           = "/var/cyhy"
+    })
+    content_type = "text/x-shellscript"
+    filename     = "cyhy_reports_chown_cyhy_directory.sh"
+  }
+
+  part {
+    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
+      group          = "cyhy"
+      is_mount_point = false
+      owner          = "cyhy"
+      path           = "/var/log/cyhy"
+    })
+    content_type = "text/x-shellscript"
+    filename     = "cyhy_reports_chown_cyhy_log_directory.sh"
+  }
+
+  part {
     content = templatefile("${path.module}/cloud-init/set_hostname.tpl.yml", {
       # Note that the hostname here is identical to what is set in
       # the corresponding DNS A record.
