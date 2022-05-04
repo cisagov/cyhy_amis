@@ -29,7 +29,7 @@ resource "aws_instance" "cyhy_nessus" {
   subnet_id = aws_subnet.cyhy_vulnscanner_subnet.id
 
   root_block_device {
-    volume_size = local.production_workspace ? 200 : 16
+    volume_size = local.production_workspace ? 200 : 32
     volume_type = "gp3"
   }
 
