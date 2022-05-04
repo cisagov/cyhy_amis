@@ -36,37 +36,8 @@ resource "aws_iam_role_policy_attachment" "s3_cyhy_archive_write_policy_attachme
   policy_arn = aws_iam_policy.s3_cyhy_archive_write_policy.arn
 }
 
-# IAM policy document that that allows write permissions on the MOE
-# bucket.  This will be applied to the role we are creating.
-data "aws_iam_policy_document" "s3_cyhy_mongo_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "s3:ListBucket",
-    ]
-
-    resources = [
-      aws_s3_bucket.moe_bucket.arn,
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "s3:DeleteObject",
-      "s3:PutObject",
-    ]
-
-    resources = [
-      "${aws_s3_bucket.moe_bucket.arn}/*",
-    ]
-  }
-}
-
-# The S3 policy for our role
-resource "aws_iam_role_policy" "s3_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_instance_role.id
-  policy = data.aws_iam_policy_document.s3_cyhy_mongo_doc.json
+# Attach the MOE S3 bucket write policy to this role as well
+resource "aws_iam_role_policy_attachment" "moe_bucket_write_policy_attachment_cyhy_mongo" {
+  role       = aws_iam_role.cyhy_mongo_instance_role.id
+  policy_arn = aws_iam_policy.moe_bucket_write.arn
 }
