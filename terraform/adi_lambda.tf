@@ -43,36 +43,10 @@ resource "aws_iam_role_policy" "adi_lambda_cloudwatch_policy" {
   policy = data.aws_iam_policy_document.adi_lambda_cloudwatch_doc.json
 }
 
-# IAM policy document that that allows some EC2 permissions
-# for our Lambda function.  This will allow the Lambda function to
-# create and destroy ENI resources, as described here:
-# https://docs.aws.amazon.com/lambda/latest/dg/vpc.html.
-#
-# It would be great if there were a way to add a condition to reduce
-# the number of resources to which this policy can apply, but I don't
-# see a way to do that.
-#
-# This policy document will be applied to the role we are creating.
-data "aws_iam_policy_document" "adi_lambda_ec2_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "ec2:CreateNetworkInterface",
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:DeleteNetworkInterface",
-    ]
-
-    resources = [
-      "*",
-    ]
-  }
-}
-
-# The EC2 policy for our role (needed to run the Lambda from within our VPC)
-resource "aws_iam_role_policy" "adi_lambda_ec2_policy" {
-  role   = aws_iam_role.adi_lambda_role.id
-  policy = data.aws_iam_policy_document.adi_lambda_ec2_doc.json
+# The Lambda ENI policy attachment for our role (needed to run the Lambda from within our VPC)
+resource "aws_iam_role_policy_attachment" "lambda_eni_policy_attachment_adi" {
+  role       = aws_iam_role.adi_lambda_role.id
+  policy_arn = aws_iam_policy.lambda_eni_policy.arn
 }
 
 # IAM policy document that that allows some S3 permissions

@@ -46,41 +46,12 @@ resource "aws_iam_role_policy" "lambda_cloudwatch_policies" {
   role   = aws_iam_role.lambda_roles[count.index].id
   policy = data.aws_iam_policy_document.lambda_cloudwatch_docs[count.index].json
 }
-
-# IAM policy documents that that allows some EC2 permissions
-# for our Lambda functions.  This will allow the Lambda functions to
-# create and destroy ENI resources, as described here:
-# https://docs.aws.amazon.com/lambda/latest/dg/vpc.html.
-#
-# It would be great if there were a way to add a condition to reduce
-# the number of resources to which this policy can apply, but I don't
-# see a way to do that.
-#
-# These policy documents will be applied to the roles we are creating.
-data "aws_iam_policy_document" "lambda_ec2_docs" {
-  count = length(var.scan_types)
-
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "ec2:CreateNetworkInterface",
-      "ec2:DescribeNetworkInterfaces",
-      "ec2:DeleteNetworkInterface",
-    ]
-
-    resources = [
-      "*",
-    ]
-  }
-}
-
-# The EC2 policies for our roles
-resource "aws_iam_role_policy" "lambda_ec2_policies" {
+# The Lambda ENI policy attachments for our roles
+resource "aws_iam_role_policy_attachment" "lambda_eni_policy_attachment_bod" {
   count = length(aws_iam_role.lambda_roles)
 
-  role   = aws_iam_role.lambda_roles[count.index].id
-  policy = data.aws_iam_policy_document.lambda_ec2_docs[count.index].json
+  role       = aws_iam_role.lambda_roles[count.index].id
+  policy_arn = aws_iam_policy.lambda_eni_policy.arn
 }
 
 # The AWS Lambda functions that perform the scans
