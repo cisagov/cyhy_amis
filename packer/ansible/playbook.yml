@@ -45,7 +45,7 @@
   become_method: sudo
   roles:
     - cyhy_runner
-    - {role: nessus, package_bucket: ncats-3rd-party-packages}
+    - {role: nessus, package_bucket: ncats-3rd-party-packages, version: "8.15.5"}
     - more_ephemeral_ports
 
 - hosts: bod
