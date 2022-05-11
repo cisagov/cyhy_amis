@@ -55,21 +55,24 @@
         "reporter"
       ],
       "playbook_file": "ansible/upgrade.yml",
-      "type": "ansible"
+      "type": "ansible",
+      "use_sftp": true
     },
     {
       "groups": [
         "reporter"
       ],
       "playbook_file": "ansible/python.yml",
-      "type": "ansible"
+      "type": "ansible",
+      "use_sftp": true
     },
     {
       "groups": [
         "cyhy_reporter"
       ],
       "playbook_file": "ansible/playbook.yml",
-      "type": "ansible"
+      "type": "ansible",
+      "use_sftp": true
     }
   ],
   "variables": {
