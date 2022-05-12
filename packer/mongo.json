@@ -56,6 +56,7 @@
       ],
       "playbook_file": "ansible/upgrade.yml",
       "type": "ansible",
+      "use_proxy": false,
       "use_sftp": true
     },
     {
@@ -64,6 +65,7 @@
       ],
       "playbook_file": "ansible/python.yml",
       "type": "ansible",
+      "use_proxy": false,
       "use_sftp": true
     },
     {
@@ -74,6 +76,7 @@
       ],
       "playbook_file": "ansible/playbook.yml",
       "type": "ansible",
+      "use_proxy": false,
       "use_sftp": true
     }
   ],
