@@ -11,11 +11,7 @@
         }
       ],
       "ami_name": "{{user `ami_prefix`}}-mongo-hvm-{{timestamp}}-x86_64-ebs",
-      "ami_regions": [
-        "us-east-1",
-        "us-west-1",
-        "us-west-2"
-      ],
+      "ami_regions": "{{user `ami_regions`}}",
       "instance_type": "t3.small",
       "launch_block_device_mappings": [
         {
@@ -26,7 +22,7 @@
           "volume_type": "gp3"
         }
       ],
-      "region": "us-east-2",
+      "region": "{{user `build_region`}}",
       "source_ami_filter": {
         "filters": {
           "name": "debian-stretch-hvm-x86_64-gp2-*",
@@ -81,6 +77,8 @@
     }
   ],
   "variables": {
-    "ami_prefix": "cyhy"
+    "ami_prefix": "cyhy",
+    "ami_regions": "us-east-1,us-west-1,us-west-2",
+    "build_region": "us-east-2"
   }
 }
