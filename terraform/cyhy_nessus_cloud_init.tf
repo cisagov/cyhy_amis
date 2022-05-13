@@ -15,6 +15,18 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
   }
 
   part {
+    content = templatefile("${path.module}/cloud-init/set_hostname.tpl.yml", {
+      # Note that the hostname here is identical to what is set in
+      # the corresponding DNS A record.
+      fqdn     = "vulnscan${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
+      hostname = "vulnscan${count.index + 1}"
+    })
+    content_type = "text/cloud-config"
+    filename     = "set_hostname.yml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
+  }
+
+  part {
     content = templatefile("${path.module}/cloud-init/disk_setup.tpl.sh", {
       device_name   = "/dev/xvdb"
       fs_type       = "ext4"
@@ -24,7 +36,7 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
       num_disks     = 2
     })
     content_type = "text/x-shellscript"
-    filename     = "cyhy_runner_disk_setup.sh"
+    filename     = "00_cyhy_runner_disk_setup.sh"
   }
 
   part {
@@ -35,7 +47,7 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
       path           = "/var/cyhy/runner"
     })
     content_type = "text/x-shellscript"
-    filename     = "cyhy_nessus_chown_runner_directory.sh"
+    filename     = "01_cyhy_nessus_chown_runner_directory.sh"
   }
 
   part {
@@ -46,18 +58,6 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
       path           = "/var/cyhy"
     })
     content_type = "text/x-shellscript"
-    filename     = "cyhy_nessus_chown_cyhy_directory.sh"
-  }
-
-  part {
-    content = templatefile("${path.module}/cloud-init/set_hostname.tpl.yml", {
-      # Note that the hostname here is identical to what is set in
-      # the corresponding DNS A record.
-      fqdn     = "vulnscan${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
-      hostname = "vulnscan${count.index + 1}"
-    })
-    content_type = "text/cloud-config"
-    filename     = "set_hostname.yml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
+    filename     = "02_cyhy_nessus_chown_cyhy_directory.sh"
   }
 }
