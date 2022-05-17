@@ -69,7 +69,6 @@
   become: yes
   become_method: sudo
   roles:
-    - chown_cyhy_dirs
     - cyhy_logrotate
 
 - hosts: nessus
