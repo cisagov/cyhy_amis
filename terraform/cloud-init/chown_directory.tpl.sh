@@ -24,6 +24,14 @@ if "${is_mount_point}"; then
   done
 fi
 
+# ensure the path exists
+#
+# This is a Terraform template file, and the path variable is passed
+# in via templatefile().
+#
+# shellcheck disable=SC2154
+mkdir --parents "${path}"
+
 # chown the path
 #
 # This is a Terraform template file, and the group, owner, and path
