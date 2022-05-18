@@ -15,6 +15,40 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
   }
 
   part {
+    content = templatefile("${path.module}/cloud-init/set_hostname.tpl.yml", {
+      # Note that the hostname here is identical to what is set in
+      # the corresponding DNS A record.
+      fqdn     = "database${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
+      hostname = "database${count.index + 1}"
+    })
+    content_type = "text/cloud-config"
+    filename     = "set_hostname.yml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
+  }
+
+  part {
+    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
+      group          = "cyhy"
+      is_mount_point = false
+      owner          = "cyhy"
+      path           = "/var/cyhy"
+    })
+    content_type = "text/x-shellscript"
+    filename     = "00_cyhy_mongo_chown_cyhy_directory.sh"
+  }
+
+  part {
+    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
+      group          = "cyhy"
+      is_mount_point = false
+      owner          = "cyhy"
+      path           = "/var/log/cyhy"
+    })
+    content_type = "text/x-shellscript"
+    filename     = "00_cyhy_mongo_chown_cyhy_log_directory.sh"
+  }
+
+  part {
     content = templatefile("${path.module}/cloud-init/disk_setup.tpl.sh", {
       device_name   = var.mongo_disks["data"]
       fs_type       = "xfs"
@@ -65,17 +99,5 @@ data "cloudinit_config" "cyhy_mongo_cloud_init_tasks" {
     content      = file("${path.module}/cloud-init/mongo_dir_setup.sh")
     content_type = "text/x-shellscript"
     filename     = "05_mongo_dir_setup.sh"
-  }
-
-  part {
-    content = templatefile("${path.module}/cloud-init/set_hostname.tpl.yml", {
-      # Note that the hostname here is identical to what is set in
-      # the corresponding DNS A record.
-      fqdn     = "database${count.index + 1}.${aws_route53_zone.cyhy_private_zone.name}"
-      hostname = "database${count.index + 1}"
-    })
-    content_type = "text/cloud-config"
-    filename     = "set_hostname.yml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
   }
 }
