@@ -27,6 +27,28 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
   }
 
   part {
+    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
+      group          = "cyhy"
+      is_mount_point = false
+      owner          = "cyhy"
+      path           = "/var/cyhy"
+    })
+    content_type = "text/x-shellscript"
+    filename     = "00_cyhy_nessus_chown_cyhy_directory.sh"
+  }
+
+  part {
+    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
+      group          = "cyhy"
+      is_mount_point = false
+      owner          = "cyhy"
+      path           = "/var/log/cyhy"
+    })
+    content_type = "text/x-shellscript"
+    filename     = "00_cyhy_nessus_chown_cyhy_log_directory.sh"
+  }
+
+  part {
     content = templatefile("${path.module}/cloud-init/disk_setup.tpl.sh", {
       device_name   = "/dev/xvdb"
       fs_type       = "ext4"
@@ -36,7 +58,7 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
       num_disks     = 2
     })
     content_type = "text/x-shellscript"
-    filename     = "00_cyhy_runner_disk_setup.sh"
+    filename     = "01_cyhy_runner_disk_setup.sh"
   }
 
   part {
@@ -47,17 +69,6 @@ data "cloudinit_config" "cyhy_nessus_cloud_init_tasks" {
       path           = "/var/cyhy/runner"
     })
     content_type = "text/x-shellscript"
-    filename     = "01_cyhy_nessus_chown_runner_directory.sh"
-  }
-
-  part {
-    content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
-      is_mount_point = false
-      owner          = "cyhy"
-      path           = "/var/cyhy"
-    })
-    content_type = "text/x-shellscript"
-    filename     = "02_cyhy_nessus_chown_cyhy_directory.sh"
+    filename     = "02_cyhy_nessus_chown_runner_directory.sh"
   }
 }
