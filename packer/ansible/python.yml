@@ -1,15 +1,47 @@
 ---
-- hosts: all
-  name: Install pip3/python3
+- hosts: all:
+  name: Install Python and Pip
   become: yes
   become_method: sudo
   roles:
-    - pip
-    - python
+    - role: pip
+      vars:
+        # Install and pip2 for all instances that will run Python 2
+        # CyHy code.  Right now this is all instances other than the
+        # bastion, nessus, and nmap instances.
+        #
+        # Note that we are joining the hostnames via a pipe character,
+        # which is a disallowed character in a hostname; therefore, if
+        # search() finds a match we know that it matches one of the
+        # strings in the list.  In other words, there is no chance
+        # that a hostname could match the end of one string, plus a
+        # pipe, plus the beginning of the next string.  This is what
+        # allows us to do the search in one fell swoop as opposed to
+        # writing multiple checks against individual hostnames.
+        install_pip2: {{ inventory_hostname_short is not search(["bastion", "nessus", "nmap"] | join("|")) }}
+    - role: python
+      vars:
+        # Install Python 2 for all instances that will run Python 2
+        # CyHy code.  Right now this is all instances other than the
+        # bastion, nessus, and nmap instances.
+        #
+        # Note that we are joining the hostnames via a pipe character,
+        # which is a disallowed character in a hostname; therefore, if
+        # search() finds a match we know that it matches one of the
+        # strings in the list.  In other words, there is no chance
+        # that a hostname could match the end of one string, plus a
+        # pipe, plus the beginning of the next string.  This is what
+        # allows us to do the search in one fell swoop as opposed to
+        # writing multiple checks against individual hostnames.
+        install_python2: {{ inventory_hostname_short is not search(["bastion", "nessus", "nmap"] | join("|")) }}
 
-# Any instances that are built on Debian Buster should have Python 2 removed
+# Any instances that are not built on Amazon Linux 2 and don't require
+# Python 2 should have it removed.
+#
+# Amazon Linux 2 is antiquated and requires Python2 to function, and
+# the remove_python2 Ansible role is a no-op on that platform.
 - hosts: bastion,nessus,nmap
-  name: Remove pip2/python2
+  name: Remove Python 2
   become: yes
   become_method: sudo
   roles:
