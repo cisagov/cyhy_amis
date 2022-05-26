@@ -38,7 +38,7 @@
 # Any instances that are not built on Amazon Linux 2 and don't require
 # Python 2 should have it removed.
 #
-# Amazon Linux 2 is antiquated and requires Python2 to function, and
+# Amazon Linux 2 is antiquated and requires Python 2 to function, and
 # the remove_python2 Ansible role is a no-op on that platform.
 - hosts: bastion,docker,nessus,nmap
   name: Remove Python 2
