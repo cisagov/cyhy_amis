@@ -8,7 +8,7 @@
       vars:
         # Install and pip2 for all instances that will run Python 2
         # CyHy code.  Right now this is all instances other than the
-        # bastion, nessus, and nmap instances.
+        # bastion, docker, nessus, and nmap instances.
         #
         # Note that we are joining the hostnames via a pipe character,
         # which is a disallowed character in a hostname; therefore, if
@@ -18,12 +18,12 @@
         # pipe, plus the beginning of the next string.  This is what
         # allows us to do the search in one fell swoop as opposed to
         # writing multiple checks against individual hostnames.
-        install_pip2: inventory_hostname_short is not search({{ ["bastion", "nessus", "nmap"] | join("|") }})
+        install_pip2: inventory_hostname_short is not search({{ ["bastion", "docker", "nessus", "nmap"] | join("|") }})
     - role: python
       vars:
         # Install Python 2 for all instances that will run Python 2
         # CyHy code.  Right now this is all instances other than the
-        # bastion, nessus, and nmap instances.
+        # bastion, docker, nessus, and nmap instances.
         #
         # Note that we are joining the hostnames via a pipe character,
         # which is a disallowed character in a hostname; therefore, if
@@ -33,14 +33,14 @@
         # pipe, plus the beginning of the next string.  This is what
         # allows us to do the search in one fell swoop as opposed to
         # writing multiple checks against individual hostnames.
-        install_python2: inventory_hostname_short is not search({{ ["bastion", "nessus", "nmap"] | join("|") }})
+        install_python2: inventory_hostname_short is not search({{ ["bastion", "docker", "nessus", "nmap"] | join("|") }})
 
 # Any instances that are not built on Amazon Linux 2 and don't require
 # Python 2 should have it removed.
 #
 # Amazon Linux 2 is antiquated and requires Python2 to function, and
 # the remove_python2 Ansible role is a no-op on that platform.
-- hosts: bastion,nessus,nmap
+- hosts: bastion,docker,nessus,nmap
   name: Remove Python 2
   become: yes
   become_method: sudo
