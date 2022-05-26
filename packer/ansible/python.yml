@@ -1,5 +1,5 @@
 ---
-- hosts: all:
+- hosts: all
   name: Install Python and Pip
   become: yes
   become_method: sudo
