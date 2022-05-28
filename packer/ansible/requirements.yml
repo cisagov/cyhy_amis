@@ -70,6 +70,7 @@
   version: improvement/control-installation-of-python2-via-role-var
 - src: https://github.com/cisagov/ansible-role-remove-python2
   name: remove_python2
+  version: improvement/remove_python2_on_all_platforms
 - src: https://github.com/cisagov/ansible-role-upgrade
   name: upgrade
 - src: https://github.com/cisagov/ansible-role-vdp-scanner
