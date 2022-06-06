@@ -6,7 +6,7 @@
   roles:
     - role: pip
       vars:
-        # Install and pip2 for all instances that will run Python 2
+        # Install pip2 for all instances that will run Python 2
         # CyHy code.  Right now this is all instances other than the
         # bastion, docker, nessus, and nmap instances.
         #
