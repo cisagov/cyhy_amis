@@ -238,7 +238,7 @@ variable "dmarc_import_aws_region" {
 
 variable "docker_mailer_override_filename" {
   default     = "docker-compose.bod.yml"
-  description = "This file is used to add/override any docker-compose settings for cyhy-mailer for the docker EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer."
+  description = "This file is used to add/override any Docker composition settings for cyhy-mailer for the docker EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer."
   type        = string
 }
 
@@ -362,7 +362,7 @@ variable "nmap_cyhy_runner_disk" {
 
 variable "reporter_mailer_override_filename" {
   default     = "docker-compose.cyhy.yml"
-  description = "This file is used to add/override any docker-compose settings for cyhy-mailer for the reporter EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer."
+  description = "This file is used to add/override any Docker composition settings for cyhy-mailer for the reporter EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer."
   type        = string
 }
 
