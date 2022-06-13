@@ -5,7 +5,7 @@
 # This cron job runs at midnight UTC on Monday mornings, so it
 # should be done in time to be sent Monday morning.
 - name: Create a cron job for BOD 20-01 (VDP) scanning
-  cron:
+  ansible.builtin.cron:
     name: "BOD 20-01 (VDP) scanning"
     minute: '0'
     hour: '0'

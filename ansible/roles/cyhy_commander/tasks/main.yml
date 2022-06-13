@@ -5,7 +5,7 @@
 # Copy private key to new instance
 #
 - name: Copy ssh private key for cyhy user
-  copy:
+  ansible.builtin.copy:
     content: "{{ ssh_private_key }}"
     dest: /var/cyhy/.ssh/id_ed25519
     owner: cyhy
@@ -16,7 +16,7 @@
 # Create the cyhy directory in etc for commander conf
 #
 - name: Create the /etc/cyhy directory
-  file:
+  ansible.builtin.file:
     path: /etc/cyhy
     state: directory
 
@@ -24,7 +24,7 @@
 # Copy the cyhy-commander conf file
 #
 - name: Copy the configuration file for cyhy-commander
-  copy:
+  ansible.builtin.copy:
     src: commander.conf
     dest: /etc/cyhy/commander.conf
     mode: 0644
@@ -32,7 +32,7 @@
 # Create empty cyhy ssh config with cyhy as owner and group
 #
 - name: Create empty ssh config file
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/.ssh/config
     state: touch
     owner: cyhy
@@ -42,14 +42,14 @@
 # Replace commander.conf password
 #
 - name: Configure commander.conf to use commander as mongo user
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/cyhy/commander.conf
     regexp: "database-uri ="
     state: present
     line: "database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}"
 
 - name: Enable and start cyhy-commander
-  service:
+  ansible.builtin.service:
     name: cyhy-commander
     enabled: yes
     state: restarted
@@ -58,35 +58,35 @@
 # Grab the files we need to create the "places" collection from cyhy-core
 #
 - name: Create the /tmp/cyhy-places/scripts directory
-  file:
+  ansible.builtin.file:
     path: /tmp/cyhy-places/scripts
     state: directory
 
 - name: Create the /tmp/cyhy-places/extras directory
-  file:
+  ansible.builtin.file:
     path: /tmp/cyhy-places/extras
     state: directory
 
 - name: Download load_places.sh from GitHub
-  get_url:
+  ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/cisagov/cyhy-core/develop/var/load_places.sh"
     dest: /tmp/cyhy-places/scripts/load_places.sh
     mode: 0755
 
 - name: Download GNIS_data_import.py from GitHub
-  get_url:
+  ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/cisagov/cyhy-core/develop/var/GNIS_data_import.py"
     dest: /tmp/cyhy-places/scripts/GNIS_data_import.py
     mode: 0755
 
 - name: Download ADDL_CYHY_PLACES.txt from GitHub
-  get_url:
+  ansible.builtin.get_url:
     url: "https://raw.githubusercontent.com/cisagov/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt"
     dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
     mode: 0644
 
 - name: Check if cyhy.conf already exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/cyhy/cyhy.conf
   register: cyhy_conf_result
 
@@ -100,7 +100,7 @@
 # will necessitate some changes elsewhere in the code where named
 # sections from cyhy.conf are explicitly referenced.
 - name: Create cyhy.conf (with commander credentials) if it doesn't exist
-  copy:
+  ansible.builtin.copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy
     group: cyhy
@@ -119,7 +119,7 @@
   when: cyhy_conf_result.stat.exists == False
 
 - name: Add commander credentials block to cyhy.conf if necessary
-  blockinfile:
+  ansible.builtin.blockinfile:
     path: /etc/cyhy/cyhy.conf
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     block: |
@@ -135,7 +135,7 @@
 # https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
 #
 - name: Load data to places collection as the cyhy user
-  shell: /tmp/cyhy-places/scripts/load_places.sh
+  ansible.builtin.shell: /tmp/cyhy-places/scripts/load_places.sh
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
@@ -144,7 +144,7 @@
 # Cleanup
 #
 - name: Delete /tmp/cyhy-places
-  file:
+  ansible.builtin.file:
     path: /tmp/cyhy-places
     state: absent
 
@@ -152,7 +152,7 @@
 # Run cyhy-nvdsync daily at 0815 (UTC) as cyhy user
 #
 - name: Set up nightly cron job to sync NVD data
-  cron:
+  ansible.builtin.cron:
     name: Nightly cyhy-nvdsync
     hour: '8'
     minute: '15'
@@ -163,7 +163,7 @@
 # Run cyhy-kevsync daily at 0845 (UTC) as cyhy user
 #
 - name: Set up nightly cron job to sync KEV data
-  cron:
+  ansible.builtin.cron:
     name: Nightly cyhy-kevsync
     hour: '8'
     minute: '45'

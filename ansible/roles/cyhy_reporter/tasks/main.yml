@@ -5,12 +5,12 @@
 # Set up /etc/cyhy/cyhy.conf
 #
 - name: Create the /etc/cyhy directory
-  file:
+  ansible.builtin.file:
     path: /etc/cyhy
     state: directory
 
 - name: Create /etc/cyhy/cyhy.conf
-  copy:
+  ansible.builtin.copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy
     group: cyhy
@@ -33,7 +33,7 @@
 # Create cron job for snapshot, CyHy report, and CybEx scorecard generation
 #
 - name: Add /usr/local/bin to cron's path
-  cron:
+  ansible.builtin.cron:
     env: yes
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -45,7 +45,7 @@
 # Disable the reporting cron job for now until the BOD scanning and
 # the CyHy reporting share a common redis DB.
 # - name: Create a cron job for report generation
-#   cron:
+#   ansible.builtin.cron:
 #     name: "Snapshot, CyHy report, and CybEx scorecard generation"
 #     minute: '0'
 #     hour: '0'
@@ -59,7 +59,7 @@
 # it runs at 0800 UTC every day.
 #
 - name: Create cron job for daily CyHy notifications
-  cron:
+  ansible.builtin.cron:
     name: "Generate and send daily CyHy notifications"
     minute: '0'
     hour: '8'
@@ -71,7 +71,7 @@
 # Add dev users to the cyhy group
 #
 - name: Add development users to the cyhy group
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
     groups:
       - cyhy

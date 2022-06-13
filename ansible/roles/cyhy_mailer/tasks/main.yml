@@ -10,14 +10,14 @@
 # works in swarm mode.
 #
 - name: Create the secrets directory for cyhy-mailer
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/cyhy-mailer/secrets
     owner: cyhy
     group: cyhy
     state: directory
 
 - name: Create the cyhy-mailer credentials file to allow reading the cyhy database
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/cyhy-mailer/secrets/database_creds.yml
     owner: cyhy
     group: cyhy
@@ -30,7 +30,7 @@
         uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/cyhy-mailer/secrets/aws_config
     owner: cyhy
     group: cyhy
@@ -48,7 +48,7 @@
 # In our case we want to send the BOD 18-01 reports on the BOD docker
 # instance and the CyHy-related reports on the reporter instance.
 - name: Create a symlink for the docker-compose override file
-  file:
+  ansible.builtin.file:
     src: /var/cyhy/cyhy-mailer/{{ docker_compose_override_file_for_mailer }}
     path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
     state: link
@@ -60,7 +60,7 @@
 # Create a cron job for the sending of reports
 #
 # - name: Add /usr/local/bin to cron's path
-#   cron:
+#   ansible.builtin.cron:
 #     env: yes
 #     name: PATH
 #     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -68,7 +68,7 @@
 #   when: production_workspace
 #
 # - name: Create a cron job for sending BOD 18-01 reports
-#   cron:
+#   ansible.builtin.cron:
 #     name: "Sending BOD 18-01 reports"
 #     minute: 0
 #     hour: 12

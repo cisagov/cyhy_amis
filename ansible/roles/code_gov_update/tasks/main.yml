@@ -5,14 +5,14 @@
 # code_gov_update secrets
 #
 - name: Create the secrets directory
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/code-gov-update/secrets
     owner: cyhy
     group: cyhy
     state: directory
 
 - name: Create the llnl-scraper config
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/code-gov-update/secrets/scraper.json
     owner: cyhy
     group: cyhy
@@ -45,7 +45,7 @@
       }
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/code-gov-update/secrets/aws_config
     owner: cyhy
     group: cyhy
@@ -60,7 +60,7 @@
 # Create a cron job
 #
 - name: Add /usr/local/bin to cron's path
-  cron:
+  ansible.builtin.cron:
     env: yes
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -68,7 +68,7 @@
   when: production_workspace|bool
 # This cron job runs at midnight UTC on Friday mornings
 - name: Create a cron job for updating the code.gov JSON
-  cron:
+  ansible.builtin.cron:
     name: "code.gov update"
     minute: '0'
     hour: '0'

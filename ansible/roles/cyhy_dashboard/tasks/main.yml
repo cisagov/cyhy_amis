@@ -2,7 +2,7 @@
 # tasks file for cyhy_dashboard
 
 - name: Create /etc/cyhy directory
-  file:
+  ansible.builtin.file:
     path: /etc/cyhy
     state: directory
     owner: cyhy
@@ -10,7 +10,7 @@
     mode: 0750
 
 - name: Create /var/cyhy directory
-  file:
+  ansible.builtin.file:
     path: /var/cyhy
     state: directory
     owner: cyhy
@@ -18,7 +18,7 @@
     mode: 0750
 
 - name: Create /var/cyhy/web directory
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/web
     state: directory
     owner: cyhy
@@ -26,7 +26,7 @@
     mode: 0750
 
 - name: Create secret key file for webd
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/web/secret_key
     owner: cyhy
     group: cyhy
@@ -36,7 +36,7 @@
     ansible_ssh_pipelining: yes
 
 - name: Create random secret key for webd
-  shell: head -c 24 /dev/urandom > /var/cyhy/web/secret_key
+  ansible.builtin.shell: head -c 24 /dev/urandom > /var/cyhy/web/secret_key
   become_method: sudo
   become_user: cyhy
   vars:
@@ -46,7 +46,7 @@
 # Set up /etc/cyhy/cyhy.conf with commander creds
 #
 - name: Create /etc/cyhy/cyhy.conf with commander credentials
-  copy:
+  ansible.builtin.copy:
     dest: /etc/cyhy/cyhy.conf
     owner: cyhy
     group: cyhy
@@ -61,29 +61,29 @@
       database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
       database-name = {{ commander_db }}
 
-- make:
+- community.general.make:
     chdir: /var/cyhy/ncats-webui
     target: dev-build
   become: yes
 
 - name: Copy webd service file
-  template:
+  ansible.builtin.template:
     src: ncats-webd.service
     dest: /etc/systemd/system/ncats-webd.service
     mode: 644
 
 - name: Start webd service
-  service:
+  ansible.builtin.service:
     name: ncats-webd
     state: started
 
 - name: Copy webui service file
-  template:
+  ansible.builtin.template:
     src: ncats-webui.service
     dest: /etc/systemd/system/ncats-webui.service
     mode: 644
 
 - name: Start webui service
-  service:
+  ansible.builtin.service:
     name: ncats-webui
     state: started

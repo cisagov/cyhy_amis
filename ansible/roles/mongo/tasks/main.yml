@@ -1,7 +1,7 @@
 ---
 # tasks file for mongo
 - name: Check if any mongo users already exist
-  shell: mongo --eval 'db.getUsers()' admin
+  ansible.builtin.shell: mongo --eval 'db.getUsers()' admin
   ignore_errors: true
   register: checkifmongousers
   changed_when: false
@@ -9,12 +9,12 @@
 # HACK ALERT - Part 1:
 # Install pymongo 3.6 in order to use the Ansible mongodb_user module.
 - name: Install pymongo 3.6
-  pip:
+  ansible.builtin.pip:
     name: pymongo
     version: '3.6'
 
 - name: Create admin user in admin db (first user, no authentication)
-  mongodb_user:
+  community.mongodb.mongodb_user:
     database: "{{ admin_db }}"
     name: "{{ admin_user }}"
     password: "{{ admin_pw }}"
@@ -23,7 +23,7 @@
   when: checkifmongousers.rc == 0
 
 - name: Update admin user in admin db (authenticate as admin)
-  mongodb_user:
+  community.mongodb.mongodb_user:
     login_database: "{{ admin_db }}"
     login_user: "{{ admin_user }}"
     login_password: "{{ admin_old_pw }}"
@@ -35,7 +35,7 @@
   when: checkifmongousers.rc != 0
 
 - name: Update other users (authenticate as admin)
-  mongodb_user:
+  community.mongodb.mongodb_user:
     login_database: "{{ admin_db }}"
     login_user: "{{ admin_user }}"
     login_password: "{{ admin_pw }}"
@@ -50,17 +50,17 @@
 # HACK ALERT - Part 2:
 # Revert to older pymongo, needed for cyhy-core
 - name: Downgrade to pymongo 2.9.5
-  pip:
+  ansible.builtin.pip:
     name: pymongo
     version: 2.9.5
 
 - name: Copy mongo configuration file
-  template:
+  ansible.builtin.template:
     src: mongod.conf
     dest: /etc/mongod.conf
     mode: 0644
 
 - name: Restart mongod service to use new configuration
-  service:
+  ansible.builtin.service:
     name: mongod
     state: restarted

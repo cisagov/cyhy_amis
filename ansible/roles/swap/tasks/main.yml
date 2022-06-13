@@ -2,20 +2,20 @@
 # tasks file for swap
 
 - name: Allocate swapfile
-  command: fallocate --length {{ swapfile_size }} {{ swapfile_location }} creates={{ swapfile_location }}
+  ansible.builtin.command: fallocate --length {{ swapfile_size }} {{ swapfile_location }} creates={{ swapfile_location }}
   register: allocate_swapfile
 
 - name: Set swapfile permissions
-  file: path={{ swapfile_location }} mode=600
+  ansible.builtin.file: path={{ swapfile_location }} mode=600
 
 - name: Create swapfile
-  command: mkswap {{ swapfile_location }}
+  ansible.builtin.command: mkswap {{ swapfile_location }}
   register: create_swapfile
   when: allocate_swapfile.changed
 
 - name: Enable swapfile
-  command: swapon {{ swapfile_location }}
+  ansible.builtin.command: swapon {{ swapfile_location }}
   when: create_swapfile.changed
 
 - name: Add swapfile to /etc/fstab
-  lineinfile: dest=/etc/fstab line="{{ swapfile_location }}   none    swap    sw    0   0" state=present
+  ansible.builtin.lineinfile: dest=/etc/fstab line="{{ swapfile_location }}   none    swap    sw    0   0" state=present

@@ -2,7 +2,7 @@
 # tasks file for cyhy_feeds
 
 - name: Create cyhy-feeds config
-  copy:
+  ansible.builtin.copy:
     content: "{{ config }}"
     dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
     mode: 0444
@@ -13,7 +13,7 @@
 # Create the AWS config
 #
 - name: Create the AWS config
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/scripts/cyhy-feeds/aws_config
     owner: cyhy
     group: cyhy
@@ -33,7 +33,7 @@
 
 # reporter
 - name: Create cyhy.yml to store reporter db credentials
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/scripts/cyhy-feeds/cyhy.yml
     owner: cyhy
     group: cyhy
@@ -45,7 +45,7 @@
 
 # scan-reader
 - name: Create scan_reader.yml to store scan reader db credentials
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/scripts/cyhy-feeds/scan_reader.yml
     owner: cyhy
     group: cyhy
@@ -57,7 +57,7 @@
 
 # assessment-reader
 - name: Create assessment_reader.yml to store assessment reader db credentials
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml
     owner: cyhy
     group: cyhy
@@ -74,7 +74,7 @@
 # The --batch flag makes sure that gpg2 doesn't attempt to do anything
 # interactive.
 - name: Import gpg keys
-  shell: "echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
+  ansible.builtin.shell: "echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
@@ -90,7 +90,7 @@
   # The value stored in the Parameter Store has a newline so we trim the value
   # before quoting. A quoted newline causes a failure when gpg2 attempts to
   # import the owner trust.
-  shell: "echo {{ gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch"
+  ansible.builtin.shell: "echo {{ gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
@@ -108,7 +108,7 @@
 # https://github.com/cisagov/cyhy-feeds/pull/37
 #
 - name: Set up nightly cron job to sync NSD data for MOE extract
-  cron:
+  ansible.builtin.cron:
     name: Nightly cyhy extract
     hour: '0'
     minute: '0'

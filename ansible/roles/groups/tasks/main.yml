@@ -3,11 +3,11 @@
 
 # Grab the existing users and groups
 - name: Grab the existing users
-  getent:
+  ansible.builtin.getent:
     database: passwd
     fail_key: no
 - name: Grab the existing groups
-  getent:
+  ansible.builtin.getent:
     database: group
     fail_key: no
 
@@ -16,7 +16,7 @@
 # Add the cyhy user to the docker group, if they both exist
 #
 - name: Add the cyhy user to the docker group
-  user:
+  ansible.builtin.user:
     name: cyhy
     groups: docker
     append: yes
@@ -27,7 +27,7 @@
 # Add dev known users to the cyhy and docker groups, if they exist
 #
 - name: Add dev users to the cyhy group
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
     groups: cyhy
     append: yes
@@ -35,7 +35,7 @@
   when: getent_group.cyhy is defined
 
 - name: Add dev users to the docker group
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
     groups: docker
     append: yes

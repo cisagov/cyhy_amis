@@ -5,14 +5,14 @@
 # client_cert_update secrets
 #
 - name: Create the secrets directory
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/client-cert-update/secrets
     owner: cyhy
     group: cyhy
     state: directory
 
 - name: Create the credentials file to allow reading the scan database
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/client-cert-update/secrets/scan_read_creds.yml
     owner: cyhy
     group: cyhy
@@ -25,7 +25,7 @@
         uri: mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/client-cert-update/secrets/aws_config
     owner: cyhy
     group: cyhy
@@ -40,7 +40,7 @@
 # Create a cron job
 #
 - name: Add /usr/local/bin to cron's path
-  cron:
+  ansible.builtin.cron:
     env: yes
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -48,7 +48,7 @@
   when: production_workspace|bool
 # This cron job runs at 5AM UTC on Tuesday mornings
 - name: Create a cron job for updating the list of hosts that require client certs
-  cron:
+  ansible.builtin.cron:
     name: "client cert update"
     minute: '0'
     hour: '5'

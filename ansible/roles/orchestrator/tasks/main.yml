@@ -5,14 +5,14 @@
 # orchestrator secrets
 #
 - name: Create the secrets directory
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/orchestrator/secrets
     owner: cyhy
     group: cyhy
     state: directory
 
 - name: Create the credentials file to allow reading the cyhy database
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/orchestrator/secrets/cyhy_read_creds.yml
     owner: cyhy
     group: cyhy
@@ -25,7 +25,7 @@
         uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
 
 - name: Create the credentials file to allow reading the scan database
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/orchestrator/secrets/scan_read_creds.yml
     owner: cyhy
     group: cyhy
@@ -38,7 +38,7 @@
         uri: mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
 
 - name: Create the credentials file to allow writing to the scan database
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/orchestrator/secrets/scan_write_creds.yml
     owner: cyhy
     group: cyhy
@@ -51,7 +51,7 @@
         uri: mongodb://{{ scan_writer_user }}:{{ scan_writer_pw }}@database1.cyhy:27017/{{ scan_writer_db }}
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.copy:
     dest: /var/cyhy/orchestrator/secrets/aws_config
     owner: cyhy
     group: cyhy
@@ -69,7 +69,7 @@
 # Create a cron job for scanning
 #
 - name: Add /usr/local/bin to cron's path
-  cron:
+  ansible.builtin.cron:
     env: yes
     name: PATH
     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -78,7 +78,7 @@
 # This cron job runs at midnight UTC on Saturday mornings, so it
 # should be done by 2PM on Saturday.
 - name: Create a cron job for BOD 18-01 scanning
-  cron:
+  ansible.builtin.cron:
     name: "BOD 18-01 scanning"
     minute: '0'
     hour: '0'
