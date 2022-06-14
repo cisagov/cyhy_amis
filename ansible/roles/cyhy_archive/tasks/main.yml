@@ -5,23 +5,18 @@
 # they are copied to S3
 - name: Create the /var/lib/mongodb/cyhy_archives directory
   ansible.builtin.file:
-    path: /var/lib/mongodb/cyhy_archives
-    state: directory
-
-# Make cyhy owner of cyhy-archives directory
-- name: chown the cyhy_archives directory
-  ansible.builtin.file:
-    path: /var/lib/mongodb/cyhy_archives
-    owner: cyhy
     group: cyhy
+    mode: 0755
+    owner: cyhy
+    path: /var/lib/mongodb/cyhy_archives
     state: directory
 
 # Run cyhy-archive weekly on Saturday at 0500 (UTC) as cyhy user
 - name: Set up weekly cyhy-archive cron job
   ansible.builtin.cron:
-    name: Weekly cyhy-archive
-    weekday: '6'
     hour: '5'
-    minute: '0'
-    user: cyhy
     job: /var/cyhy/scripts/cyhy_archive.sh /var/lib/mongodb/cyhy_archives {{ cyhy_archive_s3_bucket_name }} {{ cyhy_archive_s3_bucket_region }} 2>&1 | /usr/bin/logger -t cyhy-archive
+    minute: '0'
+    name: Weekly cyhy-archive
+    user: cyhy
+    weekday: '6'
