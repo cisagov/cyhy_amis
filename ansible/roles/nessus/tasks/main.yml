@@ -7,12 +7,16 @@
 - name: Check if a license key is registered
   ansible.builtin.command: /opt/nessus/sbin/nessuscli fetch --check
   register: registered
+  # This is a read-only operation
+  changed_when: false
   failed_when: registered.rc not in [0, 1]
 
 - name: Retrieve the license key if one is registered
   block:
     - name: Get the registered license key
       ansible.builtin.command: /opt/nessus/sbin/nessuscli fetch --code-in-use
+      # This is a read-only operation
+      changed_when: false
       register: key_result
 
     - name: Extract the key in use
@@ -38,12 +42,18 @@
 
     - name: Register a license key
       ansible.builtin.command: "/opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}"
+      # This task is only run as part of a block that checks if a license key
+      # needs to be registered. Additionally the command gives no indication
+      # that a key is already registered when rerun.
+      changed_when: false
 
     #
     # Create the Nessus scanner user
     #
     - name: Grab the existing Nessus users
       ansible.builtin.command: /opt/nessus/sbin/nessuscli lsuser
+      # This is a read-only operation
+      changed_when: false
       register: users
 
     # The expect Ansible module requires pexpect
@@ -57,19 +67,25 @@
       ansible.builtin.expect:
         command: "/opt/nessus/sbin/nessuscli adduser {{ username }}"
         responses:
-          password: "{{ password }}"
           administrator: y
           BLANK: ""
+          password: "{{ password }}"
       when: username not in users.stdout
 
     - name: Update plugins
       ansible.builtin.command: /opt/nessus/sbin/nessuscli update --plugins-only
       async: 300
+      # This task is only run as part of a block that checks if a license key
+      # needs to be registered.
+      changed_when: false
       poll: 5
 
     - name: Rebuild the plugin database
       ansible.builtin.command: /opt/nessus/sbin/nessusd -R
       async: 1800
+      # This task is only run as part of a block that checks if a license key
+      # needs to be registered.
+      changed_when: false
       poll: 30
 
     - name: Start Nessus service
@@ -80,30 +96,31 @@
 
 - name: Create /etc/cyhy directory
   ansible.builtin.file:
-    path: /etc/cyhy
-    state: directory
-    owner: cyhy
     group: cyhy
     mode: 0750
+    owner: cyhy
+    path: /etc/cyhy
+    state: directory
 
 - name: Create the configuration file for Nessus API access
   ansible.builtin.template:
-    src: nessus_api.yml.j2
     dest: /etc/cyhy/nessus_api.yml
-    owner: cyhy
     group: cyhy
     mode: 0640
+    owner: cyhy
+    src: nessus_api.yml.j2
 
 - name: Copy the nessus_base.py Python file for configuring Nessus
   ansible.builtin.copy:
-    src: nessus_base.py
     dest: /tmp/nessus_base.py
     mode: 0644
+    src: nessus_base.py
 
 - name: Copy base Nessus scan policy to instance tmp
   ansible.builtin.template:
-    src: cyhy-base-nessus8-policy.xml.j2
     dest: /tmp/cyhy-base-nessus8-policy.xml
+    mode: 0644
+    src: cyhy-base-nessus8-policy.xml.j2
 
 - name: Wait for Nessus port to be open
   ansible.builtin.wait_for:
@@ -111,6 +128,8 @@
 
 - name: Run Nessus configuration script
   ansible.builtin.command: python3 /tmp/nessus_base.py
+  changed_when: "'Policy already exists' not in base_policy.stderr"
+  register: base_policy
 
 #
 # Clean up
