@@ -1,21 +1,38 @@
 ---
 # tasks file for swap
 
+#
+# Since these tasks rely on each other in a sequential fashion we disable the
+# no-handler test for ansible-lint for tasks that are dependent on a previous
+# task's completion.
+#
+
 - name: Allocate swapfile
-  ansible.builtin.command: fallocate --length {{ swapfile_size }} {{ swapfile_location }} creates={{ swapfile_location }}
+  ansible.builtin.command:
+    cmd: "fallocate --length {{ swapfile_size }} {{ swapfile_location }}"
+    creates: "{{ swapfile_location }}"
   register: allocate_swapfile
 
 - name: Set swapfile permissions
-  ansible.builtin.file: path={{ swapfile_location }} mode=600
+  ansible.builtin.file:
+    mode: 0600
+    path: "{{ swapfile_location }}"
 
 - name: Create swapfile
-  ansible.builtin.command: mkswap {{ swapfile_location }}
+  ansible.builtin.command: # noqa no-handler
+    cmd: mkswap {{ swapfile_location }}
   register: create_swapfile
-  when: allocate_swapfile.changed
+  when: allocate_swapfile is changed
 
 - name: Enable swapfile
-  ansible.builtin.command: swapon {{ swapfile_location }}
-  when: create_swapfile.changed
+  ansible.builtin.command: # noqa no-handler
+    cmd: swapon {{ swapfile_location }}
+  when: create_swapfile is changed
 
 - name: Add swapfile to /etc/fstab
-  ansible.builtin.lineinfile: dest=/etc/fstab line="{{ swapfile_location }}   none    swap    sw    0   0" state=present
+  ansible.posix.mount:
+    fstype: swap
+    name: none
+    opts: sw
+    src: "{{ swapfile_location }}"
+    state: present
