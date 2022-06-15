@@ -17,9 +17,9 @@
 #
 - name: Add the cyhy user to the docker group
   ansible.builtin.user:
-    name: cyhy
-    groups: docker
     append: yes
+    groups: docker
+    name: cyhy
   when: (getent_passwd.cyhy is defined) and (getent_group.docker is defined)
 
 
@@ -28,16 +28,16 @@
 #
 - name: Add dev users to the cyhy group
   ansible.builtin.user:
-    name: "{{ item }}"
-    groups: cyhy
     append: yes
+    groups: cyhy
+    name: "{{ item }}"
   loop: "{{ dev_users }}"
   when: getent_group.cyhy is defined
 
 - name: Add dev users to the docker group
   ansible.builtin.user:
-    name: "{{ item }}"
-    groups: docker
     append: yes
+    groups: docker
+    name: "{{ item }}"
   loop: "{{ dev_users }}"
   when: getent_group.docker is defined
