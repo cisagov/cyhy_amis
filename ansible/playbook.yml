@@ -56,7 +56,9 @@
   become_method: sudo
   roles:
     - cyhy_commander
-    - {role: swap, swapfile_size: 2GiB}
+    - role: swap
+      vars:
+        swapfile_size: 2GiB
     - cyhy_logrotate
 
 - hosts: nmap
@@ -64,7 +66,9 @@
   become: yes
   become_method: sudo
   roles:
-    - { role: swap, swapfile_size: 4GiB}
+    - role: swap
+      vars:
+        swapfile_size: 4GiB
 
 - hosts: cyhy_runner
   name: Configure cyhy-runner hosts
