@@ -5,76 +5,63 @@
   ansible.builtin.copy:
     content: "{{ config }}"
     dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
+    group: cyhy
     mode: 0444
     owner: cyhy
-    group: cyhy
 
 #
 # Create the AWS config
 #
 - name: Create the AWS config
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /var/cyhy/scripts/cyhy-feeds/aws_config
-    owner: cyhy
     group: cyhy
     mode: 0440
-    content: |
-      [default]
-      region = {{ aws_region }}
-
-      [profile elasticsearch]
-      credential_source = Ec2InstanceMetadata
-      region = {{ dmarc_import_aws_region }}
-      role_arn = {{ dmarc_import_es_role }}
+    owner: cyhy
+    src: aws_config.j2
 
 #
 # Create yml files for db access
 #
 
-# reporter
-- name: Create cyhy.yml to store reporter db credentials
-  ansible.builtin.copy:
-    dest: /var/cyhy/scripts/cyhy-feeds/cyhy.yml
-    owner: cyhy
+- name: Create files with MongoDB credentials
+  ansible.builtin.template:
+    dest: "/var/cyhy/scripts/cyhy-feeds/{{ item.filename }}"
     group: cyhy
     mode: 0660
-    content: |
-      database:
-        uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
-        name: {{ reporter_db }}
-
-# scan-reader
-- name: Create scan_reader.yml to store scan reader db credentials
-  ansible.builtin.copy:
-    dest: /var/cyhy/scripts/cyhy-feeds/scan_reader.yml
     owner: cyhy
-    group: cyhy
-    mode: 0660
-    content: |
-      database:
-        uri: mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
-        name: {{ scan_reader_db }}
-
-# assessment-reader
-- name: Create assessment_reader.yml to store assessment reader db credentials
-  ansible.builtin.copy:
-    dest: /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml
-    owner: cyhy
-    group: cyhy
-    mode: 0660
-    content: |
-      database:
-        uri: mongodb://{{ assessment_read_user }}:{{ assessment_read_pw }}@database1.cyhy:27017/{{ assessment_read_db }}
-        name: {{ assessment_read_db }}
+    src: mongodb_credentials.yml.j2
+  loop:
+    # reporter
+    - database: "{{ reporter_db }}"
+      filename: cyhy.yml
+      username: "{{ reporter_user }}"
+      password: "{{ reporter_pw }}"
+    # scan-reader
+    - database: "{{ scan_reader_db }}"
+      filename: scan_reader.yml
+      username: "{{ scan_reader_user }}"
+      password: "{{ scan_reader_pw }}"
+    # assessment-reader
+    - database: "{{ assessment_read_db }}"
+      filename: assessment_reader.yml
+      username: "{{ assessment_read_user }}"
+      password: "{{ assessment_read_pw }}"
+  loop_control:
+    label: "{{ item.filename }}"
 
 #
 # Import keys and trust
+#
+# Note we disable the no-changed-when check for ansible-lint because a
+# provisioner rerun should update GPG key information.
 #
 
 # The --batch flag makes sure that gpg2 doesn't attempt to do anything
 # interactive.
 - name: Import gpg keys
-  ansible.builtin.shell: "echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
+  ansible.builtin.shell: # noqa no-changed-when
+    cmd: "echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
@@ -90,7 +77,8 @@
   # The value stored in the Parameter Store has a newline so we trim the value
   # before quoting. A quoted newline causes a failure when gpg2 attempts to
   # import the owner trust.
-  ansible.builtin.shell: "echo {{ gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch"
+  ansible.builtin.shell: # noqa no-changed-when
+    cmd: "echo {{ gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch"
   become_user: cyhy
   vars:
     ansible_ssh_pipelining: yes
@@ -109,9 +97,9 @@
 #
 - name: Set up nightly cron job to sync NSD data for MOE extract
   ansible.builtin.cron:
-    name: Nightly cyhy extract
     hour: '0'
-    minute: '0'
-    user: cyhy
     job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python2.7 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy-config /var/cyhy/scripts/cyhy-feeds/cyhy.yml --scan-config /var/cyhy/scripts/cyhy-feeds/scan_reader.yml --assessment-config /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml --aws --cleanup-aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger -t cyhy-feeds
+    minute: '0'
+    name: Nightly cyhy extract
+    user: cyhy
   when: production_workspace|bool
