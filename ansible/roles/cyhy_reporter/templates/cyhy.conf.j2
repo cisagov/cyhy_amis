@@ -1,0 +1,12 @@
+[DEFAULT]
+default-section = cyhy
+database-uri = mongodb://database1.cyhy:27017/
+report-key = {{ master_report_key }}
+
+[cyhy]
+database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
+database-name = {{ commander_db }}
+
+[scan]
+database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+database-name = {{ scan_reader_db }}

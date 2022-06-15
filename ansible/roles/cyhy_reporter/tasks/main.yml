@@ -6,28 +6,17 @@
 #
 - name: Create the /etc/cyhy directory
   ansible.builtin.file:
+    mode: 0755
     path: /etc/cyhy
     state: directory
 
 - name: Create /etc/cyhy/cyhy.conf
-  ansible.builtin.copy:
+  ansible.builtin.template:
     dest: /etc/cyhy/cyhy.conf
-    owner: cyhy
     group: cyhy
     mode: 0660
-    content: |
-      [DEFAULT]
-      default-section = cyhy
-      database-uri = mongodb://database1.cyhy:27017/
-      report-key = {{ master_report_key }}
-
-      [cyhy]
-      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
-      database-name = {{ commander_db }}
-
-      [scan]
-      database-uri = mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
-      database-name = {{ scan_reader_db }}
+    owner: cyhy
+    src: cyhy.conf.j2
 
 #
 # Create cron job for snapshot, CyHy report, and CybEx scorecard generation
@@ -36,8 +25,8 @@
   ansible.builtin.cron:
     env: yes
     name: PATH
-    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
     user: cyhy
+    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
   when: production_workspace|bool
 # This cron job runs at midnight UTC on Sunday mornings.  The BOD
 # scanning is long since completed by that time.
@@ -46,12 +35,12 @@
 # the CyHy reporting share a common redis DB.
 # - name: Create a cron job for report generation
 #   ansible.builtin.cron:
-#     name: "Snapshot, CyHy report, and CybEx scorecard generation"
-#     minute: '0'
 #     hour: '0'
-#     weekday: '0'
-#     user: cyhy
 #     job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
+#     minute: '0'
+#     name: "Snapshot, CyHy report, and CybEx scorecard generation"
+#     user: cyhy
+#     weekday: '0'
 #   when: production_workspace|bool
 
 #
@@ -60,11 +49,11 @@
 #
 - name: Create cron job for daily CyHy notifications
   ansible.builtin.cron:
-    name: "Generate and send daily CyHy notifications"
-    minute: '0'
     hour: '8'
-    user: cyhy
     job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
+    minute: '0'
+    name: "Generate and send daily CyHy notifications"
+    user: cyhy
   when: production_workspace|bool
 
 #
@@ -72,8 +61,8 @@
 #
 - name: Add development users to the cyhy group
   ansible.builtin.user:
-    name: "{{ item }}"
+    append: yes
     groups:
       - cyhy
-    append: yes
+    name: "{{ item }}"
   loop: "{{ dev_users }}"
