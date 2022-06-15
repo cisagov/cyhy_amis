@@ -1,15 +1,16 @@
 ---
 # tasks file for mongo
 - name: Check if any mongo users already exist
-  ansible.builtin.shell: mongo --eval 'db.getUsers()' admin
+  ansible.builtin.command: mongo --eval 'db.getUsers()' admin
+  changed_when: false
   ignore_errors: true
   register: checkifmongousers
-  changed_when: false
 
 # HACK ALERT - Part 1:
 # Install pymongo 3.6 in order to use the Ansible mongodb_user module.
 - name: Install pymongo 3.6
   ansible.builtin.pip:
+    executable: /usr/bin/pip2
     name: pymongo
     version: '3.6'
 
@@ -24,10 +25,10 @@
 
 - name: Update admin user in admin db (authenticate as admin)
   community.mongodb.mongodb_user:
-    login_database: "{{ admin_db }}"
-    login_user: "{{ admin_user }}"
-    login_password: "{{ admin_old_pw }}"
     database: "{{ admin_db }}"
+    login_database: "{{ admin_db }}"
+    login_password: "{{ admin_old_pw }}"
+    login_user: "{{ admin_user }}"
     name: "{{ admin_user }}"
     password: "{{ admin_pw }}"
     roles: "{{ admin_roles }}"
@@ -36,29 +37,36 @@
 
 - name: Update other users (authenticate as admin)
   community.mongodb.mongodb_user:
+    database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/database') }}"
     login_database: "{{ admin_db }}"
-    login_user: "{{ admin_user }}"
     login_password: "{{ admin_pw }}"
-    database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/database') }}"
-    name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/user') }}"
-    password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/password') }}"
-    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/roles').split(',') }}"
+    login_user: "{{ admin_user }}"
+    name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/user') }}"
+    password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/password') }}"
+    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/roles').split(',') }}"
     state: present
   # Loop over all the users *except* for admin
   loop: "{{ non_admin_users }}"
+  # ansible-lint throws a no-log-password on this task likely because
+  # it is a module that needs password information and we are using a
+  # loop. I would rather default to disabling logging than possibly
+  # miss an edge case like error output on task failure that would leak
+  # password information by disabling the rule.
+  no_log: true
 
 # HACK ALERT - Part 2:
 # Revert to older pymongo, needed for cyhy-core
 - name: Downgrade to pymongo 2.9.5
   ansible.builtin.pip:
+    executable: /usr/bin/pip2
     name: pymongo
-    version: 2.9.5
+    version: '2.9.5'
 
 - name: Copy mongo configuration file
   ansible.builtin.template:
-    src: mongod.conf
     dest: /etc/mongod.conf
     mode: 0644
+    src: mongod.conf
 
 - name: Restart mongod service to use new configuration
   ansible.builtin.service:
