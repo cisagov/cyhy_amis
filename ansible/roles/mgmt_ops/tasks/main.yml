@@ -11,10 +11,10 @@
 # Make sure the /home/mgmt_ops/.ssh directory exists
 - name: Create the /home/mgmt_ops/.ssh directory
   ansible.builtin.file:
-    path: /home/mgmt_ops/.ssh
-    owner: mgmt_ops
     group: mgmt_ops
     mode: 0700
+    owner: mgmt_ops
+    path: /home/mgmt_ops/.ssh
     state: directory
 
 #
@@ -22,10 +22,10 @@
 #
 - name: Create .ssh/authorized_keys file for mgmt_ops
   ansible.builtin.lineinfile:
-    path: /home/mgmt_ops/.ssh/authorized_keys
-    line: "{{ lookup('aws_ssm', '/ssh/public_keys/{{ item }}') }}"
     create: yes
-    owner: mgmt_ops
     group: mgmt_ops
+    line: "{{ lookup('aws_ssm', '/ssh/public_keys/' + item) }}"
     mode: 0600
+    owner: mgmt_ops
+    path: /home/mgmt_ops/.ssh/authorized_keys
   loop: "{{ ops_users }}"
