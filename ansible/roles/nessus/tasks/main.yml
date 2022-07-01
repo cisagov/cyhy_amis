@@ -41,11 +41,11 @@
         state: stopped
 
     - name: Register a license key
-      ansible.builtin.command: "/opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}"
       # This task is only run as part of a block that checks if a license key
       # needs to be registered. Additionally the command gives no indication
       # that a key is already registered when rerun.
-      changed_when: false
+      ansible.builtin.command: # noqa no-changed-when
+        cmd: "/opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}"
 
     #
     # Create the Nessus scanner user
@@ -73,19 +73,21 @@
       when: username not in users.stdout
 
     - name: Update plugins
-      ansible.builtin.command: /opt/nessus/sbin/nessuscli update --plugins-only
-      async: 300
       # This task is only run as part of a block that checks if a license key
-      # needs to be registered.
-      changed_when: false
+      # needs to be registered. It will always pull any plugin updates available
+      # when run.
+      ansible.builtin.command: # noqa no-changed-when
+        cmd: /opt/nessus/sbin/nessuscli update --plugins-only
+      async: 300
       poll: 5
 
     - name: Rebuild the plugin database
-      ansible.builtin.command: /opt/nessus/sbin/nessusd -R
-      async: 1800
       # This task is only run as part of a block that checks if a license key
-      # needs to be registered.
-      changed_when: false
+      # needs to be registered. It will always rebuild the plugin database when
+      # run.
+      ansible.builtin.command: # noqa no-changed-when
+        cmd: /opt/nessus/sbin/nessusd -R
+      async: 1800
       poll: 30
 
     - name: Start Nessus service

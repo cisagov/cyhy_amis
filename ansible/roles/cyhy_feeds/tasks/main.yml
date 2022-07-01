@@ -60,11 +60,10 @@
 # The --batch flag makes sure that gpg2 doesn't attempt to do anything
 # interactive.
 - name: Import gpg keys
-  ansible.builtin.shell: # noqa no-changed-when
+  ansible.builtin.shell:
     cmd: "echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch"
   become_user: cyhy
-  vars:
-    ansible_ssh_pipelining: yes
+  changed_when: "'imported: 1' in import_gpg_key.stderr"
   loop:
     - "{{ ncps_ae_public_gpg_key }}"
     - "{{ nsd_public_gpg_key }}"
@@ -72,14 +71,19 @@
     - "{{ public_gpg_key }}"
   loop_control:
     label: "<key redacted>"
+  register: import_gpg_key
+  vars:
+    ansible_ssh_pipelining: yes
 
 - name: Import gpg trust
   # The value stored in the Parameter Store has a newline so we trim the value
   # before quoting. A quoted newline causes a failure when gpg2 attempts to
   # import the owner trust.
-  ansible.builtin.shell: # noqa no-changed-when
+  ansible.builtin.shell:
     cmd: "echo {{ gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch"
   become_user: cyhy
+  changed_when: "'inserting ownertrust' in import_gpg_ownertrust.stderr"
+  register: import_gpg_ownertrust
   vars:
     ansible_ssh_pipelining: yes
 

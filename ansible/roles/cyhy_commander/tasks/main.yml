@@ -119,7 +119,7 @@
 # https://docs.ansible.com/ansible/latest/user_guide/become.html#becoming-an-unprivileged-user
 #
 # When rerun this updates the "places" collection with the latest information
-# so we disable the no-changed-when check.
+# with no indication of whether or not data in the collection has changed.
 - name: Load data to places collection as the cyhy user
   ansible.builtin.command: # noqa no-changed-when
     cmd: /tmp/cyhy-places/scripts/load_places.sh
