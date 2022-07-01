@@ -40,12 +40,12 @@ repos:
     rev: v2.6.1
     hooks:
       - id: prettier
-  # - repo: https://github.com/adrienverge/yamllint
-  #   rev: v1.26.3
-  #   hooks:
-  #     - id: yamllint
-  #       args:
-  #         - --strict
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.26.3
+    hooks:
+      - id: yamllint
+        args:
+          - --strict
 
   # GitHub Actions hooks
   - repo: https://github.com/python-jsonschema/check-jsonschema
