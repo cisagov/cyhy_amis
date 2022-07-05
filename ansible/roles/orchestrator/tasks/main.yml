@@ -50,21 +50,23 @@
 #
 # Create a cron job for scanning
 #
-- name: Add /usr/local/bin to cron's path
-  ansible.builtin.cron:
-    env: yes
-    name: PATH
-    user: cyhy
-    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-  when: production_workspace|bool
-# This cron job runs at midnight UTC on Saturday mornings, so it
-# should be done by 2PM on Saturday.
-- name: Create a cron job for BOD 18-01 scanning
-  ansible.builtin.cron:
-    hour: '0'
-    job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
-    minute: '0'
-    name: "BOD 18-01 scanning"
-    user: cyhy
-    weekday: '6'
+- name: Create the cron job
+  block:
+    - name: Add /usr/local/bin to cron's path
+      ansible.builtin.cron:
+        env: yes
+        name: PATH
+        user: cyhy
+        value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+    # This cron job runs at midnight UTC on Saturday mornings, so it
+    # should be done by 2PM on Saturday.
+    - name: Create a cron job for BOD 18-01 scanning
+      ansible.builtin.cron:
+        hour: '0'
+        job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
+        minute: '0'
+        name: "BOD 18-01 scanning"
+        user: cyhy
+        weekday: '6'
   when: production_workspace|bool

@@ -21,39 +21,40 @@
 #
 # Create cron job for snapshot, CyHy report, and CybEx scorecard generation
 #
-- name: Add /usr/local/bin to cron's path
-  ansible.builtin.cron:
-    env: yes
-    name: PATH
-    user: cyhy
-    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-  when: production_workspace|bool
-# This cron job runs at midnight UTC on Sunday mornings.  The BOD
-# scanning is long since completed by that time.
-#
-# Disable the reporting cron job for now until the BOD scanning and
-# the CyHy reporting share a common redis DB.
-# - name: Create a cron job for report generation
-#   ansible.builtin.cron:
-#     hour: '0'
-#     job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
-#     minute: '0'
-#     name: "Snapshot, CyHy report, and CybEx scorecard generation"
-#     user: cyhy
-#     weekday: '0'
-#   when: production_workspace|bool
+- name: Create the cron job
+  block:
+    - name: Add /usr/local/bin to cron's path
+      ansible.builtin.cron:
+        env: yes
+        name: PATH
+        user: cyhy
+        value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
-#
-# The cron job below generates and emails CyHy notifications;
-# it runs at 0800 UTC every day.
-#
-- name: Create cron job for daily CyHy notifications
-  ansible.builtin.cron:
-    hour: '8'
-    job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
-    minute: '0'
-    name: "Generate and send daily CyHy notifications"
-    user: cyhy
+    # This cron job runs at midnight UTC on Sunday mornings.  The BOD
+    # scanning is long since completed by that time.
+
+    # Disable the reporting cron job for now until the BOD scanning and
+    # the CyHy reporting share a common redis DB.
+    # - name: Create a cron job for report generation
+    #   ansible.builtin.cron:
+    #     hour: '0'
+    #     job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
+    #     minute: '0'
+    #     name: "Snapshot, CyHy report, and CybEx scorecard generation"
+    #     user: cyhy
+    #     weekday: '0'
+
+    #
+    # The cron job below generates and emails CyHy notifications;
+    # it runs at 0800 UTC every day.
+    #
+    - name: Create cron job for daily CyHy notifications
+      ansible.builtin.cron:
+        hour: '8'
+        job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
+        minute: '0'
+        name: "Generate and send daily CyHy notifications"
+        user: cyhy
   when: production_workspace|bool
 
 #

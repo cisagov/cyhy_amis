@@ -51,20 +51,21 @@
 #
 # Create a cron job for the sending of reports
 #
-# - name: Add /usr/local/bin to cron's path
-#   ansible.builtin.cron:
-#     env: yes
-#     name: PATH
-#     user: cyhy
-#     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-#   when: production_workspace
-#
-# - name: Create a cron job for sending BOD 18-01 reports
-#   ansible.builtin.cron:
-#     hour: 12
-#     job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
-#     minute: 0
-#     name: "Sending BOD 18-01 reports"
-#     user: cyhy
-#     weekday: 1
+# - name: Create the cron job
+#   block:
+#     - name: Add /usr/local/bin to cron's path
+#       ansible.builtin.cron:
+#         env: yes
+#         name: PATH
+#         user: cyhy
+#         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+#     - name: Create a cron job for sending BOD 18-01 reports
+#       ansible.builtin.cron:
+#         hour: 12
+#         job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
+#         minute: 0
+#         name: "Sending BOD 18-01 reports"
+#         user: cyhy
+#         weekday: 1
 #   when: production_workspace
