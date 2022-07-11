@@ -44,7 +44,8 @@ HEADER = """###
 # The following CIDR blocks are where our Cyber Hygiene scans
 # originate from:
 cyhy_ips = (
-    "52.6.133.213/32",  # CyHy "manual scan" instance (env2)
+    "52.86.228.163/32",  # CyHy "manual scan" Nessus instance (env2)
+    "54.145.197.20/32",  # CyHy "manual scan" Nexpose instance (env2)
     "64.69.57.0/24",
     "100.27.42.128/25",
 )
