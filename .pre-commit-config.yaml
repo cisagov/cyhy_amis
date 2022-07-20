@@ -127,10 +127,10 @@ repos:
       - id: terraform_validate
 
   # Docker hooks
-  # - repo: https://github.com/IamTheFij/docker-pre-commit
-  #   rev: v2.1.0
-  #   hooks:
-  #     - id: docker-compose-check
+  - repo: https://github.com/IamTheFij/docker-pre-commit
+    rev: v2.1.0
+    hooks:
+      - id: docker-compose-check
 
   # Packer hooks
   - repo: https://github.com/cisagov/pre-commit-packer
