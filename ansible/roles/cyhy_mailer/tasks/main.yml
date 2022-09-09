@@ -5,8 +5,8 @@
 # cyhy-mailer secrets
 #
 # The cyhy-mailer container does not run as root, so the creds files
-# need to be globally readable.  The Docker composition does allow one
-# to specify the uid, gid, and mode of the secrets files, but that
+# need to be globally readable.  The Compose specification does allow
+# one to specify the uid, gid, and mode of the secrets files, but that
 # only works in swarm mode.
 #
 - name: Create the secrets directory for cyhy-mailer
