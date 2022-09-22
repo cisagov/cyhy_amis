@@ -51,7 +51,7 @@
     - role: nessus
       vars:
         package_bucket: ncats-3rd-party-packages
-        version: "8.15.5"
+        version: "10.3.0"
     - more_ephemeral_ports
 
 - hosts: bod
