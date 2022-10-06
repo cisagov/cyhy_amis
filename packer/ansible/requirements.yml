@@ -64,10 +64,8 @@
   name: persist_journald
 - src: https://github.com/cisagov/ansible-role-pip
   name: pip
-  version: improvement/control-installation-of-pip2-via-role-var
 - src: https://github.com/cisagov/ansible-role-python
   name: python
-  version: improvement/control-installation-of-python2-via-role-var
 - src: https://github.com/cisagov/ansible-role-remove-python2
   name: remove_python2
   version: improvement/remove_python2_on_all_platforms
