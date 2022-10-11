@@ -16,6 +16,14 @@ BASE_POLICY_NAME = "cyhy-base"
 BASE_POLICY_FILE_NAME = "/tmp/cyhy-base-nessus8-policy.xml"  # nosec
 
 DEBUG = False
+
+ADVANCED_SETTINGS = "/settings/advanced"
+ADVANCED_SETTINGS_DICT = {
+    "orphaned_scan_cleanup_days": "7",
+    "report_cleanup_threshold_days": "7",
+    "scan_history_expiration_days": "7",
+}
+
 FILE_UPLOAD = "/file/upload"
 LOGIN = "/session"
 POLICY_BASE = "/policies"
