@@ -181,6 +181,31 @@ class NessusController:
         LOGGER.critical("Maximum retry attempts reached without success.")
         sys.exit(num_retries)
 
+    def configure_advanced_settings(self, advanced_settings):
+        """Configure Nessus advanced settings."""
+        for setting_name, setting_value in advanced_settings.items():
+            LOGGER.info("Configuring advanced setting: %s", setting_name)
+            response = self.__make_request(
+                ADVANCED_SETTINGS,
+                "PUT",
+                payload={
+                    "setting.0.action": "edit",
+                    "setting.0.name": setting_name,
+                    "setting.0.value": setting_value,
+                },
+            )
+
+            if response.status_code == OK_STATUS:
+                LOGGER.info("Successfully set %s to %s", setting_name, setting_value)
+            else:
+                LOGGER.error(
+                    "Failed to configure advanced setting: %s; response=%s",
+                    setting_name,
+                    response.text,
+                )
+                return None
+        return response
+
     def find_policy(self, policy_name):
         """Attempt to grab the policy ID for a name."""
         policies = self.policy_list()
@@ -224,12 +249,19 @@ class NessusController:
 
 
 def main():
-    """Create a base policy using the running Nessus web interface."""
+    """Configure settings and create a base policy via the Nessus API."""
     setup_logging()
     LOGGER.info("Nessus job starting")
 
     LOGGER.info("Instantiating Nessus controller at: %s", URL)
     controller = NessusController(URL)
+
+    # configure advanced settings
+    LOGGER.info("Configuring advanced settings")
+    if not controller.configure_advanced_settings(ADVANCED_SETTINGS_DICT):
+        LOGGER.error("Advanced settings configuration failed")
+        return -1
+    LOGGER.info("Advanced settings successfully configured")
 
     # create new policy
     LOGGER.info("Creating new policy based on base policy")
