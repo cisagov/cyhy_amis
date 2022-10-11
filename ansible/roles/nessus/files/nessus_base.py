@@ -16,13 +16,14 @@ BASE_POLICY_NAME = "cyhy-base"
 BASE_POLICY_FILE_NAME = "/tmp/cyhy-base-nessus8-policy.xml"  # nosec
 
 DEBUG = False
+FILE_UPLOAD = "/file/upload"
 LOGIN = "/session"
 POLICY_BASE = "/policies"
-FILE_UPLOAD = "/file/upload"
 POLICY_IMPORT = "/policies/import"
-OK_STATUS = 200
-NOT_FOUND_STATUS = 404
+
 INVALID_CREDS_STATUS = 401
+NOT_FOUND_STATUS = 404
+OK_STATUS = 200
 
 LOGGER_FORMAT = "%(asctime)-15s %(levelname)s %(message)s"
 LOGGER_LEVEL = logging.INFO
