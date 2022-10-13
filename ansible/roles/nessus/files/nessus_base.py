@@ -16,13 +16,22 @@ BASE_POLICY_NAME = "cyhy-base"
 BASE_POLICY_FILE_NAME = "/tmp/cyhy-base-nessus8-policy.xml"  # nosec
 
 DEBUG = False
+
+ADVANCED_SETTINGS = "/settings/advanced"
+ADVANCED_SETTINGS_DICT = {
+    "orphaned_scan_cleanup_days": "7",
+    "report_cleanup_threshold_days": "7",
+    "scan_history_expiration_days": "7",
+}
+
+FILE_UPLOAD = "/file/upload"
 LOGIN = "/session"
 POLICY_BASE = "/policies"
-FILE_UPLOAD = "/file/upload"
 POLICY_IMPORT = "/policies/import"
-OK_STATUS = 200
-NOT_FOUND_STATUS = 404
+
 INVALID_CREDS_STATUS = 401
+NOT_FOUND_STATUS = 404
+OK_STATUS = 200
 
 LOGGER_FORMAT = "%(asctime)-15s %(levelname)s %(message)s"
 LOGGER_LEVEL = logging.INFO
@@ -172,6 +181,31 @@ class NessusController:
         LOGGER.critical("Maximum retry attempts reached without success.")
         sys.exit(num_retries)
 
+    def configure_advanced_settings(self, advanced_settings):
+        """Configure Nessus advanced settings."""
+        for setting_name, setting_value in advanced_settings.items():
+            LOGGER.info("Configuring advanced setting: %s", setting_name)
+            response = self.__make_request(
+                ADVANCED_SETTINGS,
+                "PUT",
+                payload={
+                    "setting.0.action": "edit",
+                    "setting.0.name": setting_name,
+                    "setting.0.value": setting_value,
+                },
+            )
+
+            if response.status_code == OK_STATUS:
+                LOGGER.info("Successfully set %s to %s", setting_name, setting_value)
+            else:
+                LOGGER.error(
+                    "Failed to configure advanced setting: %s; response=%s",
+                    setting_name,
+                    response.text,
+                )
+                return None
+        return response
+
     def find_policy(self, policy_name):
         """Attempt to grab the policy ID for a name."""
         policies = self.policy_list()
@@ -215,12 +249,19 @@ class NessusController:
 
 
 def main():
-    """Create a base policy using the running Nessus web interface."""
+    """Configure settings and create a base policy via the Nessus API."""
     setup_logging()
     LOGGER.info("Nessus job starting")
 
     LOGGER.info("Instantiating Nessus controller at: %s", URL)
     controller = NessusController(URL)
+
+    # configure advanced settings
+    LOGGER.info("Configuring advanced settings")
+    if not controller.configure_advanced_settings(ADVANCED_SETTINGS_DICT):
+        LOGGER.error("Advanced settings configuration failed")
+        return -1
+    LOGGER.info("Advanced settings successfully configured")
 
     # create new policy
     LOGGER.info("Creating new policy based on base policy")
