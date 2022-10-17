@@ -6,34 +6,14 @@
   roles:
     - role: pip
       vars:
-        # Install pip2 for all instances that will run Python 2
-        # CyHy code.  Right now this is all instances other than the
-        # bastion, docker, nessus, and nmap instances.
-        #
-        # Note that we are joining the hostnames via a pipe character,
-        # which is a disallowed character in a hostname; therefore, if
-        # search() finds a match we know that it matches one of the
-        # strings in the list.  In other words, there is no chance
-        # that a hostname could match the end of one string, plus a
-        # pipe, plus the beginning of the next string.  This is what
-        # allows us to do the search in one fell swoop as opposed to
-        # writing multiple checks against individual hostnames.
-        install_pip2: inventory_hostname_short is not search({{ ["bastion", "docker", "nessus", "nmap"] | join("|") }})
+        # Install pip2 for all images that will run Python 2 CyHy code.
+        # Right now these are the dashboard, mongo, and reporter AMIs.
+        install_pip2: "{{ inventory_hostname_short is in ['dashboard', 'mongo', 'reporter'] }}"
     - role: python
       vars:
-        # Install Python 2 for all instances that will run Python 2
-        # CyHy code.  Right now this is all instances other than the
-        # bastion, docker, nessus, and nmap instances.
-        #
-        # Note that we are joining the hostnames via a pipe character,
-        # which is a disallowed character in a hostname; therefore, if
-        # search() finds a match we know that it matches one of the
-        # strings in the list.  In other words, there is no chance
-        # that a hostname could match the end of one string, plus a
-        # pipe, plus the beginning of the next string.  This is what
-        # allows us to do the search in one fell swoop as opposed to
-        # writing multiple checks against individual hostnames.
-        install_python2: inventory_hostname_short is not search({{ ["bastion", "docker", "nessus", "nmap"] | join("|") }})
+        # Install Python 2 for images that will run Python 2 CyHy code.
+        # Right now these are the dashboard, mongo, and reporter AMIs.
+        install_python2: "{{ inventory_hostname_short is in ['dashboard', 'mongo', 'reporter'] }}"
 
 # Any instances that are not built on Amazon Linux 2 and don't require
 # Python 2 should have it removed.
