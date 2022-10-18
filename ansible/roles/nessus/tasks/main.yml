@@ -94,14 +94,13 @@
     group: cyhy
     mode: 0640
 
-# Copy the nessus_base.py to tmp
-- name: Copy the nessus_base python file for importing the base nessus policy
+- name: Copy the nessus_base.py Python file for configuring Nessus
   copy:
     src: nessus_base.py
     dest: /tmp/nessus_base.py
     mode: 0644
 
-- name: Copy base nessus scan policy to instance tmp
+- name: Copy base Nessus scan policy to instance tmp
   template:
     src: cyhy-base-nessus8-policy.xml.j2
     dest: /tmp/cyhy-base-nessus8-policy.xml
@@ -110,7 +109,7 @@
   wait_for:
     port: 8834
 
-- name: Run nessus base policy import script
+- name: Run Nessus configuration script
   command: python3 /tmp/nessus_base.py
 
 #
