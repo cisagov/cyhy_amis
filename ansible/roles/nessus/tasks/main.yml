@@ -101,20 +101,6 @@
     dest: /tmp/nessus_base.py
     mode: 0644
 
-- name: Configure nessus base policy to use nessus username
-  lineinfile:
-    dest: /tmp/nessus_base.py
-    regexp: 'USER = ""'
-    state: present
-    line: 'USER = "{{ username }}"'
-
-- name: Configure nessus base policy to use nessus password
-  lineinfile:
-    dest: /tmp/nessus_base.py
-    regexp: 'PASSWORD = ""'
-    state: present
-    line: 'PASSWORD = "{{ password }}"'
-
 - name: Copy base nessus scan policy to instance tmp
   template:
     src: cyhy-base-nessus8-policy.xml.j2
