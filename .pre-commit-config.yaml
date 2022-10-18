@@ -85,14 +85,16 @@ repos:
     rev: 1.7.4
     hooks:
       - id: bandit
+        additional_dependencies:
+          - importlib-metadata<5
         args:
           - --config=.bandit.yml
   - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
       - id: black
-  - repo: https://gitlab.com/pycqa/flake8
-    rev: 3.9.2
+  - repo: https://github.com/PyCQA/flake8
+    rev: 5.0.4
     hooks:
       - id: flake8
         additional_dependencies:
