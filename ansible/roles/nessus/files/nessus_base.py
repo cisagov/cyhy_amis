@@ -8,12 +8,9 @@ import time
 
 # Third-Party Libraries
 import requests
+import yaml
 
-USER = ""
-PASSWORD = ""  # nosec
-URL = "https://localhost:8834"
-BASE_POLICY_NAME = "cyhy-base"
-BASE_POLICY_FILE_NAME = "/tmp/cyhy-base-nessus8-policy.xml"  # nosec
+NESSUS_API_CONFIGURATION_FILE = "/etc/cyhy/nessus_api.yml"
 
 DEBUG = False
 
@@ -83,9 +80,11 @@ def setup_logging():
 class NessusController:
     """Manage interactions with the running Nessus web interface."""
 
-    def __init__(self, nessus_url):
+    def __init__(self, nessus_url, nessus_username, nessus_password):
         """Initialize a NessusController object."""
         self.url = nessus_url
+        self.username = nessus_username
+        self.password = nessus_password
         self.token = None
 
     def __make_request(self, target, method, payload=None, files=None):
@@ -107,7 +106,9 @@ class NessusController:
             if self.token is None and target != LOGIN:
                 LOGGER.info("Attempting to login to Nessus server")
                 self.__make_request(
-                    LOGIN, "POST", {"username": USER, "password": PASSWORD}
+                    LOGIN,
+                    "POST",
+                    {"username": self.username, "password": self.password},
                 )
 
             # If we are already logged in, add the token to the
@@ -168,7 +169,8 @@ class NessusController:
                     "Invalid credentials error; Nessus session probably expired."
                 )
                 LOGGER.warning(
-                    "Attempting to establish new Nessus session (username: %s)", USER
+                    "Attempting to establish new Nessus session (username: %s)",
+                    self.username,
                 )
                 # Clear token to force re-login on next loop
                 self.token = None
@@ -253,38 +255,53 @@ def main():
     setup_logging()
     LOGGER.info("Nessus job starting")
 
-    LOGGER.info("Instantiating Nessus controller at: %s", URL)
-    controller = NessusController(URL)
+    LOGGER.info(
+        "Getting Nessus configuration information from %s",
+        NESSUS_API_CONFIGURATION_FILE,
+    )
+    with open(NESSUS_API_CONFIGURATION_FILE) as configuration_file:
+        api_configuration = yaml.load(configuration_file, Loader=yaml.SafeLoader)
 
-    # configure advanced settings
-    LOGGER.info("Configuring advanced settings")
-    if not controller.configure_advanced_settings(ADVANCED_SETTINGS_DICT):
-        LOGGER.error("Advanced settings configuration failed")
+    try:
+        LOGGER.info("Instantiating Nessus controller at: %s", api_configuration["url"])
+        controller = NessusController(
+            api_configuration["url"],
+            api_configuration["credentials"]["username"],
+            api_configuration["credentials"]["password"],
+        )
+
+        # configure advanced settings
+        LOGGER.info("Configuring advanced settings")
+        if not controller.configure_advanced_settings(ADVANCED_SETTINGS_DICT):
+            LOGGER.error("Advanced settings configuration failed")
+            return -1
+        LOGGER.info("Advanced settings successfully configured")
+
+        # create new policy
+        LOGGER.info("Creating new policy based on base policy")
+        if not controller.find_policy(api_configuration["policy"]["name"]):
+            files = {
+                "Filedata": (
+                    api_configuration["policy"]["source"],
+                    open(api_configuration["policy"]["source"], "rb"),
+                    "text/xml",
+                )
+            }
+            upload_response = controller.upload_file(files)
+            if not upload_response:
+                LOGGER.error("Response empty, upload failed")
+                return -1
+            LOGGER.info("Policy Uploaded to Nessus Server")
+            import_response = controller.import_policy(upload_response["fileuploaded"])
+            if not import_response:
+                LOGGER.error("Response empty, policy upload failed")
+                return -1
+            LOGGER.info("Base Policy Imported to Nessus Server Policies")
+        else:
+            LOGGER.info("Policy already exists")
+    except KeyError:
+        LOGGER.exception("Missing required key from Nessus API configuration file")
         return -1
-    LOGGER.info("Advanced settings successfully configured")
-
-    # create new policy
-    LOGGER.info("Creating new policy based on base policy")
-    if not controller.find_policy(BASE_POLICY_NAME):
-        files = {
-            "Filedata": (
-                BASE_POLICY_FILE_NAME,
-                open(BASE_POLICY_FILE_NAME, "rb"),
-                "text/xml",
-            )
-        }
-        upload_response = controller.upload_file(files)
-        if not upload_response:
-            LOGGER.error("Response empty, upload failed")
-            return -1
-        LOGGER.info("Policy Uploaded to Nessus Server")
-        import_response = controller.import_policy(upload_response["fileuploaded"])
-        if not import_response:
-            LOGGER.error("Response empty, policy upload failed")
-            return -1
-        LOGGER.info("Base Policy Imported to Nessus Server Policies")
-    else:
-        LOGGER.info("Policy already exists")
 
     # destroy session
     LOGGER.info("Destroying session")
