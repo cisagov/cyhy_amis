@@ -23,7 +23,7 @@ data "aws_ami" "reporter" {
 
 resource "aws_instance" "cyhy_reporter" {
   ami               = data.aws_ami.reporter.id
-  instance_type     = local.production_workspace ? "c5.4xlarge" : "t3.small"
+  instance_type     = local.production_workspace ? "c5.9xlarge" : "t3.small"
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the private subnet
