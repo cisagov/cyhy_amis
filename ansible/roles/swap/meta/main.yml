@@ -2,7 +2,7 @@
 galaxy_info:
   author: VM Fusion Dev
   company: CISA Cyber Assessments
-  description: Set up everything cyhy-feeds needs to run
+  description: Create a swapfile
   galaxy_tags: []
   license: CC0
   # Our standalone Ansible roles require this Ansible version
@@ -13,6 +13,7 @@ galaxy_info:
       versions:
         - stretch
         - buster
-  role_name: cyhy_feeds
+        - bullseye
+  role_name: swap
 
 dependencies: []

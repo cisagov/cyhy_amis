@@ -5,27 +5,27 @@
 # Create the cyhy_ops user
 #
 - name: Create the cyhy_ops user
-  user:
+  ansible.builtin.user:
     name: cyhy_ops
 
 # Make sure the /home/cyhy_ops/.ssh directory exists
 - name: Create the /home/cyhy_ops/.ssh directory
-  file:
-    path: /home/cyhy_ops/.ssh
-    owner: cyhy_ops
+  ansible.builtin.file:
     group: cyhy_ops
     mode: 0700
+    owner: cyhy_ops
+    path: /home/cyhy_ops/.ssh
     state: directory
 
 #
 # Create the .ssh/authorized_keys file for cyhy_ops
 #
 - name: Create .ssh/authorized_keys file for cyhy_ops
-  lineinfile:
-    path: /home/cyhy_ops/.ssh/authorized_keys
-    line: "{{ lookup('aws_ssm', '/ssh/public_keys/{{ item }}') }}"
+  ansible.builtin.lineinfile:
     create: yes
-    owner: cyhy_ops
     group: cyhy_ops
+    line: "{{ lookup('aws_ssm', '/ssh/public_keys/' + item) }}"
     mode: 0600
+    owner: cyhy_ops
+    path: /home/cyhy_ops/.ssh/authorized_keys
   loop: "{{ ops_users }}"

@@ -5,84 +5,68 @@
 # orchestrator secrets
 #
 - name: Create the secrets directory
-  file:
+  ansible.builtin.file:
     path: /var/cyhy/orchestrator/secrets
-    owner: cyhy
     group: cyhy
+    mode: 0755
+    owner: cyhy
     state: directory
 
-- name: Create the credentials file to allow reading the cyhy database
-  copy:
-    dest: /var/cyhy/orchestrator/secrets/cyhy_read_creds.yml
-    owner: cyhy
+- name: Create files with MongoDB credentials
+  ansible.builtin.template:
+    dest: "/var/cyhy/orchestrator/secrets/{{ item.filename }}"
     group: cyhy
     mode: 0440
-    content: |
-      version: '1'
-
-      database:
-        name: {{ reporter_db }}
-        uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
-
-- name: Create the credentials file to allow reading the scan database
-  copy:
-    dest: /var/cyhy/orchestrator/secrets/scan_read_creds.yml
     owner: cyhy
-    group: cyhy
-    mode: 0440
-    content: |
-      version: '1'
+    src: mongodb_credentials.yml.j2
+  loop:
+    # reporter
+    - database: "{{ reporter_db }}"
+      filename: cyhy_read_creds.yml
+      username: "{{ reporter_user }}"
+      password: "{{ reporter_pw }}"
+    # scan-reader
+    - database: "{{ scan_reader_db }}"
+      filename: scan_read_creds.yml
+      username: "{{ scan_reader_user }}"
+      password: "{{ scan_reader_pw }}"
+    # scan-writer
+    - database: "{{ scan_writer_db }}"
+      filename: scan_write_creds.yml
+      username: "{{ scan_writer_user }}"
+      password: "{{ scan_writer_pw }}"
+  loop_control:
+    label: "{{ item.filename }}"
 
-      database:
-        name: {{ scan_reader_db }}
-        uri: mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
-
-- name: Create the credentials file to allow writing to the scan database
-  copy:
-    dest: /var/cyhy/orchestrator/secrets/scan_write_creds.yml
-    owner: cyhy
-    group: cyhy
-    mode: 0440
-    content: |
-      version: '1'
-
-      database:
-        name: {{ scan_writer_db }}
-        uri: mongodb://{{ scan_writer_user }}:{{ scan_writer_pw }}@database1.cyhy:27017/{{ scan_writer_db }}
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.template:
     dest: /var/cyhy/orchestrator/secrets/aws_config
-    owner: cyhy
     group: cyhy
     mode: 0440
-    content: |
-      [profile lambda]
-      region = {{ aws_region }}
-
-      [profile elasticsearch]
-      credential_source = Ec2InstanceMetadata
-      region = {{ dmarc_import_aws_region }}
-      role_arn = {{ dmarc_import_es_role }}
+    owner: cyhy
+    src: aws_config.j2
 
 #
 # Create a cron job for scanning
 #
-- name: Add /usr/local/bin to cron's path
-  cron:
-    env: yes
-    name: PATH
-    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-    user: cyhy
-  when: production_workspace|bool
-# This cron job runs at midnight UTC on Saturday mornings, so it
-# should be done by 2PM on Saturday.
-- name: Create a cron job for BOD 18-01 scanning
-  cron:
-    name: "BOD 18-01 scanning"
-    minute: '0'
-    hour: '0'
-    weekday: '6'
-    user: cyhy
-    job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
+- name: Create the cron job
+  block:
+    - name: Add /usr/local/bin to cron's path
+      ansible.builtin.cron:
+        env: yes
+        name: PATH
+        user: cyhy
+        value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+    # This cron job runs at midnight UTC on Saturday mornings, so it
+    # should be done by 2PM on Saturday.
+    - name: Create a cron job for BOD 18-01 scanning
+      ansible.builtin.cron:
+        hour: '0'
+        job: cd /var/cyhy/orchestrator && docker-compose up -d 2>&1 | /usr/bin/logger -t orchestrator
+        minute: '0'
+        name: "BOD 18-01 scanning"
+        user: cyhy
+        weekday: '6'
   when: production_workspace|bool

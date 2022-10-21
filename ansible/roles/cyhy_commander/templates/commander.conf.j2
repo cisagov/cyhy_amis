@@ -1,6 +1,6 @@
 [DEFAULT]
 default-section = production
-database-uri = mongodb://commander:PASSWORD@mongodb.host.flood:27017/cyhy
+database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
 jobs-per-nmap-host = 8
 jobs-per-nessus-host = 16
 poll-interval = 30

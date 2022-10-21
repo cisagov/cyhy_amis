@@ -5,74 +5,48 @@
 # code_gov_update secrets
 #
 - name: Create the secrets directory
-  file:
-    path: /var/cyhy/code-gov-update/secrets
-    owner: cyhy
+  ansible.builtin.file:
     group: cyhy
+    mode: 0755
+    owner: cyhy
+    path: /var/cyhy/code-gov-update/secrets
     state: directory
 
 - name: Create the llnl-scraper config
-  copy:
+  ansible.builtin.template:
     dest: /var/cyhy/code-gov-update/secrets/scraper.json
-    owner: cyhy
     group: cyhy
     mode: 0440
-    content: |
-      {
-          "agency": "DHS",
-          "contact_email": "do_not_email_just_use_github@dhs.gov",
-
-          "permissions": {
-            "usageType": "openSource",
-            "exemptionText": "Code in agency repositories follow the license provided in the repository."
-          },
-
-          "GitHub": [{
-             "url": "https://github.com",
-             "token": "{{ github_oauth_token }}",
-             "public_only": true,
-
-             "orgs": [
-                "cisagov",
-                "US-CBP",
-                "usdhs"
-              ],
-              "repos": [
-              ],
-              "exclude": [
-              ]
-          }]
-      }
+    owner: cyhy
+    src: scraper.json.j2
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.template:
     dest: /var/cyhy/code-gov-update/secrets/aws_config
-    owner: cyhy
     group: cyhy
     mode: 0440
-    content: |
-      [default]
-      credential_source = Ec2InstanceMetadata
-      region = {{ ses_aws_region }}
-      role_arn = {{ ses_send_email_role }}
+    owner: cyhy
+    src: aws_config.j2
 
 #
 # Create a cron job
 #
-- name: Add /usr/local/bin to cron's path
-  cron:
-    env: yes
-    name: PATH
-    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-    user: cyhy
-  when: production_workspace|bool
-# This cron job runs at midnight UTC on Friday mornings
-- name: Create a cron job for updating the code.gov JSON
-  cron:
-    name: "code.gov update"
-    minute: '0'
-    hour: '0'
-    weekday: '5'
-    user: cyhy
-    job: cd /var/cyhy/code-gov-update && docker-compose up -d 2>&1 | /usr/bin/logger -t code-gov-update
+- name: Create the cron job
+  block:
+    - name: Add /usr/local/bin to cron's path
+      ansible.builtin.cron:
+        env: yes
+        name: PATH
+        user: cyhy
+        value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+    # This cron job runs at midnight UTC on Friday mornings
+    - name: Create a cron job for updating the code.gov JSON
+      ansible.builtin.cron:
+        hour: '0'
+        job: cd /var/cyhy/code-gov-update && docker-compose up -d 2>&1 | /usr/bin/logger -t code-gov-update
+        minute: '0'
+        name: "code.gov update"
+        user: cyhy
+        weekday: '5'
   when: production_workspace|bool

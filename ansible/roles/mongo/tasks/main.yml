@@ -1,20 +1,22 @@
 ---
 # tasks file for mongo
 - name: Check if any mongo users already exist
-  shell: mongo --eval 'db.getUsers()' admin
+  ansible.builtin.command: mongo --eval 'db.getUsers()' admin
+  # This is a read-only operation
+  changed_when: false
   ignore_errors: true
   register: checkifmongousers
-  changed_when: false
 
 # HACK ALERT - Part 1:
 # Install pymongo 3.6 in order to use the Ansible mongodb_user module.
 - name: Install pymongo 3.6
-  pip:
+  ansible.builtin.pip:
+    executable: /usr/bin/pip2
     name: pymongo
     version: '3.6'
 
 - name: Create admin user in admin db (first user, no authentication)
-  mongodb_user:
+  community.mongodb.mongodb_user:
     database: "{{ admin_db }}"
     name: "{{ admin_user }}"
     password: "{{ admin_pw }}"
@@ -23,11 +25,11 @@
   when: checkifmongousers.rc == 0
 
 - name: Update admin user in admin db (authenticate as admin)
-  mongodb_user:
-    login_database: "{{ admin_db }}"
-    login_user: "{{ admin_user }}"
-    login_password: "{{ admin_old_pw }}"
+  community.mongodb.mongodb_user:
     database: "{{ admin_db }}"
+    login_database: "{{ admin_db }}"
+    login_password: "{{ admin_old_pw }}"
+    login_user: "{{ admin_user }}"
     name: "{{ admin_user }}"
     password: "{{ admin_pw }}"
     roles: "{{ admin_roles }}"
@@ -35,32 +37,39 @@
   when: checkifmongousers.rc != 0
 
 - name: Update other users (authenticate as admin)
-  mongodb_user:
+  community.mongodb.mongodb_user:
+    database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/database') }}"
     login_database: "{{ admin_db }}"
-    login_user: "{{ admin_user }}"
     login_password: "{{ admin_pw }}"
-    database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/database') }}"
-    name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/user') }}"
-    password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/password') }}"
-    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/{{ item }}/roles').split(',') }}"
+    login_user: "{{ admin_user }}"
+    name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/user') }}"
+    password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/password') }}"
+    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/roles').split(',') }}"
     state: present
   # Loop over all the users *except* for admin
   loop: "{{ non_admin_users }}"
+  # ansible-lint throws a no-log-password on this task likely because
+  # it is a module that needs password information and we are using a
+  # loop. I would rather default to disabling logging than possibly
+  # miss an edge case like error output on task failure that would leak
+  # password information by disabling the rule.
+  no_log: true
 
 # HACK ALERT - Part 2:
 # Revert to older pymongo, needed for cyhy-core
 - name: Downgrade to pymongo 2.9.5
-  pip:
+  ansible.builtin.pip:
+    executable: /usr/bin/pip2
     name: pymongo
-    version: 2.9.5
+    version: '2.9.5'
 
 - name: Copy mongo configuration file
-  template:
-    src: mongod.conf
+  ansible.builtin.template:
     dest: /etc/mongod.conf
     mode: 0644
+    src: mongod.conf
 
 - name: Restart mongod service to use new configuration
-  service:
+  ansible.builtin.service:
     name: mongod
     state: restarted

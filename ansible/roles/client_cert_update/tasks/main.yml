@@ -5,54 +5,47 @@
 # client_cert_update secrets
 #
 - name: Create the secrets directory
-  file:
-    path: /var/cyhy/client-cert-update/secrets
-    owner: cyhy
+  ansible.builtin.file:
     group: cyhy
+    mode: 0755
+    owner: cyhy
+    path: /var/cyhy/client-cert-update/secrets
     state: directory
 
 - name: Create the credentials file to allow reading the scan database
-  copy:
+  ansible.builtin.template:
     dest: /var/cyhy/client-cert-update/secrets/scan_read_creds.yml
-    owner: cyhy
     group: cyhy
     mode: 0440
-    content: |
-      version: '1'
-
-      database:
-        name: {{ scan_reader_db }}
-        uri: mongodb://{{ scan_reader_user }}:{{ scan_reader_pw }}@database1.cyhy:27017/{{ scan_reader_db }}
+    owner: cyhy
+    src: scan_read_creds.yml.j2
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.template:
     dest: /var/cyhy/client-cert-update/secrets/aws_config
-    owner: cyhy
     group: cyhy
     mode: 0440
-    content: |
-      [default]
-      credential_source = Ec2InstanceMetadata
-      region = {{ ses_aws_region }}
-      role_arn = {{ ses_send_email_role }}
-
+    owner: cyhy
+    src: aws_config.j2
 #
 # Create a cron job
 #
-- name: Add /usr/local/bin to cron's path
-  cron:
-    env: yes
-    name: PATH
-    value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-    user: cyhy
-  when: production_workspace|bool
-# This cron job runs at 5AM UTC on Tuesday mornings
-- name: Create a cron job for updating the list of hosts that require client certs
-  cron:
-    name: "client cert update"
-    minute: '0'
-    hour: '5'
-    weekday: '2'
-    user: cyhy
-    job: cd /var/cyhy/client-cert-update && docker-compose up -d 2>&1 | /usr/bin/logger -t client-cert-update
+- name: Create the cron job
+  block:
+    - name: Add /usr/local/bin to cron's path
+      ansible.builtin.cron:
+        env: yes
+        name: PATH
+        user: cyhy
+        value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+    # This cron job runs at 5AM UTC on Tuesday mornings
+    - name: Create a cron job for updating the list of hosts that require client certs
+      ansible.builtin.cron:
+        hour: '5'
+        job: cd /var/cyhy/client-cert-update && docker-compose up -d 2>&1 | /usr/bin/logger -t client-cert-update
+        minute: '0'
+        name: "client cert update"
+        user: cyhy
+        weekday: '2'
   when: production_workspace|bool

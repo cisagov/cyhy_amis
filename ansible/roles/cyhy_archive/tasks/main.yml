@@ -4,24 +4,19 @@
 # Create directory to temporarily store cyhy-archives until
 # they are copied to S3
 - name: Create the /var/lib/mongodb/cyhy_archives directory
-  file:
-    path: /var/lib/mongodb/cyhy_archives
-    state: directory
-
-# Make cyhy owner of cyhy-archives directory
-- name: chown the cyhy_archives directory
-  file:
-    path: /var/lib/mongodb/cyhy_archives
-    owner: cyhy
+  ansible.builtin.file:
     group: cyhy
+    mode: 0755
+    owner: cyhy
+    path: /var/lib/mongodb/cyhy_archives
     state: directory
 
 # Run cyhy-archive weekly on Saturday at 0500 (UTC) as cyhy user
 - name: Set up weekly cyhy-archive cron job
-  cron:
-    name: Weekly cyhy-archive
-    weekday: '6'
+  ansible.builtin.cron:
     hour: '5'
-    minute: '0'
-    user: cyhy
     job: /var/cyhy/scripts/cyhy_archive.sh /var/lib/mongodb/cyhy_archives {{ cyhy_archive_s3_bucket_name }} {{ cyhy_archive_s3_bucket_region }} 2>&1 | /usr/bin/logger -t cyhy-archive
+    minute: '0'
+    name: Weekly cyhy-archive
+    user: cyhy
+    weekday: '6'

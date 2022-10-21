@@ -10,36 +10,28 @@
 # works in swarm mode.
 #
 - name: Create the secrets directory for cyhy-mailer
-  file:
-    path: /var/cyhy/cyhy-mailer/secrets
-    owner: cyhy
+  ansible.builtin.file:
     group: cyhy
+    mode: 0755
+    owner: cyhy
+    path: /var/cyhy/cyhy-mailer/secrets
     state: directory
 
 - name: Create the cyhy-mailer credentials file to allow reading the cyhy database
-  copy:
+  ansible.builtin.template:
     dest: /var/cyhy/cyhy-mailer/secrets/database_creds.yml
-    owner: cyhy
     group: cyhy
     mode: 0444
-    content: |
-      version: '1'
-
-      database:
-        name: {{ reporter_db }}
-        uri: mongodb://{{ reporter_user }}:{{ reporter_pw }}@database1.cyhy:27017/{{ reporter_db }}
+    owner: cyhy
+    src: database_creds.yml.j2
 
 - name: Create the AWS config
-  copy:
+  ansible.builtin.template:
     dest: /var/cyhy/cyhy-mailer/secrets/aws_config
-    owner: cyhy
     group: cyhy
     mode: 0444
-    content: |
-      [default]
-      credential_source = Ec2InstanceMetadata
-      region = {{ ses_aws_region }}
-      role_arn = {{ ses_send_email_role }}
+    owner: cyhy
+    src: aws_config.j2
 
 # docker-compose will automatically use docker-compose.yml and
 # docker-compose.override.yml, so this is a way for us to tune
@@ -48,31 +40,32 @@
 # In our case we want to send the BOD 18-01 reports on the BOD docker
 # instance and the CyHy-related reports on the reporter instance.
 - name: Create a symlink for the docker-compose override file
-  file:
-    src: /var/cyhy/cyhy-mailer/{{ docker_compose_override_file_for_mailer }}
-    path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
-    state: link
-    owner: cyhy
+  ansible.builtin.file:
     group: cyhy
     mode: 0664
+    owner: cyhy
+    path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
+    src: /var/cyhy/cyhy-mailer/{{ docker_compose_override_file_for_mailer }}
+    state: link
 
 #
 # Create a cron job for the sending of reports
 #
-# - name: Add /usr/local/bin to cron's path
-#   cron:
-#     env: yes
-#     name: PATH
-#     value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
-#     user: cyhy
-#   when: production_workspace
-#
-# - name: Create a cron job for sending BOD 18-01 reports
-#   cron:
-#     name: "Sending BOD 18-01 reports"
-#     minute: 0
-#     hour: 12
-#     weekday: 1
-#     user: cyhy
-#     job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
+# - name: Create the cron job
+#   block:
+#     - name: Add /usr/local/bin to cron's path
+#       ansible.builtin.cron:
+#         env: yes
+#         name: PATH
+#         user: cyhy
+#         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
+#     - name: Create a cron job for sending BOD 18-01 reports
+#       ansible.builtin.cron:
+#         hour: 12
+#         job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
+#         minute: 0
+#         name: "Sending BOD 18-01 reports"
+#         user: cyhy
+#         weekday: 1
 #   when: production_workspace

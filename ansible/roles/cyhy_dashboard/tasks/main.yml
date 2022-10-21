@@ -1,42 +1,31 @@
 ---
 # tasks file for cyhy_dashboard
 
-- name: Create /etc/cyhy directory
-  file:
-    path: /etc/cyhy
-    state: directory
-    owner: cyhy
+- name: Create needed directories
+  ansible.builtin.file:
     group: cyhy
     mode: 0750
-
-- name: Create /var/cyhy directory
-  file:
-    path: /var/cyhy
-    state: directory
     owner: cyhy
-    group: cyhy
-    mode: 0750
-
-- name: Create /var/cyhy/web directory
-  file:
-    path: /var/cyhy/web
+    path: "{{ item }}"
     state: directory
-    owner: cyhy
-    group: cyhy
-    mode: 0750
+  loop:
+    - /etc/cyhy
+    - /var/cyhy/web
 
 - name: Create secret key file for webd
-  file:
-    path: /var/cyhy/web/secret_key
-    owner: cyhy
+  ansible.builtin.file:
     group: cyhy
     mode: 0664
+    owner: cyhy
+    path: /var/cyhy/web/secret_key
     state: touch
   vars:
     ansible_ssh_pipelining: yes
 
 - name: Create random secret key for webd
-  shell: head -c 24 /dev/urandom > /var/cyhy/web/secret_key
+  ansible.builtin.shell:
+    cmd: head -c 24 /dev/urandom > /var/cyhy/web/secret_key
+    creates: /var/cyhy/web/secret_key
   become_method: sudo
   become_user: cyhy
   vars:
@@ -46,44 +35,37 @@
 # Set up /etc/cyhy/cyhy.conf with commander creds
 #
 - name: Create /etc/cyhy/cyhy.conf with commander credentials
-  copy:
+  ansible.builtin.template:
     dest: /etc/cyhy/cyhy.conf
-    owner: cyhy
     group: cyhy
     mode: 0660
-    content: |
-      [DEFAULT]
-      default-section = production
-      database-uri = mongodb://database1.cyhy:27017/
-      report-key =
+    owner: cyhy
+    src: cyhy.conf.j2
 
-      [production]
-      database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
-      database-name = {{ commander_db }}
-
-- make:
+- name: Build the ncats-webui Docker image
+  community.general.make:
     chdir: /var/cyhy/ncats-webui
     target: dev-build
   become: yes
 
 - name: Copy webd service file
-  template:
-    src: ncats-webd.service
+  ansible.builtin.copy:
     dest: /etc/systemd/system/ncats-webd.service
-    mode: 644
+    mode: 0644
+    src: ncats-webd.service
 
 - name: Start webd service
-  service:
+  ansible.builtin.service:
     name: ncats-webd
     state: started
 
 - name: Copy webui service file
-  template:
-    src: ncats-webui.service
+  ansible.builtin.copy:
     dest: /etc/systemd/system/ncats-webui.service
-    mode: 644
+    mode: 0644
+    src: ncats-webui.service
 
 - name: Start webui service
-  service:
+  ansible.builtin.service:
     name: ncats-webui
     state: started
