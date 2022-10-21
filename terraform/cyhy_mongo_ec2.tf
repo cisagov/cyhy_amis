@@ -179,6 +179,8 @@ module "cyhy_mongo_ansible_provisioner" {
     "aws_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
     "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
+    "nmap_hosts=${join(",", formatlist("portscan%d", range(1, var.nmap_instance_count + 1)))}",
+    "nessus_hosts=${join(",", formatlist("vulnscan%d", range(1, var.nessus_instance_count + 1)))}",
   ]
   playbook = "../ansible/playbook.yml"
   dry_run  = false
