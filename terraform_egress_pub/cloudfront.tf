@@ -44,7 +44,7 @@ module "security_header_lambda" {
   description            = "Adds HSTS and other security headers to the response"
   lambda_code_source_dir = "${path.root}/add_security_headers"
   name                   = "add_security_headers"
-  runtime                = "nodejs14.x"
+  runtime                = "nodejs16.x"
   s3_artifact_bucket     = aws_s3_bucket.lambda_artifact_bucket.id
   tags                   = { "Application" = "Egress Publish" }
 }
