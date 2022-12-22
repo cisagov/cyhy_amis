@@ -148,11 +148,11 @@ resource "aws_lambda_function" "adi_lambda" {
   s3_key        = var.assessment_data_import_lambda_s3_key
   function_name = format("assessment_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
   role          = aws_iam_role.adi_lambda_role.arn
-  handler       = "lambda_handler.handler"
+  handler       = var.assessment_data_import_lambda_handler
   runtime       = "python3.8"
   timeout       = 300
   memory_size   = 128
-  description   = "Lambda function for importing assessment data"
+  description   = var.assessment_data_import_lambda_description
 
   # This Lambda requires the database to function
   depends_on = [

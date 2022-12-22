@@ -149,11 +149,11 @@ resource "aws_lambda_function" "fdi_lambda" {
   s3_key        = var.findings_data_import_lambda_s3_key
   function_name = format("findings_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
   role          = aws_iam_role.fdi_lambda_role.arn
-  handler       = "lambda_handler.handler"
+  handler       = var.findings_data_import_lambda_handler
   runtime       = "python3.9"
   timeout       = 300
   memory_size   = 128
-  description   = "Lambda function for importing findings data"
+  description   = var.findings_data_import_lambda_description
 
   # This Lambda requires the database to function
   depends_on = [
