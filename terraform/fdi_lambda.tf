@@ -145,30 +145,20 @@ data "aws_s3_bucket" "fdi_lambda" {
 # The AWS Lambda function that imports the findings data to our database
 # Note that this Lambda runs from within the CyHy private subnet
 resource "aws_lambda_function" "fdi_lambda" {
+  description   = var.findings_data_import_lambda_description
+  function_name = format("findings_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
+  handler       = var.findings_data_import_lambda_handler
+  memory_size   = 128
+  role          = aws_iam_role.fdi_lambda_role.arn
+  runtime       = "python3.9"
   s3_bucket     = data.aws_s3_bucket.fdi_lambda.id
   s3_key        = var.findings_data_import_lambda_s3_key
-  function_name = format("findings_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
-  role          = aws_iam_role.fdi_lambda_role.arn
-  handler       = var.findings_data_import_lambda_handler
-  runtime       = "python3.9"
   timeout       = 300
-  memory_size   = 128
-  description   = var.findings_data_import_lambda_description
 
   # This Lambda requires the database to function
   depends_on = [
     aws_instance.cyhy_mongo,
   ]
-
-  vpc_config {
-    subnet_ids = [
-      aws_subnet.cyhy_private_subnet.id,
-    ]
-
-    security_group_ids = [
-      aws_security_group.fdi_lambda_sg.id,
-    ]
-  }
 
   environment {
     variables = {
@@ -183,6 +173,16 @@ resource "aws_lambda_function" "fdi_lambda" {
       ssm_db_user     = var.findings_data_import_ssm_db_user
       ssm_db_password = var.findings_data_import_ssm_db_password
     }
+  }
+
+  vpc_config {
+    subnet_ids = [
+      aws_subnet.cyhy_private_subnet.id,
+    ]
+
+    security_group_ids = [
+      aws_security_group.fdi_lambda_sg.id,
+    ]
   }
 }
 
