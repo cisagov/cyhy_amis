@@ -146,7 +146,7 @@ data "aws_s3_bucket" "adi_lambda" {
 resource "aws_lambda_function" "adi_lambda" {
   s3_bucket     = data.aws_s3_bucket.adi_lambda.id
   s3_key        = var.assessment_data_import_lambda_s3_key
-  function_name = format("assessment_data_import-%s", terraform.workspace)
+  function_name = format("assessment_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
   role          = aws_iam_role.adi_lambda_role.arn
   handler       = "lambda_handler.handler"
   runtime       = "python3.8"
