@@ -161,23 +161,23 @@ resource "aws_lambda_function" "adi_lambda" {
 
   environment {
     variables = {
-      s3_bucket       = data.aws_s3_bucket.assessment_data.id
       data_filename   = var.assessment_data_filename
       db_hostname     = var.assessment_data_import_db_hostname
       db_port         = var.assessment_data_import_db_port
+      s3_bucket       = data.aws_s3_bucket.assessment_data.id
       ssm_db_name     = var.assessment_data_import_ssm_db_name
-      ssm_db_user     = var.assessment_data_import_ssm_db_user
       ssm_db_password = var.assessment_data_import_ssm_db_password
+      ssm_db_user     = var.assessment_data_import_ssm_db_user
     }
   }
 
   vpc_config {
-    subnet_ids = [
-      aws_subnet.cyhy_private_subnet.id,
-    ]
-
     security_group_ids = [
       aws_security_group.adi_lambda_sg.id,
+    ]
+
+    subnet_ids = [
+      aws_subnet.cyhy_private_subnet.id,
     ]
   }
 }
