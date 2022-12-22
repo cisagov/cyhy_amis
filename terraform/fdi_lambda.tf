@@ -150,7 +150,7 @@ resource "aws_lambda_function" "fdi_lambda" {
   function_name = format("findings_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
   role          = aws_iam_role.fdi_lambda_role.arn
   handler       = "lambda_handler.handler"
-  runtime       = "python3.8"
+  runtime       = "python3.9"
   timeout       = 300
   memory_size   = 128
   description   = "Lambda function for importing findings data"
