@@ -144,41 +144,41 @@ data "aws_s3_bucket" "adi_lambda" {
 # The AWS Lambda function that imports the assessment data to our database
 # Note that this Lambda runs from within the CyHy private subnet
 resource "aws_lambda_function" "adi_lambda" {
+  description   = var.assessment_data_import_lambda_description
+  function_name = format("assessment_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
+  handler       = var.assessment_data_import_lambda_handler
+  memory_size   = 128
+  role          = aws_iam_role.adi_lambda_role.arn
+  runtime       = "python3.8"
   s3_bucket     = data.aws_s3_bucket.adi_lambda.id
   s3_key        = var.assessment_data_import_lambda_s3_key
-  function_name = format("assessment_data_import-%s", terraform.workspace)
-  role          = aws_iam_role.adi_lambda_role.arn
-  handler       = "lambda_handler.handler"
-  runtime       = "python3.8"
   timeout       = 300
-  memory_size   = 128
-  description   = "Lambda function for importing assessment data"
 
   # This Lambda requires the database to function
   depends_on = [
     aws_instance.cyhy_mongo,
   ]
 
-  vpc_config {
-    subnet_ids = [
-      aws_subnet.cyhy_private_subnet.id,
-    ]
-
-    security_group_ids = [
-      aws_security_group.adi_lambda_sg.id,
-    ]
-  }
-
   environment {
     variables = {
-      s3_bucket       = data.aws_s3_bucket.assessment_data.id
       data_filename   = var.assessment_data_filename
       db_hostname     = var.assessment_data_import_db_hostname
       db_port         = var.assessment_data_import_db_port
+      s3_bucket       = data.aws_s3_bucket.assessment_data.id
       ssm_db_name     = var.assessment_data_import_ssm_db_name
-      ssm_db_user     = var.assessment_data_import_ssm_db_user
       ssm_db_password = var.assessment_data_import_ssm_db_password
+      ssm_db_user     = var.assessment_data_import_ssm_db_user
     }
+  }
+
+  vpc_config {
+    security_group_ids = [
+      aws_security_group.adi_lambda_sg.id,
+    ]
+
+    subnet_ids = [
+      aws_subnet.cyhy_private_subnet.id,
+    ]
   }
 }
 

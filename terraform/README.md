@@ -181,6 +181,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_cloudwatch_log_group.bod_flow_log_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.cyhy_flow_log_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.fdi_lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
+| [aws_cloudwatch_log_group.instance_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.mgmt_flow_log_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_metric_filter.kevsync_failure](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_metric_filter) | resource |
@@ -631,6 +632,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | assessment\_data\_filename | The name of the assessment data JSON file that can be found in the assessment\_data\_s3\_bucket. | `string` | n/a | yes |
 | assessment\_data\_import\_db\_hostname | The hostname that has the database to store the assessment data in. | `string` | `""` | no |
 | assessment\_data\_import\_db\_port | The port that the database server is listening on. | `string` | `""` | no |
+| assessment\_data\_import\_lambda\_description | The description to associate with the assessment-data-import Lambda function. | `string` | `"Lambda function for importing assessment data."` | no |
+| assessment\_data\_import\_lambda\_handler | The entrypoint for the assessment-data-import Lambda. | `string` | `"lambda_handler.handler"` | no |
 | assessment\_data\_import\_lambda\_s3\_bucket | The name of the bucket where the assessment data import Lambda function can be found.  This bucket should be created with the cisagov/assessment-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace\_name>' will be appended to the bucket name. | `string` | n/a | yes |
 | assessment\_data\_import\_lambda\_s3\_key | The key (name) of the zip file for the assessment data import Lambda function inside the S3 bucket. | `string` | n/a | yes |
 | assessment\_data\_import\_ssm\_db\_name | The name of the parameter in AWS SSM that holds the name of the database to store the assessment data in. | `string` | `""` | no |
@@ -655,6 +658,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | findings\_data\_field\_map | The key for the file storing field name mappings in JSON format. | `string` | n/a | yes |
 | findings\_data\_import\_db\_hostname | The hostname that has the database to store the findings data in. | `string` | `""` | no |
 | findings\_data\_import\_db\_port | The port that the database server is listening on. | `string` | `""` | no |
+| findings\_data\_import\_lambda\_description | The description to associate with the findings-data-import Lambda function. | `string` | `"Lambda function for importing findings data."` | no |
+| findings\_data\_import\_lambda\_handler | The entrypoint for the findings-data-import Lambda. | `string` | `"lambda_handler.handler"` | no |
 | findings\_data\_import\_lambda\_s3\_bucket | The name of the bucket where the findings data import Lambda function can be found.  This bucket should be created with the cisagov/findings-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace\_name>' will be appended to the bucket name. | `string` | n/a | yes |
 | findings\_data\_import\_lambda\_s3\_key | The key (name) of the zip file for the findings data import Lambda function inside the S3 bucket. | `string` | n/a | yes |
 | findings\_data\_import\_ssm\_db\_name | The name of the parameter in AWS SSM that holds the name of the database to store the findings data in. | `string` | `""` | no |

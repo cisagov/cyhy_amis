@@ -126,6 +126,18 @@ variable "assessment_data_import_db_port" {
   type        = string
 }
 
+variable "assessment_data_import_lambda_description" {
+  default     = "Lambda function for importing assessment data."
+  description = "The description to associate with the assessment-data-import Lambda function."
+  type        = string
+}
+
+variable "assessment_data_import_lambda_handler" {
+  default     = "lambda_handler.handler"
+  description = "The entrypoint for the assessment-data-import Lambda."
+  type        = string
+}
+
 variable "assessment_data_import_ssm_db_name" {
   default     = ""
   description = "The name of the parameter in AWS SSM that holds the name of the database to store the assessment data in."
@@ -254,6 +266,18 @@ variable "findings_data_import_db_hostname" {
 variable "findings_data_import_db_port" {
   default     = ""
   description = "The port that the database server is listening on."
+  type        = string
+}
+
+variable "findings_data_import_lambda_description" {
+  default     = "Lambda function for importing findings data."
+  description = "The description to associate with the findings-data-import Lambda function."
+  type        = string
+}
+
+variable "findings_data_import_lambda_handler" {
+  default     = "lambda_handler.handler"
+  description = "The entrypoint for the findings-data-import Lambda."
   type        = string
 }
 

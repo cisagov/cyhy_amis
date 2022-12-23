@@ -145,44 +145,44 @@ data "aws_s3_bucket" "fdi_lambda" {
 # The AWS Lambda function that imports the findings data to our database
 # Note that this Lambda runs from within the CyHy private subnet
 resource "aws_lambda_function" "fdi_lambda" {
+  description   = var.findings_data_import_lambda_description
+  function_name = format("findings_data_import-%s", local.production_workspace ? "production" : terraform.workspace)
+  handler       = var.findings_data_import_lambda_handler
+  memory_size   = 128
+  role          = aws_iam_role.fdi_lambda_role.arn
+  runtime       = "python3.9"
   s3_bucket     = data.aws_s3_bucket.fdi_lambda.id
   s3_key        = var.findings_data_import_lambda_s3_key
-  function_name = format("findings_data_import-%s", terraform.workspace)
-  role          = aws_iam_role.fdi_lambda_role.arn
-  handler       = "lambda_handler.handler"
-  runtime       = "python3.8"
   timeout       = 300
-  memory_size   = 128
-  description   = "Lambda function for importing findings data"
 
   # This Lambda requires the database to function
   depends_on = [
     aws_instance.cyhy_mongo,
   ]
 
-  vpc_config {
-    subnet_ids = [
-      aws_subnet.cyhy_private_subnet.id,
-    ]
-
-    security_group_ids = [
-      aws_security_group.fdi_lambda_sg.id,
-    ]
-  }
-
   environment {
     variables = {
-      s3_bucket       = data.aws_s3_bucket.findings_data.id
       db_hostname     = var.findings_data_import_db_hostname
       db_port         = var.findings_data_import_db_port
-      file_suffix     = var.findings_data_input_suffix
       field_map       = var.findings_data_field_map
+      file_suffix     = var.findings_data_input_suffix
+      s3_bucket       = data.aws_s3_bucket.findings_data.id
       save_failed     = var.findings_data_save_failed
       save_succeeded  = var.findings_data_save_succeeded
       ssm_db_name     = var.findings_data_import_ssm_db_name
-      ssm_db_user     = var.findings_data_import_ssm_db_user
       ssm_db_password = var.findings_data_import_ssm_db_password
+      ssm_db_user     = var.findings_data_import_ssm_db_user
     }
+  }
+
+  vpc_config {
+    security_group_ids = [
+      aws_security_group.fdi_lambda_sg.id,
+    ]
+
+    subnet_ids = [
+      aws_subnet.cyhy_private_subnet.id,
+    ]
   }
 }
 
