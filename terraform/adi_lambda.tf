@@ -115,6 +115,13 @@ data "aws_s3_bucket" "adi_lambda" {
   bucket = format("%s-%s", var.assessment_data_import_lambda_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
+# The S3 object that contains the deployment package of the
+# cisagov/assessment-data-import-lambda project.
+data "aws_s3_bucket_object" "adi_lambda_package" {
+  bucket = data.aws_s3_bucket.adi_lambda.id
+  key    = var.assessment_data_import_lambda_s3_key
+}
+
 # The AWS Lambda function that imports the assessment data to our database
 # Note that this Lambda runs from within the CyHy private subnet
 resource "aws_lambda_function" "adi_lambda" {
@@ -124,9 +131,18 @@ resource "aws_lambda_function" "adi_lambda" {
   memory_size   = 128
   role          = aws_iam_role.adi_lambda_role.arn
   runtime       = "python3.8"
-  s3_bucket     = data.aws_s3_bucket.adi_lambda.id
-  s3_key        = var.assessment_data_import_lambda_s3_key
-  timeout       = 300
+  s3_bucket     = data.aws_s3_bucket_object.adi_lambda_package.bucket
+  s3_key        = data.aws_s3_bucket_object.adi_lambda_package.key
+  # We hash the key and Last-Modified metadata field of the deployment package
+  # S3 object because we cannot hash the contents of the object. The `body`
+  # attribute is only available for S3 objects that have a Content-Type value
+  # of `text/*` or `application/json`. Please see
+  # https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingMetadata.html#SysMetadata
+  # for more information about the metadata fields and the note at
+  # https://registry.terraform.io/providers/hashicorp/aws/3.76.0/docs/data-sources/s3_bucket_object
+  # for more details about the limitation of the `body` attribute.
+  source_code_hash = base64sha256(format("%s_%s", data.aws_s3_bucket_object.adi_lambda_package.key, data.aws_s3_bucket_object.adi_lambda_package.last_modified))
+  timeout          = 300
 
   # This Lambda requires the database to function
   depends_on = [
