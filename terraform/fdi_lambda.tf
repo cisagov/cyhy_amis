@@ -198,7 +198,7 @@ resource "aws_lambda_permission" "fdi_lambda_allow_bucket" {
 
 # Create the notification that triggers our Lambda function to run whenever
 # an object is created in our findings data bucket
-resource "aws_s3_bucket_notification" "fdi_bucket_notification" {
+resource "aws_s3_bucket_notification" "fdi_lambda" {
   bucket = data.aws_s3_bucket.findings_data.id
 
   lambda_function {
