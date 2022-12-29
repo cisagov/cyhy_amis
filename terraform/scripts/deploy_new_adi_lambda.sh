@@ -22,5 +22,5 @@ terraform taint "aws_lambda_function.adi_lambda"
 terraform apply -var-file="$workspace.tfvars" \
   -target=aws_lambda_function.adi_lambda \
   -target=aws_lambda_permission.adi_lambda_allow_bucket \
-  -target=aws_s3_bucket_notification.bucket_notification \
+  -target=aws_s3_bucket_notification.adi_lambda \
   -target=aws_cloudwatch_log_group.adi_lambda_logs

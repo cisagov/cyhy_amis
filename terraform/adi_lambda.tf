@@ -194,7 +194,7 @@ resource "aws_lambda_permission" "adi_lambda_allow_bucket" {
 
 # Create the notification that triggers our Lambda function to run whenever
 # an object is created in our assessment data bucket
-resource "aws_s3_bucket_notification" "bucket_notification" {
+resource "aws_s3_bucket_notification" "adi_lambda" {
   bucket = data.aws_s3_bucket.assessment_data.id
 
   lambda_function {
