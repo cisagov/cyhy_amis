@@ -31,17 +31,17 @@ aws --region "$region" ec2 wait instance-terminated --instance-ids "$bod_bastion
 
 terraform apply -var-file="$workspace.tfvars" \
   -target=aws_instance.bod_bastion \
+  -target=aws_network_acl_rule.bod_public_egress_anywhere \
+  -target=aws_network_acl_rule.bod_public_egress_to_anywhere_via_ephemeral_ports \
+  -target=aws_network_acl_rule.bod_public_egress_to_bastion_via_ssh \
+  -target=aws_network_acl_rule.bod_public_egress_to_docker_via_ssh \
+  -target=aws_network_acl_rule.bod_public_ingress_from_anywhere_via_ephemeral_ports \
+  -target=aws_network_acl_rule.bod_public_ingress_from_anywhere_via_ssh \
+  -target=aws_network_acl_rule.bod_public_ingress_from_docker \
+  -target=aws_network_acl_rule.bod_public_ingress_from_lambda \
   -target=aws_route53_record.bod_bastion_A \
   -target=aws_route53_record.bod_bastion_pub_A \
   -target=aws_route53_record.bod_rev_bastion_PTR \
-  -target=aws_network_acl_rule.bod_public_ingress_from_docker \
-  -target=aws_network_acl_rule.bod_public_ingress_from_lambda \
-  -target=aws_network_acl_rule.bod_public_ingress_from_anywhere_via_ephemeral_ports \
-  -target=aws_network_acl_rule.bod_public_ingress_from_anywhere_via_ssh \
-  -target=aws_network_acl_rule.bod_public_egress_to_docker_via_ssh \
-  -target=aws_network_acl_rule.bod_public_egress_to_bastion_via_ssh \
-  -target=aws_network_acl_rule.bod_public_egress_anywhere \
-  -target=aws_network_acl_rule.bod_public_egress_to_anywhere_via_ephemeral_ports \
-  -target=aws_security_group_rule.bastion_ssh_from_trusted \
   -target=aws_security_group_rule.bastion_self_ssh \
+  -target=aws_security_group_rule.bastion_ssh_from_trusted \
   -target=aws_security_group_rule.bastion_ssh_to_docker
