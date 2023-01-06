@@ -23,4 +23,5 @@ terraform apply -var-file="$workspace.tfvars" \
   -target=aws_lambda_function.adi_lambda \
   -target=aws_lambda_permission.adi_lambda_allow_bucket \
   -target=aws_s3_bucket_notification.adi_lambda \
-  -target=aws_cloudwatch_log_group.adi_lambda_logs
+  -target=aws_cloudwatch_log_group.adi_lambda_logs \
+  -target=aws_iam_role_policy.adi_lambda_cloudwatch_policy
