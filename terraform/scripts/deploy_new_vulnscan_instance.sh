@@ -61,8 +61,8 @@ function redeploy_instances {
 
     tf_args+=("-target=aws_eip_association.cyhy_nessus_eip_assocs[$index]")
     tf_args+=("-target=aws_instance.cyhy_nessus[$index]")
-    tf_args+=("-target=aws_route53_record.cyhy_vulnscan_A[$index]")
     tf_args+=("-target=aws_route53_record.cyhy_rev_vulnscan_PTR[$index]")
+    tf_args+=("-target=aws_route53_record.cyhy_vulnscan_A[$index]")
     tf_args+=("-target=aws_volume_attachment.nessus_cyhy_runner_data_attachment[$index]")
     tf_args+=("-target=module.cyhy_nessus_ansible_provisioner[$index]")
   done

@@ -31,18 +31,18 @@ aws --region "$region" ec2 wait instance-terminated --instance-ids "$bastion_ins
 
 terraform apply -var-file="$workspace.tfvars" \
   -target=aws_instance.cyhy_bastion \
+  -target=aws_network_acl_rule.private_egress_to_bastion_via_ephemeral_ports \
+  -target=aws_network_acl_rule.private_ingress_from_bastion_via_ssh \
   -target=aws_route53_record.cyhy_bastion_A \
   -target=aws_route53_record.cyhy_bastion_pub_A \
   -target=aws_route53_record.cyhy_rev_bastion_PTR \
-  -target=aws_network_acl_rule.private_egress_to_bastion_via_ephemeral_ports \
-  -target=aws_network_acl_rule.private_ingress_from_bastion_via_ssh \
-  -target=aws_security_group_rule.bastion_self_ingress \
-  -target=aws_security_group_rule.bastion_self_egress \
+  -target=aws_security_group_rule.bastion_egress_for_webd \
+  -target=aws_security_group_rule.bastion_egress_to_dashboard \
+  -target=aws_security_group_rule.bastion_egress_to_mongo_via_mongo \
   -target=aws_security_group_rule.bastion_egress_to_private_sg_via_ssh \
   -target=aws_security_group_rule.bastion_egress_to_scanner_sg_via_trusted_ports \
-  -target=aws_security_group_rule.bastion_egress_to_mongo_via_mongo \
   -target=aws_security_group_rule.bastion_ingress_from_trusted_via_ssh \
-  -target=aws_security_group_rule.bastion_egress_to_dashboard \
-  -target=aws_security_group_rule.bastion_egress_for_webd \
+  -target=aws_security_group_rule.bastion_self_egress \
+  -target=aws_security_group_rule.bastion_self_ingress \
   -target=aws_security_group_rule.private_ssh_ingress_from_bastion \
   -target=module.cyhy_bastion_ansible_provisioner
