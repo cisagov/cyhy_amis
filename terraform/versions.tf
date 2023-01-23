@@ -14,7 +14,7 @@ terraform {
     # https://github.com/hashicorp/terraform-provider-aws/blob/main/CHANGELOG.md#3620-october-08-2021
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.62"
+      version = "~> 4.51"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
