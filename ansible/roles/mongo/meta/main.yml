@@ -6,7 +6,7 @@ galaxy_info:
   galaxy_tags: []
   license: CC0
   # Our standalone Ansible roles require this Ansible version
-  min_ansible_version: 2.10
+  min_ansible_version: "2.10"
   namespace: cyhy
   platforms:
     - name: Debian
