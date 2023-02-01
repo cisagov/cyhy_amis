@@ -1,4 +1,9 @@
-- src: https://github.com/cisagov/ansible-role-cyhy-logrotate
-  name: cyhy_logrotate
-- src: https://github.com/cisagov/ansible-role-mongo-logrotate
-  name: mongo_logrotate
+collections:
+  - community.general
+  - community.mongodb
+
+roles:
+  - src: https://github.com/cisagov/ansible-role-cyhy-logrotate
+    name: cyhy_logrotate
+  - src: https://github.com/cisagov/ansible-role-mongo-logrotate
+    name: mongo_logrotate
