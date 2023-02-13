@@ -57,6 +57,13 @@ qualys_was_ips = (
     "64.39.108.104/29",
     "64.39.108.112/28",
 )
+# The following CIDR blocks are used by the RAF team for scanning:
+raf_ips = (
+    "3.90.198.239/32",
+    "3.211.199.252/32",
+    "52.201.65.180/32",
+    "54.87.25.47/32",
+)
 # The following CIDR blocks are where the STRIGA traffic originates
 # from:
 striga_ips = (
@@ -84,7 +91,7 @@ FILE_CONFIGS = [
     {
         "filename": "all.txt",
         "app_regex": re.compile(".*"),
-        "static_ips": cyhy_ips + qualys_was_ips,
+        "static_ips": cyhy_ips + qualys_was_ips + raf_ips,
         "description": "This file contains a consolidated list of all the IP addresses that VM is currently using for external scanning.",
     },
     {
