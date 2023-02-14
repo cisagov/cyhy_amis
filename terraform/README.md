@@ -535,8 +535,11 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_security_group_rule.scanner_ingress_from_bastion_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.scanner_ingress_from_private_sg_via_ssh](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_sns_topic.cloudwatch_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
+| [aws_sns_topic.fdi_failure_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
 | [aws_sns_topic.kevsync_failure_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
+| [aws_sns_topic_policy.fdi_failure_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_policy) | resource |
 | [aws_sns_topic_subscription.account_email](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_subscription) | resource |
+| [aws_sns_topic_subscription.fdi_failure_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_subscription) | resource |
 | [aws_sns_topic_subscription.kevsync_failure_email](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_subscription) | resource |
 | [aws_subnet.bod_docker_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
 | [aws_subnet.bod_lambda_subnet](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/subnet) | resource |
@@ -593,6 +596,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_iam_policy_document.ec2_service_assume_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.es_bod_docker_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.es_cyhy_mongo_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.fdi_failure_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fdi_lambda_cloudwatch_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fdi_lambda_ec2_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fdi_lambda_s3_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -659,6 +663,9 @@ terraform apply -var-file=<your_workspace>.tfvars
 | findings\_data\_import\_db\_hostname | The hostname that has the database to store the findings data in. | `string` | `""` | no |
 | findings\_data\_import\_db\_port | The port that the database server is listening on. | `string` | `""` | no |
 | findings\_data\_import\_lambda\_description | The description to associate with the findings-data-import Lambda function. | `string` | `"Lambda function for importing findings data."` | no |
+| findings\_data\_import\_lambda\_failure\_emails | A list of the emails to which alerts should be sent if findings data processing fails. | `list(string)` | `[]` | no |
+| findings\_data\_import\_lambda\_failure\_prefix | The object prefix that findings JSONs that have failed to process successfully will have in the findings data bucket. | `string` | `"failed/"` | no |
+| findings\_data\_import\_lambda\_failure\_suffix | The object suffix that findings JSONs that have failed to process successfully will have in the findings data bucket. | `string` | `".json"` | no |
 | findings\_data\_import\_lambda\_handler | The entrypoint for the findings-data-import Lambda. | `string` | `"lambda_handler.handler"` | no |
 | findings\_data\_import\_lambda\_s3\_bucket | The name of the bucket where the findings data import Lambda function can be found.  This bucket should be created with the cisagov/findings-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace\_name>' will be appended to the bucket name. | `string` | n/a | yes |
 | findings\_data\_import\_lambda\_s3\_key | The key (name) of the zip file for the findings data import Lambda function inside the S3 bucket. | `string` | n/a | yes |

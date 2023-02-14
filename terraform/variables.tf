@@ -269,6 +269,25 @@ variable "findings_data_import_db_port" {
   type        = string
 }
 
+variable "findings_data_import_lambda_failure_emails" {
+  default     = []
+  description = "A list of the emails to which alerts should be sent if findings data processing fails."
+  type        = list(string)
+}
+
+
+variable "findings_data_import_lambda_failure_prefix" {
+  default     = "failed/"
+  description = "The object prefix that findings JSONs that have failed to process successfully will have in the findings data bucket."
+  type        = string
+}
+
+variable "findings_data_import_lambda_failure_suffix" {
+  default     = ".json"
+  description = "The object suffix that findings JSONs that have failed to process successfully will have in the findings data bucket."
+  type        = string
+}
+
 variable "findings_data_import_lambda_description" {
   default     = "Lambda function for importing findings data."
   description = "The description to associate with the findings-data-import Lambda function."
