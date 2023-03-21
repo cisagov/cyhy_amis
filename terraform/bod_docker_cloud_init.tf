@@ -6,13 +6,6 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
   gzip          = true
 
   part {
-    content      = file("${path.module}/cloud-init/cyhy_user_ssh_setup.yml")
-    content_type = "text/cloud-config"
-    filename     = "cyhy_user_ssh_setup.yml"
-    merge_type   = "list(append)+dict(recurse_array)+str()"
-  }
-
-  part {
     content = templatefile("${path.module}/cloud-init/set_hostname.tpl.yml", {
       # Note that the hostname here is identical to what is set in
       # the corresponding DNS A record.
