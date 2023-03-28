@@ -1,0 +1,25 @@
+---
+# The bastion is the only instance that does not need a cyhy user for
+# operational functionality.
+- hosts: all:!bastion
+  name: Create the cyhy user and set up SSH access
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Create the cyhy user
+      ansible.builtin.user:
+        home: /var/cyhy
+        name: cyhy
+        shell: /bin/bash
+        uid: 2048
+      register: user_info
+
+    - name: Modify permissions on the home directory
+      ansible.builtin.file:
+        mode: 0750
+        path: "{{ user_info.home }}"
+
+    - name: Add the SSH public key as an authorized key
+      ansible.posix.authorized_key:
+        key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOreUDnms12MPI0gh7K+YGaESYgC2TY1zA+kSK/g+n5+ cyhy
+        user: cyhy

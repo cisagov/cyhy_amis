@@ -1,9 +1,0 @@
----
-
-users:
-  - homedir: /var/cyhy
-    name: cyhy
-    shell: /bin/bash
-    ssh-authorized-keys:
-      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOreUDnms12MPI0gh7K+YGaESYgC2TY1zA+kSK/g+n5+ cyhy
-    uid: "2048"

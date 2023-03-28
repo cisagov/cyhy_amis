@@ -2,6 +2,9 @@
 - name: Import AWS playbook
   ansible.builtin.import_playbook: aws.yml
 
+- name: Import cyhy user creation playbook
+  ansible.builtin.import_playbook: create_cyhy_user.yml
+
 - hosts: all
   name: Add a banner, persist journald, install ClamAV, and setup dev team ssh
   become: yes
