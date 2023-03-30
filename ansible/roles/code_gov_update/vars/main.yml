@@ -1,5 +1,5 @@
 ---
 # vars file for bod_docker
 
-# The GitHub OAUTH token
-github_oauth_token: "{{ lookup('aws_ssm', '/github/oauth_token') }}"
+# The GitHub Personal Access Token
+github_pat: "{{ lookup('aws_ssm', '/github/pat/code.gov') }}"
