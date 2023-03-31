@@ -7,13 +7,17 @@
   ignore_errors: true
   register: checkifmongousers
 
-# HACK ALERT - Part 1:
-# Install pymongo 3.6 in order to use the Ansible mongodb_user module.
-- name: Install pymongo 3.6
+# Ensure PyMongo is available for the community.mongodb collection's modules.
+# The 3.12.3 version is the last of the PyMongo 3.x versions being tested. If
+# the version pin for the community.mongodb collection is updated to 1.4.0-1.5.1
+# we will need to pin to this version specifically due to how the collection
+# checks the version of PyMongo available. Note that this may negatively impact
+# other Python 3 packages that require newer versions of PyMongo.
+- name: Install PyMongo
   ansible.builtin.pip:
-    executable: /usr/bin/pip2
+    executable: /usr/bin/pip3
     name: pymongo
-    version: '3.6'
+    version: '>=3.12.3'
 
 - name: Create admin user in admin db (first user, no authentication)
   community.mongodb.mongodb_user:
@@ -54,14 +58,6 @@
   # miss an edge case like error output on task failure that would leak
   # password information by disabling the rule.
   no_log: true
-
-# HACK ALERT - Part 2:
-# Revert to older pymongo, needed for cyhy-core
-- name: Downgrade to pymongo 2.9.5
-  ansible.builtin.pip:
-    executable: /usr/bin/pip2
-    name: pymongo
-    version: '2.9.5'
 
 - name: Copy mongo configuration file
   ansible.builtin.template:
