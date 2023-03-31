@@ -4,6 +4,8 @@
   name: apt_over_https
 - src: https://github.com/cisagov/ansible-role-automated-security-updates
   name: automated_security_updates
+- src: https://github.com/cisagov/ansible-role-backports
+  name: backports
 - src: https://github.com/cisagov/ansible-role-banner
   name: banner
 - src: https://github.com/cisagov/ansible-role-clamav

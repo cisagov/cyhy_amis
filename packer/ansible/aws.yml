@@ -10,3 +10,17 @@
     # The instance types used for almost all the instances expose EBS
     # volumes as NVMe block devices, so that's why we need nvme here.
     - nvme
+  tasks:
+    # The versions of awscli and python3-botocore in Debian Buster are too
+    # old to support IMDSv2. There are versions published to buster-backports
+    # that do support IMDSv2, so we should use them.
+    - name: Install AWS packages from buster-backports for Debian Buster
+      ansible.builtin.apt:
+        default_release: buster-backports
+        name:
+          - awscli
+          - python3-botocore
+        state: latest
+      when:
+        - ansible_distribution == "Debian"
+        - ansible_distribution_release == "buster"
