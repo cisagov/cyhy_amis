@@ -653,7 +653,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | cyhy\_vulnscan\_first\_elastic\_ip\_offset | The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy vulnscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first vulnscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional vulnscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available. | `number` | `1` | no |
 | dmarc\_import\_aws\_region | The AWS region where the dmarc-import Elasticsearch database resides. | `string` | `"us-east-1"` | no |
 | dmarc\_import\_es\_role\_arn | The ARN of the role that must be assumed in order to read the dmarc-import Elasticsearch database. | `string` | n/a | yes |
-| docker\_mailer\_override\_filename | This file is used to add/override any docker-compose settings for cyhy-mailer for the docker EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.bod.yml"` | no |
+| docker\_mailer\_override\_filename | This file is used to add/override any Docker composition settings for cyhy-mailer for the docker EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.bod.yml"` | no |
 | enable\_mgmt\_vpc | Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC. | `bool` | `false` | no |
 | findings\_data\_field\_map | The key for the file storing field name mappings in JSON format. | `string` | n/a | yes |
 | findings\_data\_import\_db\_hostname | The hostname that has the database to store the findings data in. | `string` | `""` | no |
@@ -683,7 +683,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | nmap\_cyhy\_runner\_disk | The cyhy-runner data volume for the Nmap instance(s). | `string` | `"/dev/nvme1n1"` | no |
 | nmap\_instance\_count | The number of Nmap instances to create. | `number` | n/a | yes |
 | remote\_ssh\_user | The username to use when sshing to the EC2 instances. | `string` | n/a | yes |
-| reporter\_mailer\_override\_filename | This file is used to add/override any docker-compose settings for cyhy-mailer for the reporter EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.cyhy.yml"` | no |
+| reporter\_mailer\_override\_filename | This file is used to add/override any Docker composition settings for cyhy-mailer for the reporter EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.cyhy.yml"` | no |
 | scan\_types | The scan types that can be run. | `list(string)` | n/a | yes |
 | ses\_aws\_region | The AWS region where SES is configured. | `string` | `"us-east-1"` | no |
 | ses\_role\_arn | The ARN of the role that must be assumed in order to send emails. | `string` | n/a | yes |

@@ -5,9 +5,9 @@
 # cyhy-mailer secrets
 #
 # The cyhy-mailer container does not run as root, so the creds files
-# need to be globally readable.  docker-compose does allow one to
-# specify the uid, gid, and mode of the secrets files, but that only
-# works in swarm mode.
+# need to be globally readable.  The Compose specification does allow
+# one to specify the uid, gid, and mode of the secrets files, but that
+# only works in swarm mode.
 #
 - name: Create the secrets directory for cyhy-mailer
   ansible.builtin.file:
@@ -33,13 +33,13 @@
     owner: cyhy
     src: aws_config.j2
 
-# docker-compose will automatically use docker-compose.yml and
+# The compose command will automatically use docker-compose.yml and
 # docker-compose.override.yml, so this is a way for us to tune
-# docker-compose's behavior to the particular machine.
+# compose's behavior to the particular machine.
 #
 # In our case we want to send the BOD 18-01 reports on the BOD docker
 # instance and the CyHy-related reports on the reporter instance.
-- name: Create a symlink for the docker-compose override file
+- name: Create a symlink for the docker compose override file
   ansible.builtin.file:
     group: cyhy
     mode: 0664
@@ -63,7 +63,7 @@
 #     - name: Create a cron job for sending BOD 18-01 reports
 #       ansible.builtin.cron:
 #         hour: 12
-#         job: cd /var/cyhy/cyhy-mailer && docker-compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
+#         job: cd /var/cyhy/cyhy-mailer && docker compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
 #         minute: 0
 #         name: "Sending BOD 18-01 reports"
 #         user: cyhy
