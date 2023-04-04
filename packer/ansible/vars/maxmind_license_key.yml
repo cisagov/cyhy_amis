@@ -1,0 +1,3 @@
+---
+# Retrieve the MaxMind GeoIP2 license from the AWS SSM Paramter Store
+maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"

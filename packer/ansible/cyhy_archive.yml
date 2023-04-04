@@ -5,5 +5,5 @@
   become_method: sudo
   roles:
     - cyhy_archive
-  vars:
-    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"
+  vars_files:
+    - vars/maxmind_license_key.yml
