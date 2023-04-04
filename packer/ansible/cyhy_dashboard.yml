@@ -1,0 +1,11 @@
+---
+- hosts: cyhy_dashboard
+  name: Install and configure cyhy-dashboard
+  become: yes
+  become_method: sudo
+  roles:
+    - ncats_webd
+    - ncats_webui
+    - docker
+  vars:
+    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"

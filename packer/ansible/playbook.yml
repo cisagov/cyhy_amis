@@ -8,96 +8,32 @@
 - name: Import cyhy user creation playbook
   ansible.builtin.import_playbook: create_cyhy_user.yml
 
-- hosts: nmap
-  name: Install nmap
-  become: yes
-  become_method: sudo
-  roles:
-    - cyhy_runner
-    - nmap
-    - more_ephemeral_ports
+- name: Import the nmap host playbook
+  ansible.builtin.import_playbook: nmap.yml
 
-- hosts: mongo
-  name: Install and configure MongoDB and xfsprogs
-  become: yes
-  become_method: sudo
-  roles:
-    - xfs
-    - mongo
-    - cyhy_feeds
+- name: Import the mongo host playbook
+  ansible.builtin.import_playbook: mongo.yml
 
-- hosts: nessus
-  name: Install and configure Nessus
-  become: yes
-  become_method: sudo
-  roles:
-    - cyhy_runner
-    - role: nessus
-      vars:
-        package_bucket: ncats-3rd-party-packages
-        version: "10.5.1"
-    - more_ephemeral_ports
+- name: Import the nessus host playbook
+  ansible.builtin.import_playbook: nessus.yml
 
-- hosts: bod
-  name: Configure host for BOD 18-01 scanning and reporting
-  become: yes
-  become_method: sudo
-  roles:
-    - xfs
-    - orchestrator
-    - vdp_scanner
-    - cyhy_mailer
+- name: Import the bod host playbook
+  ansible.builtin.import_playbook: bod.yml
 
-- hosts: code_gov
-  name: Configure host for code.gov updating
-  become: yes
-  become_method: sudo
-  roles:
-    - code_gov_update
+- name: Import the code_gov host playbook
+  ansible.builtin.import_playbook: code_gov.yml
 
-- hosts: client_cert
-  name: Configure host for client cert auth updating
-  become: yes
-  become_method: sudo
-  roles:
-    - client_cert_update
+- name: Import the client_cert host playbook
+  ansible.builtin.import_playbook: client_cert.yml
 
-- hosts: cyhy_commander
-  name: Install and configure cyhy-commander
-  become: yes
-  become_method: sudo
-  roles:
-    - cyhy_commander
-  vars:
-    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"
+- name: Import the cyhy_commander host playbook
+  ansible.builtin.import_playbook: cyhy_commander.yml
 
-- hosts: cyhy_reporter
-  name: Install and configure cyhy-reports
-  become: yes
-  become_method: sudo
-  roles:
-    - xfs
-    - cyhy_reports
-    - cyhy_mailer
-  vars:
-    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"
+- name: Import the cyhy_reporter host playbook
+  ansible.builtin.import_playbook: cyhy_reporter.yml
 
-- hosts: cyhy_dashboard
-  name: Install and configure cyhy-dashboard
-  become: yes
-  become_method: sudo
-  roles:
-    - ncats_webd
-    - ncats_webui
-    - docker
-  vars:
-    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"
+- name: Import the cyhy_dashboard host playbook
+  ansible.builtin.import_playbook: cyhy_dashboard.yml
 
-- hosts: cyhy_archive
-  name: Install cyhy-archive helper script
-  become: yes
-  become_method: sudo
-  roles:
-    - cyhy_archive
-  vars:
-    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"
+- name: Import the cyhy_archive host playbook
+  ansible.builtin.import_playbook: cyhy_archive.yml

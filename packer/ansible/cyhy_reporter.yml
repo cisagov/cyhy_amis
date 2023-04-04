@@ -1,0 +1,11 @@
+---
+- hosts: cyhy_reporter
+  name: Install and configure cyhy-reports
+  become: yes
+  become_method: sudo
+  roles:
+    - xfs
+    - cyhy_reports
+    - cyhy_mailer
+  vars:
+    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"

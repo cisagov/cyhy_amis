@@ -1,0 +1,9 @@
+---
+- hosts: cyhy_archive
+  name: Install cyhy-archive helper script
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_archive
+  vars:
+    maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"
