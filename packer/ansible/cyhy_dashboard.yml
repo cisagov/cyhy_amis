@@ -6,6 +6,5 @@
   roles:
     - ncats_webd
     - ncats_webui
-    - docker
   vars:
     maxmind_license_key: "{{ lookup('aws_ssm', '/cyhy/core/geoip/license_key') }}"
