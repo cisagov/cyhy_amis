@@ -26,6 +26,9 @@
 - name: Import the client_cert host playbook
   ansible.builtin.import_playbook: client_cert.yml
 
+- name: Import the vdp_scan host playbook
+  ansible.builtin.import_playbook: vdp_scan.yml
+
 - name: Import the cyhy_commander host playbook
   ansible.builtin.import_playbook: cyhy_commander.yml
 
