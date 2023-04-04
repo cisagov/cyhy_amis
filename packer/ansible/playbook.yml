@@ -1,28 +1,12 @@
 ---
+- name: Import base image playbook
+  ansible.builtin.import_playbook: base.yml
+
 - name: Import AWS playbook
   ansible.builtin.import_playbook: aws.yml
 
 - name: Import cyhy user creation playbook
   ansible.builtin.import_playbook: create_cyhy_user.yml
-
-- hosts: all
-  name: Add a banner, persist journald, install ClamAV, and setup dev team ssh
-  become: yes
-  become_method: sudo
-  roles:
-    - banner
-    - persist_journald
-    - clamav
-    - dev_ssh_access
-
-# The bastion should have as little installed as possible, since it's
-# exposed to the cruel world
-- hosts: all:!bastion
-  name: Install htop
-  become: yes
-  become_method: sudo
-  roles:
-    - htop
 
 - hosts: nmap
   name: Install nmap
