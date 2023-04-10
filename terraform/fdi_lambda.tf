@@ -200,7 +200,7 @@ resource "aws_lambda_permission" "fdi_lambda_allow_bucket" {
 resource "aws_s3_bucket_notification" "fdi_lambda" {
   bucket = data.aws_s3_bucket.findings_data.id
 
-  # Trigger the appropriate lambda function whenever an object with the configured
+  # Trigger the appropriate Lambda function whenever an object with the configured
   # suffix is created in the bucket.
   lambda_function {
     lambda_function_arn = aws_lambda_function.fdi_lambda.arn
