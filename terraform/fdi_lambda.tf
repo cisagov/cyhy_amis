@@ -196,16 +196,27 @@ resource "aws_lambda_permission" "fdi_lambda_allow_bucket" {
   source_arn    = data.aws_s3_bucket.findings_data.arn
 }
 
-# Create the notification that triggers our Lambda function to run whenever
-# an object is created in our findings data bucket
+# Create the notification configuration for the findings data bucket
 resource "aws_s3_bucket_notification" "fdi_lambda" {
   bucket = data.aws_s3_bucket.findings_data.id
 
+  # Trigger the appropriate Lambda function whenever an object with the configured
+  # suffix is created in the bucket.
   lambda_function {
     lambda_function_arn = aws_lambda_function.fdi_lambda.arn
     events              = ["s3:ObjectCreated:Put"]
     filter_suffix       = var.findings_data_input_suffix
   }
+
+  # Notify the appropriate SNS topic for fdi failures whenever an object is created
+  # with the configured prefix and suffix.
+  topic {
+    topic_arn     = aws_sns_topic.fdi_failure_alarm.arn
+    events        = ["s3:ObjectCreated:Copy"]
+    filter_prefix = var.findings_data_import_lambda_failure_prefix
+    filter_suffix = var.findings_data_import_lambda_failure_suffix
+  }
+
 }
 
 # The CloudWatch log group for the Lambda functions
