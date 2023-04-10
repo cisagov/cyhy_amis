@@ -72,7 +72,8 @@
       "groups": [
         "bod",
         "code_gov",
-        "client_cert"
+        "client_cert",
+        "vdp_scan"
       ],
       "playbook_file": "ansible/playbook.yml",
       "type": "ansible",

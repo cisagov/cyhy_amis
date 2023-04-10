@@ -1,0 +1,9 @@
+---
+- hosts: mongo
+  name: Install and configure MongoDB and xfsprogs
+  become: yes
+  become_method: sudo
+  roles:
+    - xfs
+    - mongo
+    - cyhy_feeds

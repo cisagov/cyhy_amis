@@ -1,0 +1,9 @@
+---
+- hosts: cyhy_commander
+  name: Install and configure cyhy-commander
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_commander
+  vars_files:
+    - vars/maxmind_license_key.yml

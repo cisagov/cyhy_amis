@@ -1,12 +1,9 @@
 ---
 - hosts: all
-  name: >
-    Set up apt over HTTPS, upgrade base image, and enable automated security
-    updates
+  name: Set up backports, apt over HTTPS, and upgrade base image
   become: yes
   become_method: sudo
   roles:
     - backports
     - apt_over_https
     - upgrade
-    - automated_security_updates

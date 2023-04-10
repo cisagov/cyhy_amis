@@ -1,0 +1,10 @@
+---
+- hosts: cyhy_dashboard
+  name: Install and configure the CyHy dashboard
+  become: yes
+  become_method: sudo
+  roles:
+    - ncats_webd
+    - ncats_webui
+  vars_files:
+    - vars/maxmind_license_key.yml

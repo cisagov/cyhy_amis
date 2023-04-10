@@ -1,0 +1,12 @@
+---
+- hosts: nessus
+  name: Install and configure Nessus
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_runner
+    - role: nessus
+      vars:
+        package_bucket: ncats-3rd-party-packages
+        version: "10.5.1"
+    - more_ephemeral_ports

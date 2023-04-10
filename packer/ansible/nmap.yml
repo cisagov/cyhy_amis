@@ -1,0 +1,9 @@
+---
+- hosts: nmap
+  name: Install nmap
+  become: yes
+  become_method: sudo
+  roles:
+    - cyhy_runner
+    - nmap
+    - more_ephemeral_ports

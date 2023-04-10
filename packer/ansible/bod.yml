@@ -1,0 +1,9 @@
+---
+- hosts: bod
+  name: Configure host for BOD 18-01 scanning and reporting
+  become: yes
+  become_method: sudo
+  roles:
+    - xfs
+    - orchestrator
+    - cyhy_mailer
