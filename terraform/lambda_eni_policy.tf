@@ -14,8 +14,8 @@ data "aws_iam_policy_document" "lambda_eni_policy_doc" {
 
     actions = [
       "ec2:CreateNetworkInterface",
-      "ec2:DescribeNetworkInterfaces",
       "ec2:DeleteNetworkInterface",
+      "ec2:DescribeNetworkInterfaces",
     ]
 
     resources = [
