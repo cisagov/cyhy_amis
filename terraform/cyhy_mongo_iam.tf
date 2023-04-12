@@ -24,67 +24,20 @@ resource "aws_iam_role_policy_attachment" "ssm_agent_policy_attachment_cyhy_mong
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# The cyhy-archive S3 policy for our role
-resource "aws_iam_role_policy" "archive_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_instance_role.id
-  policy = data.aws_iam_policy_document.s3_cyhy_archive_write_doc.json
+# Attach the dmarc-import Elasticsearch assume role policy to this role as well
+resource "aws_iam_role_policy_attachment" "dmarc_es_assume_role_policy_attachment_cyhy_mongo" {
+  role       = aws_iam_role.cyhy_mongo_instance_role.id
+  policy_arn = aws_iam_policy.dmarc_es_assume_role_policy.arn
 }
 
-# IAM policy document that allows us to assume a role that allows
-# reading of the dmarc-import Elasticsearch database.  This will be
-# applied to the role we are creating.
-data "aws_iam_policy_document" "es_cyhy_mongo_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession",
-    ]
-
-    resources = [
-      var.dmarc_import_es_role_arn,
-    ]
-  }
+# Attach the cyhy-archive S3 write policy to this role as well
+resource "aws_iam_role_policy_attachment" "s3_cyhy_archive_write_policy_attachment_cyhy_mongo" {
+  role       = aws_iam_role.cyhy_mongo_instance_role.id
+  policy_arn = aws_iam_policy.s3_cyhy_archive_write_policy.arn
 }
 
-# The Elasticsearch policy for our role
-resource "aws_iam_role_policy" "es_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_instance_role.id
-  policy = data.aws_iam_policy_document.es_cyhy_mongo_doc.json
-}
-
-# IAM policy document that that allows write permissions on the MOE
-# bucket.  This will be applied to the role we are creating.
-data "aws_iam_policy_document" "s3_cyhy_mongo_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "s3:ListBucket",
-    ]
-
-    resources = [
-      aws_s3_bucket.moe_bucket.arn,
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "s3:DeleteObject",
-      "s3:PutObject",
-    ]
-
-    resources = [
-      "${aws_s3_bucket.moe_bucket.arn}/*",
-    ]
-  }
-}
-
-# The S3 policy for our role
-resource "aws_iam_role_policy" "s3_cyhy_mongo_policy" {
-  role   = aws_iam_role.cyhy_mongo_instance_role.id
-  policy = data.aws_iam_policy_document.s3_cyhy_mongo_doc.json
+# Attach the MOE S3 bucket write policy to this role as well
+resource "aws_iam_role_policy_attachment" "moe_bucket_write_policy_attachment_cyhy_mongo" {
+  role       = aws_iam_role.cyhy_mongo_instance_role.id
+  policy_arn = aws_iam_policy.moe_bucket_write.arn
 }

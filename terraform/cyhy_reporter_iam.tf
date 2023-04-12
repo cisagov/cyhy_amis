@@ -24,26 +24,8 @@ resource "aws_iam_role_policy_attachment" "ssm_agent_policy_attachment_cyhy_repo
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# IAM policy document that allows us to assume a role that allows
-# sending of emails via SES.  This will be applied to the role we are
-# creating.
-data "aws_iam_policy_document" "ses_cyhy_reporter_doc" {
-  statement {
-    effect = "Allow"
-
-    actions = [
-      "sts:AssumeRole",
-      "sts:TagSession",
-    ]
-
-    resources = [
-      var.ses_role_arn,
-    ]
-  }
-}
-
-# The SES policy for our role
-resource "aws_iam_role_policy" "ses_cyhy_reporter_policy" {
-  role   = aws_iam_role.cyhy_reporter_instance_role.id
-  policy = data.aws_iam_policy_document.ses_cyhy_reporter_doc.json
+# Attach the SES assume role policy to this role as well
+resource "aws_iam_role_policy_attachment" "ses_assume_role_policy_attachment_cyhy_reporter" {
+  role       = aws_iam_role.cyhy_reporter_instance_role.id
+  policy_arn = aws_iam_policy.ses_assume_role_policy.arn
 }
