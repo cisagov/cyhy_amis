@@ -7,5 +7,7 @@
     - xfs
     - cyhy_reports
     - cyhy_mailer
+  vars:
+    texmf_buffer_size: 1000000
   vars_files:
     - vars/maxmind_license_key.yml
