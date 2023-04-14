@@ -30,7 +30,6 @@
   name: cyhy_mailer
 - src: https://github.com/cisagov/ansible-role-cyhy-reports
   name: cyhy_reports
-  version: improvement/increase-texmf-buffer-size
 - src: https://github.com/cisagov/ansible-role-cyhy-runner
   name: cyhy_runner
 - src: https://github.com/cisagov/ansible-role-dev-ssh-access
