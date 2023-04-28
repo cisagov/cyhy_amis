@@ -43,6 +43,8 @@ VERIFY_SSL = False
 FAILED_REQUEST_MAX_RETRIES = 30
 # Seconds to wait between failed request retries
 FAILED_REQUEST_RETRY_WAIT_SEC = 10
+# Seconds before requests should timeout
+REQUEST_TIMEOUT = 60
 
 if DEBUG:
     # Standard Python Libraries
@@ -120,6 +122,7 @@ class NessusController:
                     headers=headers,
                     params=payload,
                     verify=VERIFY_SSL,
+                    timeout=REQUEST_TIMEOUT,
                 )
             elif method == "POST":
                 if files:
@@ -131,6 +134,7 @@ class NessusController:
                         headers=headers,
                         files=files,
                         verify=VERIFY_SSL,
+                        timeout=REQUEST_TIMEOUT,
                     )
                 else:
                     response = requests.post(
@@ -138,14 +142,22 @@ class NessusController:
                         headers=headers,
                         data=payload,
                         verify=VERIFY_SSL,
+                        timeout=REQUEST_TIMEOUT,
                     )
             elif method == "PUT":
                 response = requests.put(
-                    self.url + target, headers=headers, data=payload, verify=VERIFY_SSL
+                    self.url + target,
+                    headers=headers,
+                    data=payload,
+                    verify=VERIFY_SSL,
+                    timeout=REQUEST_TIMEOUT,
                 )
             elif method == "DELETE":
                 response = requests.delete(
-                    self.url + target, headers=headers, verify=VERIFY_SSL
+                    self.url + target,
+                    headers=headers,
+                    verify=VERIFY_SSL,
+                    timeout=REQUEST_TIMEOUT,
                 )
 
             if response.status_code == OK_STATUS:
