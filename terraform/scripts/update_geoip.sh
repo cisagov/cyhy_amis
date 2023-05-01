@@ -1,5 +1,23 @@
 #!/usr/bin/env bash
 
+# update_geoip.sh - Update the MaxMind GeoIP2 database on a target system over
+#  Secure Shell (SSH).  This is done by downloading and verifying the database
+#  locally before using Secure Copy (SCP) to copy the database archive to the
+#  target system and extracting it to the appropriate path on the target system
+#  using SSH.
+#
+# NOTES:
+#  - This requires the following:
+#     * AWS CLI and SSH on the local system.
+#     * An appropriate SSH configuration to connect to the target system from
+#       the local system.
+#     * Ability to sudo on the target system from the account that is used to
+#       connect.
+#     * A valid MaxMind GeoIP2 license key stored in the AWS SSM Parameter
+#       Store in the `/cyhy/core/geoip/license_key` key.
+#     * An appropriate AWS IAM configuration allowing access to the
+#       aforementioned AWS SSM Parameter Store key.
+
 set -o nounset
 set -o errexit
 set -o pipefail
