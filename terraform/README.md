@@ -146,15 +146,15 @@ terraform apply -var-file=<your_workspace>.tfvars
 | Name | Version |
 |------|---------|
 | terraform | ~> 1.0 |
-| aws | ~> 3.62 |
+| aws | ~> 3.75 |
 | cloudinit | ~> 2.0 |
 
 ## Providers ##
 
 | Name | Version |
 |------|---------|
-| aws | ~> 3.62 |
-| aws.public\_dns | ~> 3.62 |
+| aws | ~> 3.75 |
+| aws.public\_dns | ~> 3.75 |
 | cloudinit | ~> 2.0 |
 | null | n/a |
 | terraform | n/a |
@@ -451,6 +451,10 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_s3_bucket.moe_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_notification.adi_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification) | resource |
 | [aws_s3_bucket_notification.fdi_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification) | resource |
+| [aws_s3_bucket_public_access_block.cyhy_archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_public_access_block.moe_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.cyhy_archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
+| [aws_s3_bucket_server_side_encryption_configuration.moe_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
 | [aws_security_group.adi_lambda_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.bod_bastion_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
 | [aws_security_group.bod_docker_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |

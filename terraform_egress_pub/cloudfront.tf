@@ -13,15 +13,16 @@ data "aws_acm_certificate" "rules_cert" {
 # An S3 bucket where artifacts for the Lambda@Edge can be stored
 resource "aws_s3_bucket" "lambda_artifact_bucket" {
   bucket_prefix = "cyhy-egress-lambda-at-edge"
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+}
+
+# Ensure the S3 bucket is encrypted
+resource "aws_s3_bucket_server_side_encryption_configuration" "lambda_artifact_bucket" {
+  bucket = aws_s3_bucket.lambda_artifact_bucket.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
     }
-  }
-  versioning {
-    enabled = true
   }
 }
 
@@ -34,6 +35,14 @@ resource "aws_s3_bucket_public_access_block" "lambda_artifact_bucket" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_versioning" "lambda_artifact_bucket" {
+  bucket = aws_s3_bucket.lambda_artifact_bucket.id
+
+  versioning_configuration {
+    status = "Enabled"
+  }
 }
 
 # A Lambda@Edge for injecting security headers

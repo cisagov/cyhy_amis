@@ -6,12 +6,12 @@ terraform {
   # major version currently being used.  This practice will help us
   # avoid unwelcome surprises.
   required_providers {
-    # Version 3.38.0 of the Terraform AWS provider is the first
-    # version to support default tags.
-    # https://www.hashicorp.com/blog/default-tags-in-the-terraform-aws-provider
+    # Version 3.75.0 of the Terraform AWS provider backports the changes to how
+    # AWS S3 resources are structured from the 4.0 release.
+    # https://www.hashicorp.com/blog/terraform-aws-provider-4-0-refactors-s3-bucket-resource
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.38"
+      version = "~> 3.75"
     }
   }
 }
