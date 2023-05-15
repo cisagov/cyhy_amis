@@ -46,11 +46,11 @@
 
     #
     # The cron job below generates and emails CyHy notifications;
-    # it runs at 0800 UTC every day.
+    # it runs at 0600 UTC every day.
     #
     - name: Create cron job for daily CyHy notifications
       ansible.builtin.cron:
-        hour: '8'
+        hour: '6'
         job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
         minute: '0'
         name: "Generate and send daily CyHy notifications"
