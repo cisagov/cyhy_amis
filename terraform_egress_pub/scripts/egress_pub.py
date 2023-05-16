@@ -112,16 +112,16 @@ FILE_CONFIGS = [
         "description": "This file contains a list of all IPs used for Phishing Campaign Assessments.",
     },
     {
-        "filename": "was.txt",
-        "app_regex": re.compile("Web Application Scanning$"),
-        "static_ips": qualys_was_ips,
-        "description": "This file contains a list of all IPs used for Web Application Scanning.",
-    },
-    {
         "filename": "striga.txt",
         "app_regex": re.compile("STRIGA$"),
         "static_ips": striga_ips,
         "description": "This file contains a consolidated list of all the IP addresses that VM is currently using for STRIGA external testing.",
+    },
+    {
+        "filename": "was.txt",
+        "app_regex": re.compile("Web Application Scanning$"),
+        "static_ips": qualys_was_ips,
+        "description": "This file contains a list of all IPs used for Web Application Scanning.",
     },
 ]
 
