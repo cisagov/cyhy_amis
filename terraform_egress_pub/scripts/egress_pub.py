@@ -94,34 +94,34 @@ striga_ips = (
 
 FILE_CONFIGS = [
     {
-        "filename": "all.txt",
         "app_regex": re.compile(".*"),
-        "static_ips": cyhy_ips + qualys_was_ips + raf_ips,
         "description": "This file contains a consolidated list of all the IP addresses that VM is currently using for external scanning.",
+        "filename": "all.txt",
+        "static_ips": cyhy_ips + qualys_was_ips + raf_ips,
     },
     {
-        "filename": "cyhy.txt",
         "app_regex": re.compile("(Manual )?Cyber Hygiene$"),
-        "static_ips": cyhy_ips,
         "description": "This file contains a list of all IPs used for Cyber Hygiene scanning.",
+        "filename": "cyhy.txt",
+        "static_ips": cyhy_ips,
     },
     {
-        "filename": "pca.txt",
         "app_regex": re.compile("Phishing Campaign Assessment$"),
-        "static_ips": (),
         "description": "This file contains a list of all IPs used for Phishing Campaign Assessments.",
+        "filename": "pca.txt",
+        "static_ips": (),
     },
     {
-        "filename": "striga.txt",
         "app_regex": re.compile("STRIGA$"),
-        "static_ips": striga_ips,
         "description": "This file contains a consolidated list of all the IP addresses that VM is currently using for STRIGA external testing.",
+        "filename": "striga.txt",
+        "static_ips": striga_ips,
     },
     {
-        "filename": "was.txt",
         "app_regex": re.compile("Web Application Scanning$"),
-        "static_ips": qualys_was_ips,
         "description": "This file contains a list of all IPs used for Web Application Scanning.",
+        "filename": "was.txt",
+        "static_ips": qualys_was_ips,
     },
 ]
 
