@@ -11,16 +11,38 @@
     # volumes as NVMe block devices, so that's why we need nvme here.
     - nvme
   tasks:
-    # The versions of awscli and python3-botocore in Debian Buster are too
-    # old to support IMDSv2. There are versions published to buster-backports
-    # that do support IMDSv2, so we should use them.
-    - name: Install AWS packages from buster-backports for Debian Buster
-      ansible.builtin.apt:
-        default_release: buster-backports
-        name:
-          - awscli
-          - python3-botocore
-        state: latest
+    - name: Support IMDSv2 on Debian Buster
+      block:
+        # We need a more recent version of botocore to support IMDSv2. The
+        # version of python3-botocore in buster-backports is new enough, but
+        # the only version of python3-boto3 available is much older. Since
+        # these packages are updated in lock-step any major difference in
+        # package versions can cause incompatibilities. Therefore, we ensure
+        # existing system packages for boto3/botocore are uninstalled and then
+        # install both boto3 and botocore as regular Python packages. This will
+        # ensure we get both a new enough version of botocore and a compatible
+        # version of boto3.
+        - name: Remove boto-related system packages
+          ansible.builtin.apt:
+            name:
+              - python3-boto3
+              - python3-botocore
+            state: absent
+        - name: Install boto-related Python packages
+          ansible.builtin.pip:
+            executable: pip3
+            name:
+              - boto3
+              - botocore
+        # The version of awscli in Debian Buster is too old to support IMDSv2.
+        # There is a compatible version published to buster-backports so we
+        # should use that package instead.
+        - name: Install awscli from buster-backports
+          ansible.builtin.apt:
+            default_release: buster-backports
+            name:
+              - awscli
+            state: latest
       when:
         - ansible_distribution == "Debian"
         - ansible_distribution_release == "buster"
