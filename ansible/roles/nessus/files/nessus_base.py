@@ -121,8 +121,8 @@ class NessusController:
                     self.url + target,
                     headers=headers,
                     params=payload,
-                    verify=VERIFY_SSL,
                     timeout=REQUEST_TIMEOUT,
+                    verify=VERIFY_SSL,
                 )
             elif method == "POST":
                 if files:
@@ -131,33 +131,33 @@ class NessusController:
                     headers = {"X-Cookie": f"token={self.token}"}
                     response = requests.post(
                         self.url + target,
-                        headers=headers,
                         files=files,
-                        verify=VERIFY_SSL,
+                        headers=headers,
                         timeout=REQUEST_TIMEOUT,
+                        verify=VERIFY_SSL,
                     )
                 else:
                     response = requests.post(
                         self.url + target,
-                        headers=headers,
                         data=payload,
-                        verify=VERIFY_SSL,
+                        headers=headers,
                         timeout=REQUEST_TIMEOUT,
+                        verify=VERIFY_SSL,
                     )
             elif method == "PUT":
                 response = requests.put(
                     self.url + target,
-                    headers=headers,
                     data=payload,
-                    verify=VERIFY_SSL,
+                    headers=headers,
                     timeout=REQUEST_TIMEOUT,
+                    verify=VERIFY_SSL,
                 )
             elif method == "DELETE":
                 response = requests.delete(
                     self.url + target,
                     headers=headers,
-                    verify=VERIFY_SSL,
                     timeout=REQUEST_TIMEOUT,
+                    verify=VERIFY_SSL,
                 )
 
             if response.status_code == OK_STATUS:

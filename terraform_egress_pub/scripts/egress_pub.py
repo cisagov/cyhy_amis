@@ -190,8 +190,8 @@ def update_bucket(bucket_name, filename, bucket_contents):
     b_object.put(
         Body=bucket_contents.encode("utf-8"),
         CacheControl="no-cache",
-        ContentType="text/plain",
         ContentEncoding="utf-8",
+        ContentType="text/plain",
     )
 
     # by default new objects cannot be read by public
@@ -233,10 +233,10 @@ def main():
 
         # fill in template
         bucket_contents = bucket_contents.format(
+            description=config["description"],
             domain=DOMAIN,
             filename=config["filename"],
             timestamp=now,
-            description=config["description"],
         )
 
         # send the contents to the s3 bucket
