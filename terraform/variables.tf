@@ -19,6 +19,11 @@ variable "assessment_data_import_lambda_s3_key" {
   type        = string
 }
 
+variable "bod_lambda_function_bucket" {
+  description = "The name of the S3 bucket where the Lambda function zip files reside.  Terraform cannot access buckets that are not in the provider's region, so the region name will be appended to the bucket name to obtain the actual bucket where the zips are stored.  So if we are working in region `us-west-1` and this variable has the value `buckethead`, then the zips will be looked for in the bucket `buckethead-us-west-1`."
+  type        = string
+}
+
 variable "dmarc_import_es_role_arn" {
   description = "The ARN of the role that must be assumed in order to read the dmarc-import Elasticsearch database."
   type        = string
@@ -44,21 +49,6 @@ variable "findings_data_input_suffix" {
   type        = string
 }
 
-variable "lambda_function_bucket" {
-  description = "The name of the S3 bucket where the Lambda function zip files reside.  Terraform cannot access buckets that are not in the provider's region, so the region name will be appended to the bucket name to obtain the actual bucket where the zips are stored.  So if we are working in region us-west-1 and this variable has the value buckethead, then the zips will be looked for in the bucket buckethead-us-west-1."
-  type        = string
-}
-
-variable "lambda_function_keys" {
-  description = "The keys (names) of the zip files for the Lambda functions inside the S3 bucket.  The keys for the map are the values in scan_types."
-  type        = map(string)
-}
-
-variable "lambda_function_names" {
-  description = "The names to use for the Lambda functions.  The keys are the values in scan_types."
-  type        = map(string)
-}
-
 variable "mgmt_nessus_activation_codes" {
   description = "A list of strings containing Nessus activation codes used in the management VPC."
   type        = list(string)
@@ -82,11 +72,6 @@ variable "nmap_instance_count" {
 variable "remote_ssh_user" {
   description = "The username to use when sshing to the EC2 instances."
   type        = string
-}
-
-variable "scan_types" {
-  description = "The scan types that can be run."
-  type        = list(string)
 }
 
 variable "ses_role_arn" {
@@ -172,6 +157,12 @@ variable "aws_region" {
   default     = "us-east-1"
   description = "The AWS region to deploy into (e.g. us-east-1)."
   type        = string
+}
+
+variable "bod_lambda_functions" {
+  default     = {}
+  description = "A map of information for each BOD 18-01 Lambda. The keys are the scan types and the values are objects that contain the Lambda's name and the key (name) for the corresponding deployment package in the BOD Lambda S3 bucket. Example: `{ pshtt = { lambda_file = \"pshtt.zip\", lambda_name = \"task_pshtt\" }}`"
+  type        = map(object({ lambda_file = string, lambda_name = string }))
 }
 
 variable "bod_nat_gateway_eip" {
