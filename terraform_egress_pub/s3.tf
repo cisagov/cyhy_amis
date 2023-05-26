@@ -5,7 +5,11 @@ resource "aws_s3_bucket" "rules_bucket" {
   # https://registry.terraform.io/providers/hashicorp/aws/3.75.0/docs/resources/s3_bucket_website_configuration#usage-notes
   lifecycle {
     ignore_changes = [
-      website
+      # These should be removed when we upgrade the Terraform AWS provider to
+      # v4. It is necessary to use with the back-ported resources in v3.75 to
+      # avoid conflicts/unexpected apply results.
+      server_side_encryption_configuration,
+      website,
     ]
   }
 
@@ -22,7 +26,6 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "rules_bucket" {
     }
   }
 }
-
 
 # This blocks ANY public access to the bucket or the objects it
 # contains, even if misconfigured to allow public access.
