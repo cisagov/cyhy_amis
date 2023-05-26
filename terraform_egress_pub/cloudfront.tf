@@ -37,6 +37,17 @@ resource "aws_s3_bucket_public_access_block" "lambda_artifact_bucket" {
   restrict_public_buckets = true
 }
 
+# Any objects placed into this bucket should be owned by the bucket
+# owner. This ensures that even if objects are added by a different
+# account, the bucket-owning account retains full control over the
+# objects stored in this bucket.
+resource "aws_s3_bucket_ownership_controls" "lambda_artifact_bucket" {
+  bucket = aws_s3_bucket.lambda_artifact_bucket.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 resource "aws_s3_bucket_versioning" "lambda_artifact_bucket" {
   bucket = aws_s3_bucket.lambda_artifact_bucket.id
 

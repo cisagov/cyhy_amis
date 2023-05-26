@@ -30,6 +30,17 @@ resource "aws_s3_bucket_public_access_block" "moe_bucket" {
   restrict_public_buckets = true
 }
 
+# Any objects placed into this bucket should be owned by the bucket
+# owner. This ensures that even if objects are added by a different
+# account, the bucket-owning account retains full control over the
+# objects stored in this bucket.
+resource "aws_s3_bucket_ownership_controls" "moe_bucket" {
+  bucket = aws_s3_bucket.moe_bucket.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 # IAM policy document that that allows read permissions on the MOE bucket.
 data "aws_iam_policy_document" "moe_bucket_read_doc" {
   statement {

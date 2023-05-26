@@ -25,6 +25,17 @@ resource "aws_s3_bucket_public_access_block" "cyhy_archive" {
   restrict_public_buckets = true
 }
 
+# Any objects placed into this bucket should be owned by the bucket
+# owner. This ensures that even if objects are added by a different
+# account, the bucket-owning account retains full control over the
+# objects stored in this bucket.
+resource "aws_s3_bucket_ownership_controls" "cyhy_archive" {
+  bucket = aws_s3_bucket.cyhy_archive.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
+}
+
 # IAM policy document that that allows S3 PutObject (write) on our
 # cyhy-archive bucket.  This will be applied to the cyhy-archive role.
 data "aws_iam_policy_document" "s3_cyhy_archive_write_doc" {
