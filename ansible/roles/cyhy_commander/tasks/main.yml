@@ -149,7 +149,7 @@
 - name: Set up nightly cron job to sync NVD data
   ansible.builtin.cron:
     hour: '8'
-    job: /usr/local/bin/cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger -t cyhy-nvdsync
+    job: /usr/local/bin/cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger --tag cyhy-nvdsync
     minute: '15'
     name: Nightly cyhy-nvdsync
     user: cyhy
@@ -160,7 +160,7 @@
 - name: Set up nightly cron job to sync KEV data
   ansible.builtin.cron:
     hour: '8'
-    job: /usr/local/bin/cyhy-kevsync 2>&1 | /usr/bin/logger -t cyhy-kevsync
+    job: /usr/local/bin/cyhy-kevsync 2>&1 | /usr/bin/logger --tag cyhy-kevsync
     minute: '45'
     name: Nightly cyhy-kevsync
     user: cyhy

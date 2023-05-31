@@ -64,7 +64,7 @@
     - name: Create a cron job for BOD 18-01 scanning
       ansible.builtin.cron:
         hour: '0'
-        job: cd /var/cyhy/orchestrator && docker compose up -d 2>&1 | /usr/bin/logger -t orchestrator
+        job: cd /var/cyhy/orchestrator && docker compose up --detach 2>&1 | /usr/bin/logger --tag orchestrator
         minute: '0'
         name: "BOD 18-01 scanning"
         user: cyhy

@@ -44,7 +44,7 @@
     - name: Create a cron job for updating the code.gov JSON
       ansible.builtin.cron:
         hour: '0'
-        job: cd /var/cyhy/code-gov-update && docker compose up -d 2>&1 | /usr/bin/logger -t code-gov-update
+        job: cd /var/cyhy/code-gov-update && docker compose up --detach 2>&1 | /usr/bin/logger --tag code-gov-update
         minute: '0'
         name: "code.gov update"
         user: cyhy

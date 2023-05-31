@@ -38,7 +38,7 @@
     # - name: Create a cron job for report generation
     #   ansible.builtin.cron:
     #     hour: '0'
-    #     job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger -t cyhy-reports
+    #     job: cd /var/cyhy/reports && ./create_snapshots_reports_scorecard.py --no-dock cyhy scan 2>&1 | /usr/bin/logger --tag cyhy-reports
     #     minute: '0'
     #     name: "Snapshot, CyHy report, and CybEx scorecard generation"
     #     user: cyhy
@@ -51,7 +51,7 @@
     - name: Create cron job for daily CyHy notifications
       ansible.builtin.cron:
         hour: '6'
-        job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger -t cyhy-notifications
+        job: cd /var/cyhy/reports && ./create_send_notifications.py --log-level=info cyhy 2>&1 | /usr/bin/logger --tag cyhy-notifications
         minute: '0'
         name: "Generate and send daily CyHy notifications"
         user: cyhy

@@ -15,7 +15,7 @@
 - name: Set up weekly cyhy-archive cron job
   ansible.builtin.cron:
     hour: '5'
-    job: /var/cyhy/scripts/cyhy_archive.sh /var/lib/mongodb/cyhy_archives {{ cyhy_archive_s3_bucket_name }} {{ cyhy_archive_s3_bucket_region }} 2>&1 | /usr/bin/logger -t cyhy-archive
+    job: /var/cyhy/scripts/cyhy_archive.sh /var/lib/mongodb/cyhy_archives {{ cyhy_archive_s3_bucket_name }} {{ cyhy_archive_s3_bucket_region }} 2>&1 | /usr/bin/logger --tag cyhy-archive
     minute: '0'
     name: Weekly cyhy-archive
     user: cyhy

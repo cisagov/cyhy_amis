@@ -63,7 +63,7 @@
 #     - name: Create a cron job for sending BOD 18-01 reports
 #       ansible.builtin.cron:
 #         hour: 12
-#         job: cd /var/cyhy/cyhy-mailer && docker compose up -d 2>&1 | /usr/bin/logger -t cyhy-mailer
+#         job: cd /var/cyhy/cyhy-mailer && docker compose up --detach 2>&1 | /usr/bin/logger --tag cyhy-mailer
 #         minute: 0
 #         name: "Sending BOD 18-01 reports"
 #         user: cyhy

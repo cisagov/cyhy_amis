@@ -7,7 +7,7 @@
 - name: Create a cron job for BOD 20-01 (VDP) scanning
   ansible.builtin.cron:
     hour: '0'
-    job: cd /var/cyhy/vdp && docker compose up -d 2>&1 | /usr/bin/logger -t vdp-scanner
+    job: cd /var/cyhy/vdp && docker compose up --detach 2>&1 | /usr/bin/logger --tag vdp-scanner
     minute: '0'
     name: "BOD 20-01 (VDP) scanning"
     user: cyhy

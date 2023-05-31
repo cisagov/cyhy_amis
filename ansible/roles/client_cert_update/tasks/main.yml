@@ -43,7 +43,7 @@
     - name: Create a cron job for updating the list of hosts that require client certs
       ansible.builtin.cron:
         hour: '5'
-        job: cd /var/cyhy/client-cert-update && docker compose up -d 2>&1 | /usr/bin/logger -t client-cert-update
+        job: cd /var/cyhy/client-cert-update && docker compose up --detach 2>&1 | /usr/bin/logger --tag client-cert-update
         minute: '0'
         name: "client cert update"
         user: cyhy
