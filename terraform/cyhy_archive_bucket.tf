@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "cyhy_archive" {
   lifecycle {
     ignore_changes = [
       # This should be removed when we upgrade the Terraform AWS provider to
-      # v4. It is necessary to use with the back-ported resources in v3.75 to
+      # v4. It is necessary to use with the backported resources in v3.75 to
       # avoid conflicts/unexpected apply results.
       server_side_encryption_configuration,
     ]
