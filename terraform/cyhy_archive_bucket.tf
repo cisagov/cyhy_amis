@@ -1,6 +1,15 @@
 # The S3 bucket where the cyhy-archive compressed archives are stored
 resource "aws_s3_bucket" "cyhy_archive" {
   bucket = "${var.cyhy_archive_bucket_name}-${terraform.workspace}"
+
+  lifecycle {
+    ignore_changes = [
+      # This should be removed when we upgrade the Terraform AWS provider to
+      # v4. It is necessary to use with the backported resources in v3.75 to
+      # avoid conflicts/unexpected apply results.
+      server_side_encryption_configuration,
+    ]
+  }
 }
 
 # Ensure the S3 bucket is encrypted
@@ -23,6 +32,17 @@ resource "aws_s3_bucket_public_access_block" "cyhy_archive" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+# Any objects placed into this bucket should be owned by the bucket
+# owner. This ensures that even if objects are added by a different
+# account, the bucket-owning account retains full control over the
+# objects stored in this bucket.
+resource "aws_s3_bucket_ownership_controls" "cyhy_archive" {
+  bucket = aws_s3_bucket.cyhy_archive.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 # IAM policy document that that allows S3 PutObject (write) on our

@@ -13,6 +13,15 @@ data "aws_acm_certificate" "rules_cert" {
 # An S3 bucket where artifacts for the Lambda@Edge can be stored
 resource "aws_s3_bucket" "lambda_artifact_bucket" {
   bucket_prefix = "cyhy-egress-lambda-at-edge"
+
+  lifecycle {
+    ignore_changes = [
+      # This should be removed when we upgrade the Terraform AWS provider to
+      # v4. It is necessary to use with the backported resources in v3.75 to
+      # avoid conflicts/unexpected apply results.
+      server_side_encryption_configuration,
+    ]
+  }
 }
 
 # Ensure the S3 bucket is encrypted
@@ -35,6 +44,17 @@ resource "aws_s3_bucket_public_access_block" "lambda_artifact_bucket" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+# Any objects placed into this bucket should be owned by the bucket
+# owner. This ensures that even if objects are added by a different
+# account, the bucket-owning account retains full control over the
+# objects stored in this bucket.
+resource "aws_s3_bucket_ownership_controls" "lambda_artifact_bucket" {
+  bucket = aws_s3_bucket.lambda_artifact_bucket.id
+  rule {
+    object_ownership = "BucketOwnerEnforced"
+  }
 }
 
 resource "aws_s3_bucket_versioning" "lambda_artifact_bucket" {
