@@ -2,6 +2,14 @@
 # tasks file for cyhy_commander
 
 #
+# Make sure the cyhy-commander is not running before we make configuration changes
+#
+- name: Ensure cyhy-commander is stopped
+  ansible.builtin.service:
+    name: cyhy-commander
+    state: stopped
+
+#
 # Copy private key to new instance
 #
 - name: Copy ssh private key for cyhy user
@@ -47,7 +55,7 @@
   ansible.builtin.service:
     name: cyhy-commander
     enabled: yes
-    state: restarted
+    state: started
 
 #
 # Grab the files we need to create the "places" collection from cyhy-core
