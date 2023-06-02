@@ -1,5 +1,21 @@
 ---
 # tasks file for mongo
+
+- name: Get service information
+  ansible.builtin.service_facts:
+
+- name: Determine if cyhy-commander needs to be stopped
+  ansible.builtin.set_fact:
+    stop_commander: "{{ 'cyhy-commander' in ansible_facts.services and ansible_facts.services['cyhy-commander'].state != 'stopped' }}"
+
+# This role will restart MongoDB no matter what which will make the
+# cyhy-commander unhappy if it is running
+- name: Stop the cyhy-commander service
+  ansible.builtin.service:
+    name: cyhy-commander
+    state: stopped
+  when: stop_commander
+
 - name: Check if any mongo users already exist
   ansible.builtin.command: mongo --eval 'db.getUsers()' admin
   # This is a read-only operation
@@ -69,3 +85,11 @@
   ansible.builtin.service:
     name: mongod
     state: restarted
+
+# Since we would have stopped the cyhy-commander if it was running we need to
+# start it back up.
+- name: Start the cyhy-commander service
+  ansible.builtin.service:
+    name: cyhy-commander
+    state: started
+  when: stop_commander
