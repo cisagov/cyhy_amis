@@ -8,10 +8,10 @@
   src: https://github.com/cisagov/ansible-role-backports
 - name: banner
   src: https://github.com/cisagov/ansible-role-banner
-- name: clamav
-  src: https://github.com/cisagov/ansible-role-clamav
 - name: chrony_aws
   src: https://github.com/cisagov/ansible-role-chrony-aws
+- name: clamav
+  src: https://github.com/cisagov/ansible-role-clamav
 - name: client_cert_update
   src: https://github.com/cisagov/ansible-role-client-cert-update
 - name: cloudwatch_agent
