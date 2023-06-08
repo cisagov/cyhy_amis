@@ -18,4 +18,27 @@ kinds:
   # configuration in ansible-lint for molecule configurations:
   # yaml: "**/molecule/*/{base,molecule}.{yaml,yml}"
   - yaml: "**/molecule/*/molecule-{no,with}-systemd.yml"
+# These roles are defined in this repository but are not available in the paths
+# available by default to Ansible and Ansible-lint. I was unable to find a way
+# to append to this list instead of completely overwriting it and overwriting
+# will only generate additional problems given the structure of this
+# repository and the fact that Ansible configurations are in multiple sub-
+# directories.
+mock_roles:
+  - client_cert_update
+  - code_gov_update
+  - cyhy_archive
+  - cyhy_commander
+  - cyhy_dashboard
+  - cyhy_feeds
+  - cyhy_mailer
+  - cyhy_ops
+  - cyhy_reporter
+  - groups
+  - mgmt_ops
+  - mongo
+  - nessus
+  - orchestrator
+  - swap
+  - vdp_scanner
 use_default_rules: true
