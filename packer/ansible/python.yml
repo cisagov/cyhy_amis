@@ -2,7 +2,7 @@
 - hosts: all
   name: Install Python and Pip
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - role: pip
       vars:
@@ -23,6 +23,6 @@
 - hosts: bastion,docker,nessus,nmap
   name: Remove Python 2
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - remove_python2

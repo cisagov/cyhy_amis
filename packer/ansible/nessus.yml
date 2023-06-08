@@ -2,7 +2,7 @@
 - hosts: nessus
   name: Install and configure Nessus
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - cyhy_runner
     - role: nessus

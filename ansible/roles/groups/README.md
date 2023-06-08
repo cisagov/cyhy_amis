@@ -22,7 +22,7 @@ Here's how to use it in a playbook:
 ```yaml
 - hosts: all
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
      - groups
 ```

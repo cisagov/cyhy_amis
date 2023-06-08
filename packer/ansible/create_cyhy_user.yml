@@ -4,7 +4,7 @@
 - hosts: all:!bastion
   name: Create the cyhy user and set up SSH access
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   tasks:
     - name: Create the cyhy user
       ansible.builtin.user:

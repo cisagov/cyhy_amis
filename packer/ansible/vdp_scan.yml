@@ -2,6 +2,6 @@
 - hosts: vdp_scan
   name: Configure host for BOD 20-01 VDP scanning
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - vdp_scanner

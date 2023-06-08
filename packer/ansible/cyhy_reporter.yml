@@ -2,7 +2,7 @@
 - hosts: cyhy_reporter
   name: Install and configure cyhy-reports
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - xfs
     - cyhy_reports
