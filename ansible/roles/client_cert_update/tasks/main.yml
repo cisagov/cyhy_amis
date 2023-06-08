@@ -31,6 +31,7 @@
 # Create a cron job
 #
 - name: Create the cron job
+  when: production_workspace|bool
   block:
     - name: Add /usr/local/bin to cron's path
       ansible.builtin.cron:
@@ -48,4 +49,3 @@
         name: "client cert update"
         user: cyhy
         weekday: '2'
-  when: production_workspace|bool

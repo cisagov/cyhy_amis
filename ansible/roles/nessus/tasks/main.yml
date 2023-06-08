@@ -12,6 +12,7 @@
   failed_when: registered.rc not in [0, 1]
 
 - name: Retrieve the license key if one is registered
+  when: registered.rc == 0
   block:
     - name: Get the registered license key
       ansible.builtin.command: /opt/nessus/sbin/nessuscli fetch --code-in-use
@@ -31,9 +32,9 @@
       ansible.builtin.set_fact:
         # regex_search() returns a list so we want to compare the one element
         matching_key: "{{ nessus_activation_code == registered_key[0] }}"
-  when: registered.rc == 0
 
 - name: Register a license key, setup user, and update plugins if necessary
+  when: registered.rc != 0 or not matching_key|default(false)|bool
   block:
     - name: Stop the Nessus service
       ansible.builtin.service:
@@ -94,7 +95,6 @@
       ansible.builtin.service:
         name: nessusd
         state: started
-  when: registered.rc != 0 or not matching_key|default(false)|bool
 
 - name: Create /etc/cyhy directory
   ansible.builtin.file:

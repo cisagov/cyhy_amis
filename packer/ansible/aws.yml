@@ -12,6 +12,9 @@
     - nvme
   tasks:
     - name: Support IMDSv2 on Debian Buster
+      when:
+        - ansible_distribution == "Debian"
+        - ansible_distribution_release == "buster"
       block:
         # We need a more recent version of botocore to support IMDSv2. The
         # version of python3-botocore in buster-backports is new enough, but
@@ -43,6 +46,3 @@
             name:
               - awscli
             state: latest
-      when:
-        - ansible_distribution == "Debian"
-        - ansible_distribution_release == "buster"
