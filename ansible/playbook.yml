@@ -1,5 +1,6 @@
 ---
 - hosts: localhost
+  name: Setup the inventory and wait for a bastion to become available
   gather_facts: yes
   check_mode: no
   tasks:

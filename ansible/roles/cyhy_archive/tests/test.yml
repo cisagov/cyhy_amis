@@ -1,5 +1,6 @@
 ---
 - hosts: localhost
+  name: Test the role
   remote_user: root
   roles:
     - cyhy_archive
