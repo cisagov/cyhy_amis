@@ -193,6 +193,7 @@ module "cyhy_mongo_ansible_provisioner" {
     "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
     "nmap_hosts=${join(",", formatlist("portscan%d", range(1, var.nmap_instance_count + 1)))}",
     "nessus_hosts=${join(",", formatlist("vulnscan%d", range(1, var.nessus_instance_count + 1)))}",
+    "next_scan_limit=${var.commander_config.next_scan_limit}",
   ]
   playbook = "../ansible/playbook.yml"
   dry_run  = false
