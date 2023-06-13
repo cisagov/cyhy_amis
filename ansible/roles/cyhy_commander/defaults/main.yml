@@ -1,2 +1,10 @@
 ---
 # defaults file for cyhy_commander
+
+# The maximum number of hosts that are scheduled to have scanning restarted
+# whose next scan stage should be updated per cyhy-commander cycle. The checks
+# for hosts that were "up" or "down" are processed separately so the total
+# number of hosts that are transitioned is double the provided value. Hosts
+# that are "up" are transitioned to PORTSCAN and hosts that are "down" are
+# transitioned to NETSCAN1.
+next_scan_limit: 8192
