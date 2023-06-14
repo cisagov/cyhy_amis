@@ -13,5 +13,5 @@ galaxy_info:
     - name: Debian
       versions:
         - buster
-        - bullseye
+        - bookworm
   role_name: groups
