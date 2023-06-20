@@ -1,8 +1,8 @@
 [DEFAULT]
 default-section = production
 database-uri = mongodb://{{ commander_user }}:{{ commander_pw }}@database1.cyhy:27017/{{ commander_db }}
-jobs-per-nmap-host = 8
-jobs-per-nessus-host = 16
+jobs-per-nmap-host = {{ jobs_per_nmap_host }}
+jobs-per-nessus-host = {{ jobs_per_nessus_host }}
 poll-interval = 30
 next-scan-limit = {{ next_scan_limit }}
 test-mode = false

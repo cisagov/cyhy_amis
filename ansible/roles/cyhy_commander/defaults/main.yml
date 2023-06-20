@@ -8,3 +8,9 @@
 # that are "up" are transitioned to PORTSCAN and hosts that are "down" are
 # transitioned to NETSCAN1.
 next_scan_limit: 8192
+
+# The maximum number of jobs to assign to each nmap host (portscanner)
+jobs_per_nmap_host: 8
+
+# The maximum number o jobs to assign to each nessus host (vulnscanner)
+jobs_per_nessus_host: 16
