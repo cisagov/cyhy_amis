@@ -1,6 +1,12 @@
 ---
 # defaults file for cyhy_commander
 
+# The maximum number of jobs to assign to each nessus host (vulnscanner)
+jobs_per_nessus_host: 16
+
+# The maximum number of jobs to assign to each nmap host (portscanner)
+jobs_per_nmap_host: 8
+
 # The maximum number of hosts that are scheduled to have scanning restarted
 # whose next scan stage should be updated per cyhy-commander cycle. The checks
 # for hosts that were "up" or "down" are processed separately so the total

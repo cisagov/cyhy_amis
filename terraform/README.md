@@ -658,7 +658,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | bod\_lambda\_functions | A map of information for each BOD 18-01 Lambda. The keys are the scan types and the values are objects that contain the Lambda's name and the key (name) for the corresponding deployment package in the BOD Lambda S3 bucket. Example: `{ pshtt = { lambda_file = "pshtt.zip", lambda_name = "task_pshtt" }}` | `map(object({ lambda_file = string, lambda_name = string }))` | `{}` | no |
 | bod\_nat\_gateway\_eip | The IP corresponding to the EIP to be used for the BOD 18-01 NAT gateway in production.  In a non-production workspace an EIP will be created. | `string` | `""` | no |
 | cloudwatch\_alarm\_emails | A list of the emails to which alerts should be sent if any CloudWatch Alarm is triggered. | `list(string)` | ```[ "cisa-cool-group+cyhy@trio.dhs.gov" ]``` | no |
-| commander\_config | Configuration options for the CyHy commander's configuration file. | `object({ next_scan_limit = number })` | ```{ "next_scan_limit": 8192 }``` | no |
+| commander\_config | Configuration options for the CyHy commander's configuration file. | `object({ jobs_per_nessus_host = number, jobs_per_nmap_host = number, next_scan_limit = number })` | ```{ "jobs_per_nessus_host": 16, "jobs_per_nmap_host": 8, "next_scan_limit": 8192 }``` | no |
 | create\_bod\_flow\_logs | Whether or not to create flow logs for the BOD 18-01 VPC. | `bool` | `false` | no |
 | create\_cyhy\_flow\_logs | Whether or not to create flow logs for the CyHy VPC. | `bool` | `false` | no |
 | create\_mgmt\_flow\_logs | Whether or not to create flow logs for the Management VPC. | `bool` | `false` | no |
