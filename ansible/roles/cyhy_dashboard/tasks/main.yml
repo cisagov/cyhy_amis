@@ -19,8 +19,6 @@
     owner: cyhy
     path: /var/cyhy/web/secret_key
     state: touch
-  vars:
-    ansible_ssh_pipelining: yes
 
 - name: Create random secret key for webd
   ansible.builtin.shell:
@@ -28,8 +26,6 @@
     creates: /var/cyhy/web/secret_key
   become_method: ansible.builtin.sudo
   become_user: cyhy
-  vars:
-    ansible_ssh_pipelining: yes
 
 #
 # Set up /etc/cyhy/cyhy.conf with commander creds

@@ -73,8 +73,6 @@
   loop_control:
     label: "<key redacted>"
   register: cyhy_feeds_import_gpg_key
-  vars:
-    ansible_ssh_pipelining: yes
 
 - name: Import gpg trust
   # The value stored in the Parameter Store has a newline so we trim the value
@@ -86,8 +84,6 @@
   become_user: cyhy
   changed_when: "'inserting ownertrust' in cyhy_feeds_import_gpg_ownertrust.stderr"
   register: cyhy_feeds_import_gpg_ownertrust
-  vars:
-    ansible_ssh_pipelining: yes
 
 #
 # Create a cron job to run the extract script nightly at 0000 (UTC) as cyhy

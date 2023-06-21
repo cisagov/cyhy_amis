@@ -124,8 +124,6 @@
   ansible.builtin.command: # noqa no-changed-when
     cmd: /tmp/cyhy-places/scripts/load_places.sh
   become_user: cyhy
-  vars:
-    ansible_ssh_pipelining: yes
 
 #
 # Cleanup
