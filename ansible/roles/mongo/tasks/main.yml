@@ -5,7 +5,7 @@
   # This is a read-only operation
   changed_when: false
   ignore_errors: true
-  register: checkifmongousers
+  register: mongo_check_for_mongo_users
 
 # Ensure PyMongo is available for the community.mongodb collection's modules.
 # The 3.12.3 version is the last of the PyMongo 3.x versions being tested. If
@@ -26,7 +26,7 @@
     password: "{{ admin_pw }}"
     roles: "{{ admin_roles }}"
     state: present
-  when: checkifmongousers.rc == 0
+  when: mongo_check_for_mongo_users.rc == 0
 
 - name: Update admin user in admin db (authenticate as admin)
   community.mongodb.mongodb_user:
@@ -38,7 +38,7 @@
     password: "{{ admin_pw }}"
     roles: "{{ admin_roles }}"
     state: present
-  when: checkifmongousers.rc != 0
+  when: mongo_check_for_mongo_users.rc != 0
 
 - name: Update other users (authenticate as admin)
   community.mongodb.mongodb_user:

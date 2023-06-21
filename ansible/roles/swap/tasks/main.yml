@@ -11,7 +11,7 @@
   ansible.builtin.command:
     cmd: "fallocate --length {{ swapfile_size }} {{ swapfile_location }}"
     creates: "{{ swapfile_location }}"
-  register: allocate_swapfile
+  register: swap_allocate_swapfile
 
 - name: Set swapfile permissions
   ansible.builtin.file:
@@ -21,16 +21,16 @@
 - name: Create swapfile
   ansible.builtin.command: # noqa no-handler
     cmd: mkswap {{ swapfile_location }}
-  changed_when: create_swapfile.rc == 0
-  register: create_swapfile
-  when: allocate_swapfile is changed
+  changed_when: swap_create_swapfile.rc == 0
+  register: swap_create_swapfile
+  when: swap_allocate_swapfile is changed
 
 - name: Enable swapfile
   ansible.builtin.command: # noqa no-handler
     cmd: swapon {{ swapfile_location }}
-  changed_when: enable_swapfile.rc == 0
-  register: enable_swapfile
-  when: create_swapfile is changed
+  changed_when: swap_enable_swapfile.rc == 0
+  register: swap_enable_swapfile
+  when: swap_create_swapfile is changed
 
 - name: Add swapfile to /etc/fstab
   ansible.posix.mount:

@@ -6,35 +6,35 @@
 #
 - name: Check if a license key is registered
   ansible.builtin.command: /opt/nessus/sbin/nessuscli fetch --check
-  register: registered
+  register: nessus_license_registered
   # This is a read-only operation
   changed_when: false
-  failed_when: registered.rc not in [0, 1]
+  failed_when: nessus_license_registered.rc not in [0, 1]
 
 - name: Retrieve the license key if one is registered
-  when: registered.rc == 0
+  when: nessus_license_registered.rc == 0
   block:
     - name: Get the registered license key
       ansible.builtin.command: /opt/nessus/sbin/nessuscli fetch --code-in-use
       # This is a read-only operation
       changed_when: false
-      register: key_result
+      register: nessus_key_result
 
     - name: Extract the key in use
       ansible.builtin.set_fact:
-        registered_key: "{{ key_result.stdout | regex_search(regexp, '\\1') }}"
+        nessus_registered_key: "{{ nessus_key_result.stdout | regex_search(nessus_license_regexp, '\\1') }}"
       vars:
         # Looking for key in format:
         # XXXX-XXXX-XXXX-XXXX or XXXX-XXXX-XXXX-XXXX-XXXX
-        regexp: '([a-zA-Z0-9]{4}(?:\-[a-zA-Z0-9]{4}){3,4})'
+        nessus_license_regexp: '([a-zA-Z0-9]{4}(?:\-[a-zA-Z0-9]{4}){3,4})'
 
     - name: See if the key in use matches the provided one
       ansible.builtin.set_fact:
         # regex_search() returns a list so we want to compare the one element
-        matching_key: "{{ nessus_activation_code == registered_key[0] }}"
+        nessus_matching_key: "{{ nessus_activation_code == nessus_registered_key[0] }}"
 
 - name: Register a license key, setup user, and update plugins if necessary
-  when: registered.rc != 0 or not matching_key|default(false)|bool
+  when: nessus_license_registered.rc != 0 or not nessus_matching_key|default(false)|bool
   block:
     - name: Stop the Nessus service
       ansible.builtin.service:
@@ -55,14 +55,14 @@
       ansible.builtin.command: /opt/nessus/sbin/nessuscli lsuser
       # This is a read-only operation
       changed_when: false
-      register: users
+      register: nessus_users
 
     # The expect Ansible module requires pexpect
     - name: Install pexpect
       ansible.builtin.pip:
         name:
           - pexpect
-      when: username not in users.stdout
+      when: username not in nessus_users.stdout
 
     - name: Create scanner user if necessary
       ansible.builtin.expect:
@@ -71,7 +71,7 @@
           administrator: y
           BLANK: ""
           password: "{{ password }}"
-      when: username not in users.stdout
+      when: username not in nessus_users.stdout
 
     - name: Update plugins
       # This task is only run as part of a block that checks if a license key
@@ -130,8 +130,8 @@
 
 - name: Run Nessus configuration script
   ansible.builtin.command: python3 /tmp/nessus_base.py
-  changed_when: "'Policy already exists' not in base_policy.stderr"
-  register: base_policy
+  changed_when: "'Policy already exists' not in nessus_base_policy.stderr"
+  register: nessus_base_policy
 
 #
 # Clean up

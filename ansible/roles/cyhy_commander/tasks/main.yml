@@ -82,7 +82,7 @@
 - name: Check if cyhy.conf already exists
   ansible.builtin.stat:
     path: /etc/cyhy/cyhy.conf
-  register: cyhy_conf_result
+  register: cyhy_commander_cyhy_conf_result
 
 #
 # Set up /etc/cyhy/cyhy.conf with commander creds
@@ -100,7 +100,7 @@
     mode: 0660
     owner: cyhy
     src: cyhy.conf.j2
-  when: not cyhy_conf_result.stat.exists
+  when: not cyhy_commander_cyhy_conf_result.stat.exists
 
 - name: Add commander credentials block to cyhy.conf if necessary
   ansible.builtin.blockinfile:
@@ -110,7 +110,7 @@
       database-name = {{ commander_db }}
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     path: /etc/cyhy/cyhy.conf
-  when: cyhy_conf_result.stat.exists
+  when: cyhy_commander_cyhy_conf_result.stat.exists
 
 #
 # Run script to create the "places" collection
