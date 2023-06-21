@@ -2,10 +2,8 @@
 Description=ncats-webui service
 
 [Service]
-Type=oneshot
-RemainAfterExit=yes
+Type=simple
 Restart=on-failure
 RestartSec=10
 User=cyhy
 ExecStart=/usr/bin/make -C /var/cyhy/ncats-webui/ dev-start
-ExecStop=/usr/bin/make -C /var/cyhy/ncats-webui/ dev-stop
