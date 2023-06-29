@@ -22,7 +22,7 @@ data "aws_ami" "nmap" {
 
 resource "aws_instance" "cyhy_nmap" {
   ami           = data.aws_ami.nmap.id
-  instance_type = local.production_workspace ? "t3.small" : "t3.small"
+  instance_type = local.production_workspace ? "t3.medium" : "t3.small"
   count         = var.nmap_instance_count
 
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
