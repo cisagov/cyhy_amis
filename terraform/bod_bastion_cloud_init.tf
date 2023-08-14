@@ -15,4 +15,13 @@ data "cloudinit_config" "bod_bastion_cloud_init_tasks" {
     filename     = "set_hostname.yml"
     merge_type   = "list(append)+dict(recurse_array)+str()"
   }
+
+  part {
+    content = templatefile("${path.module}/cloud-init/configure_cloudwatch_agent.tpl.yml", {
+      cloudwatch_agent_log_group_base_name = local.bod_cloudwatch_agent_log_group_base
+    })
+    content_type = "text/cloud-config"
+    filename     = "configure_cloudwatch_agent.yml"
+    merge_type   = "list(append)+dict(recurse_array)+str()"
+  }
 }
