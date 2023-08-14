@@ -180,6 +180,7 @@ module "cyhy_nmap_ansible_provisioner" {
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
   envs = [
+    "cloudwatch_agent_log_group_base_name=${local.cyhy_cloudwatch_agent_log_group_base}",
     # If you terminate all the existing nmap instances and then run apply, the
     # list aws_instance.cyhy_nmap[*].private_ip is empty at that time.  Then
     # there is an error condition when Terraform evaluates what must be done

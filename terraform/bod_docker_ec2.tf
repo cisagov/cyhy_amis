@@ -162,6 +162,7 @@ module "bod_docker_ansible_provisioner" {
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'",
   ]
   envs = [
+    "cloudwatch_agent_log_group_base_name=${local.bod_cloudwatch_agent_log_group_base}",
     "host=${aws_instance.bod_docker.private_ip}",
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
     "host_groups=docker,bod_docker",

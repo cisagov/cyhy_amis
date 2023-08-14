@@ -54,6 +54,7 @@ module "cyhy_bastion_ansible_provisioner" {
     "--ssh-common-args='-o StrictHostKeyChecking=no'",
   ]
   envs = [
+    "cloudwatch_agent_log_group_base_name=${local.cyhy_cloudwatch_agent_log_group_base}",
     "host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_bastion",
   ]

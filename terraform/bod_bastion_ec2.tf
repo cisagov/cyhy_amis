@@ -44,3 +44,20 @@ resource "aws_instance" "bod_bastion" {
     },
   )
 }
+
+# Provision the bastion EC2 instance via Ansible
+module "bod_bastion_ansible_provisioner" {
+  source = "github.com/cloudposse/terraform-null-ansible"
+
+  arguments = [
+    "--user=${var.remote_ssh_user}",
+    "--ssh-common-args='-o StrictHostKeyChecking=no'",
+  ]
+  envs = [
+    "cloudwatch_agent_log_group_base_name=${local.bod_cloudwatch_agent_log_group_base}",
+    "host=${aws_instance.bod_bastion.public_ip}",
+    "host_groups=bod_bastion",
+  ]
+  playbook = "../ansible/playbook.yml"
+  dry_run  = false
+}

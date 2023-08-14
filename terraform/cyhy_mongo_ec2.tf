@@ -184,6 +184,7 @@ module "cyhy_mongo_ansible_provisioner" {
     "ANSIBLE_SSH_RETRIES=5",
     "aws_region=${var.aws_region}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "cloudwatch_agent_log_group_base_name=${local.cyhy_cloudwatch_agent_log_group_base}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
