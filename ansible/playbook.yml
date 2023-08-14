@@ -25,10 +25,11 @@
       when: bastion_host is not defined
 
 - hosts: all
-  name: Configure groups now that cloud-init has run
+  name: Create CloudWatch Agent configuration file and configure groups now that cloud-init has run
   become: yes
   become_method: ansible.builtin.sudo
   roles:
+    - cloudwatch_agent
     - groups
 
 - hosts: mongo

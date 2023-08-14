@@ -1,0 +1,17 @@
+---
+dependencies: []
+galaxy_info:
+  author: VM Fusion Dev
+  company: CISA Cyber Assessments
+  description: Create or replace the AWS CloudWatch Agent configuration file
+  galaxy_tags: []
+  license: CC0
+  # Our standalone Ansible roles require this Ansible version
+  min_ansible_version: "2.10"
+  namespace: cyhy
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+  role_name: cloudwatch_agent

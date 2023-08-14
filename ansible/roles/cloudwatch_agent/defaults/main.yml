@@ -1,0 +1,4 @@
+---
+# This will generate a file matching the cisagov/ansible-role-cloudwatch-agent
+# configuration if the default value is used.
+cloudwatch_agent_log_group_base_name: /instance-logs

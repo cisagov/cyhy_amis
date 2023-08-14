@@ -1,0 +1,11 @@
+---
+- name: Create the CloudWatch Agent configuration file
+  ansible.builtin.template:
+    dest: /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+    mode: 0600
+    src: amazon-cloudwatch-agent.json.j2
+
+- name: Restart the CloudWatch Agent
+  ansible.builtin.service:
+    name: amazon-cloudwatch-agent
+    state: restarted
