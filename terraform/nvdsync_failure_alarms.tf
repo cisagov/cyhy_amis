@@ -7,7 +7,7 @@ resource "aws_cloudwatch_log_group" "instance_logs" {
   #
   # We have to account for the fact that the local hostname on the
   # instance drops the local domain name.
-  name = "/instance-logs/${split(".", each.value)[0]}"
+  name = "${local.cloudwatch_agent_log_group_base}/${split(".", each.value)[1]}/${split(".", each.value)[0]}"
 }
 
 # Create a log metric filter that bumps a metric when a syslog
