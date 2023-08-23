@@ -22,6 +22,7 @@
 # Create cron job for snapshot, CyHy report, and CybEx scorecard generation
 #
 - name: Create the cron job
+  when: production_workspace|bool
   block:
     - name: Add /usr/local/bin to cron's path
       ansible.builtin.cron:
@@ -55,7 +56,6 @@
         minute: '0'
         name: "Generate and send daily CyHy notifications"
         user: cyhy
-  when: production_workspace|bool
 
 #
 # Add dev users to the cyhy group

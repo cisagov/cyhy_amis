@@ -2,7 +2,7 @@
 - hosts: cyhy_dashboard
   name: Install and configure the CyHy dashboard
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - ncats_webd
     - ncats_webui

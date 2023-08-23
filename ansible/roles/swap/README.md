@@ -21,7 +21,7 @@ None
 - hosts: nmap
   name: Configure nmap scanning hosts
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - { role: swap, swapfile_size: 2GiB}
 ```

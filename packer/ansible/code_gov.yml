@@ -2,6 +2,6 @@
 - hosts: code_gov
   name: Configure host for code.gov updating
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - code_gov_update

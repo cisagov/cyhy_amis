@@ -3,4 +3,4 @@
   name: Test the role
   remote_user: root
   roles:
-    - cyhy_commander
+    - swap

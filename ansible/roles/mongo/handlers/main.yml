@@ -1,6 +1,6 @@
 ---
 # handlers file for mongo
 - name: Enable mongo
-  service:
-    name: mongod
+  ansible.builtin.service:
     enabled: yes
+    name: mongod

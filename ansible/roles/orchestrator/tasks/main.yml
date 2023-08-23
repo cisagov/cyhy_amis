@@ -51,6 +51,7 @@
 # Create a cron job for scanning
 #
 - name: Create the cron job
+  when: production_workspace|bool
   block:
     - name: Add /usr/local/bin to cron's path
       ansible.builtin.cron:
@@ -69,4 +70,3 @@
         name: "BOD 18-01 scanning"
         user: cyhy
         weekday: '6'
-  when: production_workspace|bool

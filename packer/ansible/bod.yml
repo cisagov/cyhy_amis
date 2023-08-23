@@ -2,7 +2,7 @@
 - hosts: bod
   name: Configure host for BOD 18-01 scanning and reporting
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - xfs
     - orchestrator

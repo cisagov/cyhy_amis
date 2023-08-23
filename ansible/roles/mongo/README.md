@@ -21,7 +21,7 @@ Here's how to use it in a playbook:
 ```yaml
 - hosts: mongo
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
      - mongo
 ```

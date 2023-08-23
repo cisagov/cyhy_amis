@@ -2,7 +2,7 @@
 - hosts: all
   name: AWS-specific roles
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - amazon_ssm_agent
     - chrony_aws
@@ -12,6 +12,9 @@
     - nvme
   tasks:
     - name: Support IMDSv2 on Debian Buster
+      when:
+        - ansible_distribution == "Debian"
+        - ansible_distribution_release == "buster"
       block:
         # We need a more recent version of botocore to support IMDSv2. The
         # version of python3-botocore in buster-backports is new enough, but
@@ -41,8 +44,5 @@
           ansible.builtin.apt:
             default_release: buster-backports
             name:
-              - awscli
-            state: latest
-      when:
-        - ansible_distribution == "Debian"
-        - ansible_distribution_release == "buster"
+              - awscli=1.19.1-1~bpo10+1
+            state: present

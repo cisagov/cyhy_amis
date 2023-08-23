@@ -2,7 +2,7 @@
 - hosts: nmap
   name: Install nmap
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - cyhy_runner
     - nmap

@@ -2,7 +2,7 @@
 - hosts: cyhy_archive
   name: Install cyhy-archive helper script
   become: yes
-  become_method: sudo
+  become_method: ansible.builtin.sudo
   roles:
     - cyhy_archive
   vars_files:
