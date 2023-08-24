@@ -65,6 +65,8 @@
     - name: Create a cron job for BOD 18-01 scanning
       ansible.builtin.cron:
         hour: '0'
+        # TODO: Remove the docker compose down when possible.  See
+        # #668 for more details.
         job: cd /var/cyhy/orchestrator && docker compose down && docker compose up --detach 2>&1 | /usr/bin/logger --tag orchestrator
         minute: '0'
         name: "BOD 18-01 scanning"
