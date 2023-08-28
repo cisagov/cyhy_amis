@@ -173,7 +173,7 @@ variable "bod_nat_gateway_eip" {
 
 variable "cloudwatch_alarm_emails" {
   default = [
-    "cisa-cool-group+cyhy@trio.dhs.gov",
+    "cisa-cool-group+cyhy@gwe.cisa.dhs.gov",
   ]
   description = "A list of the emails to which alerts should be sent if any CloudWatch Alarm is triggered."
   type        = list(string)
