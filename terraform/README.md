@@ -483,6 +483,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_security_group_rule.bod_bastion_egress_all_icmp_to_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.bod_bastion_egress_all_tcp_to_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.bod_bastion_egress_all_udp_to_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.bod_bastion_https_egress_to_anywhere](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.bod_bastion_ingress_all_icmp_from_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.bod_bastion_ingress_all_tcp_from_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.bod_bastion_ingress_all_udp_from_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
@@ -495,6 +496,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_security_group_rule.cyhy_bastion_egress_all_icmp_to_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.cyhy_bastion_egress_all_tcp_to_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.cyhy_bastion_egress_all_udp_to_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
+| [aws_security_group_rule.cyhy_bastion_https_egress_to_anywhere](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.cyhy_bastion_ingress_all_icmp_from_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.cyhy_bastion_ingress_all_tcp_from_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |
 | [aws_security_group_rule.cyhy_bastion_ingress_all_udp_from_mgmt_vulnscan](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule) | resource |

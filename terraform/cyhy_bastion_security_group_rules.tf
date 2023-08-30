@@ -40,6 +40,16 @@ resource "aws_security_group_rule" "bastion_self_egress" {
   to_port   = 22
 }
 
+# Allow HTTPS egress anywhere
+resource "aws_security_group_rule" "cyhy_bastion_https_egress_to_anywhere" {
+  security_group_id = aws_security_group.cyhy_bastion_sg.id
+  type              = "egress"
+  protocol          = "tcp"
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 443
+  to_port           = 443
+}
+
 # Allow egress via ssh to the private security group
 resource "aws_security_group_rule" "bastion_egress_to_private_sg_via_ssh" {
   security_group_id        = aws_security_group.cyhy_bastion_sg.id
