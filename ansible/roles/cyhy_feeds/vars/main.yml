@@ -1,6 +1,4 @@
 ---
-# vars file for cyhy_feeds
-
 # cyhy-feeds config
 config: "{{ lookup('aws_ssm', '/cyhy/feeds/config') }}"
 

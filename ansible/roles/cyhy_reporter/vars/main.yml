@@ -1,6 +1,4 @@
 ---
-# vars file for cyhy_reporter
-
 # The master key for all reports
 master_report_key: "{{ lookup('aws_ssm', '/cyhy/master_report_key') }}"
 

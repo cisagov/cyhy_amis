@@ -1,6 +1,4 @@
 ---
-# tasks file for cyhy_dashboard
-
 - name: Create needed directories
   ansible.builtin.file:
     group: cyhy

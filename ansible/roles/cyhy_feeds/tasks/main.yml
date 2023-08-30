@@ -1,6 +1,4 @@
 ---
-# tasks file for cyhy_feeds
-
 - name: Create cyhy-feeds config
   ansible.builtin.copy:
     content: "{{ config }}"

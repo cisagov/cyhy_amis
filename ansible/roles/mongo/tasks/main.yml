@@ -1,5 +1,4 @@
 ---
-# tasks file for mongo
 - name: Check if any mongo users already exist
   ansible.builtin.command: mongo --eval 'db.getUsers()' admin
   # This is a read-only operation

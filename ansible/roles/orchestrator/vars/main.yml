@@ -1,6 +1,4 @@
 ---
-# vars file for orchestrator
-
 # reporter mongo username
 reporter_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}"
 # reporter mongo password
