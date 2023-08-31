@@ -1,6 +1,4 @@
 ---
-# vars file for cyhy_commander
-
 # The CyHy SSH private key
 ssh_private_key: "{{ lookup('aws_ssm', '/cyhy/ssh/private_key') }}"
 

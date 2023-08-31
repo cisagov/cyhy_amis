@@ -1,6 +1,4 @@
 ---
-# vars file for cyhy_mailer
-
 # reporter mongo username
 reporter_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}"
 # reporter mongo password

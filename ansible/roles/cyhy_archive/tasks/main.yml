@@ -1,6 +1,4 @@
 ---
-# tasks file for cyhy_archive
-
 # Create directory to temporarily store cyhy-archives until
 # they are copied to S3
 - name: Create the /var/lib/mongodb/cyhy_archives directory

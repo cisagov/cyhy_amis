@@ -1,6 +1,4 @@
 ---
-# tasks file for nessus
-
 #
 # Check if a license key is registered and if not register one
 #

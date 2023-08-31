@@ -1,6 +1,4 @@
 ---
-# vars file for mongo
-
 # admin mongo username
 admin_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/admin/user') }}"
 # Old admin mongo password

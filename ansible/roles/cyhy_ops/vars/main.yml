@@ -1,5 +1,3 @@
 ---
-# vars file for cyhy_ops
-
 # A list of the CyHy OPS users
 ops_users: "{{ lookup('aws_ssm', '/cyhy/ops/users').split(',') }}"

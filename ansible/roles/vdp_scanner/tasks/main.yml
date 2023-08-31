@@ -1,6 +1,4 @@
 ---
-# tasks file for vdp_scanner
-
 # Create a cron job for scanning
 # This cron job runs at midnight UTC on Monday mornings, so it
 # should be done in time to be sent Monday morning.

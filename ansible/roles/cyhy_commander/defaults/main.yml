@@ -1,6 +1,4 @@
 ---
-# defaults file for cyhy_commander
-
 # The maximum number of jobs to assign to each nessus host (vulnscanner).
 # This value is used in the "production" section of the cyhy-commander
 # configuration file this role generates.

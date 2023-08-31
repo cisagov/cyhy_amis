@@ -1,4 +1,5 @@
 ---
+dependencies: []
 galaxy_info:
   author: VM Fusion Dev
   company: CISA Cyber Assessments
@@ -11,8 +12,5 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - stretch
         - buster
   role_name: mongo
-
-dependencies: []

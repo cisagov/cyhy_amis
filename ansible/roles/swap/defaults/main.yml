@@ -1,4 +1,3 @@
 ---
-# defaults file for swap
 swapfile_location: /swapfile
 swapfile_size: 2GiB

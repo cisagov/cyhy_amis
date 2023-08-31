@@ -1,6 +1,4 @@
 ---
-# tasks file for swap
-
 #
 # Since these tasks rely on each other in a sequential fashion we disable the
 # no-handler test for ansible-lint for tasks that are dependent on a previous

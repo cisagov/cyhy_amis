@@ -1,6 +1,4 @@
 ---
-# vars file for cyhy_dashboard
-
 # commander mongo username
 commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
 # commander mongo password

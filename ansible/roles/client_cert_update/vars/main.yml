@@ -1,6 +1,4 @@
 ---
-# vars file for client_cert_update
-
 # scan-reader mongo username
 scan_reader_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/scan-reader/user') }}"
 # scan-reader mongo password

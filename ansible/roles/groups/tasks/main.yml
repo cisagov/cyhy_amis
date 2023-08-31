@@ -1,6 +1,4 @@
 ---
-# tasks file for groups
-
 # Grab the existing users and groups
 - name: Grab the existing users
   ansible.builtin.getent:

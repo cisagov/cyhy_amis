@@ -1,4 +1,5 @@
 ---
+dependencies: []
 galaxy_info:
   author: VM Fusion Dev
   company: CISA Cyber Assessments
@@ -11,9 +12,6 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - stretch
         - buster
         - bullseye
   role_name: vdp_scanner
-
-dependencies: []
