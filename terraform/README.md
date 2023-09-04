@@ -622,10 +622,9 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_iam_policy_document.s3_cyhy_archive_write_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ses_assume_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.vpc_flow_log_service_assume_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_s3_bucket.adi_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_s3_bucket.assessment_data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
-| [aws_s3_bucket.fdi_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [aws_s3_bucket.findings_data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
+| [aws_s3_bucket.lambda_deployment_artifacts](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/s3_bucket) | data source |
 | [cloudinit_config.bod_bastion_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 | [cloudinit_config.bod_docker_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
 | [cloudinit_config.cyhy_bastion_cloud_init_tasks](https://registry.terraform.io/providers/hashicorp/cloudinit/latest/docs/data-sources/config) | data source |
@@ -648,7 +647,6 @@ terraform apply -var-file=<your_workspace>.tfvars
 | assessment\_data\_import\_db\_port | The port that the database server is listening on. | `string` | `""` | no |
 | assessment\_data\_import\_lambda\_description | The description to associate with the assessment-data-import Lambda function. | `string` | `"Lambda function for importing assessment data."` | no |
 | assessment\_data\_import\_lambda\_handler | The entrypoint for the assessment-data-import Lambda. | `string` | `"lambda_handler.handler"` | no |
-| assessment\_data\_import\_lambda\_s3\_bucket | The name of the bucket where the assessment data import Lambda function can be found.  This bucket should be created with the cisagov/assessment-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace\_name>' will be appended to the bucket name. | `string` | n/a | yes |
 | assessment\_data\_import\_lambda\_s3\_key | The key (name) of the zip file for the assessment data import Lambda function inside the S3 bucket. | `string` | n/a | yes |
 | assessment\_data\_import\_ssm\_db\_name | The name of the parameter in AWS SSM that holds the name of the database to store the assessment data in. | `string` | `""` | no |
 | assessment\_data\_import\_ssm\_db\_password | The name of the parameter in AWS SSM that holds the database password for the user with write permission to the assessment database. | `string` | `""` | no |
@@ -680,7 +678,6 @@ terraform apply -var-file=<your_workspace>.tfvars
 | findings\_data\_import\_lambda\_failure\_prefix | The object prefix that findings JSONs that have failed to process successfully will have in the findings data bucket. | `string` | `"failed/"` | no |
 | findings\_data\_import\_lambda\_failure\_suffix | The object suffix that findings JSONs that have failed to process successfully will have in the findings data bucket. | `string` | `".json"` | no |
 | findings\_data\_import\_lambda\_handler | The entrypoint for the findings-data-import Lambda. | `string` | `"lambda_handler.handler"` | no |
-| findings\_data\_import\_lambda\_s3\_bucket | The name of the bucket where the findings data import Lambda function can be found.  This bucket should be created with the cisagov/findings-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace\_name>' will be appended to the bucket name. | `string` | n/a | yes |
 | findings\_data\_import\_lambda\_s3\_key | The key (name) of the zip file for the findings data import Lambda function inside the S3 bucket. | `string` | n/a | yes |
 | findings\_data\_import\_ssm\_db\_name | The name of the parameter in AWS SSM that holds the name of the database to store the findings data in. | `string` | `""` | no |
 | findings\_data\_import\_ssm\_db\_password | The name of the parameter in AWS SSM that holds the database password for the user with write permission to the findings database. | `string` | `""` | no |
@@ -690,6 +687,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | findings\_data\_save\_failed | Whether or not to save files for imports that have failed. | `bool` | `true` | no |
 | findings\_data\_save\_succeeded | Whether or not to save files for imports that have succeeded. | `bool` | `false` | no |
 | kevsync\_failure\_emails | A list of the emails to which alerts should be sent if KEV synchronization fails. | `list(string)` | ```[ "cyberdirectives@cisa.dhs.gov", "vulnerability@cisa.dhs.gov" ]``` | no |
+| lambda\_artifacts\_bucket | The name of the S3 bucket that stores AWS Lambda deployment artifacts. This bucket should be created with the cisagov/cyhy-lambda-bucket-terraform project. Note that in production terraform workspaces, the string '-production' will be appended to the bucket name. In non-production workspaces, '-<workspace\_name>' will be appended to the bucket name. | `string` | n/a | yes |
 | mgmt\_nessus\_activation\_codes | A list of strings containing Nessus activation codes used in the management VPC. | `list(string)` | n/a | yes |
 | mgmt\_nessus\_instance\_count | The number of Nessus instances to create if a management environment is set to be created. | `number` | `1` | no |
 | mongo\_disks | The data volumes for the mongo instance(s). | `map(string)` | ```{ "data": "/dev/xvdb", "journal": "/dev/xvdc", "log": "/dev/xvdd" }``` | no |
