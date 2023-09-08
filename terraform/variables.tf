@@ -9,11 +9,6 @@ variable "assessment_data_filename" {
   type        = string
 }
 
-variable "assessment_data_import_lambda_s3_bucket" {
-  description = "The name of the bucket where the assessment data import Lambda function can be found.  This bucket should be created with the cisagov/assessment-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
-  type        = string
-}
-
 variable "assessment_data_import_lambda_s3_key" {
   description = "The key (name) of the zip file for the assessment data import Lambda function inside the S3 bucket."
   type        = string
@@ -34,11 +29,6 @@ variable "findings_data_field_map" {
   type        = string
 }
 
-variable "findings_data_import_lambda_s3_bucket" {
-  description = "The name of the bucket where the findings data import Lambda function can be found.  This bucket should be created with the cisagov/findings-data-import-terraform project.  Note that in production terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
-  type        = string
-}
-
 variable "findings_data_import_lambda_s3_key" {
   description = "The key (name) of the zip file for the findings data import Lambda function inside the S3 bucket."
   type        = string
@@ -46,6 +36,11 @@ variable "findings_data_import_lambda_s3_key" {
 
 variable "findings_data_input_suffix" {
   description = "The suffix used by files found in the findings_data_s3_bucket that contain findings data."
+  type        = string
+}
+
+variable "lambda_artifacts_bucket" {
+  description = "The name of the S3 bucket that stores AWS Lambda deployment artifacts. This bucket should be created with the cisagov/cyhy-lambda-bucket-terraform project. Note that in production terraform workspaces, the string '-production' will be appended to the bucket name. In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
   type        = string
 }
 

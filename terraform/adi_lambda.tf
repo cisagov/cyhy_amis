@@ -108,13 +108,6 @@ data "aws_s3_bucket" "assessment_data" {
   bucket = format("%s-%s", var.assessment_data_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
-# The S3 bucket where the assessment data import Lambda function is stored
-# Terraform code for this bucket is in:
-#   https://github.com/cisagov/assessment-data-import-terraform
-data "aws_s3_bucket" "adi_lambda" {
-  bucket = format("%s-%s", var.assessment_data_import_lambda_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
-}
-
 # The AWS Lambda function that imports the assessment data to our database
 # Note that this Lambda runs from within the CyHy private subnet
 resource "aws_lambda_function" "adi_lambda" {
@@ -124,7 +117,7 @@ resource "aws_lambda_function" "adi_lambda" {
   memory_size   = 128
   role          = aws_iam_role.adi_lambda_role.arn
   runtime       = "python3.8"
-  s3_bucket     = data.aws_s3_bucket.adi_lambda.id
+  s3_bucket     = data.aws_s3_bucket.lambda_deployment_artifacts.id
   s3_key        = var.assessment_data_import_lambda_s3_key
   timeout       = 300
 

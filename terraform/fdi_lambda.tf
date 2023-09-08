@@ -109,13 +109,6 @@ data "aws_s3_bucket" "findings_data" {
   bucket = format("%s-%s", var.findings_data_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
 }
 
-# The S3 bucket where the findings data import Lambda function is stored
-# Terraform code for this bucket is in:
-#   https://github.com/cisagov/findings-data-import-terraform
-data "aws_s3_bucket" "fdi_lambda" {
-  bucket = format("%s-%s", var.findings_data_import_lambda_s3_bucket, local.production_workspace ? "production" : terraform.workspace)
-}
-
 # The AWS Lambda function that imports the findings data to our database
 # Note that this Lambda runs from within the CyHy private subnet
 resource "aws_lambda_function" "fdi_lambda" {
@@ -125,7 +118,7 @@ resource "aws_lambda_function" "fdi_lambda" {
   memory_size   = 128
   role          = aws_iam_role.fdi_lambda_role.arn
   runtime       = "python3.9"
-  s3_bucket     = data.aws_s3_bucket.fdi_lambda.id
+  s3_bucket     = data.aws_s3_bucket.lambda_deployment_artifacts.id
   s3_key        = var.findings_data_import_lambda_s3_key
   timeout       = 300
 
