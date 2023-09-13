@@ -28,23 +28,23 @@ updates:
     schedule:
       interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform"
+  - package-ecosystem: terraform
+    directory: /terraform
     schedule:
-      interval: "weekly"
+      interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform_egress_pub"
+  - package-ecosystem: terraform
+    directory: /terraform_egress_pub
     schedule:
-      interval: "weekly"
+      interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform_nessus_only"
+  - package-ecosystem: terraform
+    directory: /terraform_nessus_only
     schedule:
-      interval: "weekly"
+      interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform_route_53"
+  - package-ecosystem: terraform
+    directory: /terraform_route_53
     schedule:
-      interval: "weekly"
+      interval: weekly
 version: 2
