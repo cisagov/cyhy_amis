@@ -5,42 +5,46 @@
 # these updates when the pull request(s) in the appropriate skeleton are merged
 # and Lineage processes these changes.
 
-version: 2
 updates:
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
+  - directory: /
     ignore:
       # Managed by cisagov/skeleton-generic
       - dependency-name: actions/cache
       - dependency-name: actions/checkout
       - dependency-name: actions/setup-go
       - dependency-name: actions/setup-python
+      - dependency-name: crazy-max/ghaction-dump-context
+      - dependency-name: crazy-max/ghaction-github-labeler
+      - dependency-name: crazy-max/ghaction-github-status
       - dependency-name: hashicorp/setup-terraform
       - dependency-name: mxschmitt/action-tmate
-
-  - package-ecosystem: "pip"
-    directory: "/"
+      - dependency-name: step-security/harden-runner
+    package-ecosystem: github-actions
     schedule:
-      interval: "weekly"
+      interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform"
+  - directory: /
+    package-ecosystem: pip
     schedule:
-      interval: "weekly"
+      interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform_egress_pub"
+  - directory: /terraform
+    package-ecosystem: terraform
     schedule:
-      interval: "weekly"
+      interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform_nessus_only"
+  - directory: /terraform_egress_pub
+    package-ecosystem: terraform
     schedule:
-      interval: "weekly"
+      interval: weekly
 
-  - package-ecosystem: "terraform"
-    directory: "/terraform_route_53"
+  - directory: /terraform_nessus_only
+    package-ecosystem: terraform
     schedule:
-      interval: "weekly"
+      interval: weekly
+
+  - directory: /terraform_route_53
+    package-ecosystem: terraform
+    schedule:
+      interval: weekly
+version: 2
