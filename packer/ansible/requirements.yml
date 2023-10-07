@@ -1,76 +1,80 @@
-- name: amazon_ssm_agent
-  src: https://github.com/cisagov/ansible-role-amazon-ssm-agent
-- name: apt_over_https
-  src: https://github.com/cisagov/ansible-role-apt-over-https
-- name: automated_security_updates
-  src: https://github.com/cisagov/ansible-role-automated-security-updates
-- name: backports
-  src: https://github.com/cisagov/ansible-role-backports
-- name: banner
-  src: https://github.com/cisagov/ansible-role-banner
-- name: chrony_aws
-  src: https://github.com/cisagov/ansible-role-chrony-aws
-- name: clamav
-  src: https://github.com/cisagov/ansible-role-clamav
-- name: client_cert_update
-  src: https://github.com/cisagov/ansible-role-client-cert-update
-- name: cloudwatch_agent
-  src: https://github.com/cisagov/ansible-role-cloudwatch-agent
-- name: code_gov_update
-  src: https://github.com/cisagov/ansible-role-code-gov-update
-- name: cyhy_archive
-  src: https://github.com/cisagov/ansible-role-cyhy-archive
-- name: cyhy_commander
-  src: https://github.com/cisagov/ansible-role-cyhy-commander
-- name: cyhy_core
-  src: https://github.com/cisagov/ansible-role-cyhy-core
-- name: cyhy_feeds
-  src: https://github.com/cisagov/ansible-role-cyhy-feeds
-- name: cyhy_mailer
-  src: https://github.com/cisagov/ansible-role-cyhy-mailer
-- name: cyhy_reports
-  src: https://github.com/cisagov/ansible-role-cyhy-reports
-- name: cyhy_runner
-  src: https://github.com/cisagov/ansible-role-cyhy-runner
-- name: dev_ssh_access
-  src: https://github.com/cisagov/ansible-role-dev-ssh-access
-- name: disable_numa
-  src: https://github.com/cisagov/ansible-role-disable-numa
-- name: disable_thp
-  src: https://github.com/GekoCloud/ansible-role-disable-thp
-- name: geoip2
-  src: https://github.com/cisagov/ansible-role-geoip2
-- name: htop
-  src: https://github.com/cisagov/ansible-role-htop
-- name: mongo
-  src: https://github.com/cisagov/ansible-role-mongo
-- name: more_ephemeral_ports
-  src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
-- name: ncats_webd
-  src: https://github.com/cisagov/ansible-role-ncats-webd
-- name: ncats_webui
-  src: https://github.com/cisagov/ansible-role-ncats-webui
-- name: nessus
-  src: https://github.com/cisagov/ansible-role-nessus
-- name: nmap
-  src: https://github.com/cisagov/ansible-role-nmap
-- name: numactl
-  src: https://github.com/cisagov/ansible-role-numactl
-- name: nvme
-  src: https://github.com/cisagov/ansible-role-nvme
-- name: orchestrator
-  src: https://github.com/cisagov/ansible-role-orchestrator
-- name: persist_journald
-  src: https://github.com/cisagov/ansible-role-persist-journald
-- name: pip
-  src: https://github.com/cisagov/ansible-role-pip
-- name: python
-  src: https://github.com/cisagov/ansible-role-python
-- name: remove_python2
-  src: https://github.com/cisagov/ansible-role-remove-python2
-- name: upgrade
-  src: https://github.com/cisagov/ansible-role-upgrade
-- name: vdp_scanner
-  src: https://github.com/cisagov/ansible-role-vdp-scanner
-- name: xfs
-  src: https://github.com/cisagov/ansible-role-xfs
+collections:
+  - ansible.posix
+
+roles:
+  - name: amazon_ssm_agent
+    src: https://github.com/cisagov/ansible-role-amazon-ssm-agent
+  - name: apt_over_https
+    src: https://github.com/cisagov/ansible-role-apt-over-https
+  - name: automated_security_updates
+    src: https://github.com/cisagov/ansible-role-automated-security-updates
+  - name: backports
+    src: https://github.com/cisagov/ansible-role-backports
+  - name: banner
+    src: https://github.com/cisagov/ansible-role-banner
+  - name: chrony_aws
+    src: https://github.com/cisagov/ansible-role-chrony-aws
+  - name: clamav
+    src: https://github.com/cisagov/ansible-role-clamav
+  - name: client_cert_update
+    src: https://github.com/cisagov/ansible-role-client-cert-update
+  - name: cloudwatch_agent
+    src: https://github.com/cisagov/ansible-role-cloudwatch-agent
+  - name: code_gov_update
+    src: https://github.com/cisagov/ansible-role-code-gov-update
+  - name: cyhy_archive
+    src: https://github.com/cisagov/ansible-role-cyhy-archive
+  - name: cyhy_commander
+    src: https://github.com/cisagov/ansible-role-cyhy-commander
+  - name: cyhy_core
+    src: https://github.com/cisagov/ansible-role-cyhy-core
+  - name: cyhy_feeds
+    src: https://github.com/cisagov/ansible-role-cyhy-feeds
+  - name: cyhy_mailer
+    src: https://github.com/cisagov/ansible-role-cyhy-mailer
+  - name: cyhy_reports
+    src: https://github.com/cisagov/ansible-role-cyhy-reports
+  - name: cyhy_runner
+    src: https://github.com/cisagov/ansible-role-cyhy-runner
+  - name: dev_ssh_access
+    src: https://github.com/cisagov/ansible-role-dev-ssh-access
+  - name: disable_numa
+    src: https://github.com/cisagov/ansible-role-disable-numa
+  - name: disable_thp
+    src: https://github.com/GekoCloud/ansible-role-disable-thp
+  - name: geoip2
+    src: https://github.com/cisagov/ansible-role-geoip2
+  - name: htop
+    src: https://github.com/cisagov/ansible-role-htop
+  - name: mongo
+    src: https://github.com/cisagov/ansible-role-mongo
+  - name: more_ephemeral_ports
+    src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
+  - name: ncats_webd
+    src: https://github.com/cisagov/ansible-role-ncats-webd
+  - name: ncats_webui
+    src: https://github.com/cisagov/ansible-role-ncats-webui
+  - name: nessus
+    src: https://github.com/cisagov/ansible-role-nessus
+  - name: nmap
+    src: https://github.com/cisagov/ansible-role-nmap
+  - name: numactl
+    src: https://github.com/cisagov/ansible-role-numactl
+  - name: nvme
+    src: https://github.com/cisagov/ansible-role-nvme
+  - name: orchestrator
+    src: https://github.com/cisagov/ansible-role-orchestrator
+  - name: persist_journald
+    src: https://github.com/cisagov/ansible-role-persist-journald
+  - name: pip
+    src: https://github.com/cisagov/ansible-role-pip
+  - name: python
+    src: https://github.com/cisagov/ansible-role-python
+  - name: remove_python2
+    src: https://github.com/cisagov/ansible-role-remove-python2
+  - name: upgrade
+    src: https://github.com/cisagov/ansible-role-upgrade
+  - name: vdp_scanner
+    src: https://github.com/cisagov/ansible-role-vdp-scanner
+  - name: xfs
+    src: https://github.com/cisagov/ansible-role-xfs
