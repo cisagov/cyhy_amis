@@ -8,12 +8,12 @@
       vars:
         # Install pip2 for all images that will run Python 2 CyHy code.
         # Right now these are the dashboard, mongo, and reporter AMIs.
-        install_pip2: "{{ inventory_hostname_short is in ['dashboard', 'mongo', 'reporter'] }}"
+        pip_install_pip2: "{{ inventory_hostname_short is in ['dashboard', 'mongo', 'reporter'] }}"
     - role: python
       vars:
         # Install Python 2 for images that will run Python 2 CyHy code.
         # Right now these are the dashboard, mongo, and reporter AMIs.
-        install_python2: "{{ inventory_hostname_short is in ['dashboard', 'mongo', 'reporter'] }}"
+        python_install_python2: "{{ inventory_hostname_short is in ['dashboard', 'mongo', 'reporter'] }}"
 
 # Any instances that are not built on Amazon Linux 2 and don't require
 # Python 2 should have it removed.
