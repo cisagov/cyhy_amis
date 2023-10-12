@@ -4,6 +4,8 @@
   become: yes
   become_method: ansible.builtin.sudo
   roles:
-    - cyhy_archive
+    - role: cyhy_archive
+      vars:
+        cyhy_archive_maxmind_license_key: "{{ maxmind_license_key }}"
   vars_files:
     - vars/maxmind_license_key.yml

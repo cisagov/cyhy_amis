@@ -4,7 +4,9 @@
   become: yes
   become_method: ansible.builtin.sudo
   roles:
-    - ncats_webd
+    - role: ncats_webd
+      vars:
+        ncats_webd_maxmind_license_key: "{{ maxmind_license_key }}"
     - ncats_webui
   vars_files:
     - vars/maxmind_license_key.yml

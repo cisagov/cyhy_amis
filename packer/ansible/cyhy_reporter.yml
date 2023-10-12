@@ -5,7 +5,9 @@
   become_method: ansible.builtin.sudo
   roles:
     - xfs
-    - cyhy_reports
+    - role: cyhy_reports
+      vars:
+        cyhy_reports_maxmind_license_key: "{{ maxmind_license_key }}"
     - cyhy_mailer
   vars:
     texmf_buffer_size: 100000000
