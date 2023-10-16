@@ -1,4 +1,5 @@
 collections:
+  - ansible.posix
   - community.general
   - name: community.mongodb
     # The last version that officially supports MongoDB 3.6
