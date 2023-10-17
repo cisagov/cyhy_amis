@@ -85,7 +85,7 @@
       # needs to be registered. It will always rebuild the plugin database when
       # run.
       ansible.builtin.command: # noqa no-changed-when
-        cmd: /opt/nessus/sbin/nessusd -R
+        cmd: /opt/nessus/sbin/nessusd --recompile
       async: 1800
       poll: 30
 
