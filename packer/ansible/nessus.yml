@@ -7,6 +7,6 @@
     - cyhy_runner
     - role: nessus
       vars:
-        package_bucket: ncats-3rd-party-packages
-        version: "10.5.1"
+        nessus_package_bucket: ncats-3rd-party-packages
+        nessus_version: "10.5.1"
     - more_ephemeral_ports
