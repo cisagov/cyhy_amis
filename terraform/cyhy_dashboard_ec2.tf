@@ -77,14 +77,14 @@ module "cyhy_dashboard_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
 
   arguments = [
-    "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
+    "--user=${var.remote_ssh_user}",
   ]
+  dry_run = false
   envs = [
-    "host=${aws_instance.cyhy_dashboard.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "host=${aws_instance.cyhy_dashboard.private_ip}",
     "host_groups=cyhy_dashboard",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
