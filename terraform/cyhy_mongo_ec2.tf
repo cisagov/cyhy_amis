@@ -177,9 +177,10 @@ module "cyhy_mongo_ansible_provisioner" {
   ]
 
   arguments = [
-    "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
+    "--user=${var.remote_ssh_user}",
   ]
+  dry_run = false
   envs = [
     "ANSIBLE_SSH_RETRIES=5",
     "aws_region=${var.aws_region}",
@@ -188,8 +189,8 @@ module "cyhy_mongo_ansible_provisioner" {
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
     "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
-    "host_groups=mongo,cyhy_commander,cyhy_archive",
     "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
+    "host_groups=mongo,cyhy_commander,cyhy_archive",
     "jobs_per_nessus_host=${var.commander_config.jobs_per_nessus_host}",
     "jobs_per_nmap_host=${var.commander_config.jobs_per_nmap_host}",
     "nessus_hosts=${join(",", formatlist("vulnscan%d", range(1, var.nessus_instance_count + 1)))}",
@@ -198,5 +199,4 @@ module "cyhy_mongo_ansible_provisioner" {
     "production_workspace=${local.production_workspace}",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
