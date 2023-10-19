@@ -52,13 +52,13 @@ module "mgmt_bastion_ansible_provisioner" {
   count  = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
 
   arguments = [
+    "--ssh-common-args='-o StrictHostKeyChecking=no'",
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no'"
   ]
+  dry_run = false
   envs = [
     "host=${aws_instance.mgmt_bastion[*].public_ip[count.index]}",
-    "host_groups=mgmt_bastion"
+    "host_groups=mgmt_bastion",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
