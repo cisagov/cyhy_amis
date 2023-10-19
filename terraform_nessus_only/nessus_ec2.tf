@@ -115,12 +115,11 @@ module "nessus_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
   count  = length(aws_instance.nessus)
 
-
   arguments = [
+    "--ssh-common-args='-o StrictHostKeyChecking=no'",
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no'"
   ]
-
+  dry_run = false
   envs = [
     # If you terminate all the existing Nessus instances and then run apply,
     # the list aws_eip_association.nessus_eip_assocs[*].public_ip is empty at
@@ -134,8 +133,7 @@ module "nessus_ansible_provisioner" {
     # affront to basic decency.
     "host=${length(aws_eip_association.nessus_eip_assocs[*].public_ip) > 0 ? element(aws_eip_association.nessus_eip_assocs[*].public_ip, count.index) : ""}",
     "host_groups=nessus",
-    "nessus_activation_code=${var.nessus_activation_codes[count.index]}"
+    "nessus_activation_code=${var.nessus_activation_codes[count.index]}",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
