@@ -176,10 +176,12 @@ module "cyhy_nmap_ansible_provisioner" {
   ]
 
   arguments = [
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'"
   ]
+  dry_run = false
   envs = [
+    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     # If you terminate all the existing nmap instances and then run apply, the
     # list aws_instance.cyhy_nmap[*].private_ip is empty at that time.  Then
     # there is an error condition when Terraform evaluates what must be done
@@ -191,9 +193,7 @@ module "cyhy_nmap_ansible_provisioner" {
     # If you find a better way, please use it and get rid of this
     # affront to basic decency.
     "host=${length(aws_instance.cyhy_nmap[*].private_ip) > 0 ? element(aws_instance.cyhy_nmap[*].private_ip, count.index) : ""}",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_runner,nmap"
+    "host_groups=cyhy_runner,nmap",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
