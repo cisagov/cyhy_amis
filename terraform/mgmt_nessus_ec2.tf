@@ -54,10 +54,12 @@ module "mgmt_nessus_ansible_provisioner" {
   count  = var.enable_mgmt_vpc ? length(aws_instance.mgmt_nessus) : 0
 
   arguments = [
+    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.mgmt_bastion[*].public_ip[count.index]}\"'",
     "--user=${var.remote_ssh_user}",
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.mgmt_bastion[*].public_ip[count.index]}\"'"
   ]
+  dry_run = false
   envs = [
+    "bastion_host=${aws_instance.mgmt_bastion[*].public_ip[count.index]}",
     # If you terminate all the existing management Nessus instances
     # and then run apply, the list aws_instance.mgmt_nessus[*].private_ip
     # is empty at that time.  Then there is an error condition when Terraform
@@ -69,10 +71,8 @@ module "mgmt_nessus_ansible_provisioner" {
     # If you find a better way, please use it and get rid of this
     # affront to basic decency.
     "host=${length(aws_instance.mgmt_nessus[*].private_ip) > 0 ? element(aws_instance.mgmt_nessus[*].private_ip, count.index) : ""}",
-    "bastion_host=${aws_instance.mgmt_bastion[*].public_ip[count.index]}",
     "host_groups=nessus",
-    "nessus_activation_code=${var.mgmt_nessus_activation_codes[count.index]}"
+    "nessus_activation_code=${var.mgmt_nessus_activation_codes[count.index]}",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
