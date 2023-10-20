@@ -50,13 +50,13 @@ module "bod_bastion_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
 
   arguments = [
-    "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no'",
+    "--user=${var.remote_ssh_user}",
   ]
+  dry_run = false
   envs = [
     "host=${aws_instance.bod_bastion.public_ip}",
     "host_groups=bod_bastion",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }

@@ -50,13 +50,13 @@ module "cyhy_bastion_ansible_provisioner" {
   source = "github.com/cloudposse/terraform-null-ansible"
 
   arguments = [
-    "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no'",
+    "--user=${var.remote_ssh_user}",
   ]
+  dry_run = false
   envs = [
     "host=${aws_instance.cyhy_bastion.public_ip}",
     "host_groups=cyhy_bastion",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }

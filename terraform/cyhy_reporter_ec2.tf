@@ -119,18 +119,18 @@ module "cyhy_reporter_ansible_provisioner" {
   ]
 
   arguments = [
-    "--user=${var.remote_ssh_user}",
     "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
+    "--user=${var.remote_ssh_user}",
   ]
+  dry_run = false
   envs = [
-    "host=${aws_instance.cyhy_reporter.private_ip}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}",
+    "host=${aws_instance.cyhy_reporter.private_ip}",
     "host_groups=docker,cyhy_reporter",
     "production_workspace=${local.production_workspace}",
     "ses_aws_region=${var.ses_aws_region}",
-    "docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}",
     "ses_send_email_role=${var.ses_role_arn}",
   ]
   playbook = "../ansible/playbook.yml"
-  dry_run  = false
 }
