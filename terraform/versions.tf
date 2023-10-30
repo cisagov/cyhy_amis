@@ -12,7 +12,7 @@ terraform {
     # https://www.hashicorp.com/blog/terraform-aws-provider-4-0-refactors-s3-bucket-resource
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 3.75"
+      version = "~> 5.23"
     }
     cloudinit = {
       source  = "hashicorp/cloudinit"
