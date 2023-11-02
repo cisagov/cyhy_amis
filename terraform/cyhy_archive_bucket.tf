@@ -1,15 +1,6 @@
 # The S3 bucket where the cyhy-archive compressed archives are stored
 resource "aws_s3_bucket" "cyhy_archive" {
   bucket = "${var.cyhy_archive_bucket_name}-${terraform.workspace}"
-
-  lifecycle {
-    ignore_changes = [
-      # This should be removed when we upgrade the Terraform AWS provider to
-      # v4. It is necessary to use with the backported resources in v3.75 to
-      # avoid conflicts/unexpected apply results.
-      server_side_encryption_configuration,
-    ]
-  }
 }
 
 # Ensure the S3 bucket is encrypted
