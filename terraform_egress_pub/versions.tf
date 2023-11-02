@@ -6,6 +6,11 @@ terraform {
   # major version currently being used.  This practice will help us
   # avoid unwelcome surprises.
   required_providers {
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.1"
+    }
+
     # Version 4.9 of the Terraform AWS provider made changes to the S3 bucket
     # refactor that is in place for versions 4.0-4.8 of the provider. With v4.9
     # only non-breaking changes and deprecation notices are introduced. Using
@@ -18,10 +23,6 @@ terraform {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 4.9"
-    }
-    archive = {
-      source  = "hashicorp/archive"
-      version = "~> 2.1"
     }
   }
 }
