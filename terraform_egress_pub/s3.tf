@@ -1,18 +1,6 @@
 resource "aws_s3_bucket" "rules_bucket" {
   bucket = var.rules_bucket_name
 
-  # This is the recommendation of the documentation here:
-  # https://registry.terraform.io/providers/hashicorp/aws/3.75.0/docs/resources/s3_bucket_website_configuration#usage-notes
-  lifecycle {
-    ignore_changes = [
-      # These should be removed when we upgrade the Terraform AWS provider to
-      # v4. It is necessary to use with the backported resources in v3.75 to
-      # avoid conflicts/unexpected apply results.
-      server_side_encryption_configuration,
-      website,
-    ]
-  }
-
   tags = { "Application" = "Egress Publish" }
 }
 
