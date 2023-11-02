@@ -31,6 +31,7 @@ resource "aws_s3_bucket_public_access_block" "cyhy_archive" {
 # objects stored in this bucket.
 resource "aws_s3_bucket_ownership_controls" "cyhy_archive" {
   bucket = aws_s3_bucket.cyhy_archive.id
+
   rule {
     object_ownership = "BucketOwnerEnforced"
   }

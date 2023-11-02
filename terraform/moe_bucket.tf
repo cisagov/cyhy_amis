@@ -36,6 +36,7 @@ resource "aws_s3_bucket_public_access_block" "moe_bucket" {
 # objects stored in this bucket.
 resource "aws_s3_bucket_ownership_controls" "moe_bucket" {
   bucket = aws_s3_bucket.moe_bucket.id
+
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
