@@ -32,6 +32,7 @@ resource "aws_s3_bucket_public_access_block" "rules_bucket" {
 # objects stored in this bucket.
 resource "aws_s3_bucket_ownership_controls" "rules_bucket" {
   bucket = aws_s3_bucket.rules_bucket.id
+
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
@@ -40,10 +41,11 @@ resource "aws_s3_bucket_ownership_controls" "rules_bucket" {
 resource "aws_s3_bucket_website_configuration" "rules_bucket" {
   bucket = aws_s3_bucket.rules_bucket.id
 
-  index_document {
-    suffix = "all.txt"
-  }
   error_document {
     key = "error.html"
+  }
+
+  index_document {
+    suffix = "all.txt"
   }
 }
