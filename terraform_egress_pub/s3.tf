@@ -1,18 +1,6 @@
 resource "aws_s3_bucket" "rules_bucket" {
   bucket = var.rules_bucket_name
 
-  # This is the recommendation of the documentation here:
-  # https://registry.terraform.io/providers/hashicorp/aws/3.75.0/docs/resources/s3_bucket_website_configuration#usage-notes
-  lifecycle {
-    ignore_changes = [
-      # These should be removed when we upgrade the Terraform AWS provider to
-      # v4. It is necessary to use with the backported resources in v3.75 to
-      # avoid conflicts/unexpected apply results.
-      server_side_encryption_configuration,
-      website,
-    ]
-  }
-
   tags = { "Application" = "Egress Publish" }
 }
 
@@ -44,6 +32,7 @@ resource "aws_s3_bucket_public_access_block" "rules_bucket" {
 # objects stored in this bucket.
 resource "aws_s3_bucket_ownership_controls" "rules_bucket" {
   bucket = aws_s3_bucket.rules_bucket.id
+
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
@@ -52,10 +41,11 @@ resource "aws_s3_bucket_ownership_controls" "rules_bucket" {
 resource "aws_s3_bucket_website_configuration" "rules_bucket" {
   bucket = aws_s3_bucket.rules_bucket.id
 
-  index_document {
-    suffix = "all.txt"
-  }
   error_document {
     key = "error.html"
+  }
+
+  index_document {
+    suffix = "all.txt"
   }
 }
