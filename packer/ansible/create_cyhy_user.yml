@@ -9,9 +9,9 @@
     - name: Create the cyhy user
       ansible.builtin.user:
         home: /var/cyhy
-        name: cyhy
+        name: "{{ cyhy_user_username }}"
         shell: /bin/bash
-        uid: 2048
+        uid: "{{ cyhy_user_uid }}"
       register: user_info
 
     - name: Modify permissions on the home directory
@@ -22,4 +22,6 @@
     - name: Add the SSH public key as an authorized key
       ansible.posix.authorized_key:
         key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOreUDnms12MPI0gh7K+YGaESYgC2TY1zA+kSK/g+n5+ cyhy
-        user: cyhy
+        user: "{{ cyhy_user_username }}"
+  vars_files:
+    - vars/cyhy_user.yml
