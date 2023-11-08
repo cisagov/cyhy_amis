@@ -82,9 +82,9 @@
         "ansible_python_interpreter=auto_legacy_silent"
       ],
       "groups": [
-        "mongo",
+        "cyhy_archive",
         "cyhy_commander",
-        "cyhy_archive"
+        "mongo"
       ],
       "playbook_file": "ansible/playbook.yml",
       "type": "ansible",
