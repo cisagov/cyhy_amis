@@ -1,14 +1,11 @@
 ---
-- name: Create needed directories
+- name: Create the /var/cyhy/web directory
   ansible.builtin.file:
     group: cyhy
     mode: 0750
     owner: cyhy
-    path: "{{ item }}"
+    path: /var/cyhy/web
     state: directory
-  loop:
-    - /etc/cyhy
-    - /var/cyhy/web
 
 - name: Create secret key file for webd
   ansible.builtin.file:

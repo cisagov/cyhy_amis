@@ -94,14 +94,6 @@
         name: nessusd
         state: started
 
-- name: Create /etc/cyhy directory
-  ansible.builtin.file:
-    group: cyhy
-    mode: 0750
-    owner: cyhy
-    path: /etc/cyhy
-    state: directory
-
 - name: Create the configuration file for Nessus API access
   ansible.builtin.template:
     dest: /etc/cyhy/nessus_api.yml
