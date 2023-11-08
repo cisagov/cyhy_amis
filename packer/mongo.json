@@ -84,6 +84,7 @@
       "groups": [
         "cyhy_archive",
         "cyhy_commander",
+        "cyhy_feeds",
         "mongo"
       ],
       "playbook_file": "ansible/playbook.yml",
