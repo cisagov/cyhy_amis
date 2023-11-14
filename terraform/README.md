@@ -141,6 +141,7 @@ infrastructure by running:
 terraform apply -var-file=<your_workspace>.tfvars
 ```
 
+<!-- BEGIN_TF_DOCS -->
 ## Requirements ##
 
 | Name | Version |
@@ -709,6 +710,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 ## Outputs ##
 
 No outputs.
+<!-- END_TF_DOCS -->
 
 ## License ##
 
