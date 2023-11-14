@@ -233,3 +233,17 @@ resource "aws_security_group" "fdi_lambda_sg" {
 
   tags = { "Name" = "Findings Data Import Lambda" }
 }
+
+# Security group for Lambdas that need to access the CyHy MongoDB
+resource "aws_security_group" "lambda_mongodb_sg" {
+  vpc_id = aws_vpc.cyhy_vpc.id
+
+  tags = { "Name" = "CyHy Lambda MongoDB Access" }
+}
+
+# Security group for Lambdas that need HTTPS access
+resource "aws_security_group" "lambda_https_sg" {
+  vpc_id = aws_vpc.cyhy_vpc.id
+
+  tags = { "Name" = "CyHy Lambda HTTPS Access" }
+}
