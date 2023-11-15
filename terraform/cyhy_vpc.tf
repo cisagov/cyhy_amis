@@ -220,20 +220,6 @@ resource "aws_security_group" "cyhy_bastion_sg" {
   tags = { "Name" = "CyHy Bastion" }
 }
 
-# Security group for the assessment data import Lambda portion of the VPC
-resource "aws_security_group" "adi_lambda_sg" {
-  vpc_id = aws_vpc.cyhy_vpc.id
-
-  tags = { "Name" = "Assessment Data Import Lambda" }
-}
-
-# Security group for the findings data import Lambda portion of the VPC
-resource "aws_security_group" "fdi_lambda_sg" {
-  vpc_id = aws_vpc.cyhy_vpc.id
-
-  tags = { "Name" = "Findings Data Import Lambda" }
-}
-
 # Security group for Lambdas that need to access the CyHy MongoDB
 resource "aws_security_group" "lambda_mongodb_sg" {
   vpc_id = aws_vpc.cyhy_vpc.id

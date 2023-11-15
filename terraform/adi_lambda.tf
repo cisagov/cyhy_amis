@@ -140,7 +140,8 @@ resource "aws_lambda_function" "adi_lambda" {
 
   vpc_config {
     security_group_ids = [
-      aws_security_group.adi_lambda_sg.id,
+      aws_security_group.lambda_https_sg.id,
+      aws_security_group.lambda_mongodb_sg.id,
     ]
 
     subnet_ids = [
