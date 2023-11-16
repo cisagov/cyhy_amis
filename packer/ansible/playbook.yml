@@ -40,3 +40,6 @@
 
 - name: Import the cyhy_archive host playbook
   ansible.builtin.import_playbook: cyhy_archive.yml
+
+- name: Import the cyhy_feeds host playbook
+  ansible.builtin.import_playbook: cyhy_feeds.yml

@@ -71,8 +71,8 @@
       ],
       "groups": [
         "bod",
-        "code_gov",
         "client_cert",
+        "code_gov",
         "vdp_scan"
       ],
       "playbook_file": "ansible/playbook.yml",
