@@ -8,6 +8,9 @@
 - name: Import cyhy user creation playbook
   ansible.builtin.import_playbook: create_cyhy_user.yml
 
+- name: Import credentials directory creation playbook
+  ansible.builtin.import_playbook: create_credentials_directory.yml
+
 - name: Import the nmap host playbook
   ansible.builtin.import_playbook: nmap.yml
 

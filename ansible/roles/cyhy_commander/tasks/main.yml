@@ -11,17 +11,6 @@
     owner: cyhy
 
 #
-# Create the cyhy directory in etc for commander conf
-#
-- name: Create the /etc/cyhy directory
-  ansible.builtin.file:
-    group: cyhy
-    mode: 0755
-    owner: cyhy
-    path: /etc/cyhy
-    state: directory
-
-#
 # Copy the cyhy-commander conf file
 #
 - name: Create the configuration file for cyhy-commander
