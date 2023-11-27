@@ -706,7 +706,14 @@ terraform apply -var-file=<your_workspace>.tfvars
 
 ## Outputs ##
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| cyhy\_lambda\_https\_sg | The security group that allows HTTPS egress to anywhere for Lambda functions in the CyHy VPC. |
+| cyhy\_lambda\_mongodb\_sg | The security group that allows ingress to the CyHy MongoDB server for Lambda functions in the CyHy VPC. |
+| cyhy\_private\_sg | The security group for the private portion of the CyHy VPC. |
+| cyhy\_private\_subnet | The private subnet of the CyHy VPC. |
+| cyhy\_public\_subnet | The public subnet of the CyHy VPC. |
+| cyhy\_vpc | The CyHy VPC. |
 <!-- END_TF_DOCS -->
 
 ## License ##
