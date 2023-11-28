@@ -57,9 +57,9 @@
 
     # The expect Ansible module requires pexpect
     - name: Install pexpect
-      ansible.builtin.pip:
-        name:
-          - pexpect
+      ansible.builtin.apt:
+        name: python3-pexpect
+        state: present
       when: username not in nessus_users.stdout
 
     - name: Create scanner user if necessary
