@@ -54,6 +54,7 @@ roles:
     src: https://github.com/cisagov/ansible-role-ncats-webd
   - name: ncats_webui
     src: https://github.com/cisagov/ansible-role-ncats-webui
+    version: testing/ncats-webui_on_node10
   - name: nessus
     src: https://github.com/cisagov/ansible-role-nessus
   - name: nmap
