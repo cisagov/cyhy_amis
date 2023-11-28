@@ -164,7 +164,6 @@ terraform apply -var-file=<your_workspace>.tfvars
 
 | Name | Source | Version |
 |------|--------|---------|
-| bod\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | bod\_docker\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | cyhy\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | cyhy\_dashboard\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
