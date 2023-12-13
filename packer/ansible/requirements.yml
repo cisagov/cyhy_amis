@@ -50,6 +50,7 @@ roles:
     src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
   - name: ncats_webd
     src: https://github.com/cisagov/ansible-role-ncats-webd
+    version: testing/mcdonnnj
   - name: ncats_webui
     src: https://github.com/cisagov/ansible-role-ncats-webui
   - name: nessus
