@@ -7,3 +7,4 @@ ansible>=2.10,<6
 boto3
 setuptools
 wheel
+ansible-core>=2.15.7rc1 # not directly required, pinned by Snyk to avoid a vulnerability
