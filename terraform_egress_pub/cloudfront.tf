@@ -69,10 +69,18 @@ module "security_header_lambda" {
   tags                   = { "Application" = "Egress Publish" }
 }
 
+resource "aws_cloudfront_origin_access_identity" "rules_s3_distribution" {
+  comment = var.distribution_oai_comment
+}
+
 resource "aws_cloudfront_distribution" "rules_s3_distribution" {
   origin {
     domain_name = aws_s3_bucket.rules_bucket.bucket_regional_domain_name
     origin_id   = local.s3_origin_id
+
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.rules_s3_distribution.cloudfront_access_identity_path
+    }
   }
 
   enabled             = true

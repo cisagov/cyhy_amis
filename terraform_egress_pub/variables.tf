@@ -28,6 +28,12 @@ variable "distribution_domain" {
   type        = string
 }
 
+variable "distribution_oai_comment" {
+  default     = "Allow CloudFront to reach the rules bucket."
+  description = "The comment to apply to the CloudFront Origin Access Identity."
+  type        = string
+}
+
 variable "root_object" {
   default     = "all.txt"
   description = "The root object to serve when no path is provided, or an error occurs."
