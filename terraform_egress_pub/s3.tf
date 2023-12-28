@@ -37,3 +37,30 @@ resource "aws_s3_bucket_ownership_controls" "rules_bucket" {
     object_ownership = "BucketOwnerEnforced"
   }
 }
+
+data "aws_iam_policy_document" "cloudfront_read_rules_bucket" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.rules_bucket.arn}/*"]
+
+    principals {
+      identifiers = [aws_cloudfront_origin_access_identity.rules_s3_distribution.iam_arn]
+      type        = "AWS"
+    }
+  }
+
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.rules_bucket.arn]
+
+    principals {
+      identifiers = [aws_cloudfront_origin_access_identity.rules_s3_distribution.iam_arn]
+      type        = "AWS"
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "cloudfront_read_rules_bucket" {
+  bucket = aws_s3_bucket.rules_bucket.id
+  policy = data.aws_iam_policy_document.cloudfront_read_rules_bucket.json
+}
