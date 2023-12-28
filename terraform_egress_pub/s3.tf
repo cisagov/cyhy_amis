@@ -37,15 +37,3 @@ resource "aws_s3_bucket_ownership_controls" "rules_bucket" {
     object_ownership = "BucketOwnerEnforced"
   }
 }
-
-resource "aws_s3_bucket_website_configuration" "rules_bucket" {
-  bucket = aws_s3_bucket.rules_bucket.id
-
-  error_document {
-    key = "error.html"
-  }
-
-  index_document {
-    suffix = "all.txt"
-  }
-}
