@@ -13,15 +13,6 @@ data "aws_acm_certificate" "rules_cert" {
 # An S3 bucket where artifacts for the Lambda@Edge can be stored
 resource "aws_s3_bucket" "lambda_artifact_bucket" {
   bucket_prefix = "cyhy-egress-lambda-at-edge"
-
-  lifecycle {
-    ignore_changes = [
-      # This should be removed when we upgrade the Terraform AWS provider to
-      # v4. It is necessary to use with the backported resources in v3.75 to
-      # avoid conflicts/unexpected apply results.
-      server_side_encryption_configuration,
-    ]
-  }
 }
 
 # Ensure the S3 bucket is encrypted
@@ -73,7 +64,7 @@ module "security_header_lambda" {
   description            = "Adds HSTS and other security headers to the response"
   lambda_code_source_dir = "${path.root}/add_security_headers"
   name                   = "add_security_headers"
-  runtime                = "nodejs16.x"
+  runtime                = "nodejs18.x"
   s3_artifact_bucket     = aws_s3_bucket.lambda_artifact_bucket.id
   tags                   = { "Application" = "Egress Publish" }
 }
