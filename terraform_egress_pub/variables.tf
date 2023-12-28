@@ -28,9 +28,15 @@ variable "distribution_domain" {
   type        = string
 }
 
-variable "distribution_oai_comment" {
-  default     = "Allow CloudFront to reach the rules bucket."
-  description = "The comment to apply to the CloudFront Origin Access Identity."
+variable "distribution_oac_description" {
+  default     = "Allow CloudFront to read from the rules bucket."
+  description = "The description to apply to the CloudFront Origin Access Control."
+  type        = string
+}
+
+variable "distribution_oac_name" {
+  default     = "rules-s3-distribution"
+  description = "The name for the CloudFront Origin Access Control."
   type        = string
 }
 

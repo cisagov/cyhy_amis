@@ -43,9 +43,17 @@ data "aws_iam_policy_document" "cloudfront_read_rules_bucket" {
     actions   = ["s3:GetObject"]
     resources = ["${aws_s3_bucket.rules_bucket.arn}/*"]
 
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+
+      values = [
+        aws_cloudfront_distribution.rules_s3_distribution.arn
+      ]
+    }
     principals {
-      identifiers = [aws_cloudfront_origin_access_identity.rules_s3_distribution.iam_arn]
-      type        = "AWS"
+      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "Service"
     }
   }
 
@@ -53,9 +61,18 @@ data "aws_iam_policy_document" "cloudfront_read_rules_bucket" {
     actions   = ["s3:ListBucket"]
     resources = [aws_s3_bucket.rules_bucket.arn]
 
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+
+      values = [
+        aws_cloudfront_distribution.rules_s3_distribution.arn
+      ]
+    }
+
     principals {
-      identifiers = [aws_cloudfront_origin_access_identity.rules_s3_distribution.iam_arn]
-      type        = "AWS"
+      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "Service"
     }
   }
 }
