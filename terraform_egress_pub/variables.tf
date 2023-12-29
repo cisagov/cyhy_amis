@@ -28,6 +28,18 @@ variable "distribution_domain" {
   type        = string
 }
 
+variable "distribution_oac_description" {
+  default     = "Allow CloudFront to read from the rules bucket."
+  description = "The description to apply to the CloudFront Origin Access Control."
+  type        = string
+}
+
+variable "distribution_oac_name" {
+  default     = "rules-s3-distribution"
+  description = "The name for the CloudFront Origin Access Control."
+  type        = string
+}
+
 variable "root_object" {
   default     = "all.txt"
   description = "The root object to serve when no path is provided, or an error occurs."

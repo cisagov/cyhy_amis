@@ -193,10 +193,6 @@ def update_bucket(bucket_name, filename, bucket_contents):
         ContentType="text/plain",
     )
 
-    # by default new objects cannot be read by public
-    # allow public reads of this object
-    b_object.Acl().put(ACL="public-read")
-
 
 def main():
     """Get the list of IPs to publish and upload them to the S3 bucket."""

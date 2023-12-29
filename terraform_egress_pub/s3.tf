@@ -38,14 +38,46 @@ resource "aws_s3_bucket_ownership_controls" "rules_bucket" {
   }
 }
 
-resource "aws_s3_bucket_website_configuration" "rules_bucket" {
+data "aws_iam_policy_document" "cloudfront_read_rules_bucket" {
+  statement {
+    actions   = ["s3:GetObject"]
+    resources = ["${aws_s3_bucket.rules_bucket.arn}/*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+
+      values = [
+        aws_cloudfront_distribution.rules_s3_distribution.arn
+      ]
+    }
+    principals {
+      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = [aws_s3_bucket.rules_bucket.arn]
+
+    condition {
+      test     = "StringEquals"
+      variable = "AWS:SourceArn"
+
+      values = [
+        aws_cloudfront_distribution.rules_s3_distribution.arn
+      ]
+    }
+
+    principals {
+      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "cloudfront_read_rules_bucket" {
   bucket = aws_s3_bucket.rules_bucket.id
-
-  error_document {
-    key = "error.html"
-  }
-
-  index_document {
-    suffix = "all.txt"
-  }
+  policy = data.aws_iam_policy_document.cloudfront_read_rules_bucket.json
 }
