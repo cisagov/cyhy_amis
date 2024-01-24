@@ -94,54 +94,6 @@ variable "ami_prefixes" {
   type        = object({ bastion = string, dashboard = string, docker = string, mongo = string, nessus = string, nmap = string, reporter = string })
 }
 
-variable "assessment_data_import_db_hostname" {
-  default     = ""
-  description = "The hostname that has the database to store the assessment data in."
-  type        = string
-}
-
-variable "assessment_data_import_db_port" {
-  default     = ""
-  description = "The port that the database server is listening on."
-  type        = string
-}
-
-variable "assessment_data_import_lambda_description" {
-  default     = "Lambda function for importing assessment data."
-  description = "The description to associate with the assessment-data-import Lambda function."
-  type        = string
-}
-
-variable "assessment_data_import_lambda_handler" {
-  default     = "lambda_handler.handler"
-  description = "The entrypoint for the assessment-data-import Lambda."
-  type        = string
-}
-
-variable "assessment_data_import_ssm_db_name" {
-  default     = ""
-  description = "The name of the parameter in AWS SSM that holds the name of the database to store the assessment data in."
-  type        = string
-}
-
-variable "assessment_data_import_ssm_db_password" {
-  default     = ""
-  description = "The name of the parameter in AWS SSM that holds the database password for the user with write permission to the assessment database."
-  type        = string
-}
-
-variable "assessment_data_import_ssm_db_user" {
-  default     = ""
-  description = "The name of the parameter in AWS SSM that holds the database username with write permission to the assessment database."
-  type        = string
-}
-
-variable "assessment_data_s3_bucket" {
-  default     = ""
-  description = "The name of the bucket where the assessment data JSON file can be found.  Note that in production Terraform workspaces, the string '-production' will be appended to the bucket name.  In non-production workspaces, '-<workspace_name>' will be appended to the bucket name."
-  type        = string
-}
-
 variable "aws_availability_zone" {
   default     = "a"
   description = "The AWS availability zone to deploy into (e.g. a, b, c, etc.)."
