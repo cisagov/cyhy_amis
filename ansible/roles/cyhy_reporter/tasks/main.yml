@@ -58,4 +58,4 @@
     groups:
       - cyhy
     name: "{{ item }}"
-  loop: "{{ dev_users }}"
+  loop: "{{ cyhy_reporter_dev_users }}"
