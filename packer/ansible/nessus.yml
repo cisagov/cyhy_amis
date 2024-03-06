@@ -1,6 +1,6 @@
 ---
-- hosts: nessus
-  name: Install and configure Nessus
+- name: Install and configure Nessus
+  hosts: nessus
   become: yes
   become_method: ansible.builtin.sudo
   roles:

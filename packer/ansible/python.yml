@@ -1,6 +1,6 @@
 ---
-- hosts: all
-  name: Install Python and Pip
+- name: Install Python and Pip
+  hosts: all
   become: yes
   become_method: ansible.builtin.sudo
   roles:
@@ -20,8 +20,8 @@
 #
 # Amazon Linux 2 is antiquated and requires Python 2 to function, and
 # the remove_python2 Ansible role is a no-op on that platform.
-- hosts: bastion,docker,nessus,nmap
-  name: Remove Python 2
+- name: Remove Python 2
+  hosts: bastion,docker,nessus,nmap
   become: yes
   become_method: ansible.builtin.sudo
   roles:

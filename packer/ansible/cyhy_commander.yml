@@ -1,6 +1,6 @@
 ---
-- hosts: cyhy_commander
-  name: Install and configure cyhy-commander
+- name: Install and configure cyhy-commander
+  hosts: cyhy_commander
   become: yes
   become_method: ansible.builtin.sudo
   roles:
