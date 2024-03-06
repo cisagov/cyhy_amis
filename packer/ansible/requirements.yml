@@ -28,6 +28,7 @@ roles:
     src: https://github.com/cisagov/ansible-role-cyhy-commander
   - name: cyhy_core
     src: https://github.com/cisagov/ansible-role-cyhy-core
+    version: testing/mcdonnnj
   - name: cyhy_feeds
     src: https://github.com/cisagov/ansible-role-cyhy-feeds
   - name: cyhy_mailer
