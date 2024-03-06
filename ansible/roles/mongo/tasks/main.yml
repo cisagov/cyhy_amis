@@ -20,37 +20,37 @@
 
 - name: Create admin user in admin db (first user, no authentication)
   community.mongodb.mongodb_user:
-    database: "{{ admin_db }}"
-    name: "{{ admin_user }}"
-    password: "{{ admin_pw }}"
-    roles: "{{ admin_roles }}"
+    database: "{{ mongo_admin_db }}"
+    name: "{{ mongo_admin_user }}"
+    password: "{{ mongo_admin_pw }}"
+    roles: "{{ mongo_admin_roles }}"
     state: present
   when: mongo_check_for_mongo_users.rc == 0
 
 - name: Update admin user in admin db (authenticate as admin)
   community.mongodb.mongodb_user:
-    database: "{{ admin_db }}"
-    login_database: "{{ admin_db }}"
-    login_password: "{{ admin_old_pw }}"
-    login_user: "{{ admin_user }}"
-    name: "{{ admin_user }}"
-    password: "{{ admin_pw }}"
-    roles: "{{ admin_roles }}"
+    database: "{{ mongo_admin_db }}"
+    login_database: "{{ mongo_admin_db }}"
+    login_password: "{{ mongo_admin_old_pw }}"
+    login_user: "{{ mongo_admin_user }}"
+    name: "{{ mongo_admin_user }}"
+    password: "{{ mongo_admin_pw }}"
+    roles: "{{ mongo_admin_roles }}"
     state: present
   when: mongo_check_for_mongo_users.rc != 0
 
 - name: Update other users (authenticate as admin)
   community.mongodb.mongodb_user:
     database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/database') }}"
-    login_database: "{{ admin_db }}"
-    login_password: "{{ admin_pw }}"
-    login_user: "{{ admin_user }}"
+    login_database: "{{ mongo_admin_db }}"
+    login_password: "{{ mongo_admin_pw }}"
+    login_user: "{{ mongo_admin_user }}"
     name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/user') }}"
     password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/password') }}"
     roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/roles').split(',') }}"
     state: present
   # Loop over all the users *except* for admin
-  loop: "{{ non_admin_users }}"
+  loop: "{{ mongo_non_admin_users }}"
   # ansible-lint throws a no-log-password on this task likely because
   # it is a module that needs password information and we are using a
   # loop. I would rather default to disabling logging than possibly
