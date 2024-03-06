@@ -116,6 +116,14 @@ locals {
   bod_public_subdomain  = "bod.ncats."
   mgmt_public_subdomain = "mgmt.ncats."
 
+  # This base will be used by all instances for their CloudWatch Agent
+  # configuration
+  cloudwatch_agent_log_group_base = "/instance-logs/${terraform.workspace}"
+  # CloudWatch Agent log group name base for cyhy instances
+  cyhy_cloudwatch_agent_log_group_base = "${local.cloudwatch_agent_log_group_base}/${local.cyhy_private_domain}"
+  # CloudWatch Agent log group name base for bod instances
+  bod_cloudwatch_agent_log_group_base = "${local.cloudwatch_agent_log_group_base}/${local.bod_private_domain}"
+
   # DNS zone calculations based on requested instances.  The numbers
   # represent the count of IP addresses in a subnet.
   #
