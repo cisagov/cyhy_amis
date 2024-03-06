@@ -1,3 +1,3 @@
 ---
-swapfile_location: /swapfile
-swapfile_size: 2GiB
+swap_swapfile_location: /swapfile
+swap_swapfile_size: 2GiB
