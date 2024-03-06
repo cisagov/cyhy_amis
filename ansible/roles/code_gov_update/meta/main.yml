@@ -12,6 +12,5 @@ galaxy_info:
   platforms:
     - name: Debian
       versions:
-        - buster
-        - bullseye
+        - bookworm
   role_name: code_gov_update

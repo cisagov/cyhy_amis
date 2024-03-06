@@ -1,0 +1,12 @@
+---
+- hosts: bastion,docker,nessus,nmap
+  name: Perform additional tasks to support Debian Bookworm
+  become: yes
+  become_method: ansible.builtin.sudo
+  tasks:
+    # We have a cloud-init script to fix the Netplan configuration that needs
+    # this Python package.
+    - name: Ensure the PyYAML package is installed
+      ansible.builtin.package:
+        name:
+          - python3-yaml

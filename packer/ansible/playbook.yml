@@ -2,6 +2,9 @@
 - name: Import base image playbook
   ansible.builtin.import_playbook: base.yml
 
+- name: Import Debian Bookworm playbook
+  ansible.builtin.import_playbook: bookworm.yml
+
 - name: Import AWS playbook
   ansible.builtin.import_playbook: aws.yml
 
