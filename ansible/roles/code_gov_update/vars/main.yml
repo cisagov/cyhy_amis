@@ -1,3 +1,3 @@
 ---
 # The GitHub Personal Access Token
-github_pat: "{{ lookup('aws_ssm', '/github/pat/code.gov') }}"
+code_gov_update_github_pat: "{{ lookup('aws_ssm', '/github/pat/code.gov') }}"
