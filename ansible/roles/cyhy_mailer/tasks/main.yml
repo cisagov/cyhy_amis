@@ -33,7 +33,7 @@
 
 - name: Create the CSA region-to-email mapping YAML file
   ansible.builtin.file:
-    content: "{{ csa_email_yaml }}"
+    content: "{{ cyhy_mailer_csa_email_yaml }}"
     dest: /var/cyhy/cyhy-mailer/secrets/csa_emails.yml
     group: cyhy
     mode: 0444
@@ -51,7 +51,7 @@
     mode: 0664
     owner: cyhy
     path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
-    src: /var/cyhy/cyhy-mailer/{{ docker_compose_override_file_for_mailer }}
+    src: /var/cyhy/cyhy-mailer/{{ cyhy_mailer_docker_compose_override_file_for_mailer }}
     state: link
 
 #
