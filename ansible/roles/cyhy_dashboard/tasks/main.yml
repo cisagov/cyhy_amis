@@ -61,3 +61,11 @@
   ansible.builtin.service:
     name: ncats-webui
     state: started
+
+- name: Create a cron job to restart the ncats-webd service daily
+  ansible.builtin.cron:
+    hour: '5'
+    job: systemctl restart ncats-webd
+    minute: '0'
+    name: "Restart ncats-webd service daily"
+    user: root
