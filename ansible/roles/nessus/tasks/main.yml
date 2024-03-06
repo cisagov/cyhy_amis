@@ -64,11 +64,11 @@
 
     - name: Create scanner user if necessary
       ansible.builtin.expect:
-        command: "/opt/nessus/sbin/nessuscli adduser {{ username }}"
+        command: "/opt/nessus/sbin/nessuscli adduser {{ nessus_username }}"
         responses:
           administrator: y
           BLANK: ""
-          password: "{{ password }}"
+          password: "{{ nessus_password }}"
       when: username not in nessus_users.stdout
 
     - name: Update plugins

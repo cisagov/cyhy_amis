@@ -1,5 +1,5 @@
 ---
 # The Nessus username
-username: "{{ lookup('aws_ssm', '/cyhy/nessus/username') }}"
+nessus_username: "{{ lookup('aws_ssm', '/cyhy/nessus/username') }}"
 # The Nessus password
-password: "{{ lookup('aws_ssm', '/cyhy/nessus/password') }}"
+nessus_password: "{{ lookup('aws_ssm', '/cyhy/nessus/password') }}"
