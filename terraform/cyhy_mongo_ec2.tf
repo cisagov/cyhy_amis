@@ -183,7 +183,6 @@ module "cyhy_mongo_ansible_provisioner" {
   dry_run = false
   envs = [
     "ANSIBLE_SSH_RETRIES=5",
-    "aws_region=${var.aws_region}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
     "cyhy_archive_s3_bucket_region=${var.aws_region}",
@@ -192,8 +191,9 @@ module "cyhy_mongo_ansible_provisioner" {
     "cyhy_commander_nessus_hosts=${join(",", formatlist("vulnscan%d", range(1, var.nessus_instance_count + 1)))}",
     "cyhy_commander_next_scan_limit=${var.commander_config.next_scan_limit}",
     "cyhy_commander_nmap_hosts=${join(",", formatlist("portscan%d", range(1, var.nmap_instance_count + 1)))}",
-    "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
+    "cyhy_feeds_aws_region=${var.aws_region}",
+    "cyhy_feeds_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
+    "cyhy_feeds_dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
     "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
     "host_groups=mongo,cyhy_commander,cyhy_archive",
     "production_workspace=${local.production_workspace}",
