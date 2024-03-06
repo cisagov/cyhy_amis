@@ -26,4 +26,4 @@
     mode: 0600
     owner: cyhy_ops
     path: /home/cyhy_ops/.ssh/authorized_keys
-  loop: "{{ ops_users }}"
+  loop: "{{ cyhy_ops_users }}"
