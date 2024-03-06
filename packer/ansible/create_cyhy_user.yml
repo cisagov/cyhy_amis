@@ -1,8 +1,8 @@
 ---
 # The bastion is the only instance that does not need a cyhy user for
 # operational functionality.
-- hosts: all:!bastion
-  name: Create the cyhy user and set up SSH access
+- name: Create the cyhy user and set up SSH access
+  hosts: all:!bastion
   become: yes
   become_method: ansible.builtin.sudo
   tasks:

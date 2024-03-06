@@ -1,6 +1,6 @@
 ---
-- hosts: cyhy_feeds
-  name: Install cyhy-feeds
+- name: Install cyhy-feeds
+  hosts: cyhy_feeds
   become: yes
   become_method: ansible.builtin.sudo
   roles:
