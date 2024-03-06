@@ -2,12 +2,12 @@
 # The maximum number of jobs to assign to each nessus host (vulnscanner).
 # This value is used in the "production" section of the cyhy-commander
 # configuration file this role generates.
-jobs_per_nessus_host: 16
+cyhy_commander_jobs_per_nessus_host: 16
 
 # The maximum number of jobs to assign to each nmap host (portscanner).
 # This value is used in the "production" section of the cyhy-commander
 # configuration file this role generates.
-jobs_per_nmap_host: 8
+cyhy_commander_jobs_per_nmap_host: 8
 
 # The maximum number of hosts that are scheduled to have scanning restarted
 # whose next scan stage should be updated per cyhy-commander cycle. The checks
@@ -17,4 +17,4 @@ jobs_per_nmap_host: 8
 # transitioned to NETSCAN1.
 # This value is used in the "production" section of the cyhy-commander
 # configuration file this role generates.
-next_scan_limit: 8192
+cyhy_commander_next_scan_limit: 8192
