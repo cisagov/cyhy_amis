@@ -59,7 +59,7 @@
     - cyhy_commander
     - role: swap
       vars:
-        swapfile_size: 2GiB
+        swap_swapfile_size: 2GiB
     - cyhy_logrotate
 
 - name: Configure nmap scanning hosts
@@ -69,7 +69,7 @@
   roles:
     - role: swap
       vars:
-        swapfile_size: 4GiB
+        swap_swapfile_size: 4GiB
 
 - name: Configure cyhy-runner hosts
   hosts: cyhy_runner
