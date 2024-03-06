@@ -1,7 +1,7 @@
 [profile lambda]
-region = {{ aws_region }}
+region = {{ orchestrator_aws_region }}
 
 [profile elasticsearch]
 credential_source = Ec2InstanceMetadata
-region = {{ dmarc_import_aws_region }}
-role_arn = {{ dmarc_import_es_role }}
+region = {{ orchestrator_dmarc_import_aws_region }}
+role_arn = {{ orchestrator_dmarc_import_es_role }}
