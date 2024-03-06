@@ -165,6 +165,8 @@ module "bod_docker_ansible_provisioner" {
   envs = [
     "aws_region=${var.aws_region}",
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
+    "client_cert_update_ses_aws_region=${var.ses_aws_region}",
+    "client_cert_update_ses_send_email_role=${var.ses_role_arn}",
     "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
     "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
     # This file will be used to add/override any settings in
