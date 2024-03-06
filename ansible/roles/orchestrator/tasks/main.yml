@@ -19,20 +19,20 @@
     src: mongodb_credentials.yml.j2
   loop:
     # reporter
-    - database: "{{ reporter_db }}"
+    - database: "{{ orchestrator_reporter_db }}"
       filename: cyhy_read_creds.yml
-      username: "{{ reporter_user }}"
-      password: "{{ reporter_pw }}"
+      username: "{{ orchestrator_reporter_user }}"
+      password: "{{ orchestrator_reporter_pw }}"
     # scan-reader
-    - database: "{{ scan_reader_db }}"
+    - database: "{{ orchestrator_scan_reader_db }}"
       filename: scan_read_creds.yml
-      username: "{{ scan_reader_user }}"
-      password: "{{ scan_reader_pw }}"
+      username: "{{ orchestrator_scan_reader_user }}"
+      password: "{{ orchestrator_scan_reader_pw }}"
     # scan-writer
-    - database: "{{ scan_writer_db }}"
+    - database: "{{ orchestrator_scan_writer_db }}"
       filename: scan_write_creds.yml
-      username: "{{ scan_writer_user }}"
-      password: "{{ scan_writer_pw }}"
+      username: "{{ orchestrator_scan_writer_user }}"
+      password: "{{ orchestrator_scan_writer_pw }}"
   loop_control:
     label: "{{ item.filename }}"
 
