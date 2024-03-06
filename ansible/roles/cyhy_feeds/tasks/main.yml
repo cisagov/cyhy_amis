@@ -61,6 +61,7 @@
   ansible.builtin.shell:
     cmd: set -o pipefail && echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch
     executable: /bin/bash
+  become: yes
   become_user: cyhy
   changed_when: "'imported: 1' in cyhy_feeds_import_gpg_key.stderr"
   loop:
@@ -79,6 +80,7 @@
   ansible.builtin.shell:
     cmd: set -o pipefail && echo {{ gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch
     executable: /bin/bash
+  become: yes
   become_user: cyhy
   changed_when: "'inserting ownertrust' in cyhy_feeds_import_gpg_ownertrust.stderr"
   register: cyhy_feeds_import_gpg_ownertrust

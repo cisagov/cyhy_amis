@@ -110,6 +110,7 @@
 - name: Load data to places collection as the cyhy user
   ansible.builtin.command: # noqa no-changed-when
     cmd: /tmp/cyhy-places/scripts/load_places.sh
+  become: yes
   become_user: cyhy
 
 #
