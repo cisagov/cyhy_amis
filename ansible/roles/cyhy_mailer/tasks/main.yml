@@ -43,7 +43,7 @@
     mode: 0664
     owner: cyhy
     path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
-    src: /var/cyhy/cyhy-mailer/{{ docker_compose_override_file_for_mailer }}
+    src: /var/cyhy/cyhy-mailer/{{ cyhy_mailer_docker_compose_override_file_for_mailer }}
     state: link
 
 #
