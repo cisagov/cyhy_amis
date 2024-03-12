@@ -49,6 +49,7 @@ roles:
     src: https://github.com/cisagov/ansible-role-htop
   - name: mongo
     src: https://github.com/cisagov/ansible-role-mongo
+    version: bug/fix_installation_of_mongodb
   - name: more_ephemeral_ports
     src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
   - name: ncats_webd
