@@ -42,14 +42,15 @@ roles:
   - name: disable_numa
     src: https://github.com/cisagov/ansible-role-disable-numa
   - name: disable_thp
-    src: https://github.com/GekoCloud/ansible-role-disable-thp
+    src: https://github.com/mcdonnnj/ansible-role-disable-thp
+    version: improvement/conform_role_to_ansible-lint_rules
   - name: geoip2
     src: https://github.com/cisagov/ansible-role-geoip2
   - name: htop
     src: https://github.com/cisagov/ansible-role-htop
   - name: mongo
     src: https://github.com/cisagov/ansible-role-mongo
-    version: bug/fix_installation_of_mongodb
+    version: testing/mcdonnnj
   - name: more_ephemeral_ports
     src: https://github.com/cisagov/ansible-role-more-ephemeral-ports
   - name: ncats_webd
