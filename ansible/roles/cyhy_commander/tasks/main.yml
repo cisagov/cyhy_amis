@@ -60,19 +60,19 @@
   ansible.builtin.get_url:
     dest: /tmp/cyhy-places/scripts/load_places.sh
     mode: 0755
-    url: "https://raw.githubusercontent.com/cisagov/cyhy-core/improvement/remove_pre-existing_check_for_GNIS_import/var/load_places.sh"
+    url: "https://raw.githubusercontent.com/cisagov/cyhy-core/testing/mcdonnnj/var/load_places.sh"
 
 - name: Download GNIS_data_import.py from GitHub
   ansible.builtin.get_url:
     dest: /tmp/cyhy-places/scripts/GNIS_data_import.py
     mode: 0755
-    url: "https://raw.githubusercontent.com/cisagov/cyhy-core/improvement/remove_pre-existing_check_for_GNIS_import/var/GNIS_data_import.py"
+    url: "https://raw.githubusercontent.com/cisagov/cyhy-core/testing/mcdonnnj/var/GNIS_data_import.py"
 
 - name: Download ADDL_CYHY_PLACES.txt from GitHub
   ansible.builtin.get_url:
     dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
     mode: 0644
-    url: "https://raw.githubusercontent.com/cisagov/cyhy-core/improvement/remove_pre-existing_check_for_GNIS_import/extras/ADDL_CYHY_PLACES.txt"
+    url: "https://raw.githubusercontent.com/cisagov/cyhy-core/testing/mcdonnnj/extras/ADDL_CYHY_PLACES.txt"
 
 - name: Check if cyhy.conf already exists
   ansible.builtin.stat:
