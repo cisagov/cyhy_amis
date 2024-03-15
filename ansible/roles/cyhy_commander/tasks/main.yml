@@ -102,7 +102,7 @@
     block: |
       [production]
       database-uri = mongodb://{{ cyhy_commander_commander_user }}:{{ cyhy_commander_commander_pw }}@database1.cyhy:27017/{{ cyhy_commander_commander_db }}
-      database-name = {{ commander_db }}
+      database-name = {{ cyhy_commander_commander_db }}
     marker: '; {mark} ANSIBLE MANAGED BLOCK commander'
     path: /etc/cyhy/cyhy.conf
   when: cyhy_commander_cyhy_conf_result.stat.exists

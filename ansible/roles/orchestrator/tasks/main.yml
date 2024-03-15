@@ -32,7 +32,7 @@
     - database: "{{ orchestrator_scan_writer_db }}"
       filename: scan_write_creds.yml
       username: "{{ orchestrator_scan_writer_user }}"
-      password: "{{ sorchestrator_can_writer_pw }}"
+      password: "{{ orchestrator_scan_writer_pw }}"
   loop_control:
     label: "{{ item.filename }}"
 
