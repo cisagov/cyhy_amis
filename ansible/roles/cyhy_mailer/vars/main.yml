@@ -5,3 +5,5 @@ reporter_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}"
 reporter_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/password') }}"
 # reporter mongo database
 reporter_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}"
+# CSA region-to-email YAML mapping
+csa_email_yaml: "{{ lookup('aws_ssm', '/cyhy/csa_email_yaml') }}"

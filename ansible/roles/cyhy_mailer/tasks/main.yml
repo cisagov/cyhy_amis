@@ -31,6 +31,14 @@
     owner: cyhy
     src: aws_config.j2
 
+- name: Create the CSA region-to-email mapping YAML file
+  ansible.builtin.file:
+    content: "{{ csa_email_yaml }}"
+    dest: /var/cyhy/cyhy-mailer/secrets/csa_emails.yml
+    group: cyhy
+    mode: 0444
+    owner: cyhy
+
 # The compose command will automatically use docker-compose.yml and
 # docker-compose.override.yml, so this is a way for us to tune
 # compose's behavior to the particular machine.
