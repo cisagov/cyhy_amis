@@ -29,7 +29,7 @@
     append: yes
     groups: cyhy
     name: "{{ item }}"
-  loop: "{{ dev_users }}"
+  loop: "{{ groups_dev_users }}"
   when: getent_group.cyhy is defined
 
 - name: Add dev users to the docker group
@@ -37,5 +37,5 @@
     append: yes
     groups: docker
     name: "{{ item }}"
-  loop: "{{ dev_users }}"
+  loop: "{{ groups_dev_users }}"
   when: getent_group.docker is defined

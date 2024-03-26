@@ -1,6 +1,6 @@
 ---
-- hosts: localhost
-  name: Setup the inventory and wait for a bastion to become available
+- name: Setup the inventory and wait for a bastion to become available
+  hosts: localhost
   gather_facts: yes
   check_mode: no
   tasks:
@@ -24,15 +24,15 @@
         search_regex: OpenSSH
       when: bastion_host is not defined
 
-- hosts: all
-  name: Configure groups now that cloud-init has run
+- name: Configure groups now that cloud-init has run
+  hosts: all
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - groups
 
-- hosts: mongo
-  name: Configure MongoDB
+- name: Configure MongoDB
+  hosts: mongo
   become: yes
   become_method: ansible.builtin.sudo
   roles:
@@ -40,8 +40,8 @@
     - mongo_logrotate
     - cyhy_feeds
 
-- hosts: bod_docker
-  name: Configure Docker hosts for BOD 18-01 scanning and reporting
+- name: Configure Docker hosts for BOD 18-01 scanning and reporting
+  hosts: bod_docker
   become: yes
   become_method: ansible.builtin.sudo
   roles:
@@ -51,42 +51,42 @@
     - code_gov_update
     - client_cert_update
 
-- hosts: cyhy_commander
-  name: Configure cyhy-commander hosts
+- name: Configure cyhy-commander hosts
+  hosts: cyhy_commander
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_commander
     - role: swap
       vars:
-        swapfile_size: 2GiB
+        swap_swapfile_size: 2GiB
     - cyhy_logrotate
 
-- hosts: nmap
-  name: Configure nmap scanning hosts
+- name: Configure nmap scanning hosts
+  hosts: nmap
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - role: swap
       vars:
-        swapfile_size: 4GiB
+        swap_swapfile_size: 4GiB
 
-- hosts: cyhy_runner
-  name: Configure cyhy-runner hosts
+- name: Configure cyhy-runner hosts
+  hosts: cyhy_runner
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_logrotate
 
-- hosts: nessus
-  name: Configure Nessus hosts
+- name: Configure Nessus hosts
+  hosts: nessus
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - nessus
 
-- hosts: cyhy_reporter
-  name: Configure cyhy-reports hosts
+- name: Configure cyhy-reports hosts
+  hosts: cyhy_reporter
   become: yes
   become_method: ansible.builtin.sudo
   roles:
@@ -94,29 +94,29 @@
     - cyhy_logrotate
     - cyhy_mailer
 
-- hosts: cyhy_bastion
-  name: Configure cyhy bastion hosts
+- name: Configure cyhy bastion hosts
+  hosts: cyhy_bastion
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_ops
 
-- hosts: cyhy_dashboard
-  name: Install and configure cyhy-dashboard
+- name: Install and configure cyhy-dashboard
+  hosts: cyhy_dashboard
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_dashboard
 
-- hosts: cyhy_archive
-  name: Configure cyhy-archive hosts
+- name: Configure cyhy-archive hosts
+  hosts: cyhy_archive
   become: yes
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_archive
 
-- hosts: mgmt_bastion
-  name: Configure management bastion hosts
+- name: Configure management bastion hosts
+  hosts: mgmt_bastion
   become: yes
   become_method: ansible.builtin.sudo
   roles:

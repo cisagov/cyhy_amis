@@ -1,6 +1,6 @@
 ---
-- hosts: cyhy_dashboard
-  name: Install and configure the CyHy dashboard
+- name: Install and configure the CyHy dashboard
+  hosts: cyhy_dashboard
   become: yes
   become_method: ansible.builtin.sudo
   roles:

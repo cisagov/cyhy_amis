@@ -7,25 +7,25 @@
 
 - name: Allocate swapfile
   ansible.builtin.command:
-    cmd: "fallocate --length {{ swapfile_size }} {{ swapfile_location }}"
-    creates: "{{ swapfile_location }}"
+    cmd: "fallocate --length {{ swap_swapfile_size }} {{ swap_swapfile_location }}"
+    creates: "{{ swap_swapfile_location }}"
   register: swap_allocate_swapfile
 
 - name: Set swapfile permissions
   ansible.builtin.file:
     mode: 0600
-    path: "{{ swapfile_location }}"
+    path: "{{ swap_swapfile_location }}"
 
 - name: Create swapfile
   ansible.builtin.command: # noqa no-handler
-    cmd: mkswap {{ swapfile_location }}
+    cmd: mkswap {{ swap_swapfile_location }}
   changed_when: swap_create_swapfile.rc == 0
   register: swap_create_swapfile
   when: swap_allocate_swapfile is changed
 
 - name: Enable swapfile
   ansible.builtin.command: # noqa no-handler
-    cmd: swapon {{ swapfile_location }}
+    cmd: swapon {{ swap_swapfile_location }}
   changed_when: swap_enable_swapfile.rc == 0
   register: swap_enable_swapfile
   when: swap_create_swapfile is changed
@@ -35,5 +35,5 @@
     fstype: swap
     name: none
     opts: sw
-    src: "{{ swapfile_location }}"
+    src: "{{ swap_swapfile_location }}"
     state: present

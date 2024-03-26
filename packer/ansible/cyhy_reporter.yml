@@ -1,6 +1,6 @@
 ---
-- hosts: cyhy_reporter
-  name: Install and configure cyhy-reports
+- name: Install and configure cyhy-reports
+  hosts: cyhy_reporter
   become: yes
   become_method: ansible.builtin.sudo
   roles:

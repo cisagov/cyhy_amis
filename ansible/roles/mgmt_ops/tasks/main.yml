@@ -26,4 +26,4 @@
     mode: 0600
     owner: mgmt_ops
     path: /home/mgmt_ops/.ssh/authorized_keys
-  loop: "{{ ops_users }}"
+  loop: "{{ mgmt_ops_users }}"

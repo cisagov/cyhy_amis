@@ -1,6 +1,6 @@
 ---
-- hosts: nmap
-  name: Install nmap
+- name: Install nmap
+  hosts: nmap
   become: yes
   become_method: ansible.builtin.sudo
   roles:

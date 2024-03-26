@@ -4,7 +4,7 @@
                                                                                                                                                                                                                                                                                 			This scan policy is based off of the "External Network Scan" distributed by the Tenable Policy Distribution Service.
                                                                                                                                                                                                                                                                                 			See the CyHy version control system for history, changes and the latest version of this policy.</policyComments>
 <visibility>private</visibility>
-<policyOwner>{{ username }}</policyOwner>
+<policyOwner>{{ nessus_username }}</policyOwner>
 <Preferences>
 <PluginsPreferences>
 <item>
@@ -494,7 +494,7 @@
 <preferenceType>entry</preferenceType>
 <preferenceName>From address :</preferenceName>
 <preferenceValues>nobody@example.edu</preferenceValues>
-<selectedValue>CyHyTesting@{{ smtp_hostname }}</selectedValue>
+<selectedValue>CyHyTesting@{{ nessus_smtp_hostname }}</selectedValue>
 </item>
 <item>
 <pluginId>11038</pluginId>
@@ -503,7 +503,7 @@
 <preferenceType>entry</preferenceType>
 <preferenceName>Third party domain :</preferenceName>
 <preferenceValues>example.edu</preferenceValues>
-<selectedValue>{{ smtp_hostname }}</selectedValue>
+<selectedValue>{{ nessus_smtp_hostname }}</selectedValue>
 </item>
 <item>
 <pluginId>11149</pluginId>
