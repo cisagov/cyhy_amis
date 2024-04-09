@@ -1,6 +1,6 @@
 ---
-- hosts: client_cert
-  name: Configure host for client cert auth updating
+- name: Configure host for client cert auth updating
+  hosts: client_cert
   become: yes
   become_method: ansible.builtin.sudo
   roles:

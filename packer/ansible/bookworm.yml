@@ -1,6 +1,6 @@
 ---
-- hosts: bastion,docker,nessus,nmap
-  name: Perform additional tasks to support Debian Bookworm
+- name: Perform additional tasks to support Debian Bookworm
+  hosts: bastion,docker,nessus,nmap
   become: yes
   become_method: ansible.builtin.sudo
   tasks:

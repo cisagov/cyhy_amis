@@ -19,6 +19,7 @@
   ansible.builtin.shell:
     cmd: head -c 24 /dev/urandom > /var/cyhy/web/secret_key
     creates: /var/cyhy/web/secret_key
+  become: yes
   become_method: ansible.builtin.sudo
   become_user: cyhy
 

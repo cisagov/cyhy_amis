@@ -163,18 +163,22 @@ module "bod_docker_ansible_provisioner" {
   ]
   dry_run = false
   envs = [
-    "aws_region=${var.aws_region}",
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
-    "dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
+    "client_cert_update_ses_aws_region=${var.ses_aws_region}",
+    "client_cert_update_ses_send_email_role=${var.ses_role_arn}",
+    "code_gov_update_ses_aws_region=${var.ses_aws_region}",
+    "code_gov_update_ses_send_email_role=${var.ses_role_arn}",
     # This file will be used to add/override any settings in
     # docker-compose.yml (for cyhy-mailer).
-    "docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
+    "cyhy_mailer_docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
+    "cyhy_mailer_ses_aws_region=${var.ses_aws_region}",
+    "cyhy_mailer_ses_send_email_role=${var.ses_role_arn}",
     "host=${aws_instance.bod_docker.private_ip}",
     "host_groups=docker,bod_docker",
+    "orchestrator_aws_region=${var.aws_region}",
+    "orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
+    "orchestrator_dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
     "production_workspace=${local.production_workspace}",
-    "ses_aws_region=${var.ses_aws_region}",
-    "ses_send_email_role=${var.ses_role_arn}",
   ]
   playbook = "../ansible/playbook.yml"
 }

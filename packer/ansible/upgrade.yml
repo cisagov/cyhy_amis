@@ -1,6 +1,6 @@
 ---
-- hosts: all
-  name: Set up backports, apt over HTTPS, and upgrade base image
+- name: Set up backports, apt over HTTPS, and upgrade base image
+  hosts: all
   become: yes
   become_method: ansible.builtin.sudo
   roles:

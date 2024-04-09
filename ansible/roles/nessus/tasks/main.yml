@@ -60,16 +60,16 @@
       ansible.builtin.apt:
         name: python3-pexpect
         state: present
-      when: username not in nessus_users.stdout
+      when: nessus_username not in nessus_users.stdout
 
     - name: Create scanner user if necessary
       ansible.builtin.expect:
-        command: "/opt/nessus/sbin/nessuscli adduser {{ username }}"
+        command: "/opt/nessus/sbin/nessuscli adduser {{ nessus_username }}"
         responses:
           administrator: y
           BLANK: ""
-          password: "{{ password }}"
-      when: username not in nessus_users.stdout
+          password: "{{ nessus_password }}"
+      when: nessus_username not in nessus_users.stdout
 
     - name: Update plugins
       # This task is only run as part of a block that checks if a license key

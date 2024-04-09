@@ -1,7 +1,7 @@
 ---
 # commander mongo username
-commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
+cyhy_dashboard_commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
 # commander mongo password
-commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
+cyhy_dashboard_commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
 # commander mongo database
-commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
+cyhy_dashboard_commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"

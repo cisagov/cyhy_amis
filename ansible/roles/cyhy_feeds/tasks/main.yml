@@ -1,7 +1,7 @@
 ---
 - name: Create cyhy-feeds config
   ansible.builtin.copy:
-    content: "{{ config }}"
+    content: "{{ cyhy_feeds_config }}"
     dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
     group: cyhy
     mode: 0444
@@ -31,20 +31,20 @@
     src: mongodb_credentials.yml.j2
   loop:
     # reporter
-    - database: "{{ reporter_db }}"
+    - database: "{{ cyhy_feeds_reporter_db }}"
       filename: cyhy.yml
-      username: "{{ reporter_user }}"
-      password: "{{ reporter_pw }}"
+      username: "{{ cyhy_feeds_reporter_user }}"
+      password: "{{ cyhy_feeds_reporter_pw }}"
     # scan-reader
-    - database: "{{ scan_reader_db }}"
+    - database: "{{ cyhy_feeds_scan_reader_db }}"
       filename: scan_reader.yml
-      username: "{{ scan_reader_user }}"
-      password: "{{ scan_reader_pw }}"
+      username: "{{ cyhy_feeds_scan_reader_user }}"
+      password: "{{ cyhy_feeds_scan_reader_pw }}"
     # assessment-reader
-    - database: "{{ assessment_read_db }}"
+    - database: "{{ cyhy_feeds_assessment_read_db }}"
       filename: assessment_reader.yml
-      username: "{{ assessment_read_user }}"
-      password: "{{ assessment_read_pw }}"
+      username: "{{ cyhy_feeds_assessment_read_user }}"
+      password: "{{ cyhy_feeds_assessment_read_pw }}"
   loop_control:
     label: "{{ item.filename }}"
 
@@ -61,13 +61,14 @@
   ansible.builtin.shell:
     cmd: set -o pipefail && echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch
     executable: /bin/bash
+  become: yes
   become_user: cyhy
   changed_when: "'imported: 1' in cyhy_feeds_import_gpg_key.stderr"
   loop:
-    - "{{ ncps_ae_public_gpg_key }}"
-    - "{{ nsd_public_gpg_key }}"
-    - "{{ private_gpg_key }}"
-    - "{{ public_gpg_key }}"
+    - "{{ cyhy_feeds_ncps_ae_public_gpg_key }}"
+    - "{{ cyhy_feeds_nsd_public_gpg_key }}"
+    - "{{ cyhy_feeds_private_gpg_key }}"
+    - "{{ cyhy_feeds_public_gpg_key }}"
   loop_control:
     label: "<key redacted>"
   register: cyhy_feeds_import_gpg_key
@@ -77,8 +78,9 @@
   # before quoting. A quoted newline causes a failure when gpg2 attempts to
   # import the owner trust.
   ansible.builtin.shell:
-    cmd: set -o pipefail && echo {{ gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch
+    cmd: set -o pipefail && echo {{ cyhy_feeds_gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch
     executable: /bin/bash
+  become: yes
   become_user: cyhy
   changed_when: "'inserting ownertrust' in cyhy_feeds_import_gpg_ownertrust.stderr"
   register: cyhy_feeds_import_gpg_ownertrust

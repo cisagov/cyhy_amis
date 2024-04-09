@@ -1,2 +1,2 @@
 ---
-mongodb_data_root: /var/lib/mongodb
+mongo_mongodb_data_root: /var/lib/mongodb

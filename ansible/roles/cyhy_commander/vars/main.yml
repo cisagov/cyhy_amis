@@ -1,10 +1,10 @@
 ---
 # The CyHy SSH private key
-ssh_private_key: "{{ lookup('aws_ssm', '/cyhy/ssh/private_key') }}"
+cyhy_commander_ssh_private_key: "{{ lookup('aws_ssm', '/cyhy/ssh/private_key') }}"
 
 # commander mongo username
-commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
+cyhy_commander_commander_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/user') }}"
 # commander mongo password
-commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
+cyhy_commander_commander_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/password') }}"
 # commander mongo database
-commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
+cyhy_commander_commander_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/commander/database') }}"
