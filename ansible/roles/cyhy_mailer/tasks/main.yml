@@ -32,7 +32,7 @@
     src: aws_config.j2
 
 - name: Create the CSA region-to-email mapping YAML file
-  ansible.builtin.file:
+  ansible.builtin.copy:
     content: "{{ cyhy_mailer_csa_email_yaml }}"
     dest: /var/cyhy/cyhy-mailer/secrets/csa_emails.yml
     group: cyhy
