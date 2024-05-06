@@ -17,7 +17,7 @@ terraform {
     # for more information about the S3 bucket refactor.
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 4.9"
+      version = "~> 5.48"
     }
   }
 }
