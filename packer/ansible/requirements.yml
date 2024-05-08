@@ -70,6 +70,8 @@ roles:
     src: https://github.com/cisagov/ansible-role-python
   - name: remove_python2
     src: https://github.com/cisagov/ansible-role-remove-python2
+  - name: systemd_resolved
+    src: https://github.com/cisagov/ansible-role-systemd-resolved
   - name: upgrade
     src: https://github.com/cisagov/ansible-role-upgrade
   - name: vdp_scanner

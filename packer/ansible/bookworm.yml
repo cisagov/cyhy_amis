@@ -10,3 +10,7 @@
       ansible.builtin.package:
         name:
           - python3-yaml
+
+    - name: Install and configure systemd-resolved
+      ansible.builtin.include_role:
+        name: systemd_resolved
