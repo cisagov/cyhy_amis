@@ -37,9 +37,4 @@ updates:
     package-ecosystem: terraform
     schedule:
       interval: weekly
-
-  - directory: /terraform_nessus_only
-    package-ecosystem: terraform
-    schedule:
-      interval: weekly
 version: 2
