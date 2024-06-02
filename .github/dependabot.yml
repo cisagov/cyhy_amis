@@ -42,9 +42,4 @@ updates:
     package-ecosystem: terraform
     schedule:
       interval: weekly
-
-  - directory: /terraform_route_53
-    package-ecosystem: terraform
-    schedule:
-      interval: weekly
 version: 2
