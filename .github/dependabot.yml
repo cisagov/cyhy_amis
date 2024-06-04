@@ -32,9 +32,4 @@ updates:
     package-ecosystem: terraform
     schedule:
       interval: weekly
-
-  - directory: /terraform_egress_pub
-    package-ecosystem: terraform
-    schedule:
-      interval: weekly
 version: 2
