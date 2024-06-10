@@ -12,7 +12,7 @@
 # jumping to another major version without testing, since there are
 # often breaking changes across major versions.  This is the reason
 # for the upper bound.
-ansible>=8,<10
+ansible>=8,<11
 # TODO: Remove this pin when possible.  See
 # cisagov/skeleton-ansible-role#178 for more details.
 #
