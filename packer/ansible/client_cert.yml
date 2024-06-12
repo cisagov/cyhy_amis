@@ -1,7 +1,0 @@
----
-- name: Configure host for client cert auth updating
-  hosts: client_cert
-  become: yes
-  become_method: ansible.builtin.sudo
-  roles:
-    - client_cert_update

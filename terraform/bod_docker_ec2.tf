@@ -164,8 +164,6 @@ module "bod_docker_ansible_provisioner" {
   dry_run = false
   envs = [
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
-    "client_cert_update_ses_aws_region=${var.ses_aws_region}",
-    "client_cert_update_ses_send_email_role=${var.ses_role_arn}",
     "code_gov_update_ses_aws_region=${var.ses_aws_region}",
     "code_gov_update_ses_send_email_role=${var.ses_role_arn}",
     # This file will be used to add/override any settings in

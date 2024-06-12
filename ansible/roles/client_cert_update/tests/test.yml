@@ -1,6 +1,0 @@
----
-- name: Test the role
-  hosts: localhost
-  remote_user: root
-  roles:
-    - client_cert_update

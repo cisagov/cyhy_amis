@@ -29,9 +29,6 @@
 - name: Import the code_gov host playbook
   ansible.builtin.import_playbook: code_gov.yml
 
-- name: Import the client_cert host playbook
-  ansible.builtin.import_playbook: client_cert.yml
-
 - name: Import the vdp_scan host playbook
   ansible.builtin.import_playbook: vdp_scan.yml
 

@@ -71,7 +71,6 @@
       ],
       "groups": [
         "bod",
-        "client_cert",
         "code_gov",
         "vdp_scan"
       ],
