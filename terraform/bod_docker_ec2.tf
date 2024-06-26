@@ -43,9 +43,8 @@ resource "aws_instance" "bod_docker" {
     # containers hosted on this instance need to retrieve credentials from
     # IMDS. The BOD 18-01 scanning orchestration and cisagov/cyhy-mailer
     # Docker containers need to access the dmarc-import Elasticsearch
-    # database and send email using SES. The cisagov/client-cert-update
-    # and cisagov/code-gov-update Docker containers need to send email using
-    # SES.
+    # database and send email using SES. The cisagov/code-gov-update
+    # Docker container needs to send email using SES.
     http_put_response_hop_limit = 2
     # Require IMDS tokens AKA require the use of IMDSv2
     http_tokens = "required"
