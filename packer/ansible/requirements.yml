@@ -16,8 +16,6 @@ roles:
     src: https://github.com/cisagov/ansible-role-chrony-aws
   - name: clamav
     src: https://github.com/cisagov/ansible-role-clamav
-  - name: client_cert_update
-    src: https://github.com/cisagov/ansible-role-client-cert-update
   - name: cloudwatch_agent
     src: https://github.com/cisagov/ansible-role-cloudwatch-agent
   - name: code_gov_update

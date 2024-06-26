@@ -49,7 +49,6 @@
     - vdp_scanner
     - cyhy_mailer
     - code_gov_update
-    - client_cert_update
 
 - name: Configure cyhy-commander hosts
   hosts: cyhy_commander
