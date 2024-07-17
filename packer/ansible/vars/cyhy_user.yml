@@ -1,4 +1,5 @@
 ---
 # CyHy user information
+cyhy_user_home_directory: /var/cyhy
 cyhy_user_uid: 2048
 cyhy_user_username: cyhy
