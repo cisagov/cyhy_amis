@@ -18,10 +18,10 @@ data "cloudinit_config" "cyhy_dashboard_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = false
-      owner          = "cyhy"
-      path           = "/var/cyhy"
+      owner          = var.cyhy_user_info.name
+      path           = var.cyhy_user_info.home
     })
     content_type = "text/x-shellscript"
     filename     = "00_cyhy_dashboard_chown_cyhy_directory.sh"
@@ -29,9 +29,9 @@ data "cloudinit_config" "cyhy_dashboard_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = false
-      owner          = "cyhy"
+      owner          = var.cyhy_user_info.name
       path           = "/var/log/cyhy"
     })
     content_type = "text/x-shellscript"
