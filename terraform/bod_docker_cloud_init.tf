@@ -19,10 +19,10 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = false
-      owner          = "cyhy"
-      path           = "/var/cyhy"
+      owner          = var.cyhy_user_info.name
+      path           = var.cyhy_user_info.home
     })
     content_type = "text/x-shellscript"
     filename     = "00_cyhy_docker_chown_cyhy_directory.sh"
@@ -30,9 +30,9 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = false
-      owner          = "cyhy"
+      owner          = var.cyhy_user_info.name
       path           = "/var/log/cyhy"
     })
     content_type = "text/x-shellscript"
@@ -45,7 +45,7 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
       fs_type       = "xfs"
       label         = "report_data"
       mount_options = "defaults"
-      mount_point   = "/var/cyhy/orchestrator/output"
+      mount_point   = "${var.cyhy_user_info.home}/orchestrator/output"
       num_disks     = 3
     })
     content_type = "text/x-shellscript"
@@ -54,10 +54,10 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = true
-      owner          = "cyhy"
-      path           = "/var/cyhy/orchestrator/output"
+      owner          = var.cyhy_user_info.name
+      path           = "${var.cyhy_user_info.home}/orchestrator/output"
     })
     content_type = "text/x-shellscript"
     filename     = "02_cyhy_docker_chown_orchestrator_output_directory.sh"
@@ -69,7 +69,7 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
       fs_type       = "xfs"
       label         = "vdp_data"
       mount_options = "defaults"
-      mount_point   = "/var/cyhy/vdp/output"
+      mount_point   = "${var.cyhy_user_info.home}/vdp/output"
       num_disks     = 3
     })
     content_type = "text/x-shellscript"
@@ -78,10 +78,10 @@ data "cloudinit_config" "bod_docker_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = true
-      owner          = "cyhy"
-      path           = "/var/cyhy/vdp/output"
+      owner          = var.cyhy_user_info.name
+      path           = "${var.cyhy_user_info.home}/vdp/output"
     })
     content_type = "text/x-shellscript"
     filename     = "04_cyhy_docker_chown_vdp_output_directory.sh"
