@@ -38,12 +38,12 @@ roles:
     src: https://github.com/cisagov/ansible-role-dev-ssh-access
   - name: disable_numa
     src: https://github.com/cisagov/ansible-role-disable-numa
-  - name: disable_thp
-    src: https://github.com/GekoCloud/ansible-role-disable-thp
   - name: geoip2
     src: https://github.com/cisagov/ansible-role-geoip2
   - name: htop
     src: https://github.com/cisagov/ansible-role-htop
+  - name: manage_thp
+    src: https://github.com/cisagov/ansible-role-manage-thp
   - name: mongo
     src: https://github.com/cisagov/ansible-role-mongo
   - name: more_ephemeral_ports
