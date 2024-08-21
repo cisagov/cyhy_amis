@@ -86,7 +86,7 @@
       # run.
       ansible.builtin.command: # noqa no-changed-when
         cmd: /opt/nessus/sbin/nessusd -R
-      async: 1800
+      async: 3600  # 60 minutes
       poll: 30
 
     - name: Start Nessus service
