@@ -22,7 +22,7 @@ data "aws_ami" "nessus" {
 
 resource "aws_instance" "cyhy_nessus" {
   ami               = data.aws_ami.nessus.id
-  instance_type     = local.production_workspace ? "c5.9xlarge" : "m5.large"
+  instance_type     = local.production_workspace ? "c5.12xlarge" : "m5.large"
   count             = var.nessus_instance_count
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
