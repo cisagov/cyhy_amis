@@ -33,7 +33,7 @@
             state: absent
         - name: Install boto-related Python packages
           ansible.builtin.pip:
-            executable: pip3
+            executable: /usr/bin/pip3
             name:
               - boto3
               - botocore

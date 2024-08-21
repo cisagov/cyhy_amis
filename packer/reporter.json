@@ -48,10 +48,6 @@
   ],
   "provisioners": [
     {
-      "extra_arguments": [
-        "--extra-vars",
-        "ansible_python_interpreter=auto_legacy_silent"
-      ],
       "groups": [
         "reporter"
       ],
@@ -61,10 +57,6 @@
       "use_sftp": true
     },
     {
-      "extra_arguments": [
-        "--extra-vars",
-        "ansible_python_interpreter=auto_legacy_silent"
-      ],
       "groups": [
         "reporter"
       ],
@@ -76,10 +68,6 @@
     {
       "ansible_env_vars": [
         "AWS_DEFAULT_REGION={{user `build_region`}}"
-      ],
-      "extra_arguments": [
-        "--extra-vars",
-        "ansible_python_interpreter=auto_legacy_silent"
       ],
       "groups": [
         "cyhy_reporter"
