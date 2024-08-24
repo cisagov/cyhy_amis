@@ -21,7 +21,7 @@ Here's how to use it in a playbook:
 
 ```yaml
 - hosts: bod_docker
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
      - vdp_scanner

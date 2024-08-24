@@ -3,7 +3,7 @@
 # operational functionality.
 - name: Create the cyhy user and set up SSH access
   hosts: all:!bastion
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   tasks:
     - name: Create the cyhy user

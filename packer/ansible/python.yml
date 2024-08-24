@@ -1,7 +1,7 @@
 ---
 - name: Install Python and Pip
   hosts: all
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - role: pip
@@ -22,7 +22,7 @@
 # the remove_python2 Ansible role is a no-op on that platform.
 - name: Remove Python 2
   hosts: bastion,docker,nessus,nmap
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - remove_python2

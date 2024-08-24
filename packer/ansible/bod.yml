@@ -1,7 +1,7 @@
 ---
 - name: Configure host for BOD 18-01 scanning and reporting
   hosts: bod
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - xfs
