@@ -61,7 +61,7 @@
 #   block:
 #     - name: Add /usr/local/bin to cron's path
 #       ansible.builtin.cron:
-#         env: yes
+#         env: true
 #         name: PATH
 #         user: cyhy
 #         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
