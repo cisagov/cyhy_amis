@@ -18,7 +18,7 @@
   block:
     - name: Add /usr/local/bin to cron's path
       ansible.builtin.cron:
-        env: yes
+        env: true
         name: PATH
         user: cyhy
         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
@@ -54,7 +54,7 @@
 #
 - name: Add development users to the cyhy group
   ansible.builtin.user:
-    append: yes
+    append: true
     groups:
       - cyhy
     name: "{{ item }}"
