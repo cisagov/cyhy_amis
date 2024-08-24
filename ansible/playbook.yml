@@ -1,8 +1,8 @@
 ---
 - name: Setup the inventory and wait for a bastion to become available
   hosts: localhost
-  gather_facts: yes
-  check_mode: no
+  gather_facts: true
+  check_mode: false
   tasks:
     - name: Add public ip addresses to an dynamic inventory
       ansible.builtin.add_host:
