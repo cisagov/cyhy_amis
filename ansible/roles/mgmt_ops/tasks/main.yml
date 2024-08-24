@@ -20,7 +20,7 @@
 #
 - name: Create .ssh/authorized_keys file for mgmt_ops
   ansible.builtin.lineinfile:
-    create: yes
+    create: true
     group: mgmt_ops
     line: "{{ lookup('aws_ssm', '/ssh/public_keys/' + item) }}"
     mode: 0600
