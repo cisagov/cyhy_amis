@@ -1,5 +1,5 @@
 ---
 - name: Enable mongo
   ansible.builtin.service:
-    enabled: yes
+    enabled: true
     name: mongod
