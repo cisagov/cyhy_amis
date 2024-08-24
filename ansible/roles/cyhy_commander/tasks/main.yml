@@ -33,7 +33,7 @@
 - name: Enable and start cyhy-commander
   ansible.builtin.service:
     name: cyhy-commander
-    enabled: yes
+    enabled: true
     state: restarted
 
 #
