@@ -19,10 +19,10 @@ data "cloudinit_config" "cyhy_reporter_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = false
-      owner          = "cyhy"
-      path           = "/var/cyhy"
+      owner          = var.cyhy_user_info.name
+      path           = var.cyhy_user_info.home
     })
     content_type = "text/x-shellscript"
     filename     = "00_cyhy_reports_chown_cyhy_directory.sh"
@@ -30,9 +30,9 @@ data "cloudinit_config" "cyhy_reporter_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = false
-      owner          = "cyhy"
+      owner          = var.cyhy_user_info.name
       path           = "/var/log/cyhy"
     })
     content_type = "text/x-shellscript"
@@ -45,7 +45,7 @@ data "cloudinit_config" "cyhy_reporter_cloud_init_tasks" {
       fs_type       = "xfs"
       label         = "report_data"
       mount_options = "defaults"
-      mount_point   = "/var/cyhy/reports/output"
+      mount_point   = "${var.cyhy_user_info.home}/reports/output"
       num_disks     = 2
     })
     content_type = "text/x-shellscript"
@@ -54,10 +54,10 @@ data "cloudinit_config" "cyhy_reporter_cloud_init_tasks" {
 
   part {
     content = templatefile("${path.module}/cloud-init/chown_directory.tpl.sh", {
-      group          = "cyhy"
+      group          = var.cyhy_user_info.name
       is_mount_point = true
-      owner          = "cyhy"
-      path           = "/var/cyhy/reports/output"
+      owner          = var.cyhy_user_info.name
+      path           = "${var.cyhy_user_info.home}/reports/output"
     })
     content_type = "text/x-shellscript"
     filename     = "02_cyhy_reports_chown_reports_output_directory.sh"

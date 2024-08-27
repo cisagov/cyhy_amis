@@ -8,7 +8,7 @@
   tasks:
     - name: Create the cyhy user
       ansible.builtin.user:
-        home: /var/cyhy
+        home: "{{ cyhy_user_home_directory }}"
         name: "{{ cyhy_user_username }}"
         shell: /bin/bash
         uid: "{{ cyhy_user_uid }}"
