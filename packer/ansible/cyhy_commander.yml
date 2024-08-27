@@ -6,6 +6,8 @@
   roles:
     - role: cyhy_commander
       vars:
+        cyhy_commander_install_geoipupdate: true
+        cyhy_commander_maxmind_account_id: "{{ maxmind_account_id }}"
         cyhy_commander_maxmind_license_key: "{{ maxmind_license_key }}"
   vars_files:
-    - vars/maxmind_license_key.yml
+    - vars/maxmind_information.yml
