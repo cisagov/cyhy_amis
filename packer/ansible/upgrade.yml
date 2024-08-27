@@ -1,9 +1,25 @@
 ---
-- name: Set up backports, apt over HTTPS, and upgrade base image
+- name: Upgrade the base image, set up Debian Backports, and configure apt over HTTPS
   hosts: all
   become: yes
   become_method: ansible.builtin.sudo
-  roles:
-    - backports
-    - apt_over_https
-    - upgrade
+  tasks:
+    - name: Upgrade system packages
+      ansible.builtin.include_role:
+        name: upgrade
+
+    - name: Set up Debian Backports repository
+      ansible.builtin.include_role:
+        name: backports
+
+    - name: Set up apt to use HTTPS
+      ansible.builtin.include_role:
+        name: apt_over_https
+      vars:
+        apt_over_https_apt_source_files:
+          # Legacy SourceList files (pre Debian Bookworm)
+          - /etc/apt/sources.list
+          - /etc/apt/sources.list.d/backports.list
+          # DEB822 SourceList files (Debian Bookworm and later)
+          - /etc/apt/sources.list.d/debian.sources
+          - /etc/apt/sources.list.d/backports.sources
