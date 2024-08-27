@@ -1,7 +1,7 @@
 ---
 - name: Perform additional tasks to support Debian Bookworm
   hosts: bastion,docker,nessus,nmap
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   tasks:
     # We have a cloud-init script to fix the Netplan configuration that needs

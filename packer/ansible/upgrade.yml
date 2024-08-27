@@ -1,7 +1,7 @@
 ---
 - name: Upgrade the base image, set up Debian Backports, and configure apt over HTTPS
   hosts: all
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   tasks:
     - name: Upgrade system packages

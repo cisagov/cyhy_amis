@@ -19,7 +19,7 @@
   ansible.builtin.shell:
     cmd: head --bytes 24 /dev/urandom > /var/cyhy/web/secret_key
     creates: /var/cyhy/web/secret_key
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   become_user: cyhy
 
@@ -38,7 +38,7 @@
   community.general.make:
     chdir: /var/cyhy/ncats-webui
     target: dev-build
-  become: yes
+  become: true
 
 - name: Copy webd service file
   ansible.builtin.copy:

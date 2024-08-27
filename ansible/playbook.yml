@@ -1,8 +1,8 @@
 ---
 - name: Setup the inventory and wait for a bastion to become available
   hosts: localhost
-  gather_facts: yes
-  check_mode: no
+  gather_facts: true
+  check_mode: false
   tasks:
     - name: Add public ip addresses to an dynamic inventory
       ansible.builtin.add_host:
@@ -26,14 +26,14 @@
 
 - name: Configure groups now that cloud-init has run
   hosts: all
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - groups
 
 - name: Configure MongoDB
   hosts: mongo
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - mongo
@@ -42,7 +42,7 @@
 
 - name: Configure Docker hosts for BOD 18-01 scanning and reporting
   hosts: bod_docker
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - orchestrator
@@ -52,7 +52,7 @@
 
 - name: Configure cyhy-commander hosts
   hosts: cyhy_commander
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_commander
@@ -63,7 +63,7 @@
 
 - name: Configure nmap scanning hosts
   hosts: nmap
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - role: swap
@@ -72,21 +72,21 @@
 
 - name: Configure cyhy-runner hosts
   hosts: cyhy_runner
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_logrotate
 
 - name: Configure Nessus hosts
   hosts: nessus
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - nessus
 
 - name: Configure cyhy-reports hosts
   hosts: cyhy_reporter
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_reporter
@@ -95,28 +95,28 @@
 
 - name: Configure cyhy bastion hosts
   hosts: cyhy_bastion
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_ops
 
 - name: Install and configure cyhy-dashboard
   hosts: cyhy_dashboard
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_dashboard
 
 - name: Configure cyhy-archive hosts
   hosts: cyhy_archive
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - cyhy_archive
 
 - name: Configure management bastion hosts
   hosts: mgmt_bastion
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
     - mgmt_ops

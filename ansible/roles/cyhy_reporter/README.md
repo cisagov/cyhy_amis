@@ -20,7 +20,7 @@ Here's how to use it in a playbook:
 
 ```yaml
 - hosts: reporters
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
      - cyhy_reporter

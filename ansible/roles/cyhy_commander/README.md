@@ -20,7 +20,7 @@ Here's how to use it in a playbook:
 
 ```yaml
 - hosts: commanders
-  become: yes
+  become: true
   become_method: ansible.builtin.sudo
   roles:
      - cyhy_commander
