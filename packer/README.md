@@ -36,6 +36,42 @@ may be required, for example, if a role that is being pulled from a
 GitHub repository has been updated and you want the new changes.  By
 default `ansible-galaxy install` *will not* upgrade roles.
 
+<!-- BEGIN_TF_DOCS -->
+## Requirements ##
+
+No requirements.
+
+## Providers ##
+
+| Name | Version |
+|------|---------|
+| amazon-ami | n/a |
+
+## Modules ##
+
+No modules.
+
+## Resources ##
+
+| Name | Type |
+|------|------|
+| [amazon-ami_amazon-ami.debian_bookworm](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
+| [amazon-ami_amazon-ami.debian_buster](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
+
+## Inputs ##
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| ami\_prefix | The prefix to use for the names of AMIs created. | `string` | `"cyhy"` | no |
+| ami\_regions | The list of AWS regions to copy the AMI to once it has been created. Example: ["us-east-1"] | `list(string)` | ```[ "us-east-1", "us-west-1", "us-west-2" ]``` | no |
+| build\_region | The region in which to retrieve the base AMI from and build the new AMI. | `string` | `"us-east-2"` | no |
+| is\_prerelease | The pre-release status to use for the tags applied to the created AMI. | `bool` | `false` | no |
+
+## Outputs ##
+
+No outputs.
+<!-- END_TF_DOCS -->
+
 ## License ##
 
 This project is in the worldwide [public domain](LICENSE.md).
