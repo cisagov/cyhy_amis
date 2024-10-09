@@ -4,16 +4,6 @@
 # You must provide a value for each of these parameters.
 # ------------------------------------------------------------------------------
 
-variable "assessment_data_filename" {
-  description = "The name of the assessment data JSON file that can be found in the assessment_data_s3_bucket."
-  type        = string
-}
-
-variable "assessment_data_import_lambda_s3_key" {
-  description = "The key (name) of the zip file for the assessment data import Lambda function inside the S3 bucket."
-  type        = string
-}
-
 variable "bod_lambda_function_bucket" {
   description = "The name of the S3 bucket where the Lambda function zip files reside.  Terraform cannot access buckets that are not in the provider's region, so the region name will be appended to the bucket name to obtain the actual bucket where the zips are stored.  So if we are working in region `us-west-1` and this variable has the value `buckethead`, then the zips will be looked for in the bucket `buckethead-us-west-1`."
   type        = string

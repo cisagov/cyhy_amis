@@ -628,8 +628,6 @@ terraform apply -var-file=<your_workspace>.tfvars
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | ami\_prefixes | An object whose keys are the types of Packer images (defined in the `packer/` directory in the root of the repository) and whose values are the prefix to use for the corresponding AMI. The default for all images is "cyhy". | `object({ bastion = string, dashboard = string, docker = string, mongo = string, nessus = string, nmap = string, reporter = string })` | ```{ "bastion": "cyhy", "dashboard": "cyhy", "docker": "cyhy", "mongo": "cyhy", "nessus": "cyhy", "nmap": "cyhy", "reporter": "cyhy" }``` | no |
-| assessment\_data\_filename | The name of the assessment data JSON file that can be found in the assessment\_data\_s3\_bucket. | `string` | n/a | yes |
-| assessment\_data\_import\_lambda\_s3\_key | The key (name) of the zip file for the assessment data import Lambda function inside the S3 bucket. | `string` | n/a | yes |
 | aws\_availability\_zone | The AWS availability zone to deploy into (e.g. a, b, c, etc.). | `string` | `"a"` | no |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
 | bod\_lambda\_function\_bucket | The name of the S3 bucket where the Lambda function zip files reside.  Terraform cannot access buckets that are not in the provider's region, so the region name will be appended to the bucket name to obtain the actual bucket where the zips are stored.  So if we are working in region `us-west-1` and this variable has the value `buckethead`, then the zips will be looked for in the bucket `buckethead-us-west-1`. | `string` | n/a | yes |
