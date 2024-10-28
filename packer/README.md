@@ -12,7 +12,7 @@ The following AMIs are available in this Packer template:
 | mongo | Provides the MongoDB database used by the Cyber Hygiene scanning system as well as running [cisagov/cyhy-commander]. |
 | nessus | A Nessus scanner for the Cyber Hygiene scanning system (referred to as a `vulnscanner`). |
 | nmap | An Nmap scanner for the Cyber Hygiene scanning system (referred to as a `portscanner`). |
-| reporter | Runs the daily notification and weekly report generation using [cisagov/cyhy-reports] |
+| reporter | Runs the daily notification and weekly report generation using [cisagov/cyhy-reports]. |
 
 ## Building ##
 
