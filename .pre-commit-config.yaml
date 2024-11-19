@@ -156,6 +156,11 @@ repos:
     hooks:
       - id: pip-audit
         args:
+          # We have to ignore this particular vulnerability in
+          # ansible-core>=2.11 as there is currently no fix.  See
+          # cisagov/cyhy_amis#842 for more details.
+          - --ignore-vuln
+          - GHSA-99w6-3xph-cx78
           # Add any pip requirements files to scan
           - --requirement
           - requirements-dev.txt
