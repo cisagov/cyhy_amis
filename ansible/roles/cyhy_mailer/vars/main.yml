@@ -1,6 +1,4 @@
 ---
-# CSA region-to-email YAML mapping
-cyhy_mailer_csa_email_yaml: "{{ lookup('aws_ssm', '/cyhy/csa_email_yaml') }}"
 # reporter mongo database
 cyhy_mailer_reporter_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}"
 # reporter mongo password
