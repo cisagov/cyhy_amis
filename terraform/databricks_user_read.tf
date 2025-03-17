@@ -16,7 +16,7 @@ resource "aws_iam_access_key" "databricks_user_read" {
   user = aws_iam_user.databricks_user_read.name
 }
 
-# Attach the databricks S3 bucket read policy
+# Attach the MOE S3 bucket read policy
 resource "aws_iam_user_policy_attachment" "moe_bucket_read_policy_attachment_databricks_user" {
   user       = aws_iam_user.databricks_user_read.name
   policy_arn = aws_iam_policy.moe_bucket_read.arn
