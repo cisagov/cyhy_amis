@@ -48,7 +48,7 @@ resource "aws_instance" "cyhy_reporter" {
   }
 
   root_block_device {
-    volume_size = 50
+    volume_size = 200
     volume_type = "gp3"
   }
 
@@ -92,7 +92,7 @@ resource "aws_instance" "cyhy_reporter" {
 resource "aws_ebs_volume" "cyhy_reporter_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type              = "io2"
-  size              = local.production_workspace ? 2000 : 5
+  size              = local.production_workspace ? 5000 : 5
   iops              = 100
   encrypted         = true
 
