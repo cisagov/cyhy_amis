@@ -10,7 +10,7 @@
 - name: Create the /home/cyhy_ops/.ssh directory
   ansible.builtin.file:
     group: cyhy_ops
-    mode: 0700
+    mode: u=rwx,g=,o=
     owner: cyhy_ops
     path: /home/cyhy_ops/.ssh
     state: directory
@@ -23,7 +23,7 @@
     create: true
     group: cyhy_ops
     line: "{{ lookup('aws_ssm', '/ssh/public_keys/' + item) }}"
-    mode: 0600
+    mode: u=rw,g=,o=
     owner: cyhy_ops
     path: /home/cyhy_ops/.ssh/authorized_keys
   loop: "{{ cyhy_ops_users }}"
