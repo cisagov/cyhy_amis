@@ -10,7 +10,7 @@
 - name: Create the /home/mgmt_ops/.ssh directory
   ansible.builtin.file:
     group: mgmt_ops
-    mode: 0700
+    mode: u=rwx,g=,o=
     owner: mgmt_ops
     path: /home/mgmt_ops/.ssh
     state: directory
@@ -23,7 +23,7 @@
     create: true
     group: mgmt_ops
     line: "{{ lookup('aws_ssm', '/ssh/public_keys/' + item) }}"
-    mode: 0600
+    mode: u=rw,g=,o=
     owner: mgmt_ops
     path: /home/mgmt_ops/.ssh/authorized_keys
   loop: "{{ mgmt_ops_users }}"
