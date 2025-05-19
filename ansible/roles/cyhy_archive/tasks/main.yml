@@ -4,7 +4,7 @@
 - name: Create the /var/lib/mongodb/cyhy_archives directory
   ansible.builtin.file:
     group: cyhy
-    mode: 0755
+    mode: u=rwx,g=rx,o=rx
     owner: cyhy
     path: /var/lib/mongodb/cyhy_archives
     state: directory
