@@ -4,7 +4,7 @@
     content: "{{ cyhy_feeds_config }}"
     dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
     group: cyhy
-    mode: 0444
+    mode: u=r,g=r,o=r
     owner: cyhy
 
 #
@@ -14,7 +14,7 @@
   ansible.builtin.template:
     dest: /var/cyhy/scripts/cyhy-feeds/aws_config
     group: cyhy
-    mode: 0440
+    mode: u=r,g=r,o=
     owner: cyhy
     src: aws_config.j2
 
@@ -26,7 +26,7 @@
   ansible.builtin.template:
     dest: "/var/cyhy/scripts/cyhy-feeds/{{ item.filename }}"
     group: cyhy
-    mode: 0660
+    mode: u=rw,g=rw,o=
     owner: cyhy
     src: mongodb_credentials.yml.j2
   loop:
