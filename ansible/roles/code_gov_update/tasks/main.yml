@@ -5,7 +5,7 @@
 - name: Create the secrets directory
   ansible.builtin.file:
     group: cyhy
-    mode: 0755
+    mode: u=rwx,g=rx,o=rx
     owner: cyhy
     path: /var/cyhy/code-gov-update/secrets
     state: directory
@@ -14,7 +14,7 @@
   ansible.builtin.template:
     dest: /var/cyhy/code-gov-update/secrets/scraper.json
     group: cyhy
-    mode: 0440
+    mode: u=r,g=r,o=
     owner: cyhy
     src: scraper.json.j2
 
@@ -22,7 +22,7 @@
   ansible.builtin.template:
     dest: /var/cyhy/code-gov-update/secrets/aws_config
     group: cyhy
-    mode: 0440
+    mode: u=r,g=r,o=
     owner: cyhy
     src: aws_config.j2
 
