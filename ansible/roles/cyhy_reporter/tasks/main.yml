@@ -6,7 +6,7 @@
   ansible.builtin.template:
     dest: /etc/cyhy/cyhy.conf
     group: cyhy
-    mode: 0660
+    mode: u=rw,g=rw,o=
     owner: cyhy
     src: cyhy.conf.j2
 
