@@ -2,7 +2,7 @@
 - name: Create the /var/cyhy/web directory
   ansible.builtin.file:
     group: cyhy
-    mode: 0750
+    mode: u=rwx,g=rx,o=
     owner: cyhy
     path: /var/cyhy/web
     state: directory
@@ -10,7 +10,7 @@
 - name: Create secret key file for webd
   ansible.builtin.file:
     group: cyhy
-    mode: 0664
+    mode: u=rw,g=rw,o=r
     owner: cyhy
     path: /var/cyhy/web/secret_key
     state: touch
@@ -30,7 +30,7 @@
   ansible.builtin.template:
     dest: /etc/cyhy/cyhy.conf
     group: cyhy
-    mode: 0660
+    mode: u=rw,g=rw,o=
     owner: cyhy
     src: cyhy.conf.j2
 
@@ -43,7 +43,7 @@
 - name: Copy webd service file
   ansible.builtin.copy:
     dest: /etc/systemd/system/ncats-webd.service
-    mode: 0644
+    mode: u=rw,g=r,o=r
     src: ncats-webd.service
 
 - name: Start webd service
@@ -54,7 +54,7 @@
 - name: Copy webui service file
   ansible.builtin.copy:
     dest: /etc/systemd/system/ncats-webui.service
-    mode: 0644
+    mode: u=rw,g=r,o=r
     src: ncats-webui.service
 
 - name: Start webui service

@@ -61,7 +61,7 @@
 - name: Copy mongo configuration file
   ansible.builtin.template:
     dest: /etc/mongod.conf
-    mode: 0644
+    mode: u=rw,g=r,o=r
     src: mongod.conf
 
 - name: Restart mongod service to use new configuration

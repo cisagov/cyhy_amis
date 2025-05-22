@@ -98,20 +98,20 @@
   ansible.builtin.template:
     dest: /etc/cyhy/nessus_api.yml
     group: cyhy
-    mode: 0640
+    mode: u=rw,g=r,o=
     owner: cyhy
     src: nessus_api.yml.j2
 
 - name: Copy the nessus_base.py Python file for configuring Nessus
   ansible.builtin.copy:
     dest: /tmp/nessus_base.py
-    mode: 0644
+    mode: u=rw,g=r,o=r
     src: nessus_base.py
 
 - name: Copy base Nessus scan policy to instance tmp
   ansible.builtin.template:
     dest: /tmp/cyhy-base-nessus8-policy.xml
-    mode: 0644
+    mode: u=rw,g=r,o=r
     src: cyhy-base-nessus8-policy.xml.j2
 
 - name: Wait for Nessus port to be open

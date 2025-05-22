@@ -10,7 +10,7 @@
 - name: Create the secrets directory for cyhy-mailer
   ansible.builtin.file:
     group: cyhy
-    mode: 0755
+    mode: u=rwx,g=rx,o=rx
     owner: cyhy
     path: /var/cyhy/cyhy-mailer/secrets
     state: directory
@@ -19,7 +19,7 @@
   ansible.builtin.template:
     dest: /var/cyhy/cyhy-mailer/secrets/database_creds.yml
     group: cyhy
-    mode: 0444
+    mode: u=r,g=r,o=r
     owner: cyhy
     src: database_creds.yml.j2
 
@@ -27,7 +27,7 @@
   ansible.builtin.template:
     dest: /var/cyhy/cyhy-mailer/secrets/aws_config
     group: cyhy
-    mode: 0444
+    mode: u=r,g=r,o=r
     owner: cyhy
     src: aws_config.j2
 
@@ -40,7 +40,7 @@
 - name: Create a symlink for the docker compose override file
   ansible.builtin.file:
     group: cyhy
-    mode: 0664
+    mode: u=rw,g=rw,o=r
     owner: cyhy
     path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
     src: /var/cyhy/cyhy-mailer/{{ cyhy_mailer_docker_compose_override_file_for_mailer }}
