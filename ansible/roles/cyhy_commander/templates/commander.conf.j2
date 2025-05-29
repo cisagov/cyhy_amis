@@ -1,6 +1,15 @@
 [DEFAULT]
 database-uri = mongodb://{{ cyhy_commander_commander_user }}:{{ cyhy_commander_commander_pw }}@database1.cyhy:27017/{{ cyhy_commander_commander_db }}
 debug-logging = true
+# The default owner owns all "ownerless" HostDocs.  This owner's request
+# document is automatically created by the commander.  It does not have a valid
+# list of networks (IP addresses), but it does have scan windows and concurrency
+# settings.  Those "ownerless" HostDocs are created when a CyHy entity has a
+# hostname that resolves to IP addresses that are not already owned by a CyHy
+# entity.  This is how we account for cases where an entity owns a hostname,
+# but not necessarily the IP addresses that it resolves to.
+default-owner = CYHY
+default-scheduler = PERSISTENT1
 default-section = production
 jobs-per-nessus-host = 16
 jobs-per-nmap-host = 8
