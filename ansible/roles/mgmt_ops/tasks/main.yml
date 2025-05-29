@@ -22,7 +22,7 @@
   ansible.builtin.lineinfile:
     create: true
     group: mgmt_ops
-    line: "{{ lookup('aws_ssm', '/ssh/public_keys/' + item) }}"
+    line: "{{ lookup('amazon.aws.aws_ssm', '/ssh/public_keys/' + item) }}"
     mode: u=rw,g=,o=
     owner: mgmt_ops
     path: /home/mgmt_ops/.ssh/authorized_keys

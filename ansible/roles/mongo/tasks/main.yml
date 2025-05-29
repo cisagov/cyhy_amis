@@ -41,13 +41,13 @@
 
 - name: Update other users (authenticate as admin)
   community.mongodb.mongodb_user:
-    database: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/database') }}"
+    database: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/' + item + '/database') }}"
     login_database: "{{ mongo_admin_db }}"
     login_password: "{{ mongo_admin_pw }}"
     login_user: "{{ mongo_admin_user }}"
-    name: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/user') }}"
-    password: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/password') }}"
-    roles: "{{ lookup('aws_ssm', '/cyhy/mongo/users/' + item + '/roles').split(',') }}"
+    name: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/' + item + '/user') }}"
+    password: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/' + item + '/password') }}"
+    roles: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/' + item + '/roles').split(',') }}"
     state: present
   # Loop over all the users *except* for admin
   loop: "{{ mongo_non_admin_users }}"
