@@ -1,10 +1,10 @@
-# Cyber Hygiene Packer templates #
+# Cyber Hygiene Packer template #
 
-## AMIs ##
+## Amazon Machine Images (AMIs) ##
 
 The following AMIs are available in this Packer template:
 
-| Template name | Description |
+| AMI name | Description |
 | ------------- | ----------- |
 | bastion | Provides a jump box to a private VPC. |
 | dashboard | The Cyber Hygiene dashboard application. |
