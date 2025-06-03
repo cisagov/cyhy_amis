@@ -1,7 +1,7 @@
 ---
 # reporter mongo database
-cyhy_mailer_reporter_db: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/database') }}"
+cyhy_mailer_reporter_db: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/reporter/database') }}"
 # reporter mongo password
-cyhy_mailer_reporter_pw: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/password') }}"
+cyhy_mailer_reporter_pw: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/reporter/password') }}"
 # reporter mongo username
-cyhy_mailer_reporter_user: "{{ lookup('aws_ssm', '/cyhy/mongo/users/reporter/user') }}"
+cyhy_mailer_reporter_user: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/reporter/user') }}"

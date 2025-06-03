@@ -22,7 +22,7 @@
   ansible.builtin.lineinfile:
     create: true
     group: cyhy_ops
-    line: "{{ lookup('aws_ssm', '/ssh/public_keys/' + item) }}"
+    line: "{{ lookup('amazon.aws.aws_ssm', '/ssh/public_keys/' + item) }}"
     mode: u=rw,g=,o=
     owner: cyhy_ops
     path: /home/cyhy_ops/.ssh/authorized_keys
