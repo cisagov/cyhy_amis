@@ -16,13 +16,24 @@ The following AMIs are available in this Packer template:
 
 ## Building ##
 
-Build an AMI with:
+Install Ansible requirements and initialize the Packer template:
 
 ```console
 cd packer
 ansible-galaxy install --role-file ansible/requirements.yml
 packer init .
+```
+
+Once that is completed you can build a specific AMI:
+
+```console
 packer build -only amazon-ebs.<target AMI> .
+```
+
+or you can build all of the AMIs in the template:
+
+```console
+packer build .
 ```
 
 Also note that
