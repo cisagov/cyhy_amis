@@ -35,6 +35,7 @@ build {
   sources = ["source.amazon-ebs.nmap"]
 
   provisioner "ansible" {
+    galaxy_file   = "ansible/requirements.yml"
     groups        = ["nmap"]
     playbook_file = "ansible/upgrade.yml"
     use_proxy     = false

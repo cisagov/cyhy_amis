@@ -35,6 +35,7 @@ build {
   sources = ["source.amazon-ebs.docker"]
 
   provisioner "ansible" {
+    galaxy_file   = "ansible/requirements.yml"
     groups        = ["docker"]
     playbook_file = "ansible/upgrade.yml"
     use_proxy     = false

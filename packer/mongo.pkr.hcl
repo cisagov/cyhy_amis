@@ -35,6 +35,7 @@ build {
   sources = ["source.amazon-ebs.mongo"]
 
   provisioner "ansible" {
+    galaxy_file   = "ansible/requirements.yml"
     groups        = ["mongo"]
     playbook_file = "ansible/upgrade.yml"
     use_proxy     = false

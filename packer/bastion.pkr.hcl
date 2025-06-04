@@ -35,6 +35,7 @@ build {
   sources = ["source.amazon-ebs.bastion"]
 
   provisioner "ansible" {
+    galaxy_file   = "ansible/requirements.yml"
     groups        = ["bastion"]
     playbook_file = "ansible/upgrade.yml"
     use_proxy     = false

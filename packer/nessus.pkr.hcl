@@ -35,6 +35,7 @@ build {
   sources = ["source.amazon-ebs.nessus"]
 
   provisioner "ansible" {
+    galaxy_file   = "ansible/requirements.yml"
     groups        = ["nessus"]
     playbook_file = "ansible/upgrade.yml"
     use_proxy     = false

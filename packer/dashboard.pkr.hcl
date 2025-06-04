@@ -35,6 +35,7 @@ build {
   sources = ["source.amazon-ebs.dashboard"]
 
   provisioner "ansible" {
+    galaxy_file   = "ansible/requirements.yml"
     groups        = ["dashboard"]
     playbook_file = "ansible/upgrade.yml"
     use_proxy     = false
