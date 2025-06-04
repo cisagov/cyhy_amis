@@ -10,20 +10,21 @@ The AMIs are built like so:
 ```console
 cd packer
 ansible-galaxy install --role-file ansible/requirements.yml
-packer build bastion.json
-packer build dashboard.json
-packer build docker.json
-packer build mongo.json
-packer build nessus.json
-packer build nmap.json
-packer build reporter.json
+packer init .
+packer build .
 ```
 
 If building a non-default image (for testing as an example) the prefix for the
 created AMI can be changed from the default value of `cyhy` like so:
 
 ```console
-packer build -var ami_prefix=testing bastion.json
+packer build -var ami_prefix=testing -only amazon-ebs.bastion .
+```
+
+You can also use a `.pkrvars.hcl` file to set any variables.  For example:
+
+```hcl
+ami_prefix = "testing"
 ```
 
 Also note that
