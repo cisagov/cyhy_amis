@@ -6,7 +6,7 @@ The following AMIs are available in this Packer template:
 
 | AMI name | Description |
 | ------------- | ----------- |
-| bastion | Provides a jump box to a private VPC. |
+| bastion | Provides a jump box to a private VPC. This is available in both arm64 and x86_64 versions.|
 | dashboard | The Cyber Hygiene dashboard application. |
 | docker | Runs Docker configurations to perform BOD 18-01 and 20-01 scanning as well as generate the DHS [code.gov](https://code.gov) inventory. |
 | mongo | Provides the MongoDB database used by the Cyber Hygiene scanning system as well as running [cisagov/cyhy-commander]. |
@@ -27,6 +27,11 @@ packer init .
 ```
 
 Once that is completed you can build a specific AMI:
+
+> [!NOTE]
+> If you are building an AMI that is available for more than one architecture
+> (e.g., `bastion`), you must append the architecture if building a specific
+> AMI (e.g., `bastion_arm64`).
 
 ```console
 packer build -only amazon-ebs.<target AMI> .
