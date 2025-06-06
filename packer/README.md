@@ -89,6 +89,8 @@ No modules.
 | ami\_prefix | The prefix to use for the names of AMIs created. | `string` | `"cyhy"` | no |
 | ami\_regions | The list of AWS regions to copy the AMI to once it has been created. Example: ["us-east-1"] | `list(string)` | ```[ "us-east-1", "us-west-1", "us-west-2" ]``` | no |
 | build\_region | The region in which to retrieve the base AMI from and build the new AMI. | `string` | `"us-east-2"` | no |
+| force\_install\_ansible\_requirements | Indicate if the Ansible requirements should be force installed. | `bool` | `false` | no |
+| force\_install\_ansible\_requirements\_with\_dependencies | Indicate if the Ansible requirements *and* their dependencies should be force installed. | `bool` | `false` | no |
 | is\_prerelease | The pre-release status to use for the tags applied to the created AMI. | `bool` | `false` | no |
 
 ## Outputs ##

@@ -31,6 +31,18 @@ variable "build_region" {
   type        = string
 }
 
+variable "force_install_ansible_requirements" {
+  default     = false
+  description = "Indicate if the Ansible requirements should be force installed."
+  type        = bool
+}
+
+variable "force_install_ansible_requirements_with_dependencies" {
+  default     = false
+  description = "Indicate if the Ansible requirements *and* their dependencies should be force installed."
+  type        = bool
+}
+
 variable "is_prerelease" {
   default     = false
   description = "The pre-release status to use for the tags applied to the created AMI."
