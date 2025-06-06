@@ -14,7 +14,7 @@ The following AMIs are available in this Packer template:
 | nmap | An Nmap scanner for the Cyber Hygiene scanning system (referred to as a `portscanner`). |
 | reporter | Runs the daily notification and weekly report generation using [cisagov/cyhy-reports]. |
 
-## Building ##
+## Building the AMIs ##
 
 Install Ansible requirements and initialize the Packer template:
 
@@ -34,6 +34,19 @@ or you can build all of the AMIs in the template:
 
 ```console
 packer build .
+```
+
+If building a non-default image (for testing as an example) the prefix for the
+created AMI can be changed from the default value of `cyhy` like so:
+
+```console
+packer build -var ami_prefix=testing -only amazon-ebs.bastion .
+```
+
+You can also use a `.pkrvars.hcl` file to set any variables.  For example:
+
+```hcl
+ami_prefix = "testing"
 ```
 
 Also note that
