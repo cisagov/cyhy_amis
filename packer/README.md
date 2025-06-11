@@ -16,11 +16,13 @@ The following AMIs are available in this Packer template:
 
 ## Building the AMIs ##
 
-Install Ansible requirements and initialize the Packer template:
+> [!NOTE]
+> Ansible requirements should be installed automatically when you build an image.
+
+Initialize the Packer template:
 
 ```console
 cd packer
-ansible-galaxy install --role-file ansible/requirements.yml
 packer init .
 ```
 
@@ -49,16 +51,12 @@ You can also use a `.pkrvars.hcl` file to set any variables.  For example:
 ami_prefix = "testing"
 ```
 
-Also note that
-
-```console
-ansible-galaxy install --force --role-file ansible/requirements.yml
-```
-
-will update the roles that are being pulled from external sources.  This
-may be required, for example, if a role that is being pulled from a
-GitHub repository has been updated and you want the new changes.  By
-default `ansible-galaxy install` *will not* upgrade roles.
+Also note that if you need to update the Ansible roles that are used by the
+Packer template, you can adjust the `force_install_ansible_requirements` and
+`force_install_ansible_requirements_with_dependencies` variables in the same
+manner as the `ami_prefix` variable above. This may be required, for example,
+if a role that is being pulled from a GitHub repository has been updated and
+you want the new changes. This will not occur by default when you build an AMI.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements ##
