@@ -35,10 +35,13 @@ build {
   sources = ["source.amazon-ebs.bastion"]
 
   provisioner "ansible" {
-    groups        = ["bastion"]
-    playbook_file = "ansible/upgrade.yml"
-    use_proxy     = false
-    use_sftp      = true
+    galaxy_file            = "ansible/requirements.yml"
+    galaxy_force_install   = var.force_install_ansible_requirements
+    galaxy_force_with_deps = var.force_install_ansible_requirements_with_dependencies
+    groups                 = ["bastion"]
+    playbook_file          = "ansible/upgrade.yml"
+    use_proxy              = false
+    use_sftp               = true
   }
 
   provisioner "ansible" {
