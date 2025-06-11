@@ -5,38 +5,8 @@
 
 ## Building the AMIs ##
 
-The AMIs are built like so:
-
-```console
-cd packer
-ansible-galaxy install --role-file ansible/requirements.yml
-packer init .
-packer build .
-```
-
-If building a non-default AMI (e.g., for testing), the prefix for the
-created AMI can be changed from the default value of `cyhy` like so:
-
-```console
-packer build -var ami_prefix=testing -only amazon-ebs.bastion .
-```
-
-You can also use a `.pkrvars.hcl` file to set any variables.  For example:
-
-```hcl
-ami_prefix = "testing"
-```
-
-Also note that
-
-```console
-ansible-galaxy install --force --role-file ansible/requirements.yml
-```
-
-will update the roles that are being pulled from external sources.  This
-may be required, for example, if a role that is being pulled from a
-GitHub repository has been updated and you want the new changes.  By
-default `ansible-galaxy install` *will not* upgrade roles.
+Instructions for building the AMIs defined in this project can be found in the
+[Packer template's README](packer/README.md).
 
 ## Building the Terraform-based infrastructure ##
 
