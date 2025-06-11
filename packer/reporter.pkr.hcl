@@ -32,6 +32,7 @@ source "amazon-ebs" "reporter" {
 }
 
 build {
+  name    = "reporter"
   sources = ["source.amazon-ebs.reporter"]
 
   provisioner "ansible" {

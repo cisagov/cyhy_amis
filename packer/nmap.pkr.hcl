@@ -32,6 +32,7 @@ source "amazon-ebs" "nmap" {
 }
 
 build {
+  name    = "nmap"
   sources = ["source.amazon-ebs.nmap"]
 
   provisioner "ansible" {

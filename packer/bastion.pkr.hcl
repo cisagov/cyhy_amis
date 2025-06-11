@@ -32,6 +32,7 @@ source "amazon-ebs" "bastion" {
 }
 
 build {
+  name    = "bastion"
   sources = ["source.amazon-ebs.bastion"]
 
   provisioner "ansible" {

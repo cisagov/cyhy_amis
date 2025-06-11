@@ -32,6 +32,7 @@ source "amazon-ebs" "dashboard" {
 }
 
 build {
+  name    = "dashboard"
   sources = ["source.amazon-ebs.dashboard"]
 
   provisioner "ansible" {

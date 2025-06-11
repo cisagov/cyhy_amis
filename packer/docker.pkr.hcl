@@ -32,6 +32,7 @@ source "amazon-ebs" "docker" {
 }
 
 build {
+  name    = "docker"
   sources = ["source.amazon-ebs.docker"]
 
   provisioner "ansible" {

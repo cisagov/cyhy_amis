@@ -32,6 +32,7 @@ source "amazon-ebs" "nessus" {
 }
 
 build {
+  name    = "nessus"
   sources = ["source.amazon-ebs.nessus"]
 
   provisioner "ansible" {

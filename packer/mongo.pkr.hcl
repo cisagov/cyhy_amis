@@ -32,6 +32,7 @@ source "amazon-ebs" "mongo" {
 }
 
 build {
+  name    = "mongo"
   sources = ["source.amazon-ebs.mongo"]
 
   provisioner "ansible" {
