@@ -4,15 +4,15 @@
 
 The following AMIs are available in this Packer template:
 
-| AMI name | Description |
-| ------------- | ----------- |
-| bastion | Provides a jump box to a private VPC. This is available in both arm64 and x86_64 versions.|
-| dashboard | The Cyber Hygiene dashboard application. |
-| docker | Runs Docker configurations to perform BOD 18-01 and 20-01 scanning as well as generate the DHS [code.gov](https://code.gov) inventory. |
-| mongo | Provides the MongoDB database used by the Cyber Hygiene scanning system as well as running [cisagov/cyhy-commander]. |
-| nessus | A Nessus scanner for the Cyber Hygiene scanning system (referred to as a `vulnscanner`). |
-| nmap | An Nmap scanner for the Cyber Hygiene scanning system (referred to as a `portscanner`). |
-| reporter | Runs the daily notification and weekly report generation using [cisagov/cyhy-reports]. |
+| AMI name | Description | x86_64 | arm64 |
+| -------- | ----------- | ------ | ----- |
+| bastion | Provides a jump box to a private VPC. | ✔ | ✔ |
+| dashboard | The Cyber Hygiene dashboard application. | ✔ | ❌ |
+| docker | Runs Docker configurations to perform BOD 18-01 and 20-01 scanning as well as generate the DHS [code.gov](https://code.gov) inventory. | ✔ | ❌ |
+| mongo | Provides the MongoDB database used by the Cyber Hygiene scanning system as well as running [cisagov/cyhy-commander]. | ✔ | ❌ |
+| nessus | A Nessus scanner for the Cyber Hygiene scanning system (referred to as a `vulnscanner`). | ✔ | ❌ |
+| nmap | An Nmap scanner for the Cyber Hygiene scanning system (referred to as a `portscanner`). | ✔ | ❌ |
+| reporter | Runs the daily notification and weekly report generation using [cisagov/cyhy-reports]. | ✔ | ❌ |
 
 ## Building the AMIs ##
 
@@ -28,13 +28,8 @@ packer init .
 
 Once that is completed you can build a specific AMI:
 
-> [!NOTE]
-> If you are building an AMI that is available for more than one architecture
-> (e.g., `bastion`), you must append the architecture if building a specific
-> AMI (e.g., `bastion_arm64`).
-
 ```console
-packer build -only amazon-ebs.<target AMI> .
+packer build -only amazon-ebs.<target AMI>_<target architecture> .
 ```
 
 or you can build all of the AMIs in the template:
@@ -47,7 +42,7 @@ If building a non-default AMI (e.g., for testing), the prefix for the
 created AMI can be changed from the default value of `cyhy` like so:
 
 ```console
-packer build -var ami_prefix=testing -only amazon-ebs.bastion .
+packer build -var ami_prefix=testing -only amazon-ebs.bastion_x86_64 .
 ```
 
 You can also use a `.pkrvars.hcl` file to set any variables.  For example:
