@@ -84,7 +84,7 @@ No modules.
 |------|------|
 | [amazon-ami_amazon-ami.debian_bookworm_arm64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
 | [amazon-ami_amazon-ami.debian_bookworm_x86_64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
-| [amazon-ami_amazon-ami.debian_buster](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
+| [amazon-ami_amazon-ami.debian_buster_x86_64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
 
 ## Inputs ##
 

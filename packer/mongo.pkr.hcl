@@ -17,12 +17,12 @@ source "amazon-ebs" "mongo" {
     volume_type           = "gp3"
   }
   region       = var.build_region
-  source_ami   = data.amazon-ami.debian_buster.id
+  source_ami   = data.amazon-ami.debian_buster_x86_64.id
   ssh_username = "admin"
   tags = {
     Application   = "Cyber Hygiene"
     Architecture  = "x86_64"
-    Base_AMI_Name = data.amazon-ami.debian_buster.name
+    Base_AMI_Name = data.amazon-ami.debian_buster_x86_64.name
     OS_Version    = "Debian Buster"
     Pre_Release   = var.is_prerelease
     Release       = "Latest"
