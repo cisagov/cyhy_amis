@@ -1,4 +1,3 @@
-
 build {
   sources = ["source.amazon-ebs.nessus_x86_64"]
 
