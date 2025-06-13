@@ -31,6 +31,22 @@ variable "build_region" {
   type        = string
 }
 
+variable "cyhy_user_information" {
+  default = {
+    home_directory = "/var/cyhy"
+    ssh_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOreUDnms12MPI0gh7K+YGaESYgC2TY1zA+kSK/g+n5+ cyhy"
+    user_id        = "2048"
+    username       = "cyhy"
+  }
+  description = "The user information for the Cyber Hygiene user."
+  type = object({
+    home_directory = string
+    ssh_public_key = string
+    user_id        = string
+    username       = string
+  })
+}
+
 variable "force_install_ansible_requirements" {
   default     = false
   description = "Indicate if the Ansible requirements should be force installed."

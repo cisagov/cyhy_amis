@@ -20,9 +20,19 @@ build {
 
   provisioner "ansible" {
     ansible_env_vars = ["AWS_DEFAULT_REGION=${var.build_region}"]
-    groups           = ["cyhy_reporter"]
-    playbook_file    = "ansible/playbook.yml"
-    use_proxy        = false
-    use_sftp         = true
+    # Create the list of variables to pass to Ansible. We create a list of
+    # arguments with preceding `--extra-vars` and then flatten it to ensure
+    # that it is a single list of arguments.
+    extra_arguments = flatten(setproduct(["--extra-vars"], [
+      "cyhy_user_home_directory=${var.cyhy_user_information.home_directory}",
+      # Since the SSH public key has spaces in it, we need to ensure it is quoted.
+      format("cyhy_user_ssh_public_key=%q", var.cyhy_user_information.ssh_public_key),
+      "cyhy_user_username=${var.cyhy_user_information.username}",
+      "cyhy_user_uid=${var.cyhy_user_information.user_id}",
+    ]))
+    groups        = ["cyhy_reporter"]
+    playbook_file = "ansible/playbook.yml"
+    use_proxy     = false
+    use_sftp      = true
   }
 }

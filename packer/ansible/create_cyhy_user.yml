@@ -21,7 +21,5 @@
 
     - name: Add the SSH public key as an authorized key
       ansible.posix.authorized_key:
-        key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOreUDnms12MPI0gh7K+YGaESYgC2TY1zA+kSK/g+n5+ cyhy
+        key: "{{ cyhy_user_ssh_public_key }}"
         user: "{{ cyhy_user_username }}"
-  vars_files:
-    - vars/cyhy_user.yml
