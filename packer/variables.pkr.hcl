@@ -64,3 +64,15 @@ variable "is_prerelease" {
   description = "The pre-release status to use for the tags applied to the created AMI."
   type        = bool
 }
+
+variable "maxmind_ssm_parameter_names" {
+  default = {
+    "account_id"  = "/cyhy/core/geoip/account_id"
+    "license_key" = "/cyhy/core/geoip/license_key"
+  }
+  description = "The SSM parameter store names that contain the MaxMind account ID and license key."
+  type = object({
+    account_id  = string
+    license_key = string
+  })
+}

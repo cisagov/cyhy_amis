@@ -68,6 +68,7 @@ No requirements.
 | Name | Version |
 |------|---------|
 | amazon-ami | n/a |
+| amazon-parameterstore | n/a |
 
 ## Modules ##
 
@@ -80,6 +81,8 @@ No modules.
 | [amazon-ami_amazon-ami.debian_bookworm_arm64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
 | [amazon-ami_amazon-ami.debian_bookworm_x86_64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
 | [amazon-ami_amazon-ami.debian_buster_x86_64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
+| [amazon-parameterstore_amazon-parameterstore.maxmind_account_id](https://registry.terraform.io/providers/hashicorp/amazon-parameterstore/latest/docs/data-sources/amazon-parameterstore) | data source |
+| [amazon-parameterstore_amazon-parameterstore.maxmind_license_key](https://registry.terraform.io/providers/hashicorp/amazon-parameterstore/latest/docs/data-sources/amazon-parameterstore) | data source |
 
 ## Inputs ##
 
@@ -92,6 +95,7 @@ No modules.
 | force\_install\_ansible\_requirements | Indicate if the Ansible requirements should be force installed. | `bool` | `false` | no |
 | force\_install\_ansible\_requirements\_with\_dependencies | Indicate if the Ansible requirements *and* their dependencies should be force installed. | `bool` | `false` | no |
 | is\_prerelease | The pre-release status to use for the tags applied to the created AMI. | `bool` | `false` | no |
+| maxmind\_ssm\_parameter\_names | The SSM parameter store names that contain the MaxMind account ID and license key. | ```object({ account_id = string license_key = string })``` | ```{ "account_id": "/cyhy/core/geoip/account_id", "license_key": "/cyhy/core/geoip/license_key" }``` | no |
 
 ## Outputs ##
 

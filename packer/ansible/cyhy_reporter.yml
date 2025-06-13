@@ -12,5 +12,3 @@
         cyhy_reports_texmf_buffer_size: 100000000
         cyhy_reports_texmf_main_memory: 10000000
     - cyhy_mailer
-  vars_files:
-    - vars/maxmind_information.yml

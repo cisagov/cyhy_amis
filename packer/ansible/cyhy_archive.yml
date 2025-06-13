@@ -8,5 +8,3 @@
       vars:
         cyhy_archive_maxmind_account_id: "{{ maxmind_account_id }}"
         cyhy_archive_maxmind_license_key: "{{ maxmind_license_key }}"
-  vars_files:
-    - vars/maxmind_information.yml
