@@ -1,4 +1,4 @@
-data "amazon-ami" "debian_buster" {
+data "amazon-ami" "debian_buster_x86_64" {
   filters = {
     name                = "debian-10-amd64-*"
     root-device-type    = "ebs"
