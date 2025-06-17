@@ -11,7 +11,7 @@ The following AMIs are available in this Packer template:
 | docker | Runs Docker configurations to perform BOD 18-01 and 20-01 scanning as well as generate the DHS [code.gov](https://code.gov) inventory. | ✔ | ❌ |
 | mongo | Provides the MongoDB database used by the Cyber Hygiene scanning system as well as running [cisagov/cyhy-commander]. | ✔ | ❌ |
 | nessus | A Nessus scanner for the Cyber Hygiene scanning system (referred to as a `vulnscanner`). | ✔ | ❌ |
-| nmap | An Nmap scanner for the Cyber Hygiene scanning system (referred to as a `portscanner`). | ✔ | ❌ |
+| nmap | An Nmap scanner for the Cyber Hygiene scanning system (referred to as a `portscanner`). | ✔ | ✔ |
 | reporter | Runs the daily notification and weekly report generation using [cisagov/cyhy-reports]. | ✔ | ❌ |
 
 ## Building the AMIs ##

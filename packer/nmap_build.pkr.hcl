@@ -1,5 +1,8 @@
 build {
-  sources = ["source.amazon-ebs.nmap_x86_64"]
+  sources = [
+    "source.amazon-ebs.nmap_arm64",
+    "source.amazon-ebs.nmap_x86_64",
+  ]
 
   provisioner "ansible" {
     galaxy_file            = "ansible/requirements.yml"
