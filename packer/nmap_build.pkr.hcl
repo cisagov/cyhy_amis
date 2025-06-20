@@ -25,7 +25,13 @@ build {
     ansible_env_vars = ["AWS_DEFAULT_REGION=${var.build_region}"]
     # Create the list of variables to pass to Ansible. We create a list of
     # arguments with preceding `--extra-vars` and then flatten it to ensure
-    # that it is a single list of arguments.
+    # that it is a single list of arguments. This will result in a list like:
+    # [
+    #   "--extra-vars",
+    #   "foo=bar",
+    #   "--extra-vars",
+    #   "ham=eggs",
+    # ]
     extra_arguments = flatten(setproduct(["--extra-vars"], [
       "cyhy_user_home_directory=${var.cyhy_user_information.home_directory}",
       # Since the SSH public key has spaces in it, we need to ensure it is quoted.
