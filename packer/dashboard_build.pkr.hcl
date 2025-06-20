@@ -29,8 +29,8 @@ build {
       format("cyhy_user_ssh_public_key=%q", var.cyhy_user_information.ssh_public_key),
       "cyhy_user_username=${var.cyhy_user_information.username}",
       "cyhy_user_uid=${var.cyhy_user_information.user_id}",
-      "maxmind_account_id=${data.amazon-parameterstore.maxmind_account_id.value}",
-      "maxmind_license_key=${data.amazon-parameterstore.maxmind_license_key.value}",
+      "maxmind_account_id_secret=${data.amazon-parameterstore.maxmind_account_id.value}",
+      "maxmind_license_key_secret=${data.amazon-parameterstore.maxmind_license_key.value}",
     ]))
     groups        = ["cyhy_dashboard"]
     playbook_file = "ansible/playbook.yml"
