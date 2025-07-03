@@ -684,6 +684,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
 | trusted\_ingress\_networks\_ipv4 | IPv4 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "0.0.0.0/0" ]``` | no |
 | trusted\_ingress\_networks\_ipv6 | IPv6 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "::/0" ]``` | no |
+| use\_arm64\_instances | An object whose keys are the types of EC2 instances and whose values are booleans indicating whether or not to use ARM64 instances for that type. | ```object({ bastion = bool, })``` | ```{ "bastion": false }``` | no |
 
 ## Outputs ##
 

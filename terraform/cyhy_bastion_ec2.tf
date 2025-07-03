@@ -1,7 +1,7 @@
 # The bastion EC2 instance
 resource "aws_instance" "cyhy_bastion" {
   ami               = data.aws_ami.bastion.id
-  instance_type     = local.production_workspace ? "c5n.large" : "t3.small"
+  instance_type     = local.production_workspace ? (var.use_arm64_instances.bastion ? "c6gn.large" : "c5n.large") : (var.use_arm64_instances.bastion ? "t4g.small" : "t3.small")
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # This is the public subnet

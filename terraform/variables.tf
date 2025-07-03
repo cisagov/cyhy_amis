@@ -413,3 +413,14 @@ variable "trusted_ingress_networks_ipv6" {
   nullable    = false
   type        = list(string)
 }
+
+variable "use_arm64_instances" {
+  default = {
+    bastion = false,
+  }
+  description = "An object whose keys are the types of EC2 instances and whose values are booleans indicating whether or not to use ARM64 instances for that type."
+  nullable    = false
+  type = object({
+    bastion = bool,
+  })
+}
