@@ -9,5 +9,6 @@ output:
     <!-- END_TF_DOCS -->
 settings:
   anchor: false
+  atx-closed: true
   html: false
   lockfile: false
