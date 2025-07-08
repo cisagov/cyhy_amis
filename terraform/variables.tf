@@ -94,7 +94,15 @@ variable "ami_prefixes" {
   }
   description = "An object whose keys are the types of Packer images (defined in the `packer/` directory in the root of the repository) and whose values are the prefix to use for the corresponding AMI. The default for all images is \"cyhy\"."
   nullable    = false
-  type        = object({ bastion = string, dashboard = string, docker = string, mongo = string, nessus = string, nmap = string, reporter = string })
+  type = object({
+    bastion   = string,
+    dashboard = string,
+    docker    = string,
+    mongo     = string,
+    nessus    = string,
+    nmap      = string,
+    reporter  = string,
+  })
 }
 
 variable "aws_availability_zone" {
@@ -115,7 +123,10 @@ variable "bod_lambda_functions" {
   default     = {}
   description = "A map of information for each BOD 18-01 Lambda. The keys are the scan types and the values are objects that contain the Lambda's name and the key (name) for the corresponding deployment package in the BOD Lambda S3 bucket. Example: `{ pshtt = { lambda_file = \"pshtt.zip\", lambda_name = \"task_pshtt\" }}`"
   nullable    = false
-  type        = map(object({ lambda_file = string, lambda_name = string }))
+  type = map(object({
+    lambda_file = string,
+    lambda_name = string,
+  }))
 }
 
 variable "bod_nat_gateway_eip" {
@@ -142,7 +153,11 @@ variable "commander_config" {
   }
   description = "Configuration options for the CyHy commander's configuration file."
   nullable    = false
-  type        = object({ jobs_per_nessus_host = number, jobs_per_nmap_host = number, next_scan_limit = number })
+  type = object({
+    jobs_per_nessus_host = number,
+    jobs_per_nmap_host   = number,
+    next_scan_limit      = number,
+  })
 }
 
 variable "create_bod_flow_logs" {
@@ -196,7 +211,12 @@ variable "cyhy_user_info" {
   }
   description = "User information for the CyHy user created in our AMIs. Please see `packer/ansible/vars/cyhy_user.yml` for the configuration used when AMIs are built."
   nullable    = false
-  type        = object({ gid = number, home = string, name = string, uid = number })
+  type = object({
+    gid  = number,
+    home = string,
+    name = string,
+    uid  = number,
+  })
 }
 
 variable "cyhy_vulnscan_first_elastic_ip_offset" {
