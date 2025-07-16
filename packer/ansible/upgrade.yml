@@ -4,6 +4,13 @@
   become: true
   become_method: ansible.builtin.sudo
   tasks:
+    - name: Use the Debian Archive on Buster
+      when:
+        - ansible_distribution == "Debian"
+        - ansible_distribution_release == "buster"
+      ansible.builtin.include_role:
+        name: debian_archive
+
     - name: Upgrade system packages
       ansible.builtin.include_role:
         name: upgrade

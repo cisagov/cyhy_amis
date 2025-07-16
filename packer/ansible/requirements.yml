@@ -34,6 +34,8 @@ roles:
     src: https://github.com/cisagov/ansible-role-cyhy-reports
   - name: cyhy_runner
     src: https://github.com/cisagov/ansible-role-cyhy-runner
+  - name: debian_archive
+    src: https://github.com/cisagov/ansible-role-debian-archive
   - name: dev_ssh_access
     src: https://github.com/cisagov/ansible-role-dev-ssh-access
   - name: disable_numa
