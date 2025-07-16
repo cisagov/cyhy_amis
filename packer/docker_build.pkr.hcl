@@ -29,13 +29,9 @@ build {
     #   "--extra-vars",
     #   "ham=eggs",
     # ]
-    extra_arguments = flatten(setproduct(["--extra-vars"], [
-      "cyhy_user_home_directory=${var.cyhy_user_information.home_directory}",
-      # Since the SSH public key has spaces in it, we need to ensure it is quoted.
-      format("cyhy_user_ssh_public_key=%q", var.cyhy_user_information.ssh_public_key),
-      "cyhy_user_username=${var.cyhy_user_information.username}",
-      "cyhy_user_uid=${var.cyhy_user_information.user_id}",
-    ]))
+    extra_arguments = flatten(setproduct(["--extra-vars"], concat(
+      local.cyhy_user_ansible_variables,
+    )))
     groups        = ["bod", "code_gov", "vdp_scan"]
     playbook_file = "ansible/playbook.yml"
     use_proxy     = false
