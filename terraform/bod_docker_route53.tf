@@ -12,11 +12,8 @@ resource "aws_route53_record" "bod_docker_A" {
 resource "aws_route53_record" "bod_rev_docker_PTR" {
   zone_id = aws_route53_zone.bod_private_zone_reverse.zone_id
   name = format(
-    "%s.%s.%s.%s.in-addr.arpa.",
-    element(split(".", aws_instance.bod_docker.private_ip), 3),
-    element(split(".", aws_instance.bod_docker.private_ip), 2),
-    element(split(".", aws_instance.bod_docker.private_ip), 1),
-    element(split(".", aws_instance.bod_docker.private_ip), 0),
+    "%s.in-addr.arpa.",
+    join(".", reverse(split(".", aws_instance.bod_docker.private_ip))),
   )
 
   type = "PTR"
