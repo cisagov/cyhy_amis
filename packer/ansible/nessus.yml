@@ -8,5 +8,5 @@
     - role: nessus
       vars:
         nessus_package_bucket: ncats-3rd-party-packages
-        nessus_version: "10.5.1"
+        nessus_version: 10.5.1
     - more_ephemeral_ports
