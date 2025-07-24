@@ -196,6 +196,14 @@ jobs:
       - name: Set up pre-commit hook environments
         run: pre-commit install-hooks
       - name: Run pre-commit on all files
+        env:
+          # We have seen some failures of packer init in GitHub Actions due to
+          # rate limiting when pulling Packer plugins from GitHub.  Having
+          # Packer use a GitHub API token should reduce this.  The rate
+          # limiting for unauthenticated requests is 60 requests/hour while
+          # the rate limiting for authenticated requests is 5000
+          # requests/hour.
+          PACKER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: pre-commit run --all-files
       - name: Setup tmate debug session
         uses: mxschmitt/action-tmate@v3
