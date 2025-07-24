@@ -7,7 +7,7 @@
 
 - name: Allocate swapfile
   ansible.builtin.command:
-    cmd: "fallocate --length {{ swap_swapfile_size }} {{ swap_swapfile_location }}"
+    cmd: fallocate --length {{ swap_swapfile_size }} {{ swap_swapfile_location }}
     creates: "{{ swap_swapfile_location }}"
   register: swap_allocate_swapfile
 
