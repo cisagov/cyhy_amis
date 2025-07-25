@@ -24,6 +24,16 @@
       vars:
         # Looking for key in format:
         # XXXX-XXXX-XXXX-XXXX or XXXX-XXXX-XXXX-XXXX-XXXX
+        #
+        # yamllint complains about this string being in single quotes,
+        # but we want to ensure that regex special characters are properly
+        # escaped.
+        #
+        # yamllint complains about this string being needlessly
+        # quoted, but we want to ensure that regex special characters
+        # do not conflict with YAML special characters.
+        #
+        # yamllint disable-line rule:quoted-strings
         nessus_license_regexp: '([a-zA-Z0-9]{4}(?:\-[a-zA-Z0-9]{4}){3,4})'
 
     - name: See if the key in use matches the provided one
@@ -44,7 +54,7 @@
       # needs to be registered. Additionally the command gives no indication
       # that a key is already registered when rerun.
       ansible.builtin.command: # noqa no-changed-when
-        cmd: "/opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}"
+        cmd: /opt/nessus/sbin/nessuscli fetch --register-only {{ nessus_activation_code }}
 
     #
     # Create the Nessus scanner user
@@ -64,7 +74,7 @@
 
     - name: Create scanner user if necessary
       ansible.builtin.expect:
-        command: "/opt/nessus/sbin/nessuscli adduser {{ nessus_username }}"
+        command: /opt/nessus/sbin/nessuscli adduser {{ nessus_username }}
         responses:
           administrator: y
           BLANK: ""

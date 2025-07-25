@@ -2,7 +2,7 @@
 - name: Create cyhy-feeds config
   ansible.builtin.copy:
     content: "{{ cyhy_feeds_config }}"
-    dest: "/var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg"
+    dest: /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
     group: cyhy
     mode: u=r,g=r,o=r
     owner: cyhy
@@ -24,7 +24,7 @@
 
 - name: Create files with MongoDB credentials
   ansible.builtin.template:
-    dest: "/var/cyhy/scripts/cyhy-feeds/{{ item.filename }}"
+    dest: /var/cyhy/scripts/cyhy-feeds/{{ item.filename }}
     group: cyhy
     mode: u=rw,g=rw,o=
     owner: cyhy
@@ -70,7 +70,7 @@
     - "{{ cyhy_feeds_private_gpg_key }}"
     - "{{ cyhy_feeds_public_gpg_key }}"
   loop_control:
-    label: "<key redacted>"
+    label: <key redacted>
   register: cyhy_feeds_import_gpg_key
 
 - name: Import gpg trust
@@ -99,9 +99,9 @@
 #
 - name: Set up nightly cron job to sync NSD data for MOE extract
   ansible.builtin.cron:
-    hour: '0'
+    hour: "0"
     job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python3 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy-config /var/cyhy/scripts/cyhy-feeds/cyhy.yml --scan-config /var/cyhy/scripts/cyhy-feeds/scan_reader.yml --assessment-config /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml --aws --cleanup-aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger --tag cyhy-feeds
-    minute: '0'
+    minute: "0"
     name: Nightly cyhy extract
     user: cyhy
   when: production_workspace|bool

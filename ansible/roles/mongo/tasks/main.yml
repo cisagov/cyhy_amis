@@ -16,7 +16,7 @@
   ansible.builtin.pip:
     executable: /usr/bin/pip3
     name: pymongo
-    version: '>=3.12.3'
+    version: ">=3.12.3"
 
 - name: Create admin user in admin db (first user, no authentication)
   community.mongodb.mongodb_user:

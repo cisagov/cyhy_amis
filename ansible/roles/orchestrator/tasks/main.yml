@@ -12,7 +12,7 @@
 
 - name: Create files with MongoDB credentials
   ansible.builtin.template:
-    dest: "/var/cyhy/orchestrator/secrets/{{ item.filename }}"
+    dest: /var/cyhy/orchestrator/secrets/{{ item.filename }}
     group: cyhy
     mode: u=r,g=r,o=
     owner: cyhy
@@ -62,11 +62,11 @@
     # should be done by noon UTC on Sunday.
     - name: Create a cron job for BOD 18-01 scanning
       ansible.builtin.cron:
-        hour: '12'
+        hour: "12"
         # TODO: Remove the docker compose down when possible.  See
         # #668 for more details.
         job: cd /var/cyhy/orchestrator && docker compose down && docker compose up --detach 2>&1 | /usr/bin/logger --tag orchestrator
-        minute: '0'
-        name: "BOD 18-01 scanning"
+        minute: "0"
+        name: BOD 18-01 scanning
         user: cyhy
-        weekday: '5'
+        weekday: "5"
