@@ -2,7 +2,7 @@
 # Rather than breaking up descriptions into multiline strings we disable that
 # specific rule in yamllint for this file.
 # yamllint disable rule:line-length
-- color: "f15a53"
+- color: f15a53
   description: Pull requests that update Ansible code
   name: ansible
 - color: eb6420
@@ -53,10 +53,10 @@
 - color: fcdb45
   description: This pull request is awaiting an action or decision to move forward
   name: on hold
-- color: "02a8ef"
+- color: 02a8ef
   description: Pull requests that update Packer code
   name: packer
-- color: "3772a4"
+- color: 3772a4
   description: Pull requests that update Python code
   name: python
 - color: ef476c
@@ -65,7 +65,7 @@
 - color: d73a4a
   description: This issue or pull request addresses a security issue
   name: security
-- color: "7b42bc"
+- color: 7b42bc
   description: Pull requests that update Terraform code
   name: terraform
 - color: 00008b
