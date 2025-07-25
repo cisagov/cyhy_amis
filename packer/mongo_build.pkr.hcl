@@ -20,9 +20,22 @@ build {
 
   provisioner "ansible" {
     ansible_env_vars = ["AWS_DEFAULT_REGION=${var.build_region}"]
-    groups           = ["cyhy_archive", "cyhy_commander", "cyhy_feeds", "mongo"]
-    playbook_file    = "ansible/playbook.yml"
-    use_proxy        = false
-    use_sftp         = true
+    # Create the list of variables to pass to Ansible. We create a list of
+    # arguments with preceding `--extra-vars` and then flatten it to ensure
+    # that it is a single list of arguments. This will result in a list like:
+    # [
+    #   "--extra-vars",
+    #   "foo=bar",
+    #   "--extra-vars",
+    #   "ham=eggs",
+    # ]
+    extra_arguments = flatten(setproduct(["--extra-vars"], concat(
+      local.cyhy_user_ansible_variables,
+      local.maxmind_account_ansible_variables,
+    )))
+    groups        = ["cyhy_archive", "cyhy_commander", "cyhy_feeds", "mongo"]
+    playbook_file = "ansible/playbook.yml"
+    use_proxy     = false
+    use_sftp      = true
   }
 }
