@@ -2,8 +2,8 @@
 # Overwrite the CloudWatch agent configuration file on the instance.
 # The file contents are based on the CloudWatch configuration file that is
 # written by the cisagov/ansible-role-cloudwatch-agent Ansible role, but modified
-# to adjust the log group name by prepending the value of the cloudwatch_agent_log_group_base_name
-# variable when templated.
+# to adjust the log group name by prepending the value of the
+# cloudwatch_agent_log_group_base_name variable when templated.
 write_files:
   - content: |
       {
