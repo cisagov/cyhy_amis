@@ -24,7 +24,17 @@
       vars:
         # Looking for key in format:
         # XXXX-XXXX-XXXX-XXXX or XXXX-XXXX-XXXX-XXXX-XXXX
-        nessus_license_regexp: ([a-zA-Z0-9]{4}(?:\-[a-zA-Z0-9]{4}){3,4})
+        #
+        # yamllint complains about this string being in single quotes,
+        # but we want to ensure that regex special characters are properly
+        # escaped.
+        #
+        # yamllint complains about this string being needlessly
+        # quoted, but we want to ensure that regex special characters
+        # do not conflict with YAML special characters.
+        #
+        # yamllint disable-line rule:quoted-strings
+        nessus_license_regexp: '([a-zA-Z0-9]{4}(?:\-[a-zA-Z0-9]{4}){3,4})'
 
     - name: See if the key in use matches the provided one
       ansible.builtin.set_fact:
