@@ -12,6 +12,8 @@ exclude_paths:
   - .cache
   # Seems wise to ignore this too
   - .github
+  # Exclude the Terraform cache directory
+  - terraform/.terraform
 kinds:
   # This will force our systemd specific molecule configurations to be treated
   # as plain yaml files by ansible-lint. This mirrors the default kind
