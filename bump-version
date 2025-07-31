@@ -57,7 +57,9 @@ function invalid_option() {
 #######################################
 function bump_version() {
   local temp_version
-  temp_version=$(date +%Y.%m.%d)
+  # Set it to the current date in UTC. We must use the -u short option to maintain
+  # support with the BSD date command which is used on macOS.
+  temp_version=$(date -u +%Y.%m.%d)
   echo "$temp_version"
 }
 
