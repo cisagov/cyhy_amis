@@ -24,7 +24,7 @@ mongo_non_admin_users: >-
     )
     | dict2items
     | map(attribute='key')
-    | map('regex_replace', '^/cyhy/mongo/users/([^/]*).*', '\\1')
+    | map('regex_replace', '^/cyhy/mongo/users/([^/]*).*', '\1')
     | unique
     | reject('equalto', 'admin')
     | list
