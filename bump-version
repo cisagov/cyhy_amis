@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# bump-version [--push] [--label LABEL] (major | minor | patch | prerelease | build | finalize | show)
+# bump-version [--push] (bump | show)
 # bump-version --list-files
 
 set -o nounset
@@ -17,14 +17,13 @@ USAGE=$(
 Update the version of the project.
 
 Usage:
-  ${0##*/} [--push] [--label LABEL] (major | minor | patch | prerelease | build | finalize | show)
+  ${0##*/} [--push] (bump | show)
   ${0##*/} --list-files
   ${0##*/} (-h | --help)
 
 Options:
   -h | --help    Show this message.
   --push         Perform a \`git push\` after updating the version.
-  --label LABEL  Specify the label to use when updating the build or prerelease version.
   --list-files   List the files that will be updated when the version is bumped.
 END_OF_LINE
 )
@@ -35,13 +34,8 @@ old_version=$(< "$VERSION_FILE")
 old_version_regex=${old_version//\./\\\.}
 new_version="$old_version"
 
-bump_part=""
-label=""
 commit_prefix="Bump"
 with_push=false
-commands_with_label=("build" "prerelease")
-commands_with_prerelease=("major" "minor" "patch")
-with_prerelease=false
 
 #######################################
 # Display an error message, the help information, and exit with a non-zero status.
@@ -55,16 +49,15 @@ function invalid_option() {
 }
 
 #######################################
-# Bump the version using the provided command.
+# Bump the version.
 # Arguments:
-#   The version to bump.
-#   The command to bump the version.
+#   None
 # Returns:
 #   The new version.
 #######################################
 function bump_version() {
   local temp_version
-  temp_version=$(python -c "import semver; print(semver.parse_version_info('$1').${2})")
+  temp_version=$(date +%Y.%m.%d)
   echo "$temp_version"
 }
 
@@ -82,24 +75,7 @@ else
         with_push=true
         shift
         ;;
-      --label)
-        if [ -n "$label" ]; then
-          invalid_option "Label has already been set."
-        fi
-
-        label="$2"
-        shift 2
-        ;;
-      build | finalize | major | minor | patch)
-        if [ -n "$bump_part" ]; then
-          invalid_option "Only one version part should be bumped at a time."
-        fi
-
-        bump_part="$1"
-        shift
-        ;;
-      prerelease)
-        with_prerelease=true
+      bump)
         shift
         ;;
       show)
@@ -121,38 +97,7 @@ else
   done
 fi
 
-if [ -n "$label" ] && [ "$with_prerelease" = false ] && [[ ! " ${commands_with_label[*]} " =~ [[:space:]]${bump_part}[[:space:]] ]]; then
-  invalid_option "Setting the label is only allowed for the following commands: ${commands_with_label[*]}"
-fi
-
-if [ "$with_prerelease" = true ] && [ -n "$bump_part" ] && [[ ! " ${commands_with_prerelease[*]} " =~ [[:space:]]${bump_part}[[:space:]] ]]; then
-  invalid_option "Changing the prerelease is only allowed in conjunction with the following commands: ${commands_with_prerelease[*]}"
-fi
-
-label_option=""
-if [ -n "$label" ]; then
-  label_option="token='$label'"
-fi
-
-if [ -n "$bump_part" ]; then
-  if [ "$bump_part" = "finalize" ]; then
-    commit_prefix="Finalize"
-    bump_command="finalize_version()"
-  elif [ "$bump_part" = "build" ]; then
-    bump_command="bump_${bump_part}($label_option)"
-  else
-    bump_command="bump_${bump_part}()"
-  fi
-  new_version=$(bump_version "$old_version" "$bump_command")
-  echo Changing version from "$old_version" to "$new_version"
-fi
-
-if [ "$with_prerelease" = true ]; then
-  bump_command="bump_prerelease($label_option)"
-  temp_version=$(bump_version "$new_version" "$bump_command")
-  echo Changing version from "$new_version" to "$temp_version"
-  new_version="$temp_version"
-fi
+new_version=$(bump_version)
 
 tmp_file=/tmp/version.$$
 for version_file in "${VERSION_FILES[@]}"; do
