@@ -59,7 +59,10 @@
 # interactive.
 - name: Import gpg keys
   ansible.builtin.shell:
-    cmd: set -o pipefail && echo {{ item | quote }} | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch
+    cmd: >-
+      set -o pipefail
+      && echo {{ item | quote }}
+      | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch
     executable: /bin/bash
   become: true
   become_user: cyhy
@@ -78,7 +81,10 @@
   # before quoting. A quoted newline causes a failure when gpg2 attempts to
   # import the owner trust.
   ansible.builtin.shell:
-    cmd: set -o pipefail && echo {{ cyhy_feeds_gpg_trust | trim | quote }} | gpg2 --import-ownertrust --batch
+    cmd: >-
+      set -o pipefail
+      && echo {{ cyhy_feeds_gpg_trust | trim | quote }}
+      | gpg2 --import-ownertrust --batch
     executable: /bin/bash
   become: true
   become_user: cyhy
@@ -100,7 +106,17 @@
 - name: Set up nightly cron job to sync NSD data for MOE extract
   ansible.builtin.cron:
     hour: "0"
-    job: cd /var/cyhy/scripts/cyhy-feeds && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config; python3 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py --cyhy-config /var/cyhy/scripts/cyhy-feeds/cyhy.yml --scan-config /var/cyhy/scripts/cyhy-feeds/scan_reader.yml --assessment-config /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml --aws --cleanup-aws --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1 | /usr/bin/logger --tag cyhy-feeds
+    job: >-
+      cd /var/cyhy/scripts/cyhy-feeds
+      && export AWS_CONFIG_FILE=/var/cyhy/scripts/cyhy-feeds/aws_config;
+      python3 /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.py
+      --cyhy-config /var/cyhy/scripts/cyhy-feeds/cyhy.yml
+      --scan-config /var/cyhy/scripts/cyhy-feeds/scan_reader.yml
+      --assessment-config /var/cyhy/scripts/cyhy-feeds/assessment_reader.yml
+      --aws
+      --cleanup-aws
+      --config /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg 2>&1
+      | /usr/bin/logger --tag cyhy-feeds
     minute: "0"
     name: Nightly cyhy extract
     user: cyhy

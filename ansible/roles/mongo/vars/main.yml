@@ -2,13 +2,30 @@
 # admin mongo username
 mongo_admin_user: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/admin/user') }}"
 # Old admin mongo password
-mongo_admin_old_pw: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/admin/old_password') }}"
+mongo_admin_old_pw: >-
+  {{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/admin/old_password') }}
 # admin mongo password
 mongo_admin_pw: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/admin/password') }}"
 # admin mongo database
 mongo_admin_db: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/admin/database') }}"
 # admin mongo roles
-mongo_admin_roles: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/admin/roles').split(',') }}"
+mongo_admin_roles: >-
+  {{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/admin/roles').split(',') }}
 
 # Non-admin MongoDB users
-mongo_non_admin_users: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users', shortnames=false, recursive=true, bypath=true) | dict2items | map(attribute='key') | map('regex_replace', '^/cyhy/mongo/users/([^/]*).*', '\\1') | unique | reject('equalto', 'admin') | list }}"
+mongo_non_admin_users: >-
+  {{
+    lookup(
+      'amazon.aws.aws_ssm',
+      '/cyhy/mongo/users',
+      shortnames=false,
+      recursive=true,
+      bypath=true
+    )
+    | dict2items
+    | map(attribute='key')
+    | map('regex_replace', '^/cyhy/mongo/users/([^/]*).*', '\1')
+    | unique
+    | reject('equalto', 'admin')
+    | list
+  }}

@@ -89,6 +89,11 @@
     src: cyhy.conf.j2
   when: not cyhy_commander_cyhy_conf_result.stat.exists
 
+# yamllint complains about the line length in the block below, but it is
+# necessary to ensure that the block is formatted correctly in the
+# cyhy.conf file.
+#
+# yamllint disable rule:line-length
 - name: Add commander credentials block to cyhy.conf if necessary
   ansible.builtin.blockinfile:
     block: |
@@ -98,6 +103,7 @@
     marker: ; {mark} ANSIBLE MANAGED BLOCK commander
     path: /etc/cyhy/cyhy.conf
   when: cyhy_commander_cyhy_conf_result.stat.exists
+# yamllint enable rule:line-length
 
 #
 # Run script to create the "places" collection
@@ -127,7 +133,9 @@
 - name: Set up nightly cron job to sync NVD data
   ansible.builtin.cron:
     hour: "8"
-    job: /usr/local/bin/cyhy-nvdsync --use-network 2>&1 | /usr/bin/logger --tag cyhy-nvdsync
+    job: >-
+      /usr/local/bin/cyhy-nvdsync --use-network 2>&1
+      | /usr/bin/logger --tag cyhy-nvdsync
     minute: "15"
     name: Nightly cyhy-nvdsync
     user: cyhy
