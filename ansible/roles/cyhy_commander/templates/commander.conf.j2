@@ -1,6 +1,9 @@
 [DEFAULT]
 database-uri = mongodb://{{ cyhy_commander_commander_user }}:{{ cyhy_commander_commander_pw }}@database1.cyhy:27017/{{ cyhy_commander_commander_db }}
 debug-logging = true
+# default-scheduler specifies which scheduler should be used if the request
+# document for the default CYHY owner doesn't exist and must be created by the
+# commander.
 default-scheduler = PERSISTENT1
 default-section = production
 jobs-per-nessus-host = 16
