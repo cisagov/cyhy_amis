@@ -181,6 +181,13 @@ variable "create_mgmt_flow_logs" {
   type        = bool
 }
 
+variable "cyhy_archive_bucket_lifecycle_rule_name" {
+  default     = "cyhy-archive-object-storage-class-transitions"
+  description = "The name of the lifecycle rule for the cyhy-archive S3 bucket."
+  nullable    = false
+  type        = string
+}
+
 variable "cyhy_archive_bucket_name" {
   default     = "ncats-cyhy-archive"
   description = "S3 bucket for storing compressed archive files created by cyhy-archive."
