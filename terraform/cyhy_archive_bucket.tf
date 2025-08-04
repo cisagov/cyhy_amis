@@ -61,7 +61,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "cyhy_archive" {
       storage_class = "GLACIER_IR"
     }
 
-    # After 120 days, 30 in Standard and 90 in Glacier Instant Retrieval, transition
+    # After 120 days (30 in Standard and 90 in Glacier Instant Retrieval), transition
     # archive objects to the Glacier Deep Archive storage class. This storage class has
     # a 180 day minimum retention period. This is the final storage class for these
     # objects.
