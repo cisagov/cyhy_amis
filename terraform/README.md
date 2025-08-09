@@ -149,6 +149,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | terraform | ~> 1.1 |
 | aws | ~> 6.7 |
 | cloudinit | ~> 2.0 |
+| null | ~> 3.2 |
 
 ## Providers ##
 
@@ -157,7 +158,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | aws | ~> 6.7 |
 | aws.public\_dns | ~> 6.7 |
 | cloudinit | ~> 2.0 |
-| null | n/a |
+| null | ~> 3.2 |
 | terraform | n/a |
 
 ## Modules ##

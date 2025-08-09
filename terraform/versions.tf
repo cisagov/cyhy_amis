@@ -19,5 +19,12 @@ terraform {
       source  = "hashicorp/cloudinit"
       version = "~> 2.0"
     }
+
+    # We have verified that our code works with version 3.2 of this
+    # Terraform provider.
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
   }
 }
