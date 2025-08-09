@@ -94,7 +94,9 @@ data "aws_eip" "cyhy_nessus_eips" {
 # randomly-assigned public IP address for temporary use.
 resource "aws_eip" "cyhy_nessus_random_eips" {
   count = local.production_workspace ? 0 : var.nessus_instance_count
-  vpc   = true
+
+  domain = "vpc"
+
   tags = {
     "Name"           = format("CyHy Nessus EIP %d", count.index + 1)
     "Publish Egress" = "True"
