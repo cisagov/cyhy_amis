@@ -2,8 +2,9 @@
 Description=ncats-webui service
 
 [Service]
-Type=oneshot
-RemainAfterExit=yes
+# Type=oneshot
+# RemainAfterExit=yes
+Type=simple
 Restart=on-failure
 RestartSec=10
 User=cyhy
