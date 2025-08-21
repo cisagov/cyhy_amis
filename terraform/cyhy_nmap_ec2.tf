@@ -96,7 +96,9 @@ data "aws_eip" "cyhy_nmap_eips" {
 # use.
 resource "aws_eip" "cyhy_nmap_random_eips" {
   count = local.production_workspace ? 0 : var.nmap_instance_count
-  vpc   = true
+
+  domain = "vpc"
+
   tags = {
     "Name"           = format("CyHy Nmap EIP %d", count.index + 1)
     "Publish Egress" = "True"

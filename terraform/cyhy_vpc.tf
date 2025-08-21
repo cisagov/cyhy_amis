@@ -67,9 +67,9 @@ resource "aws_subnet" "cyhy_public_subnet" {
 
 # Elastic IP for the NAT gateway
 resource "aws_eip" "cyhy_eip" {
-  vpc = true
-
   depends_on = [aws_internet_gateway.cyhy_igw]
+
+  domain = "vpc"
 
   tags = { "Name" = "CyHy NAT GW IP" }
 }

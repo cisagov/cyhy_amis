@@ -147,17 +147,18 @@ terraform apply -var-file=<your_workspace>.tfvars
 | Name | Version |
 |------|---------|
 | terraform | ~> 1.1 |
-| aws | ~> 4.9 |
+| aws | ~> 6.7 |
 | cloudinit | ~> 2.0 |
+| null | ~> 3.2 |
 
 ## Providers ##
 
 | Name | Version |
 |------|---------|
-| aws | ~> 4.9 |
-| aws.public\_dns | ~> 4.9 |
+| aws | ~> 6.7 |
+| aws.public\_dns | ~> 6.7 |
 | cloudinit | ~> 2.0 |
-| null | n/a |
+| null | ~> 3.2 |
 | terraform | n/a |
 
 ## Modules ##

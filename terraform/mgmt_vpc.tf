@@ -57,9 +57,9 @@ resource "aws_subnet" "mgmt_public_subnet" {
 resource "aws_eip" "mgmt_eip" {
   count = var.enable_mgmt_vpc ? 1 : 0
 
-  vpc = true
-
   depends_on = [aws_internet_gateway.mgmt_igw]
+
+  domain = "vpc"
 
   tags = { "Name" = "Management NATGW IP" }
 }

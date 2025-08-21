@@ -63,9 +63,10 @@ data "aws_eip" "bod_production_eip" {
 # The Elastic IP for the *non-production* NAT gateway
 resource "aws_eip" "bod_nonproduction_eip" {
   count = local.production_workspace ? 0 : 1
-  vpc   = true
 
   depends_on = [aws_internet_gateway.bod_igw]
+
+  domain = "vpc"
 
   tags = { "Name" = "BOD 18-01 NATGW IP" }
 }
