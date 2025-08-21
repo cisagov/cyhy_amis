@@ -17,13 +17,13 @@ source "amazon-ebs" "bastion_arm64" {
     volume_type           = "gp3"
   }
   region       = var.build_region
-  source_ami   = data.amazon-ami.debian_bookworm_arm64.id
+  source_ami   = data.amazon-ami.debian_trixie_arm64.id
   ssh_username = "admin"
   tags = {
     Application   = "Cyber Hygiene"
     Architecture  = "arm64"
-    Base_AMI_Name = data.amazon-ami.debian_bookworm_arm64.name
-    OS_Version    = "Debian Bookworm"
+    Base_AMI_Name = data.amazon-ami.debian_trixie_arm64.name
+    OS_Version    = "Debian Trixie"
     Pre_Release   = var.is_prerelease
     Release       = "Latest"
     Team          = "VM Fusion - Development"
