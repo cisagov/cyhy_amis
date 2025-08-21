@@ -21,7 +21,7 @@
     - name: Extract the key in use
       ansible.builtin.set_fact:
         nessus_registered_key: >-
-          {{ nessus_key_result.stdout | regex_search(nessus_license_regexp, '\\1') }}
+          {{ nessus_key_result.stdout | regex_search(nessus_license_regexp, '\1') }}
       vars:
         # Looking for key in format:
         # XXXX-XXXX-XXXX-XXXX or XXXX-XXXX-XXXX-XXXX-XXXX
