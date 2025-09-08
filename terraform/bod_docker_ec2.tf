@@ -56,6 +56,7 @@ resource "aws_instance" "bod_docker" {
   }
 
   vpc_security_group_ids = [
+    aws_security_group.cache_client.id,
     aws_security_group.bod_docker_sg.id,
   ]
 
