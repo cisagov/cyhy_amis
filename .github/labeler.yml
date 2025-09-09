@@ -6,7 +6,7 @@
 ansible:
   - changed-files:
       - any-glob-to-any-file:
-          - ansible/**
+          - "**/ansible/**"
 documentation:
   - changed-files:
       - any-glob-to-any-file:
