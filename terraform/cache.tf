@@ -7,7 +7,5 @@ resource "aws_elasticache_serverless_cache" "cyhy_bod_orch" {
   security_group_ids = [
     aws_security_group.cache.id,
   ]
-  subnet_ids = [
-    aws_subnet.bod_docker_subnet.id,
-  ]
+  subnet_ids = [for subnet in tomap(module.docker.subnets) : subnet.id]
 }

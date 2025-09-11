@@ -23,12 +23,11 @@ data "aws_ami" "bod_docker" {
 
 # The docker EC2 instance
 resource "aws_instance" "bod_docker" {
-  ami               = data.aws_ami.bod_docker.id
-  instance_type     = local.production_workspace ? "r5.xlarge" : "t3.small"
-  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
+  ami           = data.aws_ami.bod_docker.id
+  instance_type = local.production_workspace ? "r5.xlarge" : "t3.small"
 
-  # This is the private subnet
-  subnet_id = aws_subnet.bod_docker_subnet.id
+  # This is the first Docker subnet
+  subnet_id = values(tomap(module.docker.subnets))[0].id
 
   # AWS Instance Metadata Service (IMDS) options
   metadata_options {
@@ -95,7 +94,9 @@ resource "aws_instance" "bod_docker" {
 # inside of the lifecycle block
 # (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "bod_report_data" {
-  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
+  # The volume and the instance to which it attaches must be in the
+  # same availability zone.
+  availability_zone = values(tomap(module.docker.subnets))[0].availability_zone
   type              = "io2"
   size              = local.production_workspace ? 200 : 5
   iops              = 100
@@ -128,7 +129,9 @@ resource "aws_volume_attachment" "bod_report_data_attachment" {
 # We use the minimum size for io2 volumes because the output of the VDP process
 # is small.
 resource "aws_ebs_volume" "vdp_report_data" {
-  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
+  # The volume and the instance to which it attaches must be in the
+  # same availability zone.
+  availability_zone = values(tomap(module.docker.subnets))[0].availability_zone
   type              = "io2"
   size              = 4
   iops              = 100

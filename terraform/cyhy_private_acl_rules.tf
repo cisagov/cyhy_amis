@@ -88,12 +88,14 @@ resource "aws_network_acl_rule" "private_egress_to_bastion_via_ephemeral_ports" 
 # Note that this includes egress to ElastiCache in the BOD 18-01
 # Docker subnet via port 6379.
 resource "aws_network_acl_rule" "private_egress_to_bod_docker_via_ephemeral_ports" {
+  for_each = tomap(module.docker.subnets)
+
   network_acl_id = aws_network_acl.cyhy_private_acl.id
   egress         = true
   protocol       = "tcp"
-  rule_number    = 120
+  rule_number    = 120 + index(keys(tomap(module.docker.subnets)), each.key)
   rule_action    = "allow"
-  cidr_block     = aws_subnet.bod_docker_subnet.cidr_block
+  cidr_block     = each.key
   from_port      = 1024
   to_port        = 65535
 }
