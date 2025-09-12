@@ -1,4 +1,4 @@
-# Allow egress to the both scanner subnets via ssh
+# Allow egress to both scanner subnets via ssh
 resource "aws_network_acl_rule" "private_egress_to_portscanner_via_ssh" {
   network_acl_id = aws_network_acl.cyhy_private_acl.id
   egress         = true
@@ -47,7 +47,8 @@ resource "aws_network_acl_rule" "cyhy_private_egress_anywhere_via_https" {
 }
 
 # Allow ingress from anywhere via ephemeral ports
-# Note: includes ingress from the BOD 18-01 private subnet via mongodb
+#
+# Note: includes ingress from the BOD 18-01 private subnet via MongoDB
 resource "aws_network_acl_rule" "private_ingress_from_anywhere_via_ephemeral_ports" {
   network_acl_id = aws_network_acl.cyhy_private_acl.id
   egress         = false
