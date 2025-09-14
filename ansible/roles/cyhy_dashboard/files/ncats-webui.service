@@ -7,3 +7,4 @@ Restart=on-failure
 RestartSec=10
 User=cyhy
 ExecStart=/usr/bin/make --directory /var/cyhy/ncats-webui/ dev-start
+ExecStop=/usr/bin/make --directory /var/cyhy/ncats-webui/ dev-stop
