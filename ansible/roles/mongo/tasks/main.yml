@@ -73,15 +73,40 @@
     src: mongod.conf
   register: mongo_copy_mongo_conf
 
-- name: Restart mongod service to use new configuration
-  ansible.builtin.service:
-    name: mongod
-    state: restarted
+- name: Restart mongod service and stop/start cyhy-commander service if needed
   when: >-
     mongo_create_admin_user.changed
     or mongo_update_admin_user.changed
     or mongo_update_other_users.changed
     or mongo_copy_mongo_conf.changed
+  block:
+    - name: Get service information
+      ansible.builtin.service_facts:
+
+    - name: Determine if cyhy-commander needs to be stopped
+      ansible.builtin.set_fact:
+        mongo_stop_commander: >-
+          {{
+            'cyhy-commander' in ansible_facts.services
+            and ansible_facts.services['cyhy-commander'].state != 'stopped'
+          }}
+
+    - name: Stop cyhy-commander
+      ansible.builtin.service:
+        name: cyhy-commander
+        state: stopped
+      when: mongo_stop_commander
+
+    - name: Restart mongod service to use new configuration
+      ansible.builtin.service:
+        name: mongod
+        state: restarted
+
+    - name: Start cyhy-commander
+      ansible.builtin.service:
+        name: cyhy-commander
+        state: started
+      when: mongo_stop_commander
 
 - name: Start mongod if it is not already running
   ansible.builtin.service:
