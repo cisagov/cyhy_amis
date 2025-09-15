@@ -18,6 +18,6 @@
     # valkey-tools on the CyHy reporter instance directly because it
     # is still using Debian Buster, which does not offer this package.
     - name: Pull official valkey Docker image
-      community.general.docker_image:
+      community.docker.docker_image:
         name: valkey/valkey:alpine
         source: pull

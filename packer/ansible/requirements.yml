@@ -1,6 +1,6 @@
 collections:
   - ansible.posix
-  - community.general
+  - community.docker
 
 roles:
   - name: amazon_ssm_agent
