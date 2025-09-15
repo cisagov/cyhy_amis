@@ -25,6 +25,7 @@
     password: "{{ mongo_admin_pw }}"
     roles: "{{ mongo_admin_roles }}"
     state: present
+  register: create_admin_user
   when: mongo_check_for_mongo_users.rc == 0
 
 - name: Update admin user in admin db (authenticate as admin)
@@ -37,6 +38,7 @@
     password: "{{ mongo_admin_pw }}"
     roles: "{{ mongo_admin_roles }}"
     state: present
+  register: update_admin_user
   when: mongo_check_for_mongo_users.rc != 0
 
 - name: Update other users (authenticate as admin)
@@ -62,14 +64,26 @@
   # miss an edge case like error output on task failure that would leak
   # password information by disabling the rule.
   no_log: true
+  register: update_other_users
 
 - name: Copy mongo configuration file
   ansible.builtin.template:
     dest: /etc/mongod.conf
     mode: u=rw,g=r,o=r
     src: mongod.conf
+  register: copy_mongo_conf
 
 - name: Restart mongod service to use new configuration
   ansible.builtin.service:
     name: mongod
     state: restarted
+  when: >-
+    create_admin_user.changed
+    or update_admin_user.changed
+    or update_other_users.changed
+    or copy_mongo_conf.changed
+
+- name: Start mongod if it is not already running
+  ansible.builtin.service:
+    name: mongod
+    state: started
