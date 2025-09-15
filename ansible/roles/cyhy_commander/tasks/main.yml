@@ -9,6 +9,7 @@
     group: cyhy
     mode: u=rw,g=,o=
     owner: cyhy
+  register: cyhy_commander_cyhy_ssh_private_key
 
 #
 # Copy the cyhy-commander conf file
@@ -18,6 +19,7 @@
     dest: /etc/cyhy/commander.conf
     mode: u=rw,g=r,o=r
     src: commander.conf.j2
+  register: cyhy_commander_conf
 
 #
 # Create empty cyhy ssh config with cyhy as owner and group
@@ -30,11 +32,17 @@
     path: /var/cyhy/.ssh/config
     state: touch
 
+- name: Ensure cyhy-commander is stopped if files have changed
+  ansible.builtin.service:
+    name: cyhy-commander
+    state: stopped
+  when: cyhy_commander_cyhy_ssh_private_key.changed or cyhy_commander_conf.changed
+
 - name: Enable and start cyhy-commander
   ansible.builtin.service:
     name: cyhy-commander
     enabled: true
-    state: restarted
+    state: started
 
 #
 # Grab the files we need to create the "places" collection from cyhy-core
