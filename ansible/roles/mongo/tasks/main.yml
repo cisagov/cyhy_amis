@@ -68,8 +68,9 @@
     dest: /etc/mongod.conf
     mode: u=rw,g=r,o=r
     src: mongod.conf
+  notify: Restart mongod service
 
-- name: Restart mongod service to use new configuration
+- name: Start mongod if it is not already running
   ansible.builtin.service:
     name: mongod
-    state: restarted
+    state: started

@@ -3,3 +3,8 @@
   ansible.builtin.service:
     enabled: true
     name: mongod
+
+- name: Restart mongod service
+  ansible.builtin.service:
+    name: mongod
+    state: restarted
