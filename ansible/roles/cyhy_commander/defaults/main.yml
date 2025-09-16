@@ -18,3 +18,7 @@ cyhy_commander_jobs_per_nmap_host: 8
 # This value is used in the "production" section of the cyhy-commander
 # configuration file this role generates.
 cyhy_commander_next_scan_limit: 8192
+
+# The version of cisagov/cyhy-core to use when helper files; must be a valid git
+# reference
+cyhy_commander_cyhy_core_version: v1.1.1
