@@ -59,9 +59,9 @@ variable "nessus_instance_count" {
 }
 
 variable "nmap_instance_count" {
-  description = "The number of Nmap instances to create."
+  description = "The number of Nmap instances to create, broken down by architecture. Note that x86_64 instances will be deployed first, followed by arm64 instances."
   nullable    = false
-  type        = number
+  type        = object({ arm64 = number, x86_64 = number })
 }
 
 variable "remote_ssh_user" {
