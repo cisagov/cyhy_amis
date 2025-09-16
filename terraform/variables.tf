@@ -196,6 +196,12 @@ variable "cyhy_archive_bucket_name" {
   type        = string
 }
 
+variable "cyhy_core_version" {
+  default     = "v1.1.14"
+  description = "The version of cisagov/cyhy-core to use; must be a valid git reference."
+  type        = string
+}
+
 variable "cyhy_elastic_ip_cidr_block" {
   default     = ""
   description = "The CIDR block of elastic addresses available for use by CyHy scanner instances."
