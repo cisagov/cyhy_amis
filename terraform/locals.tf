@@ -130,8 +130,11 @@ locals {
   # NOTE: there is an assumption that subnets are /24 or smaller in
   # the reverse zone names.
 
+  # Total number of Port Scanners
+  nmap_total_instance_count = var.nmap_instance_count.arm64 + var.nmap_instance_count.x86_64
+
   # Port Scanners DNS entries
-  count_port_scanner = var.nmap_instance_count
+  count_port_scanner = local.nmap_total_instance_count
 
   # Vulnerability Scanners DNS entries
   count_vuln_scanner = var.nessus_instance_count

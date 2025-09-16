@@ -190,7 +190,7 @@ module "cyhy_mongo_ansible_provisioner" {
     "cyhy_commander_jobs_per_nmap_host=${var.commander_config.jobs_per_nmap_host}",
     "cyhy_commander_nessus_hosts=${join(",", formatlist("vulnscan%d", range(1, var.nessus_instance_count + 1)))}",
     "cyhy_commander_next_scan_limit=${var.commander_config.next_scan_limit}",
-    "cyhy_commander_nmap_hosts=${join(",", formatlist("portscan%d", range(1, var.nmap_instance_count + 1)))}",
+    "cyhy_commander_nmap_hosts=${join(",", formatlist("portscan%d", range(1, local.nmap_total_instance_count + 1)))}",
     "cyhy_feeds_aws_region=${var.aws_region}",
     "cyhy_feeds_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
     "cyhy_feeds_dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
