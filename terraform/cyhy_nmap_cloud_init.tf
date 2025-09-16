@@ -2,7 +2,7 @@
 # volume, and setting the hostname
 
 data "cloudinit_config" "cyhy_nmap_cloud_init_tasks" {
-  count = var.nmap_instance_count
+  count = local.nmap_total_instance_count
 
   base64_encode = true
   gzip          = true

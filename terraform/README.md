@@ -588,7 +588,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_ami.cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.dashboard](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.nessus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
-| [aws_ami.nmap](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_ami.nmap_arm64](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
+| [aws_ami.nmap_x86_64](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.reporter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_availability_zones.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
@@ -679,7 +680,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | nessus\_cyhy\_runner\_disk | The cyhy-runner data volume for the Nessus instance(s). | `string` | `"/dev/xvdb"` | no |
 | nessus\_instance\_count | The number of Nessus instances to create. | `number` | n/a | yes |
 | nmap\_cyhy\_runner\_disk | The cyhy-runner data volume for the Nmap instance(s). | `string` | `"/dev/nvme1n1"` | no |
-| nmap\_instance\_count | The number of Nmap instances to create. | `number` | n/a | yes |
+| nmap\_instance\_count | The number of Nmap instances to create, broken down by architecture. | `object({ arm64 = number, x86_64 = number })` | n/a | yes |
 | remote\_ssh\_user | The username to use when sshing to the EC2 instances. | `string` | n/a | yes |
 | reporter\_mailer\_override\_filename | This file is used to add/override any Docker composition settings for cyhy-mailer for the reporter EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.cyhy.yml"` | no |
 | ses\_aws\_region | The AWS region where SES is configured. | `string` | `"us-east-1"` | no |
