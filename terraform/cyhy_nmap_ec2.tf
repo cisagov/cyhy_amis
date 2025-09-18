@@ -1,4 +1,26 @@
-data "aws_ami" "nmap" {
+data "aws_ami" "nmap_arm64" {
+  filter {
+    name = "name"
+    values = [
+      "${var.ami_prefixes.nmap}-nmap-hvm-*-arm64-ebs",
+    ]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  filter {
+    name   = "root-device-type"
+    values = ["ebs"]
+  }
+
+  owners      = [data.aws_caller_identity.current.account_id] # This is us
+  most_recent = true
+}
+
+data "aws_ami" "nmap_x86_64" {
   filter {
     name = "name"
     values = [
@@ -21,9 +43,9 @@ data "aws_ami" "nmap" {
 }
 
 resource "aws_instance" "cyhy_nmap" {
-  ami           = data.aws_ami.nmap.id
-  instance_type = local.production_workspace ? "t3.medium" : "t3.small"
-  count         = var.nmap_instance_count
+  ami           = count.index < var.nmap_instance_count.x86_64 ? data.aws_ami.nmap_x86_64.id : data.aws_ami.nmap_arm64.id
+  instance_type = count.index < var.nmap_instance_count.x86_64 ? (local.production_workspace ? "t3.medium" : "t3.small") : (local.production_workspace ? "t4g.medium" : "t4g.small")
+  count         = local.nmap_total_instance_count
 
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
@@ -83,7 +105,7 @@ resource "aws_instance" "cyhy_nmap" {
 # manually and are intended to be a public IP address that rarely
 # changes.
 data "aws_eip" "cyhy_nmap_eips" {
-  count = local.production_workspace ? var.nmap_instance_count : 0
+  count = local.production_workspace ? local.nmap_total_instance_count : 0
   public_ip = cidrhost(
     var.cyhy_elastic_ip_cidr_block,
     var.cyhy_portscan_first_elastic_ip_offset + count.index,
@@ -95,7 +117,7 @@ data "aws_eip" "cyhy_nmap_eips" {
 # workspaces and are randomly-assigned public IP address for temporary
 # use.
 resource "aws_eip" "cyhy_nmap_random_eips" {
-  count = local.production_workspace ? 0 : var.nmap_instance_count
+  count = local.production_workspace ? 0 : local.nmap_total_instance_count
 
   domain = "vpc"
 
@@ -121,7 +143,7 @@ resource "aws_eip" "cyhy_nmap_random_eips" {
 #
 # VOTED WORST LINE OF TERRAFORM 2018 (so far) BY DEV TEAM WEEKLY!!
 resource "aws_eip_association" "cyhy_nmap_eip_assocs" {
-  count       = var.nmap_instance_count
+  count       = local.nmap_total_instance_count
   instance_id = aws_instance.cyhy_nmap[count.index].id
   allocation_id = element(
     coalescelist(
@@ -143,7 +165,7 @@ resource "aws_eip_association" "cyhy_nmap_eip_assocs" {
 # inside of the lifecycle block
 # (https://github.com/hashicorp/terraform/issues/3116).
 resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
-  count             = var.nmap_instance_count
+  count             = local.nmap_total_instance_count
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
 
   # availability_zone = "${element(data.aws_availability_zones.all.names, count.index)}"
@@ -159,7 +181,7 @@ resource "aws_ebs_volume" "nmap_cyhy_runner_data" {
 }
 
 resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
-  count       = var.nmap_instance_count
+  count       = local.nmap_total_instance_count
   device_name = "/dev/xvdb"
   volume_id   = aws_ebs_volume.nmap_cyhy_runner_data[count.index].id
   instance_id = aws_instance.cyhy_nmap[count.index].id
