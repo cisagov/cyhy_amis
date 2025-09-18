@@ -16,7 +16,11 @@ dependencies:
       - any-glob-to-any-file:
           # Add any dependency files used.
           - .pre-commit-config.yaml
+          - ansible/requirements.yml
+          - packer/ansible/requirements.yml
+          - packer/packer.pkr.hcl
           - requirements*.txt
+          - terraform/.terraform.lock.hcl
 documentation:
   - changed-files:
       - any-glob-to-any-file:
