@@ -3,10 +3,20 @@
 # if there is a match based on the matching rules for the entry. Please see
 # the actions/labeler documentation for more information:
 # https://github.com/actions/labeler#match-object
+#
+# Note: Verify that the label you want to use is defined in the
+# crazy-max/ghaction-github-labeler configuration file located at
+# .github/labels.yml.
 ansible:
   - changed-files:
       - any-glob-to-any-file:
           - "**/ansible/**"
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file:
+          # Add any dependency files used.
+          - .pre-commit-config.yaml
+          - requirements*.txt
 documentation:
   - changed-files:
       - any-glob-to-any-file:
@@ -18,7 +28,7 @@ github-actions:
 packer:
   - changed-files:
       - any-glob-to-any-file:
-          - packer/**
+          - "**/*.pkr.hcl"
 python:
   - changed-files:
       - any-glob-to-any-file:
@@ -26,9 +36,20 @@ python:
 terraform:
   - changed-files:
       - any-glob-to-any-file:
-          - terraform/**
+          - "**/*.tf"
+test:
+  - changed-files:
+      - any-glob-to-any-file:
+          # Add any test-related files or paths.
+          - .ansible-lint
+          - .bandit.yml
+          - .flake8
+          - .isort.cfg
+          - .mdl_config.yaml
+          - .yamllint
 upstream update:
   - head-branch:
+      # Any Lineage pull requests should use this branch.
       - lineage/skeleton
 version bump:
   - changed-files:
