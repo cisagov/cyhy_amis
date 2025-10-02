@@ -4,4 +4,7 @@
   become: true
   become_method: ansible.builtin.sudo
   roles:
-    - code_gov_update
+    - role: code_gov_update
+      vars:
+        code_gov_update_file_owner_group: "{{ cyhy_user_username }}"
+        code_gov_update_file_owner_username: "{{ cyhy_user_username }}"
