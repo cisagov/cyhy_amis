@@ -8,7 +8,6 @@
 # crazy-max/ghaction-github-labeler configuration file located at
 # .github/labels.yml.
 
-# Enable if Ansible playbooks are used in the repository.
 ansible:
   - changed-files:
       - any-glob-to-any-file:
@@ -23,13 +22,12 @@ dependencies:
           - packer/packer.pkr.hcl
           - requirements*.txt
           - terraform/.terraform.lock.hcl
-# Enable if Docker is used in the repository.
-# docker:
-#   - changed-files:
-#       - any-glob-to-any-file:
-#           - "**/compose*.yml"
-#           - "**/docker-compose*.yml"
-#           - "**/Dockerfile*"
+docker:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/compose*.yml"
+          - "**/docker-compose*.yml"
+          - "**/Dockerfile*"
 documentation:
   - changed-files:
       - any-glob-to-any-file:
@@ -38,17 +36,18 @@ github-actions:
   - changed-files:
       - any-glob-to-any-file:
           - .github/workflows/**
-# Enable if Packer is used in the repository.
+javascript:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.js"
 packer:
   - changed-files:
       - any-glob-to-any-file:
           - "**/*.pkr.hcl"
-# Enable if Python is used in the repository.
 python:
   - changed-files:
       - any-glob-to-any-file:
           - "**/*.py"
-# Enable if Terraform is used in the repository.
 terraform:
   - changed-files:
       - any-glob-to-any-file:
@@ -63,6 +62,10 @@ test:
           - .isort.cfg
           - .mdl_config.yaml
           - .yamllint
+typescript:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "**/*.ts"
 upstream update:
   - head-branch:
       # Any Lineage pull requests should use this branch.
