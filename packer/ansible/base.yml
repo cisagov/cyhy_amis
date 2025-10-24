@@ -6,7 +6,33 @@
   roles:
     - automated_security_updates
     - banner
-    - clamav
     - htop
     - persist_journald
     - dev_ssh_access
+  tasks:
+    - name: Install and configure ClamAV
+      block:
+        # We have to treat Debian Buster as a special case because it
+        # is so old.
+        - name: Install and configure ClamAV (Debian Buster)
+          ansible.builtin.include_role:
+            name: clamav
+          vars:
+            # The version of ClamAV offered by Debian Buster is so
+            # ancient that it is no longer allowed to download updated
+            # signatures from ClamAV.  See
+            # https://github.com/cisagov/ansible-role-clamav/pull/100/commits/75810362c165b4fe746a415aa831a2d0ea0dbf76
+            # for more details.
+            clamav_install_from_package_manager: false
+          when:
+            - ansible_distribution == "Debian"
+            - ansible_distribution_release == "buster"
+
+        # If we're not on Debian Buster then we can just install the
+        # role as we normally do.
+        - name: Install and configure ClamAV (not Debian Buster)
+          ansible.builtin.include_role:
+            name: clamav
+          when: >-
+            ansible_distribution != "Debian" or
+            ansible_distribution_release != "buster"
