@@ -23,7 +23,7 @@ data "aws_ami" "cyhy_mongo" {
 resource "aws_instance" "cyhy_mongo" {
   count                       = var.mongo_instance_count
   ami                         = data.aws_ami.cyhy_mongo.id
-  instance_type               = local.production_workspace ? "m5.12xlarge" : "t3.small"
+  instance_type               = local.production_workspace ? "m5.24xlarge" : "t3.small"
   availability_zone           = "${var.aws_region}${var.aws_availability_zone}"
   subnet_id                   = aws_subnet.cyhy_private_subnet.id
   associate_public_ip_address = false
@@ -102,7 +102,7 @@ resource "aws_ebs_volume" "cyhy_mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type              = "io2"
   size              = local.production_workspace ? 1024 : 20
-  iops              = 1000
+  iops              = local.production_workspace ? 5000 : 1000
   encrypted         = true
 
   tags = { "Name" = "CyHy Mongo Data" }
