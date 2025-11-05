@@ -102,7 +102,7 @@ resource "aws_ebs_volume" "cyhy_mongo_data" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type              = "io2"
   size              = local.production_workspace ? 1024 : 20
-  iops              = 1000
+  iops              = 5000
   encrypted         = true
 
   tags = { "Name" = "CyHy Mongo Data" }
