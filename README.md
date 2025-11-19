@@ -2,6 +2,8 @@
 
 [![GitHub Build Status](https://github.com/cisagov/cyhy_amis/workflows/build/badge.svg)](https://github.com/cisagov/cyhy_amis/actions)
 [![CodeQL](https://github.com/cisagov/cyhy_amis/workflows/CodeQL/badge.svg)](https://github.com/cisagov/cyhy_amis/actions/workflows/codeql-analysis.yml)
+[![License](https://img.shields.io/github/license/cisagov/cyhy_amis)](https://spdx.org/licenses/)
+[![CodeQL](https://github.com/cisagov/cyhy_amis/workflows/CodeQL/badge.svg)](https://github.com/cisagov/cyhy_amis/actions/workflows/codeql-analysis.yml)
 
 ## Building the AMIs ##
 
