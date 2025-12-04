@@ -6,5 +6,6 @@
   roles:
     - role: cyhy_archive
       vars:
+        cyhy_archive_cyhy_core_version: "{{ cyhy_core_version }}"
         cyhy_archive_maxmind_account_id: "{{ maxmind_account_id_secret }}"
         cyhy_archive_maxmind_license_key: "{{ maxmind_license_key_secret }}"
