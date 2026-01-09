@@ -167,6 +167,19 @@ repos:
           # cisagov/cyhy_amis#842 for more details.
           - --ignore-vuln
           - GHSA-99w6-3xph-cx78
+          # We have to ignore this vulnerability since we need to pin
+          # to ansible 10 for now to support our CyHy code that must
+          # still run on Debian Buster.  This vulnerability is fixed
+          # in ansible>=12.
+          #
+          # This isn't a big deal since the vulnerability only impacts
+          # users of the Keycloak modules in
+          # ansible.community.general, and we don't use these modules.
+          #
+          # TODO: Remove this when it becomes possible.  See
+          # cisagov/skeleton-ansible-role#248 for more details.
+          - --ignore-vuln
+          - GHSA-8ggh-xwr9-3373
           # Add any pip requirements files to scan
           - --requirement
           - requirements-dev.txt
