@@ -4,7 +4,7 @@ name: Lock Terraform providers
 on:  # yamllint disable-line rule:truthy
   pull_request:
     paths:
-      - terrform/.terraform.lock.hcl
+      - terraform/.terraform.lock.hcl
 
 # Set a default shell for any run steps. The `-Eueo pipefail` sets errtrace,
 # nounset, errexit, and pipefail. The `-x` will print all commands as they are
