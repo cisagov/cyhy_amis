@@ -96,6 +96,9 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ steps.setup-env.outputs.terraform-version }}
+      - name: Initialize the Terraform configuration
+        run: terraform init
+        working-directory: ./terraform
       - name: Lock Terraform providers
         run: >-
           terraform providers lock
