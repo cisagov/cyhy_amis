@@ -174,7 +174,7 @@ module "bod_docker_ansible_provisioner" {
     "host_groups=docker,bod_docker",
     "orchestrator_aws_region=${var.aws_region}",
     "orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "orchestrator_dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
+    "orchestrator_dmarc_import_es_role=${var.dmarc_import_es_read_write_role_arn}",
     "production_workspace=${local.production_workspace}",
   ]
   playbook = "../ansible/playbook.yml"

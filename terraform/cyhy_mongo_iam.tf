@@ -24,10 +24,11 @@ resource "aws_iam_role_policy_attachment" "ssm_agent_policy_attachment_cyhy_mong
   policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
-# Attach the dmarc-import Elasticsearch assume role policy to this role as well
-resource "aws_iam_role_policy_attachment" "dmarc_es_assume_role_policy_attachment_cyhy_mongo" {
+# Attach the dmarc-import Elasticsearch assume read role policy to
+# this role as well
+resource "aws_iam_role_policy_attachment" "dmarc_es_assume_read_role_policy_attachment_cyhy_mongo" {
   role       = aws_iam_role.cyhy_mongo_instance_role.id
-  policy_arn = aws_iam_policy.dmarc_es_assume_role_policy.arn
+  policy_arn = aws_iam_policy.dmarc_es_assume_read_role_policy.arn
 }
 
 # Attach the cyhy-archive S3 write policy to this role as well
