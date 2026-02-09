@@ -17,7 +17,7 @@ variable "dmarc_import_es_read_role_arn" {
 }
 
 variable "dmarc_import_es_read_write_role_arn" {
-  description = "The ARN of the role that must be assumed in order to write to the dmarc-import Elasticsearch database."
+  description = "The ARN of the role that must be assumed in order to read and write to the dmarc-import Elasticsearch database."
   nullable    = false
   type        = string
 }
