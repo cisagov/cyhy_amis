@@ -52,6 +52,9 @@ jobs:
           # this workflow.
           permissions_monitoring_config: ${{ vars.ACTIONS_PERMISSIONS_CONFIG }}
   lock-providers:
+    # Prevent the workflow from running if the trigger was a previous workflow run that
+    # updated the lock file.
+    if: ${{ github.actor != 'github-actions[bot]' }}
     needs:
       - diagnostics
     permissions:
