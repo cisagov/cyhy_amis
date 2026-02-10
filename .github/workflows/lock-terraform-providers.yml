@@ -97,7 +97,7 @@ jobs:
         with:
           terraform_version: ${{ steps.setup-env.outputs.terraform-version }}
       - name: Initialize the Terraform configuration
-        run: terraform init
+        run: terraform init -backend=false
         working-directory: ./terraform
       - name: Lock Terraform providers
         run: >-
