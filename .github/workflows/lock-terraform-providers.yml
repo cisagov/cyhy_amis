@@ -97,6 +97,7 @@ jobs:
           # Needed by stefanzweifel/git-auto-commit-action to support the pull_request
           # trigger.
           ref: ${{ github.head_ref }}
+          token: ${{ secrets.GHA_AUTO_COMMIT_TOKEN || github.token }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
