@@ -221,7 +221,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_iam_instance_profile.cyhy_nessus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_instance_profile.cyhy_nmap](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_instance_profile.cyhy_reporter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
-| [aws_iam_policy.dmarc_es_assume_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.dmarc_es_assume_read_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.dmarc_es_assume_read_write_role_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.lambda_eni_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.moe_bucket_read](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.moe_bucket_write](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
@@ -256,8 +257,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_iam_role_policy_attachment.cloudwatch_agent_policy_attachment_cyhy_nessus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.cloudwatch_agent_policy_attachment_cyhy_nmap](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.cloudwatch_agent_policy_attachment_cyhy_reporter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.dmarc_es_assume_role_policy_attachment_bod_docker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.dmarc_es_assume_role_policy_attachment_cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.dmarc_es_assume_read_role_policy_attachment_cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.dmarc_es_assume_read_write_role_policy_attachment_bod_docker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.lambda_eni_policy_attachment_bod](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.lambda_eni_policy_attachment_fdi](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.moe_bucket_write_policy_attachment_cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
@@ -598,7 +599,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_eip.cyhy_nmap_eips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eip) | data source |
 | [aws_iam_policy_document.bod_flow_log_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.cyhy_flow_log_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_iam_policy_document.dmarc_es_assume_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.dmarc_es_assume_read_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.dmarc_es_assume_read_write_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ec2_service_assume_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fdi_failure_alarm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.fdi_lambda_cloudwatch_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -649,7 +651,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | cyhy\_user\_info | User information for the CyHy user created in our AMIs. Please see `packer/ansible/vars/cyhy_user.yml` for the configuration used when AMIs are built. | ```object({ gid = number, home = string, name = string, uid = number, })``` | ```{ "gid": 2048, "home": "/var/cyhy", "name": "cyhy", "uid": 2048 }``` | no |
 | cyhy\_vulnscan\_first\_elastic\_ip\_offset | The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy vulnscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first vulnscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional vulnscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available. | `number` | `1` | no |
 | dmarc\_import\_aws\_region | The AWS region where the dmarc-import Elasticsearch database resides. | `string` | `"us-east-1"` | no |
-| dmarc\_import\_es\_role\_arn | The ARN of the role that must be assumed in order to read the dmarc-import Elasticsearch database. | `string` | n/a | yes |
+| dmarc\_import\_es\_read\_role\_arn | The ARN of the role that must be assumed in order to read the dmarc-import Elasticsearch database. | `string` | n/a | yes |
+| dmarc\_import\_es\_read\_write\_role\_arn | The ARN of the role that must be assumed in order to read and write to the dmarc-import Elasticsearch database. | `string` | n/a | yes |
 | docker\_mailer\_override\_filename | This file is used to add/override any Docker composition settings for cyhy-mailer for the docker EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.bod.yml"` | no |
 | enable\_mgmt\_vpc | Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC. | `bool` | `false` | no |
 | findings\_data\_field\_map | The key for the file storing field name mappings in JSON format. | `string` | n/a | yes |

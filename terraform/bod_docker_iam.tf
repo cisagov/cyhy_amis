@@ -30,10 +30,11 @@ resource "aws_iam_role_policy_attachment" "ses_assume_role_policy_attachment_bod
   policy_arn = aws_iam_policy.ses_assume_role_policy.arn
 }
 
-# Attach the dmarc-import Elasticsearch assume role policy to this role as well
-resource "aws_iam_role_policy_attachment" "dmarc_es_assume_role_policy_attachment_bod_docker" {
+# Attach the dmarc-import Elasticsearch assume read-write role policy
+# to this role as well
+resource "aws_iam_role_policy_attachment" "dmarc_es_assume_read_write_role_policy_attachment_bod_docker" {
   role       = aws_iam_role.bod_docker_instance_role.id
-  policy_arn = aws_iam_policy.dmarc_es_assume_role_policy.arn
+  policy_arn = aws_iam_policy.dmarc_es_assume_read_write_role_policy.arn
 }
 
 # IAM policy document that that allows the invocation of our Lambda

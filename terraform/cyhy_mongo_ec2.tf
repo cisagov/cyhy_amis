@@ -193,7 +193,7 @@ module "cyhy_mongo_ansible_provisioner" {
     "cyhy_commander_nmap_hosts=${join(",", formatlist("portscan%d", range(1, local.nmap_total_instance_count + 1)))}",
     "cyhy_feeds_aws_region=${var.aws_region}",
     "cyhy_feeds_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "cyhy_feeds_dmarc_import_es_role=${var.dmarc_import_es_role_arn}",
+    "cyhy_feeds_dmarc_import_es_role=${var.dmarc_import_es_read_role_arn}",
     "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
     "host_groups=mongo,cyhy_commander,cyhy_archive",
     "production_workspace=${local.production_workspace}",
