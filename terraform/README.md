@@ -145,7 +145,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 ## Requirements ##
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | terraform | ~> 1.1 |
 | aws | ~> 6.7 |
 | cloudinit | ~> 2.0 |
@@ -154,7 +154,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 ## Providers ##
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | aws | ~> 6.7 |
 | aws.public\_dns | ~> 6.7 |
 | cloudinit | ~> 2.0 |
@@ -164,7 +164,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 ## Modules ##
 
 | Name | Source | Version |
-|------|--------|---------|
+| ---- | ------ | ------- |
 | bod\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | bod\_docker\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | cyhy\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
@@ -179,7 +179,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 ## Resources ##
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_cloudwatch_log_group.bod_flow_log_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.cyhy_flow_log_group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
 | [aws_cloudwatch_log_group.fdi_lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
@@ -633,7 +633,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 ## Inputs ##
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | ami\_prefixes | An object whose keys are the types of Packer images (defined in the `packer/` directory in the root of the repository) and whose values are the prefix to use for the corresponding AMI. The default for all images is "cyhy". | ```object({ bastion = string, dashboard = string, docker = string, mongo = string, nessus = string, nmap = string, reporter = string, })``` | ```{ "bastion": "cyhy", "dashboard": "cyhy", "docker": "cyhy", "mongo": "cyhy", "nessus": "cyhy", "nmap": "cyhy", "reporter": "cyhy" }``` | no |
 | aws\_availability\_zone | The AWS availability zone to deploy into (e.g. a, b, c, etc.). | `string` | `"a"` | no |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
