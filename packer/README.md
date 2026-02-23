@@ -66,7 +66,7 @@ No requirements.
 ## Providers ##
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | amazon-ami | n/a |
 | amazon-parameterstore | n/a |
 
@@ -77,7 +77,7 @@ No modules.
 ## Resources ##
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [amazon-ami_amazon-ami.debian_bookworm_arm64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
 | [amazon-ami_amazon-ami.debian_bookworm_x86_64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
 | [amazon-ami_amazon-ami.debian_buster_x86_64](https://registry.terraform.io/providers/hashicorp/amazon-ami/latest/docs/data-sources/amazon-ami) | data source |
@@ -89,7 +89,7 @@ No modules.
 ## Inputs ##
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | ami\_prefix | The prefix to use for the names of AMIs created. | `string` | `"cyhy"` | no |
 | ami\_regions | The list of AWS regions to copy the AMI to once it has been created. Example: ["us-east-1"] | `list(string)` | ```[ "us-east-1", "us-west-1", "us-west-2" ]``` | no |
 | build\_region | The region in which to retrieve the base AMI from and build the new AMI. | `string` | `"us-east-2"` | no |
