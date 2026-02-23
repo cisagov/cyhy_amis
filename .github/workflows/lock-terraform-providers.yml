@@ -6,6 +6,8 @@ on:  # yamllint disable-line rule:truthy
   # https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#pull_request
   pull_request:
     paths:
+      # Ensure the workflow is run if it has been changed.
+      - .github/workflows/lock-terraform-providers.yml
       - terraform/.terraform.lock.hcl
 
 # Set a default shell for any run steps. The `-Eueo pipefail` sets errtrace,
@@ -55,8 +57,10 @@ jobs:
           permissions_monitoring_config: ${{ vars.ACTIONS_PERMISSIONS_CONFIG }}
   lock-providers:
     # Prevent the workflow from running if the trigger was a previous workflow run that
-    # updated the lock file.
-    if: ${{ github.actor != 'github-actions[bot]' }}
+    # updated the lock file or if the run is from a fork.
+    if: >-
+      (github.actor != 'github-actions[bot]')
+      && (github.event.pull_request.head.repo.full_name == github.repository)
     needs:
       - diagnostics
     permissions:
@@ -97,6 +101,7 @@ jobs:
           # Needed by stefanzweifel/git-auto-commit-action to support the pull_request
           # trigger.
           ref: ${{ github.head_ref }}
+          token: ${{ secrets.GHA_AUTO_COMMIT_TOKEN || github.token }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
