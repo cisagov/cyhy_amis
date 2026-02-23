@@ -57,8 +57,10 @@ jobs:
           permissions_monitoring_config: ${{ vars.ACTIONS_PERMISSIONS_CONFIG }}
   lock-providers:
     # Prevent the workflow from running if the trigger was a previous workflow run that
-    # updated the lock file.
-    if: ${{ github.actor != 'github-actions[bot]' }}
+    # updated the lock file or if the run is from a fork.
+    if: >-
+      (github.actor != 'github-actions[bot]')
+      && (github.event.pull_request.head.repo.full_name == github.repository)
     needs:
       - diagnostics
     permissions:
