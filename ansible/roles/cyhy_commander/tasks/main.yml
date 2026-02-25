@@ -150,3 +150,25 @@
     minute: "45"
     name: Nightly cyhy-kevsync
     user: cyhy
+
+#
+# Copy the run_cyhy_ssvcsync.sh script to the scripts directory
+#
+- name: Copy the run_cyhy_ssvcsync.sh script to the scripts directory
+  ansible.builtin.copy:
+    dest: /var/cyhy/scripts/run_cyhy_ssvcsync.sh
+    mode: u=rx,g=rx,o=rx
+    src: run_cyhy_ssvcsync.sh
+
+#
+# Run cyhy-ssvcsync daily at 0900 (UTC) as cyhy user
+#
+- name: Set up nightly cron job to sync SSVC data
+  ansible.builtin.cron:
+    hour: "9"
+    job: >-
+      /var/cyhy/scripts/run_cyhy_ssvcsync.sh 2>&1
+      | /usr/bin/logger --tag cyhy-ssvcsync
+    minute: "0"
+    name: Nightly cyhy-ssvcsync
+    user: cyhy
