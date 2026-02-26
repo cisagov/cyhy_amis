@@ -161,6 +161,15 @@
     src: run_cyhy_ssvcsync.sh
 
 #
+# Install jq, which is used by the run_cyhy_ssvcsync.sh script to parse JSON
+# responses from the GitHub API
+#
+- name: Install jq (used by run_cyhy_ssvcsync.sh script)
+  ansible.builtin.package:
+    name:
+      - jq
+
+#
 # Run cyhy-ssvcsync daily at 0900 (UTC) as cyhy user
 #
 - name: Set up nightly cron job to sync SSVC data
