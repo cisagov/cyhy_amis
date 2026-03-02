@@ -11,7 +11,9 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-# Get the recent releases for the cvelistV5 repository from the GitHub REST API
+# Get the recent releases for the cvelistV5 repository from the GitHub REST API.
+# Since releases are returned in descending order by creation date, the most
+# recent release will be the first one in the list.
 RELEASES_JSON=$(curl --silent --user-agent "cisagov/cyhy_amis/run_cyhy_ssvcsync" https://api.github.com/repos/CVEProject/cvelistV5/releases)
 
 # Check if the API request was successful
