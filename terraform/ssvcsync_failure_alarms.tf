@@ -8,9 +8,8 @@ resource "aws_cloudwatch_log_metric_filter" "ssvcsync_failure" {
   # 1. A logging.exception() call for any uncaught exceptions in the
   #    main() method of the cyhy-ssvcsync script in cisagov/cyhy-core
   # 2. The stdout and stderr of the cyhy-ssvcsync script being piped
-  #    into the system logger with the tag "cyhy-ssvcsync" when that
-  #    script is run, similar to what is done in
-  #    https://github.com/cisagov/cyhy_amis/blob/0f5974229edd909befc90ff5f4cf639327d373d8/ansible/roles/cyhy_commander/tasks/main.yml#L160
+  #    into the system logger with the tag "cyhy-ssvcsync"; see
+  #    https://github.com/cisagov/cyhy_amis/blob/fd6c24cb93f20e354e9d21da2ca52357c7294cf9/ansible/roles/cyhy_commander/tasks/main.yml#L189-L191
   #
   # The quotes around cyhy-ssvcsync are necessary because the hyphen is
   # a special character in the log metric filter syntax:
