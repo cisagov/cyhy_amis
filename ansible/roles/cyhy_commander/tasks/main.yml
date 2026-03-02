@@ -152,6 +152,17 @@
     user: cyhy
 
 #
+# Ensure the /var/cyhy/scripts directory exists
+#
+- name: Create the /var/cyhy/scripts directory (if it doesn't already exist)
+  ansible.builtin.file:
+    group: cyhy
+    mode: u=rwx,g=rx,o=rx
+    owner: cyhy
+    path: /var/cyhy/scripts
+    state: directory
+
+#
 # Copy the run_cyhy_ssvcsync.sh script to the scripts directory
 #
 - name: Copy the run_cyhy_ssvcsync.sh script to the scripts directory
