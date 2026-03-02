@@ -14,8 +14,13 @@ set -o pipefail
 # Get the recent releases for the cvelistV5 repository from the GitHub REST API.
 # Since releases are returned in descending order by creation date, the most
 # recent release will be the first one in the list.
+#
+# Use the --fail option so curl returns a non-zero exit code if the API request
+# fails (e.g. due to a network error or a non-2xx HTTP status code), and the
+# --silent option to suppress progress output and error messages (since we will
+# handle errors ourselves).
 RELEASES_JSON=$(
-  curl --silent --user-agent "cisagov/cyhy_amis/run_cyhy_ssvcsync" \
+  curl --fail --silent --user-agent "cisagov/cyhy_amis/run_cyhy_ssvcsync" \
     "https://api.github.com/repos/CVEProject/cvelistV5/releases"
 )
 
