@@ -26,6 +26,7 @@
         apt_over_https_apt_source_files:
           # Legacy SourceList files (pre Debian Bookworm)
           - /etc/apt/sources.list
+          - /etc/apt/sources.list.d/archive.list
           - /etc/apt/sources.list.d/backports.list
           # DEB822 SourceList files (Debian Bookworm and later)
           - /etc/apt/sources.list.d/debian.sources
