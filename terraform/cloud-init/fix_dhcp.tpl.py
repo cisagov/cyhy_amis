@@ -28,4 +28,4 @@ with open(NETPLAN_CONFIG) as f:
 
 # Write the results back out to the Netplan configuration file
 with open(NETPLAN_CONFIG, "w") as f:
-    f.write(yaml.dump(config))
+    f.write(yaml.safe_dump(config))

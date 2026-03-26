@@ -270,7 +270,7 @@ def main():
         NESSUS_API_CONFIGURATION_FILE,
     )
     with open(NESSUS_API_CONFIGURATION_FILE) as configuration_file:
-        api_configuration = yaml.load(configuration_file, Loader=yaml.SafeLoader)
+        api_configuration = yaml.safe_load(configuration_file)
 
     try:
         LOGGER.info("Instantiating Nessus controller at: %s", api_configuration["url"])
