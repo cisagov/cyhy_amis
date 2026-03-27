@@ -6,6 +6,7 @@ debug-logging = true
 # commander.
 default-scheduler = PERSISTENT1
 default-section = production
+job-processing-threads = 4
 jobs-per-nessus-host = 16
 jobs-per-nmap-host = 8
 keep-failures = true
@@ -19,6 +20,7 @@ test-mode = false
 
 [production]
 database-name = cyhy
+job-processing-threads = {{ cyhy_commander_job_processing_threads }}
 jobs-per-nessus-host = {{ cyhy_commander_jobs_per_nessus_host }}
 jobs-per-nmap-host = {{ cyhy_commander_jobs_per_nmap_host }}
 nessus-hosts = {{ cyhy_commander_nessus_hosts }}

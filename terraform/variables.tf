@@ -153,16 +153,18 @@ variable "cloudwatch_alarm_emails" {
 
 variable "commander_config" {
   default = {
-    jobs_per_nessus_host = 16
-    jobs_per_nmap_host   = 8
-    next_scan_limit      = 8192
+    job_processing_threads = 4
+    jobs_per_nessus_host   = 16
+    jobs_per_nmap_host     = 8
+    next_scan_limit        = 8192
   }
   description = "Configuration options for the CyHy commander's configuration file."
   nullable    = false
   type = object({
-    jobs_per_nessus_host = number,
-    jobs_per_nmap_host   = number,
-    next_scan_limit      = number,
+    job_processing_threads = number,
+    jobs_per_nessus_host   = number,
+    jobs_per_nmap_host     = number,
+    next_scan_limit        = number,
   })
 }
 
