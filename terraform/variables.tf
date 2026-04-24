@@ -199,6 +199,7 @@ variable "cyhy_archive_bucket_name" {
 variable "cyhy_core_version" {
   default     = "v1.1.14"
   description = "The version of cisagov/cyhy-core to use; must be a valid git reference."
+  nullable    = false
   type        = string
 }
 
