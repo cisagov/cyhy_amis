@@ -44,7 +44,7 @@
         mode: u=rw,g=rw,o=
         owner: cyhy
         src: cyhy.conf.j2
-      register: cyhy_commander_cyhy_conf
+      register: cyhy_commander_cyhy_conf_created
       when: not cyhy_commander_cyhy_conf_result.stat.exists
 
     # yamllint complains about the line length in the block below, but it is
@@ -60,7 +60,7 @@
           database-name = {{ cyhy_commander_commander_db }}
         marker: ; {mark} ANSIBLE MANAGED BLOCK commander
         path: /etc/cyhy/cyhy.conf
-      register: cyhy_commander_cyhy_conf
+      register: cyhy_commander_cyhy_conf_modified
       when: cyhy_commander_cyhy_conf_result.stat.exists
     # yamllint enable rule:line-length
 
@@ -82,7 +82,8 @@
   when: >-
     cyhy_commander_cyhy_ssh_private_key.changed
     or cyhy_commander_conf.changed
-    or cyhy_commander_cyhy_conf.changed
+    or cyhy_commander_cyhy_conf_created.changed
+    or cyhy_commander_cyhy_conf_modified.changed
 
 - name: Enable and start cyhy-commander
   ansible.builtin.service:
