@@ -21,6 +21,45 @@
     src: commander.conf.j2
   register: cyhy_commander_conf
 
+- name: Check if cyhy.conf already exists
+  ansible.builtin.stat:
+    path: /etc/cyhy/cyhy.conf
+  register: cyhy_commander_cyhy_conf_result
+
+#
+# Set up /etc/cyhy/cyhy.conf with commander creds
+#
+# This is a little messy.  The real solution is to just create a
+# cyhy.conf with credentials for each user in mongo_users.other_users.
+# That will cause some heartburn, though, since the credential
+# sections will have to be named using the MongoDB username.  That
+# will necessitate some changes elsewhere in the code where named
+# sections from cyhy.conf are explicitly referenced.
+- name: Create cyhy.conf (with commander credentials) if it doesn't exist
+  ansible.builtin.template:
+    dest: /etc/cyhy/cyhy.conf
+    group: cyhy
+    mode: u=rw,g=rw,o=
+    owner: cyhy
+    src: cyhy.conf.j2
+  when: not cyhy_commander_cyhy_conf_result.stat.exists
+
+# yamllint complains about the line length in the block below, but it is
+# necessary to ensure that the block is formatted correctly in the
+# cyhy.conf file.
+#
+# yamllint disable rule:line-length
+- name: Add commander credentials block to cyhy.conf if necessary
+  ansible.builtin.blockinfile:
+    block: |
+      [production]
+      database-uri = mongodb://{{ cyhy_commander_commander_user }}:{{ cyhy_commander_commander_pw }}@database1.cyhy:27017/{{ cyhy_commander_commander_db }}
+      database-name = {{ cyhy_commander_commander_db }}
+    marker: ; {mark} ANSIBLE MANAGED BLOCK commander
+    path: /etc/cyhy/cyhy.conf
+  when: cyhy_commander_cyhy_conf_result.stat.exists
+# yamllint enable rule:line-length
+
 #
 # Create empty cyhy ssh config with cyhy as owner and group
 #
@@ -73,45 +112,6 @@
     dest: /tmp/cyhy-places/extras/ADDL_CYHY_PLACES.txt
     mode: u=rw,g=r,o=r
     url: https://raw.githubusercontent.com/cisagov/cyhy-core/develop/extras/ADDL_CYHY_PLACES.txt
-
-- name: Check if cyhy.conf already exists
-  ansible.builtin.stat:
-    path: /etc/cyhy/cyhy.conf
-  register: cyhy_commander_cyhy_conf_result
-
-#
-# Set up /etc/cyhy/cyhy.conf with commander creds
-#
-# This is a little messy.  The real solution is to just create a
-# cyhy.conf with credentials for each user in mongo_users.other_users.
-# That will cause some heartburn, though, since the credential
-# sections will have to be named using the MongoDB username.  That
-# will necessitate some changes elsewhere in the code where named
-# sections from cyhy.conf are explicitly referenced.
-- name: Create cyhy.conf (with commander credentials) if it doesn't exist
-  ansible.builtin.template:
-    dest: /etc/cyhy/cyhy.conf
-    group: cyhy
-    mode: u=rw,g=rw,o=
-    owner: cyhy
-    src: cyhy.conf.j2
-  when: not cyhy_commander_cyhy_conf_result.stat.exists
-
-# yamllint complains about the line length in the block below, but it is
-# necessary to ensure that the block is formatted correctly in the
-# cyhy.conf file.
-#
-# yamllint disable rule:line-length
-- name: Add commander credentials block to cyhy.conf if necessary
-  ansible.builtin.blockinfile:
-    block: |
-      [production]
-      database-uri = mongodb://{{ cyhy_commander_commander_user }}:{{ cyhy_commander_commander_pw }}@database1.cyhy:27017/{{ cyhy_commander_commander_db }}
-      database-name = {{ cyhy_commander_commander_db }}
-    marker: ; {mark} ANSIBLE MANAGED BLOCK commander
-    path: /etc/cyhy/cyhy.conf
-  when: cyhy_commander_cyhy_conf_result.stat.exists
-# yamllint enable rule:line-length
 
 #
 # Run script to create the "places" collection
