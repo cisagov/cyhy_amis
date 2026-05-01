@@ -9,6 +9,7 @@
     group: cyhy
     mode: u=rw,g=,o=
     owner: cyhy
+  no_log: true
   register: cyhy_commander_cyhy_ssh_private_key
 
 #
@@ -63,6 +64,7 @@
         mode: u=rw,g=rw,o=
         owner: cyhy
         path: /etc/cyhy/cyhy.conf
+      no_log: true
       register: cyhy_commander_cyhy_conf_modified
       when: cyhy_commander_cyhy_conf_result.stat.exists
     # yamllint enable rule:line-length
