@@ -28,5 +28,3 @@ orchestrator_scan_writer_pw: >-
 # scan-writer mongo database
 orchestrator_scan_writer_db: >-
   {{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/scan-writer/database') }}
-orchestrator_user: "{{ ansible_role_user }}"
-orchestrator_group: "{{ ansible_role_group }}"

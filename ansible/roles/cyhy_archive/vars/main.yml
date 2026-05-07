@@ -1,3 +1,1 @@
 ---
-cyhy_archive_user: "{{ ansible_role_user }}"
-cyhy_archive_group: "{{ ansible_role_group }}"

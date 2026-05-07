@@ -8,5 +8,3 @@ cyhy_mailer_reporter_pw: >-
 # reporter mongo username
 cyhy_mailer_reporter_user: >-
   {{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/reporter/user') }}
-cyhy_mailer_user: "{{ ansible_role_user }}"
-cyhy_mailer_group: "{{ ansible_role_group }}"

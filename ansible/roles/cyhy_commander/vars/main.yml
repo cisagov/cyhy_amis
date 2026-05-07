@@ -12,5 +12,3 @@ cyhy_commander_commander_pw: >-
 # commander mongo database
 cyhy_commander_commander_db: >-
   {{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/commander/database') }}
-cyhy_commander_user: "{{ ansible_role_user }}"
-cyhy_commander_group: "{{ ansible_role_group }}"
