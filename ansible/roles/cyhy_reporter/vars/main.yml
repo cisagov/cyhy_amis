@@ -26,3 +26,5 @@ cyhy_reporter_scan_reader_db: >-
 # The development users
 cyhy_reporter_dev_users: >-
   {{ lookup('amazon.aws.aws_ssm', '/cyhy/dev/users').split(',') }}
+cyhy_reporter_user: "{{ ansible_role_user }}"
+cyhy_reporter_group: "{{ ansible_role_group }}"

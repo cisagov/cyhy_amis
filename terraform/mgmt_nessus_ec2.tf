@@ -59,6 +59,8 @@ module "mgmt_nessus_ansible_provisioner" {
   ]
   dry_run = false
   envs = [
+    "ansible_role_group=${var.ansible_role_group}",
+    "ansible_role_user=${var.ansible_role_user}",
     "bastion_host=${aws_instance.mgmt_bastion[*].public_ip[count.index]}",
     # If you terminate all the existing management Nessus instances
     # and then run apply, the list aws_instance.mgmt_nessus[*].private_ip

@@ -3,3 +3,5 @@
 nessus_username: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/nessus/username') }}"
 # The Nessus password
 nessus_password: "{{ lookup('amazon.aws.aws_ssm', '/cyhy/nessus/password') }}"
+nessus_user: "{{ ansible_role_user }}"
+nessus_group: "{{ ansible_role_group }}"

@@ -9,26 +9,26 @@
 #
 - name: Create the secrets directory for cyhy-mailer
   ansible.builtin.file:
-    group: cyhy
+    group: "{{ cyhy_mailer_group }}"
     mode: u=rwx,g=rx,o=rx
-    owner: cyhy
+    owner: "{{ cyhy_mailer_user }}"
     path: /var/cyhy/cyhy-mailer/secrets
     state: directory
 
 - name: Create the cyhy-mailer credentials file to allow reading the cyhy database
   ansible.builtin.template:
     dest: /var/cyhy/cyhy-mailer/secrets/database_creds.yml
-    group: cyhy
+    group: "{{ cyhy_mailer_group }}"
     mode: u=r,g=r,o=r
-    owner: cyhy
+    owner: "{{ cyhy_mailer_user }}"
     src: database_creds.yml.j2
 
 - name: Create the AWS config
   ansible.builtin.template:
     dest: /var/cyhy/cyhy-mailer/secrets/aws_config
-    group: cyhy
+    group: "{{ cyhy_mailer_group }}"
     mode: u=r,g=r,o=r
-    owner: cyhy
+    owner: "{{ cyhy_mailer_user }}"
     src: aws_config.j2
 
 # The compose command will automatically use docker-compose.yml and
@@ -39,9 +39,9 @@
 # instance and the CyHy-related reports on the reporter instance.
 - name: Create a symlink for the docker compose override file
   ansible.builtin.file:
-    group: cyhy
+    group: "{{ cyhy_mailer_group }}"
     mode: u=rw,g=rw,o=r
-    owner: cyhy
+    owner: "{{ cyhy_mailer_user }}"
     path: /var/cyhy/cyhy-mailer/docker-compose.override.yml
     src: /var/cyhy/cyhy-mailer/{{ cyhy_mailer_docker_compose_override_file_for_mailer }}
     state: link
@@ -55,7 +55,7 @@
 #       ansible.builtin.cron:
 #         env: true
 #         name: PATH
-#         user: cyhy
+#         user: "{{ cyhy_mailer_user }}"
 #         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 #     - name: Create a cron job for sending BOD 18-01 reports
@@ -67,6 +67,6 @@
 #           | /usr/bin/logger --tag cyhy-mailer
 #         minute: 0
 #         name: "Sending BOD 18-01 reports"
-#         user: cyhy
+#         user: "{{ cyhy_mailer_user }}"
 #         weekday: 1
 #   when: production_workspace

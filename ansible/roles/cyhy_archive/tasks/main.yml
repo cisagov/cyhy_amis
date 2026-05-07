@@ -3,9 +3,9 @@
 # they are copied to S3
 - name: Create the /var/lib/mongodb/cyhy_archives directory
   ansible.builtin.file:
-    group: cyhy
+    group: "{{ cyhy_archive_group }}"
     mode: u=rwx,g=rx,o=rx
-    owner: cyhy
+    owner: "{{ cyhy_archive_user }}"
     path: /var/lib/mongodb/cyhy_archives
     state: directory
 
@@ -22,5 +22,5 @@
       | /usr/bin/logger --tag cyhy-archive
     minute: "0"
     name: Weekly cyhy-archive
-    user: cyhy
+    user: "{{ cyhy_archive_user }}"
     weekday: "6"

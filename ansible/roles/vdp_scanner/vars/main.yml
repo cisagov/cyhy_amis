@@ -1,0 +1,3 @@
+---
+vdp_scanner_user: "{{ ansible_role_user }}"
+vdp_scanner_group: "{{ ansible_role_group }}"

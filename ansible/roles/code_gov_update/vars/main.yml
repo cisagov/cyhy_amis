@@ -1,3 +1,5 @@
 ---
 # The GitHub Personal Access Token
 code_gov_update_github_pat: "{{ lookup('amazon.aws.aws_ssm', '/github/pat/code.gov') }}"
+code_gov_update_user: "{{ ansible_role_user }}"
+code_gov_update_group: "{{ ansible_role_group }}"

@@ -4,26 +4,26 @@
 #
 - name: Create the secrets directory
   ansible.builtin.file:
-    group: cyhy
+    group: "{{ code_gov_update_group }}"
     mode: u=rwx,g=rx,o=rx
-    owner: cyhy
+    owner: "{{ code_gov_update_user }}"
     path: /var/cyhy/code-gov-update/secrets
     state: directory
 
 - name: Create the llnl-scraper config
   ansible.builtin.template:
     dest: /var/cyhy/code-gov-update/secrets/scraper.json
-    group: cyhy
+    group: "{{ code_gov_update_group }}"
     mode: u=r,g=r,o=
-    owner: cyhy
+    owner: "{{ code_gov_update_user }}"
     src: scraper.json.j2
 
 - name: Create the AWS config
   ansible.builtin.template:
     dest: /var/cyhy/code-gov-update/secrets/aws_config
-    group: cyhy
+    group: "{{ code_gov_update_group }}"
     mode: u=r,g=r,o=
-    owner: cyhy
+    owner: "{{ code_gov_update_user }}"
     src: aws_config.j2
 
 #
@@ -36,7 +36,7 @@
       ansible.builtin.cron:
         env: true
         name: PATH
-        user: cyhy
+        user: "{{ code_gov_update_user }}"
         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
     # This cron job runs at midnight UTC on Friday mornings
@@ -49,5 +49,5 @@
           | /usr/bin/logger --tag code-gov-update
         minute: "0"
         name: code.gov update
-        user: cyhy
+        user: "{{ code_gov_update_user }}"
         weekday: "5"

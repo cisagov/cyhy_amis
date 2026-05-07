@@ -82,6 +82,8 @@ module "cyhy_dashboard_ansible_provisioner" {
   ]
   dry_run = false
   envs = [
+    "ansible_role_group=${var.ansible_role_group}",
+    "ansible_role_user=${var.ansible_role_user}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "host=${aws_instance.cyhy_dashboard.private_ip}",
     "host_groups=cyhy_dashboard",

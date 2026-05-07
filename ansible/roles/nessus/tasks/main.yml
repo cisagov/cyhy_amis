@@ -109,9 +109,9 @@
 - name: Create the configuration file for Nessus API access
   ansible.builtin.template:
     dest: /etc/cyhy/nessus_api.yml
-    group: cyhy
+    group: "{{ nessus_group }}"
     mode: u=rw,g=r,o=
-    owner: cyhy
+    owner: "{{ nessus_user }}"
     src: nessus_api.yml.j2
 
 - name: Copy the nessus_base.py Python file for configuring Nessus

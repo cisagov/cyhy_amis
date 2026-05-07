@@ -88,6 +88,26 @@ variable "ses_role_arn" {
 # These parameters have reasonable defaults.
 # ------------------------------------------------------------------------------
 
+
+variable "ansible_role_group" {
+  default     = "cyhy"
+  description = "The group value passed to Ansible roles for role-level group ownership and cron group usage."
+  nullable    = false
+  type        = string
+}
+
+variable "ansible_role_user" {
+  default     = "cyhy"
+  description = "The user value passed to Ansible roles for role-level owner, user, and become_user usage."
+  nullable    = false
+  type        = string
+}
+
+
+#
+# These parameters have reasonable defaults.
+# ------------------------------------------------------------------------------
+
 variable "ami_prefixes" {
   default = {
     bastion   = "cyhy",

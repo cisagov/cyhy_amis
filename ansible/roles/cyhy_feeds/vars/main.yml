@@ -49,3 +49,5 @@ cyhy_feeds_assessment_read_pw: >-
 # assessment-read mongo database
 cyhy_feeds_assessment_read_db: >-
   {{ lookup('amazon.aws.aws_ssm', '/cyhy/mongo/users/assessment-read/database') }}
+cyhy_feeds_user: "{{ ansible_role_user }}"
+cyhy_feeds_group: "{{ ansible_role_group }}"

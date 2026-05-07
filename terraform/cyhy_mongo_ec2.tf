@@ -182,6 +182,8 @@ module "cyhy_mongo_ansible_provisioner" {
   ]
   dry_run = false
   envs = [
+    "ansible_role_group=${var.ansible_role_group}",
+    "ansible_role_user=${var.ansible_role_user}",
     "ANSIBLE_SSH_RETRIES=5",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
     "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",

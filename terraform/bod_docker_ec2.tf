@@ -162,6 +162,8 @@ module "bod_docker_ansible_provisioner" {
   ]
   dry_run = false
   envs = [
+    "ansible_role_group=${var.ansible_role_group}",
+    "ansible_role_user=${var.ansible_role_user}",
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
     "code_gov_update_ses_aws_region=${var.ses_aws_region}",
     "code_gov_update_ses_send_email_role=${var.ses_role_arn}",

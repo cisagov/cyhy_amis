@@ -11,6 +11,6 @@
       | /usr/bin/logger --tag vdp-scanner
     minute: "0"
     name: BOD 20-01 (VDP) scanning
-    user: cyhy
+    user: "{{ vdp_scanner_user }}"
     weekday: "1"
   when: production_workspace|bool
