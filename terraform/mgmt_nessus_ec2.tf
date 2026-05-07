@@ -72,8 +72,8 @@ module "mgmt_nessus_ansible_provisioner" {
     # affront to basic decency.
     "host=${length(aws_instance.mgmt_nessus[*].private_ip) > 0 ? element(aws_instance.mgmt_nessus[*].private_ip, count.index) : ""}",
     "host_groups=nessus",
-    "nessus_group=${var.ansible_role_group}",
-    "nessus_user=${var.ansible_role_user}",
+    "nessus_file_owner_group=${var.ansible_role_group}",
+    "nessus_file_owner_username=${var.ansible_role_user}",
     "nessus_activation_code=${var.mgmt_nessus_activation_codes[count.index]}",
   ]
   playbook = "../ansible/playbook.yml"

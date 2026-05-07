@@ -1,17 +1,17 @@
 ---
 - name: Create the /var/cyhy/web directory
   ansible.builtin.file:
-    group: "{{ cyhy_dashboard_group }}"
+    group: "{{ cyhy_dashboard_file_owner_group }}"
     mode: u=rwx,g=rx,o=
-    owner: "{{ cyhy_dashboard_user }}"
+    owner: "{{ cyhy_dashboard_file_owner_username }}"
     path: /var/cyhy/web
     state: directory
 
 - name: Create secret key file for webd
   ansible.builtin.file:
-    group: "{{ cyhy_dashboard_group }}"
+    group: "{{ cyhy_dashboard_file_owner_group }}"
     mode: u=rw,g=rw,o=r
-    owner: "{{ cyhy_dashboard_user }}"
+    owner: "{{ cyhy_dashboard_file_owner_username }}"
     path: /var/cyhy/web/secret_key
     state: touch
 
@@ -21,7 +21,7 @@
     creates: /var/cyhy/web/secret_key
   become: true
   become_method: ansible.builtin.sudo
-  become_user: "{{ cyhy_dashboard_user }}"
+  become_user: "{{ cyhy_dashboard_file_owner_username }}"
 
 #
 # Set up /etc/cyhy/cyhy.conf with commander creds
@@ -29,9 +29,9 @@
 - name: Create /etc/cyhy/cyhy.conf with commander credentials
   ansible.builtin.template:
     dest: /etc/cyhy/cyhy.conf
-    group: "{{ cyhy_dashboard_group }}"
+    group: "{{ cyhy_dashboard_file_owner_group }}"
     mode: u=rw,g=rw,o=
-    owner: "{{ cyhy_dashboard_user }}"
+    owner: "{{ cyhy_dashboard_file_owner_username }}"
     src: cyhy.conf.j2
 
 - name: Build the ncats-webui Docker image

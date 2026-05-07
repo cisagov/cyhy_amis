@@ -5,17 +5,17 @@
 - name: Create the secrets directory
   ansible.builtin.file:
     path: /var/cyhy/orchestrator/secrets
-    group: "{{ orchestrator_group }}"
+    group: "{{ orchestrator_file_owner_group }}"
     mode: u=rwx,g=rx,o=rx
-    owner: "{{ orchestrator_user }}"
+    owner: "{{ orchestrator_file_owner_username }}"
     state: directory
 
 - name: Create files with MongoDB credentials
   ansible.builtin.template:
     dest: /var/cyhy/orchestrator/secrets/{{ item.filename }}
-    group: "{{ orchestrator_group }}"
+    group: "{{ orchestrator_file_owner_group }}"
     mode: u=r,g=r,o=
-    owner: "{{ orchestrator_user }}"
+    owner: "{{ orchestrator_file_owner_username }}"
     src: mongodb_credentials.yml.j2
   loop:
     # reporter
@@ -40,9 +40,9 @@
 - name: Create the AWS config
   ansible.builtin.template:
     dest: /var/cyhy/orchestrator/secrets/aws_config
-    group: "{{ orchestrator_group }}"
+    group: "{{ orchestrator_file_owner_group }}"
     mode: u=r,g=r,o=
-    owner: "{{ orchestrator_user }}"
+    owner: "{{ orchestrator_file_owner_username }}"
     src: aws_config.j2
 
 #
@@ -55,7 +55,7 @@
       ansible.builtin.cron:
         env: true
         name: PATH
-        user: "{{ orchestrator_user }}"
+        user: "{{ orchestrator_file_owner_username }}"
         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
     # This cron job runs at noon UTC on Friday, so it
@@ -72,5 +72,5 @@
           | /usr/bin/logger --tag orchestrator
         minute: "0"
         name: BOD 18-01 scanning
-        user: "{{ orchestrator_user }}"
+        user: "{{ orchestrator_file_owner_username }}"
         weekday: "5"

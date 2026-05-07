@@ -5,9 +5,9 @@
 - name: Create /etc/cyhy/cyhy.conf
   ansible.builtin.template:
     dest: /etc/cyhy/cyhy.conf
-    group: "{{ cyhy_reporter_group }}"
+    group: "{{ cyhy_reporter_file_owner_group }}"
     mode: u=rw,g=rw,o=
-    owner: "{{ cyhy_reporter_user }}"
+    owner: "{{ cyhy_reporter_file_owner_username }}"
     src: cyhy.conf.j2
 
 #
@@ -20,7 +20,7 @@
       ansible.builtin.cron:
         env: true
         name: PATH
-        user: "{{ cyhy_reporter_user }}"
+        user: "{{ cyhy_reporter_file_owner_username }}"
         value: /usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
     # This cron job runs at midnight UTC on Sunday mornings.  The BOD
@@ -37,7 +37,7 @@
     #       | /usr/bin/logger --tag cyhy-reports
     #     minute: '0'
     #     name: "Snapshot, CyHy report, and CybEx scorecard generation"
-    #     user: "{{ cyhy_reporter_user }}"
+    #     user: "{{ cyhy_reporter_file_owner_username }}"
     #     weekday: '0'
 
     #
@@ -53,7 +53,7 @@
           | /usr/bin/logger --tag cyhy-notifications
         minute: "0"
         name: Generate and send daily CyHy notifications
-        user: "{{ cyhy_reporter_user }}"
+        user: "{{ cyhy_reporter_file_owner_username }}"
 
 #
 # Add dev users to the cyhy group
@@ -62,6 +62,6 @@
   ansible.builtin.user:
     append: true
     groups:
-      - "{{ cyhy_reporter_group }}"
+      - "{{ cyhy_reporter_file_owner_group }}"
     name: "{{ item }}"
   loop: "{{ cyhy_reporter_dev_users }}"

@@ -163,12 +163,12 @@ module "bod_docker_ansible_provisioner" {
   dry_run = false
   envs = [
     "bastion_host=${aws_instance.bod_bastion.public_ip}",
-    "code_gov_update_group=${var.ansible_role_group}",
-    "code_gov_update_user=${var.ansible_role_user}",
+    "code_gov_update_file_owner_group=${var.ansible_role_group}",
+    "code_gov_update_file_owner_username=${var.ansible_role_user}",
     "code_gov_update_ses_aws_region=${var.ses_aws_region}",
     "code_gov_update_ses_send_email_role=${var.ses_role_arn}",
-    "cyhy_mailer_group=${var.ansible_role_group}",
-    "cyhy_mailer_user=${var.ansible_role_user}",
+    "cyhy_mailer_file_owner_group=${var.ansible_role_group}",
+    "cyhy_mailer_file_owner_username=${var.ansible_role_user}",
     # This file will be used to add/override any settings in
     # docker-compose.yml (for cyhy-mailer).
     "cyhy_mailer_docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
@@ -176,14 +176,14 @@ module "bod_docker_ansible_provisioner" {
     "cyhy_mailer_ses_send_email_role=${var.ses_role_arn}",
     "host=${aws_instance.bod_docker.private_ip}",
     "host_groups=docker,bod_docker",
-    "orchestrator_group=${var.ansible_role_group}",
-    "orchestrator_user=${var.ansible_role_user}",
+    "orchestrator_file_owner_group=${var.ansible_role_group}",
+    "orchestrator_file_owner_username=${var.ansible_role_user}",
     "orchestrator_aws_region=${var.aws_region}",
     "orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
     "orchestrator_dmarc_import_es_role=${var.dmarc_import_es_read_write_role_arn}",
     "production_workspace=${local.production_workspace}",
-    "vdp_scanner_group=${var.ansible_role_group}",
-    "vdp_scanner_user=${var.ansible_role_user}",
+    "vdp_scanner_file_owner_group=${var.ansible_role_group}",
+    "vdp_scanner_file_owner_username=${var.ansible_role_user}",
   ]
   playbook = "../ansible/playbook.yml"
 }

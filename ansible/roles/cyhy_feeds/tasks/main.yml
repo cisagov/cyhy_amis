@@ -3,9 +3,9 @@
   ansible.builtin.copy:
     content: "{{ cyhy_feeds_config }}"
     dest: /var/cyhy/scripts/cyhy-feeds/cyhy-data-extract.cfg
-    group: "{{ cyhy_feeds_group }}"
+    group: "{{ cyhy_feeds_file_owner_group }}"
     mode: u=r,g=r,o=r
-    owner: "{{ cyhy_feeds_user }}"
+    owner: "{{ cyhy_feeds_file_owner_username }}"
 
 #
 # Create the AWS config
@@ -13,9 +13,9 @@
 - name: Create the AWS config
   ansible.builtin.template:
     dest: /var/cyhy/scripts/cyhy-feeds/aws_config
-    group: "{{ cyhy_feeds_group }}"
+    group: "{{ cyhy_feeds_file_owner_group }}"
     mode: u=r,g=r,o=
-    owner: "{{ cyhy_feeds_user }}"
+    owner: "{{ cyhy_feeds_file_owner_username }}"
     src: aws_config.j2
 
 #
@@ -25,9 +25,9 @@
 - name: Create files with MongoDB credentials
   ansible.builtin.template:
     dest: /var/cyhy/scripts/cyhy-feeds/{{ item.filename }}
-    group: "{{ cyhy_feeds_group }}"
+    group: "{{ cyhy_feeds_file_owner_group }}"
     mode: u=rw,g=rw,o=
-    owner: "{{ cyhy_feeds_user }}"
+    owner: "{{ cyhy_feeds_file_owner_username }}"
     src: mongodb_credentials.yml.j2
   loop:
     # reporter
@@ -65,7 +65,7 @@
       | gpg2 --trustdb-name /var/cyhy/.gnupg/trustdb.gpg --import --batch
     executable: /bin/bash
   become: true
-  become_user: "{{ cyhy_feeds_user }}"
+  become_user: "{{ cyhy_feeds_file_owner_username }}"
   changed_when: "'imported: 1' in cyhy_feeds_import_gpg_key.stderr"
   loop:
     - "{{ cyhy_feeds_ncps_ae_public_gpg_key }}"
@@ -87,7 +87,7 @@
       | gpg2 --import-ownertrust --batch
     executable: /bin/bash
   become: true
-  become_user: "{{ cyhy_feeds_user }}"
+  become_user: "{{ cyhy_feeds_file_owner_username }}"
   changed_when: "'inserting ownertrust' in cyhy_feeds_import_gpg_ownertrust.stderr"
   register: cyhy_feeds_import_gpg_ownertrust
 
@@ -119,5 +119,5 @@
       | /usr/bin/logger --tag cyhy-feeds
     minute: "0"
     name: Nightly cyhy extract
-    user: "{{ cyhy_feeds_user }}"
+    user: "{{ cyhy_feeds_file_owner_username }}"
   when: production_workspace|bool

@@ -6,9 +6,9 @@
   ansible.builtin.copy:
     content: "{{ cyhy_commander_ssh_private_key }}"
     dest: /var/cyhy/.ssh/id_ed25519
-    group: "{{ cyhy_commander_group }}"
+    group: "{{ cyhy_commander_file_owner_group }}"
     mode: u=rw,g=,o=
-    owner: "{{ cyhy_commander_user }}"
+    owner: "{{ cyhy_commander_file_owner_username }}"
 
 #
 # Copy the cyhy-commander conf file
@@ -24,9 +24,9 @@
 #
 - name: Create empty ssh config file
   ansible.builtin.file:
-    group: "{{ cyhy_commander_group }}"
+    group: "{{ cyhy_commander_file_owner_group }}"
     mode: u=rw,g=r,o=r
-    owner: "{{ cyhy_commander_user }}"
+    owner: "{{ cyhy_commander_file_owner_username }}"
     path: /var/cyhy/.ssh/config
     state: touch
 
@@ -83,9 +83,9 @@
 - name: Create cyhy.conf (with commander credentials) if it doesn't exist
   ansible.builtin.template:
     dest: /etc/cyhy/cyhy.conf
-    group: "{{ cyhy_commander_group }}"
+    group: "{{ cyhy_commander_file_owner_group }}"
     mode: u=rw,g=rw,o=
-    owner: "{{ cyhy_commander_user }}"
+    owner: "{{ cyhy_commander_file_owner_username }}"
     src: cyhy.conf.j2
   when: not cyhy_commander_cyhy_conf_result.stat.exists
 
@@ -117,7 +117,7 @@
   ansible.builtin.command: # noqa no-changed-when
     cmd: /tmp/cyhy-places/scripts/load_places.sh
   become: true
-  become_user: "{{ cyhy_commander_user }}"
+  become_user: "{{ cyhy_commander_file_owner_username }}"
 
 #
 # Cleanup
@@ -138,7 +138,7 @@
       | /usr/bin/logger --tag cyhy-nvdsync
     minute: "15"
     name: Nightly cyhy-nvdsync
-    user: "{{ cyhy_commander_user }}"
+    user: "{{ cyhy_commander_file_owner_username }}"
 
 #
 # Run cyhy-kevsync daily at 0845 (UTC) as cyhy user
@@ -149,4 +149,4 @@
     job: /usr/local/bin/cyhy-kevsync 2>&1 | /usr/bin/logger --tag cyhy-kevsync
     minute: "45"
     name: Nightly cyhy-kevsync
-    user: "{{ cyhy_commander_user }}"
+    user: "{{ cyhy_commander_file_owner_username }}"
