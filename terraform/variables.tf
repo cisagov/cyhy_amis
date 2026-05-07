@@ -103,11 +103,6 @@ variable "ansible_role_user" {
   type        = string
 }
 
-
-#
-# These parameters have reasonable defaults.
-# ------------------------------------------------------------------------------
-
 variable "ami_prefixes" {
   default = {
     bastion   = "cyhy",
