@@ -112,20 +112,6 @@ variable "ami_prefixes" {
   })
 }
 
-variable "ansible_role_group" {
-  default     = "cyhy"
-  description = "The group value passed to Ansible roles for role-level group ownership and cron group usage."
-  nullable    = false
-  type        = string
-}
-
-variable "ansible_role_user" {
-  default     = "cyhy"
-  description = "The user value passed to Ansible roles for role-level owner, user, and become_user usage."
-  nullable    = false
-  type        = string
-}
-
 variable "aws_availability_zone" {
   default     = "a"
   description = "The AWS availability zone to deploy into (e.g. a, b, c, etc.)."
@@ -227,18 +213,20 @@ variable "cyhy_portscan_first_elastic_ip_offset" {
 
 variable "cyhy_user_info" {
   default = {
-    gid  = 2048
-    home = "/var/cyhy"
-    name = "cyhy"
-    uid  = 2048
+    gid   = 2048
+    group = "cyhy"
+    home  = "/var/cyhy"
+    name  = "cyhy"
+    uid   = 2048
   }
   description = "User information for the CyHy user created in our AMIs. Please see `packer/ansible/vars/cyhy_user.yml` for the configuration used when AMIs are built."
   nullable    = false
   type = object({
-    gid  = number,
-    home = string,
-    name = string,
-    uid  = number,
+    gid   = number,
+    group = string,
+    home  = string,
+    name  = string,
+    uid   = number,
   })
 }
 

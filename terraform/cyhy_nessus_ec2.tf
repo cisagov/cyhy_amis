@@ -174,8 +174,8 @@ module "cyhy_nessus_ansible_provisioner" {
     # affront to basic decency.
     "host=${length(aws_instance.cyhy_nessus[*].private_ip) > 0 ? element(aws_instance.cyhy_nessus[*].private_ip, count.index) : ""}",
     "host_groups=cyhy_runner,nessus",
-    "nessus_file_owner_group=${var.ansible_role_group}",
-    "nessus_file_owner_username=${var.ansible_role_user}",
+    "nessus_file_owner_group=${var.cyhy_user_info.group}",
+    "nessus_file_owner_username=${var.cyhy_user_info.name}",
     "nessus_activation_code=${var.nessus_activation_codes[count.index]}",
     "nessus_smtp_hostname=${aws_route53_record.cyhy_nessus_pub_A[count.index].name}",
   ]
