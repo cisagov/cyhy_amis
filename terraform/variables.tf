@@ -89,20 +89,6 @@ variable "ses_role_arn" {
 # ------------------------------------------------------------------------------
 
 
-variable "ansible_role_group" {
-  default     = "cyhy"
-  description = "The group value passed to Ansible roles for role-level group ownership and cron group usage."
-  nullable    = false
-  type        = string
-}
-
-variable "ansible_role_user" {
-  default     = "cyhy"
-  description = "The user value passed to Ansible roles for role-level owner, user, and become_user usage."
-  nullable    = false
-  type        = string
-}
-
 variable "ami_prefixes" {
   default = {
     bastion   = "cyhy",
@@ -124,6 +110,20 @@ variable "ami_prefixes" {
     nmap      = string,
     reporter  = string,
   })
+}
+
+variable "ansible_role_group" {
+  default     = "cyhy"
+  description = "The group value passed to Ansible roles for role-level group ownership and cron group usage."
+  nullable    = false
+  type        = string
+}
+
+variable "ansible_role_user" {
+  default     = "cyhy"
+  description = "The user value passed to Ansible roles for role-level owner, user, and become_user usage."
+  nullable    = false
+  type        = string
 }
 
 variable "aws_availability_zone" {
@@ -293,6 +293,13 @@ variable "findings_data_import_db_port" {
   type        = string
 }
 
+variable "findings_data_import_lambda_description" {
+  default     = "Lambda function for importing findings data."
+  description = "The description to associate with the findings-data-import Lambda function."
+  nullable    = false
+  type        = string
+}
+
 variable "findings_data_import_lambda_failure_emails" {
   default     = []
   description = "A list of the emails to which alerts should be sent if findings data processing fails."
@@ -311,13 +318,6 @@ variable "findings_data_import_lambda_failure_prefix" {
 variable "findings_data_import_lambda_failure_suffix" {
   default     = ".json"
   description = "The object suffix that findings JSONs that have failed to process successfully will have in the findings data bucket."
-  nullable    = false
-  type        = string
-}
-
-variable "findings_data_import_lambda_description" {
-  default     = "Lambda function for importing findings data."
-  description = "The description to associate with the findings-data-import Lambda function."
   nullable    = false
   type        = string
 }
