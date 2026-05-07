@@ -124,15 +124,23 @@ module "cyhy_reporter_ansible_provisioner" {
   ]
   dry_run = false
   envs = [
-    "ansible_role_group=${var.ansible_role_group}",
-    "ansible_role_user=${var.ansible_role_user}",
     "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
+    "code_gov_update_group=${var.ansible_role_group}",
+    "code_gov_update_user=${var.ansible_role_user}",
+    "cyhy_mailer_group=${var.ansible_role_group}",
+    "cyhy_mailer_user=${var.ansible_role_user}",
     "cyhy_mailer_docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}",
     "cyhy_mailer_ses_aws_region=${var.ses_aws_region}",
     "cyhy_mailer_ses_send_email_role=${var.ses_role_arn}",
+    "cyhy_reporter_group=${var.ansible_role_group}",
+    "cyhy_reporter_user=${var.ansible_role_user}",
     "host=${aws_instance.cyhy_reporter.private_ip}",
     "host_groups=docker,cyhy_reporter",
+    "orchestrator_group=${var.ansible_role_group}",
+    "orchestrator_user=${var.ansible_role_user}",
     "production_workspace=${local.production_workspace}",
+    "vdp_scanner_group=${var.ansible_role_group}",
+    "vdp_scanner_user=${var.ansible_role_user}",
   ]
   playbook = "../ansible/playbook.yml"
 }

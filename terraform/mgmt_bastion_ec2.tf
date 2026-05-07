@@ -57,8 +57,6 @@ module "mgmt_bastion_ansible_provisioner" {
   ]
   dry_run = false
   envs = [
-    "ansible_role_group=${var.ansible_role_group}",
-    "ansible_role_user=${var.ansible_role_user}",
     "host=${aws_instance.mgmt_bastion[*].public_ip[count.index]}",
     "host_groups=mgmt_bastion",
   ]
