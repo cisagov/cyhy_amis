@@ -6,7 +6,7 @@ In order to access certain AWS resources, the following AWS profiles must be
 set up in your AWS credentials file:
 
 - `cool-dns-route53resourcechange-cyber.dhs.gov`
-- `cool-terraform-readstate`
+- `cool-terraform-readcyberdhsgovterraformstate-production`
 
 The easiest way to set up those profiles is to use our
 [`aws-profile-sync`](https://github.com/cisagov/aws-profile-sync) utility.
