@@ -691,7 +691,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | trusted\_ingress\_networks\_ipv4 | IPv4 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "0.0.0.0/0" ]``` | no |
 | trusted\_ingress\_networks\_ipv6 | IPv6 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "::/0" ]``` | no |
 | wiz\_external\_id | The external ID of the Wiz AWS Connector.  This value must be retrieved from the Wiz portal when creating the AWS Connector. | `string` | n/a | yes |
-| wiz\_remote\_arn | The AWS Trust Policy Role ARN for your Wiz data center.  It can be retrieved from the Wiz portal (User Settings, Tenant). | `string` | n/a | yes |
+| wiz\_remote\_arn | The ARN for the AWS role or user to trust that Wiz will use to assume the role to access AWS resources.  This value can be retrieved from the Wiz portal when creating the AWS Connector.  It should be in the format arn:aws:iam::123456789012:role/RoleName or arn:aws:iam::123456789012:user/UserName. | `string` | n/a | yes |
 
 ## Outputs ##
 
