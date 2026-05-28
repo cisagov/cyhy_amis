@@ -82,6 +82,26 @@ variable "ses_role_arn" {
   type        = string
 }
 
+variable "wiz_external_id" {
+  description = "The external ID of the Wiz AWS Connector.  This value must be retrieved from the Wiz portal when creating the AWS Connector."
+  nullable    = false
+  type        = string
+  validation {
+    condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.wiz_external_id))
+    error_message = "The wiz_external_id must match the pattern XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX (UUID format)."
+  }
+}
+
+variable "wiz_remote_arn" {
+  description = "The ARN for the AWS role or user to trust that Wiz will use to assume the role to access AWS resources.  This value can be retrieved from the Wiz portal when creating the AWS Connector.  It should be in the format arn:aws:iam::123456789012:role/RoleName or arn:aws:iam::123456789012:user/UserName."
+  nullable    = false
+  type        = string
+  validation {
+    condition     = can(regex("^arn:aws:iam::[0-9]{12}:(role|user)/.*$", var.wiz_remote_arn))
+    error_message = "The wiz_remote_arn must be a valid AWS IAM role or user ARN (e.g., arn:aws:iam::123456789012:role/RoleName or arn:aws:iam::123456789012:user/UserName)."
+  }
+}
+
 # ------------------------------------------------------------------------------
 # OPTIONAL PARAMETERS
 #

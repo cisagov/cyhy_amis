@@ -175,6 +175,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | cyhy\_reporter\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | mgmt\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | mgmt\_nessus\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
+| wiz | `https://wizio-public-fedramp.s3-us-gov-west-1.amazonaws.com/deployment-v3/aws/terraform/2209/wiz-aws-native-terraform-terraform-module.zip` | n/a |
 
 ## Resources ##
 
@@ -689,6 +690,8 @@ terraform apply -var-file=<your_workspace>.tfvars
 | tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
 | trusted\_ingress\_networks\_ipv4 | IPv4 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "0.0.0.0/0" ]``` | no |
 | trusted\_ingress\_networks\_ipv6 | IPv6 CIDR blocks from which to allow ingress to the bastion server. | `list(string)` | ```[ "::/0" ]``` | no |
+| wiz\_external\_id | The external ID of the Wiz AWS Connector.  This value must be retrieved from the Wiz portal when creating the AWS Connector. | `string` | n/a | yes |
+| wiz\_remote\_arn | The ARN for the AWS role or user to trust that Wiz will use to assume the role to access AWS resources.  This value can be retrieved from the Wiz portal when creating the AWS Connector.  It should be in the format arn:aws:iam::123456789012:role/RoleName or arn:aws:iam::123456789012:user/UserName. | `string` | n/a | yes |
 
 ## Outputs ##
 
