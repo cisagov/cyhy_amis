@@ -175,7 +175,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | cyhy\_reporter\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | mgmt\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | mgmt\_nessus\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| wiz | `https://wizio-public-fedramp.s3-us-gov-west-1.amazonaws.com/deployment-v3/aws/terraform/2209/wiz-aws-native-terraform-terraform-module.zip` | n/a |
+| wiz | tf.app.wiz.io/wiz/native-terraform/aws | ~> 1.0 |
 
 ## Resources ##
 
