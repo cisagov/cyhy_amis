@@ -1,4 +1,4 @@
-# Allow egress to the both scanner subnets via ssh
+# Allow egress to both scanner subnets via ssh
 resource "aws_network_acl_rule" "private_egress_to_portscanner_via_ssh" {
   network_acl_id = aws_network_acl.cyhy_private_acl.id
   egress         = true
@@ -47,7 +47,8 @@ resource "aws_network_acl_rule" "cyhy_private_egress_anywhere_via_https" {
 }
 
 # Allow ingress from anywhere via ephemeral ports
-# Note: includes ingress from the BOD 18-01 private subnet via mongodb
+#
+# Note: includes ingress from the BOD 18-01 private subnet via MongoDB
 resource "aws_network_acl_rule" "private_ingress_from_anywhere_via_ephemeral_ports" {
   network_acl_id = aws_network_acl.cyhy_private_acl.id
   egress         = false
@@ -84,13 +85,18 @@ resource "aws_network_acl_rule" "private_egress_to_bastion_via_ephemeral_ports" 
 }
 
 # Allow egress to the BOD 18-01 docker subnet via ephemeral ports
+#
+# Note that this includes egress to ElastiCache in the BOD 18-01
+# Docker subnet via port 6379.
 resource "aws_network_acl_rule" "private_egress_to_bod_docker_via_ephemeral_ports" {
+  for_each = tomap(module.docker.subnets)
+
   network_acl_id = aws_network_acl.cyhy_private_acl.id
   egress         = true
   protocol       = "tcp"
-  rule_number    = 120
+  rule_number    = 120 + index(keys(tomap(module.docker.subnets)), each.key)
   rule_action    = "allow"
-  cidr_block     = aws_subnet.bod_docker_subnet.cidr_block
+  cidr_block     = each.key
   from_port      = 1024
   to_port        = 65535
 }

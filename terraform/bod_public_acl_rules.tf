@@ -1,6 +1,6 @@
-# Allow ingress from the docker subnet via HTTP (for downloading the
-# public suffix list), HTTPS (for AWS CLI), FTP (for downloading ASN
-# information).  This allows EC2 instances in the docker subnet to
+# Allow ingress from the first Docker subnet via HTTP (for downloading
+# the public suffix list), HTTPS (for AWS CLI), FTP (for downloading
+# ASN information).  This allows EC2 instances in the docker subnet to
 # send the traffic they want via the NAT gateway, subject to their own
 # security group and network ACL restrictions.
 resource "aws_network_acl_rule" "bod_public_ingress_from_docker" {
@@ -11,9 +11,10 @@ resource "aws_network_acl_rule" "bod_public_ingress_from_docker" {
   protocol       = "tcp"
   rule_number    = 80 + count.index
   rule_action    = "allow"
-  cidr_block     = aws_subnet.bod_docker_subnet.cidr_block
-  from_port      = local.bod_docker_egress_anywhere_ports[count.index]
-  to_port        = local.bod_docker_egress_anywhere_ports[count.index]
+  # This is the first Docker subnet
+  cidr_block = keys(tomap(module.docker.subnets))[0]
+  from_port  = local.bod_docker_egress_anywhere_ports[count.index]
+  to_port    = local.bod_docker_egress_anywhere_ports[count.index]
 }
 
 # Allow ingress from the Lambda subnet via HTTP and HTTPS (for pshtt),
@@ -59,16 +60,17 @@ resource "aws_network_acl_rule" "bod_public_ingress_from_anywhere_via_ssh" {
   to_port        = 22
 }
 
-# Allow egress to the docker subnet via ssh
+# Allow egress to the first docker subnet via ssh
 resource "aws_network_acl_rule" "bod_public_egress_to_docker_via_ssh" {
   network_acl_id = aws_network_acl.bod_public_acl.id
   egress         = true
   protocol       = "tcp"
   rule_number    = 150
   rule_action    = "allow"
-  cidr_block     = aws_subnet.bod_docker_subnet.cidr_block
-  from_port      = 22
-  to_port        = 22
+  # This is the first Docker subnet
+  cidr_block = keys(tomap(module.docker.subnets))[0]
+  from_port  = 22
+  to_port    = 22
 }
 
 # Allow egress to the bastion via ssh.  This is necessary because

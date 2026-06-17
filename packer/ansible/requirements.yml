@@ -1,5 +1,6 @@
 collections:
   - ansible.posix
+  - community.docker
 
 roles:
   - name: amazon_ssm_agent
@@ -76,6 +77,8 @@ roles:
     src: https://github.com/cisagov/ansible-role-systemd-resolved
   - name: upgrade
     src: https://github.com/cisagov/ansible-role-upgrade
+  - name: valkey_cli
+    src: https://github.com/cisagov/ansible-role-valkey-cli
   - name: vdp_scanner
     src: https://github.com/cisagov/ansible-role-vdp-scanner
   - name: xfs

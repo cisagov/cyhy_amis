@@ -7,3 +7,4 @@
     - xfs
     - orchestrator
     - cyhy_mailer
+    - valkey_cli

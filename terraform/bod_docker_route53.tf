@@ -10,7 +10,8 @@ resource "aws_route53_record" "bod_docker_A" {
 }
 
 resource "aws_route53_record" "bod_rev_docker_PTR" {
-  zone_id = aws_route53_zone.bod_private_zone_reverse.zone_id
+  # The Docker instance lives in the first Docker subnet
+  zone_id = values(tomap(aws_route53_zone.bod_private_zone_reverse))[0].zone_id
   name = format(
     "%s.in-addr.arpa.",
     join(".", reverse(split(".", aws_instance.bod_docker.private_ip))),

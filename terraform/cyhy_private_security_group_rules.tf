@@ -18,6 +18,16 @@ resource "aws_security_group_rule" "private_https_egress_to_anywhere" {
   to_port           = 443
 }
 
+# Allow egress to the BOD Docker subnets via port 6379 (Valkey)
+resource "aws_security_group_rule" "private_valkey_egress_to_bod_docker_subnets" {
+  security_group_id = aws_security_group.cyhy_private_sg.id
+  type              = "egress"
+  protocol          = "tcp"
+  cidr_blocks       = keys(tomap(module.docker.subnets))
+  from_port         = 6379
+  to_port           = 6379
+}
+
 # Allow SSH ingress from the bastion
 resource "aws_security_group_rule" "private_ssh_ingress_from_bastion" {
   security_group_id = aws_security_group.cyhy_private_sg.id

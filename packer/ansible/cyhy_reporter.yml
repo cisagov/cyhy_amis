@@ -12,3 +12,12 @@
         cyhy_reports_texmf_buffer_size: 100000000
         cyhy_reports_texmf_main_memory: 10000000
     - cyhy_mailer
+  tasks:
+    # This Docker image is used to communicate with the serverless
+    # Valkey ElastiCache resource in the BOD VPC.  We cannot install
+    # valkey-tools on the CyHy reporter instance directly because it
+    # is still using Debian Buster, which does not offer this package.
+    - name: Pull official valkey Docker image
+      community.docker.docker_image:
+        name: valkey/valkey:alpine
+        source: pull

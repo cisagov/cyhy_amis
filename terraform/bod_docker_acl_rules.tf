@@ -11,6 +11,9 @@ resource "aws_network_acl_rule" "docker_ingress_from_public_via_ssh" {
 }
 
 # Allow ingress via ephemeral ports from anywhere via TCP
+#
+# Note that this includes ingress on port 6379 (Valkey) from the CyHy
+# private subnet.
 resource "aws_network_acl_rule" "docker_ingress_anywhere_via_ephemeral_ports_tcp" {
   network_acl_id = aws_network_acl.bod_docker_acl.id
   egress         = false

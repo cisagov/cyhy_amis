@@ -21,15 +21,19 @@ resource "aws_vpc_dhcp_options_association" "bod_vpc_dhcp" {
   dhcp_options_id = aws_vpc_dhcp_options.bod_dhcp_options.id
 }
 
-# Docker subnet of the VPC
-resource "aws_subnet" "bod_docker_subnet" {
-  vpc_id            = aws_vpc.bod_vpc.id
-  cidr_block        = "10.11.1.0/24"
-  availability_zone = "${var.aws_region}${var.aws_availability_zone}"
-
+# Docker subnets of the VPC
+module "docker" {
+  source     = "github.com/cisagov/distributed-subnets-tf-module"
   depends_on = [aws_internet_gateway.bod_igw]
+  providers = {
+    aws = aws
+  }
 
-  tags = { "Name" = "BOD 18-01 Docker" }
+  subnet_cidr_blocks = [
+    "10.11.1.0/24",
+    "10.11.2.0/24",
+  ]
+  vpc_id = aws_vpc.bod_vpc.id
 }
 
 # Lambda subnet of the VPC
@@ -168,12 +172,10 @@ resource "aws_route_table_association" "bod_association" {
   route_table_id = aws_route_table.bod_public_route_table.id
 }
 
-# ACL for the docker subnet of the VPC
+# ACL for the Docker subnets of the VPC
 resource "aws_network_acl" "bod_docker_acl" {
-  vpc_id = aws_vpc.bod_vpc.id
-  subnet_ids = [
-    aws_subnet.bod_docker_subnet.id,
-  ]
+  vpc_id     = aws_vpc.bod_vpc.id
+  subnet_ids = keys(tomap(module.docker.subnets))
 
   tags = { "Name" = "BOD 18-01 Docker" }
 }
