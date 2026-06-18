@@ -116,9 +116,16 @@ resource "null_resource" "cyhy_reporter_ansible_provisioner" {
     aws_volume_attachment.cyhy_reporter_data_attachment,
   ]
 
-  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  # Re-run this provisioner when:
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
   triggers = {
-    instance_id = aws_instance.cyhy_reporter.id
+    instance_id            = aws_instance.cyhy_reporter.id
+    playbook_groups_sha1   = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_mailer_sha1   = filesha1("${path.module}/../ansible/roles/cyhy_mailer/tasks/main.yml")
+    playbook_main_sha1     = filesha1("${path.module}/../ansible/playbook.yml")
+    playbook_reporter_sha1 = filesha1("${path.module}/../ansible/roles/cyhy_reporter/tasks/main.yml")
   }
 
   provisioner "local-exec" {

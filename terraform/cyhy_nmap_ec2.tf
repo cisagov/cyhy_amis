@@ -198,9 +198,15 @@ resource "null_resource" "cyhy_nmap_ansible_provisioner" {
     aws_volume_attachment.nmap_cyhy_runner_data_attachment,
   ]
 
-  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  # Re-run this provisioner when:
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
   triggers = {
-    instance_id = aws_instance.cyhy_nmap[count.index].id
+    instance_id          = aws_instance.cyhy_nmap[count.index].id
+    playbook_groups_sha1 = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_main_sha1   = filesha1("${path.module}/../ansible/playbook.yml")
+    playbook_swap_sha1   = filesha1("${path.module}/../ansible/roles/swap/tasks/main.yml")
   }
 
   provisioner "local-exec" {

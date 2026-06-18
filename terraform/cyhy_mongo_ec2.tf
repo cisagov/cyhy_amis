@@ -175,9 +175,19 @@ resource "null_resource" "cyhy_mongo_ansible_provisioner" {
     aws_volume_attachment.cyhy_mongo_log_attachment,
   ]
 
-  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  # Re-run this provisioner when:
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
   triggers = {
-    instance_id = aws_instance.cyhy_mongo[count.index].id
+    instance_id             = aws_instance.cyhy_mongo[count.index].id
+    playbook_archive_sha1   = filesha1("${path.module}/../ansible/roles/cyhy_archive/tasks/main.yml")
+    playbook_commander_sha1 = filesha1("${path.module}/../ansible/roles/cyhy_commander/tasks/main.yml")
+    playbook_feeds_sha1     = filesha1("${path.module}/../ansible/roles/cyhy_feeds/tasks/main.yml")
+    playbook_groups_sha1    = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_main_sha1      = filesha1("${path.module}/../ansible/playbook.yml")
+    playbook_mongo_sha1     = filesha1("${path.module}/../ansible/roles/mongo/tasks/main.yml")
+    playbook_swap_sha1      = filesha1("${path.module}/../ansible/roles/swap/tasks/main.yml")
   }
 
   provisioner "local-exec" {

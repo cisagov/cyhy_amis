@@ -154,9 +154,19 @@ resource "null_resource" "bod_docker_ansible_provisioner" {
     aws_volume_attachment.vdp_report_data_attachment,
   ]
 
-  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  # Re-run this provisioner when:
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
   triggers = {
-    instance_id = aws_instance.bod_docker.id
+    instance_id                = aws_instance.bod_docker.id
+    playbook_code_gov_sha1     = filesha1("${path.module}/../ansible/roles/code_gov_update/tasks/main.yml")
+    playbook_groups_sha1       = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_mailer_sha1       = filesha1("${path.module}/../ansible/roles/cyhy_mailer/tasks/main.yml")
+    playbook_main_sha1         = filesha1("${path.module}/../ansible/playbook.yml")
+    playbook_ops_sha1          = filesha1("${path.module}/../ansible/roles/cyhy_ops/tasks/main.yml")
+    playbook_orchestrator_sha1 = filesha1("${path.module}/../ansible/roles/orchestrator/tasks/main.yml")
+    playbook_vdp_sha1          = filesha1("${path.module}/../ansible/roles/vdp_scanner/tasks/main.yml")
   }
 
   provisioner "local-exec" {

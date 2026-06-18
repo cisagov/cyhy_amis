@@ -50,9 +50,15 @@ resource "aws_instance" "mgmt_bastion" {
 resource "null_resource" "mgmt_bastion_ansible_provisioner" {
   count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
 
-  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  # Re-run this provisioner when:
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
   triggers = {
-    instance_id = aws_instance.mgmt_bastion[count.index].id
+    instance_id            = aws_instance.mgmt_bastion[count.index].id
+    playbook_groups_sha1   = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_main_sha1     = filesha1("${path.module}/../ansible/playbook.yml")
+    playbook_mgmt_ops_sha1 = filesha1("${path.module}/../ansible/roles/mgmt_ops/tasks/main.yml")
   }
 
   provisioner "local-exec" {
