@@ -48,4 +48,4 @@ terraform apply -var-file="$workspace.tfvars" \
   -target=aws_volume_attachment.cyhy_mongo_data_attachment \
   -target=aws_volume_attachment.cyhy_mongo_journal_attachment \
   -target=aws_volume_attachment.cyhy_mongo_log_attachment \
-  -target=module.cyhy_mongo_ansible_provisioner
+  -target=null_resource.cyhy_mongo_ansible_provisioner

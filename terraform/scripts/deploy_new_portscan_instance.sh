@@ -64,7 +64,7 @@ function redeploy_instances {
     tf_args+=("-target=aws_route53_record.cyhy_portscan_A[$index]")
     tf_args+=("-target=aws_route53_record.cyhy_rev_portscan_PTR[$index]")
     tf_args+=("-target=aws_volume_attachment.nmap_cyhy_runner_data_attachment[$index]")
-    tf_args+=("-target=module.cyhy_nmap_ansible_provisioner[$index]")
+    tf_args+=("-target=null_resource.cyhy_nmap_ansible_provisioner[$index]")
   done
 
   if [ ${#nmap_instance_ids[@]} -ne 0 ]; then

@@ -45,4 +45,4 @@ terraform apply -var-file="$workspace.tfvars" \
   -target=aws_security_group_rule.bastion_self_ssh \
   -target=aws_security_group_rule.bastion_ssh_from_trusted \
   -target=aws_security_group_rule.bastion_ssh_to_docker \
-  -target=module.bod_bastion_ansible_provisioner
+  -target=null_resource.bod_bastion_ansible_provisioner
