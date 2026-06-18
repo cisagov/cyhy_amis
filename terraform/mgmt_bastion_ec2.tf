@@ -47,18 +47,15 @@ resource "aws_instance" "mgmt_bastion" {
 }
 
 # Provision a Management Bastion EC2 instance via Ansible
-module "mgmt_bastion_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-  count  = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
+resource "null_resource" "mgmt_bastion_ansible_provisioner" {
+  count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "host=${aws_instance.mgmt_bastion[*].public_ip[count.index]}",
-    "host_groups=mgmt_bastion",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  triggers = {
+    instance_id = aws_instance.mgmt_bastion[count.index].id
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.mgmt_bastion[count.index].public_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no' --user=${var.remote_ssh_user} --extra-vars 'host=${aws_instance.mgmt_bastion[count.index].public_ip} host_groups=mgmt_bastion'"
+  }
 }

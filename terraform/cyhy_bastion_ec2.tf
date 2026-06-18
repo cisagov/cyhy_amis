@@ -46,17 +46,18 @@ resource "aws_instance" "cyhy_bastion" {
 }
 
 # Provision the bastion EC2 instance via Ansible
-module "cyhy_bastion_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
+resource "null_resource" "cyhy_bastion_ansible_provisioner" {
+  # Ensure the EC2 instance is created before running Ansible
+  depends_on = [
+    aws_instance.cyhy_bastion,
+  ]
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "host=${aws_instance.cyhy_bastion.public_ip}",
-    "host_groups=cyhy_bastion",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  triggers = {
+    instance_id = aws_instance.cyhy_bastion.id
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.cyhy_bastion.public_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no' --user=${var.remote_ssh_user} --extra-vars 'host=${aws_instance.cyhy_bastion.public_ip} host_groups=cyhy_bastion'"
+  }
 }

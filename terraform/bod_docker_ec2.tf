@@ -147,35 +147,19 @@ resource "aws_volume_attachment" "vdp_report_data_attachment" {
 }
 
 # Provision the Docker EC2 instance via Ansible
-module "bod_docker_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-
+resource "null_resource" "bod_docker_ansible_provisioner" {
   # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.bod_report_data_attachment,
     aws_volume_attachment.vdp_report_data_attachment,
   ]
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "bastion_host=${aws_instance.bod_bastion.public_ip}",
-    "code_gov_update_ses_aws_region=${var.ses_aws_region}",
-    "code_gov_update_ses_send_email_role=${var.ses_role_arn}",
-    # This file will be used to add/override any settings in
-    # docker-compose.yml (for cyhy-mailer).
-    "cyhy_mailer_docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
-    "cyhy_mailer_ses_aws_region=${var.ses_aws_region}",
-    "cyhy_mailer_ses_send_email_role=${var.ses_role_arn}",
-    "host=${aws_instance.bod_docker.private_ip}",
-    "host_groups=docker,bod_docker",
-    "orchestrator_aws_region=${var.aws_region}",
-    "orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "orchestrator_dmarc_import_es_role=${var.dmarc_import_es_read_write_role_arn}",
-    "production_workspace=${local.production_workspace}",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  triggers = {
+    instance_id = aws_instance.bod_docker.id
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.bod_docker.private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${aws_instance.bod_bastion.public_ip} code_gov_update_ses_aws_region=${var.ses_aws_region} code_gov_update_ses_send_email_role=${var.ses_role_arn} cyhy_mailer_docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename} cyhy_mailer_ses_aws_region=${var.ses_aws_region} cyhy_mailer_ses_send_email_role=${var.ses_role_arn} host=${aws_instance.bod_docker.private_ip} host_groups=docker,bod_docker orchestrator_aws_region=${var.aws_region} orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region} orchestrator_dmarc_import_es_role=${var.dmarc_import_es_read_write_role_arn} production_workspace=${local.production_workspace}'"
+  }
 }

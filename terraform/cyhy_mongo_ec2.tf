@@ -165,9 +165,8 @@ resource "aws_volume_attachment" "cyhy_mongo_log_attachment" {
 }
 
 # Provision the mongo EC2 instance via Ansible
-module "cyhy_mongo_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-  count  = length(aws_instance.cyhy_mongo)
+resource "null_resource" "cyhy_mongo_ansible_provisioner" {
+  count = length(aws_instance.cyhy_mongo)
 
   # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
@@ -176,28 +175,12 @@ module "cyhy_mongo_ansible_provisioner" {
     aws_volume_attachment.cyhy_mongo_log_attachment,
   ]
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "ANSIBLE_SSH_RETRIES=5",
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket}",
-    "cyhy_archive_s3_bucket_region=${var.aws_region}",
-    "cyhy_commander_job_processing_threads=${var.commander_config.job_processing_threads}",
-    "cyhy_commander_jobs_per_nessus_host=${var.commander_config.jobs_per_nessus_host}",
-    "cyhy_commander_jobs_per_nmap_host=${var.commander_config.jobs_per_nmap_host}",
-    "cyhy_commander_nessus_hosts=${join(",", formatlist("vulnscan%d", range(1, var.nessus_instance_count + 1)))}",
-    "cyhy_commander_next_scan_limit=${var.commander_config.next_scan_limit}",
-    "cyhy_commander_nmap_hosts=${join(",", formatlist("portscan%d", range(1, local.nmap_total_instance_count + 1)))}",
-    "cyhy_feeds_aws_region=${var.aws_region}",
-    "cyhy_feeds_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "cyhy_feeds_dmarc_import_es_role=${var.dmarc_import_es_read_role_arn}",
-    "host=${aws_instance.cyhy_mongo[count.index].private_ip}",
-    "host_groups=mongo,cyhy_commander,cyhy_archive",
-    "production_workspace=${local.production_workspace}",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  triggers = {
+    instance_id = aws_instance.cyhy_mongo[count.index].id
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.cyhy_mongo[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars 'ANSIBLE_SSH_RETRIES=5 bastion_host=${aws_instance.cyhy_bastion.public_ip} cyhy_archive_s3_bucket_name=${aws_s3_bucket.cyhy_archive.bucket} cyhy_archive_s3_bucket_region=${var.aws_region} cyhy_commander_job_processing_threads=${var.commander_config.job_processing_threads} cyhy_commander_jobs_per_nessus_host=${var.commander_config.jobs_per_nessus_host} cyhy_commander_jobs_per_nmap_host=${var.commander_config.jobs_per_nmap_host} cyhy_commander_nessus_hosts=${join(",", formatlist("vulnscan%d", range(1, var.nessus_instance_count + 1)))} cyhy_commander_next_scan_limit=${var.commander_config.next_scan_limit} cyhy_commander_nmap_hosts=${join(",", formatlist("portscan%d", range(1, local.nmap_total_instance_count + 1)))} cyhy_feeds_aws_region=${var.aws_region} cyhy_feeds_dmarc_import_aws_region=${var.dmarc_import_aws_region} cyhy_feeds_dmarc_import_es_role=${var.dmarc_import_es_read_role_arn} host=${aws_instance.cyhy_mongo[count.index].private_ip} host_groups=mongo,cyhy_commander,cyhy_archive production_workspace=${local.production_workspace}'"
+  }
 }

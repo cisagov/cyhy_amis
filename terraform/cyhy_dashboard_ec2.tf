@@ -72,19 +72,19 @@ resource "aws_instance" "cyhy_dashboard" {
   )
 }
 
-# Provision the Docker EC2 instance via Ansible
-module "cyhy_dashboard_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
+# Provision the cyhy_dashboard EC2 instance via Ansible
+resource "null_resource" "cyhy_dashboard_ansible_provisioner" {
+  # Ensure the EC2 instance is created before running Ansible
+  depends_on = [
+    aws_instance.cyhy_dashboard,
+  ]
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "host=${aws_instance.cyhy_dashboard.private_ip}",
-    "host_groups=cyhy_dashboard",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  triggers = {
+    instance_id = aws_instance.cyhy_dashboard.id
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.cyhy_dashboard.private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${aws_instance.cyhy_bastion.public_ip} host=${aws_instance.cyhy_dashboard.private_ip} host_groups=cyhy_dashboard'"
+  }
 }

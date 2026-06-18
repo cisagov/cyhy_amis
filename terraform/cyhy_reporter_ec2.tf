@@ -110,27 +110,18 @@ resource "aws_volume_attachment" "cyhy_reporter_data_attachment" {
 }
 
 # Provision the reporter EC2 instance via Ansible
-module "cyhy_reporter_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-
+resource "null_resource" "cyhy_reporter_ansible_provisioner" {
   # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.cyhy_reporter_data_attachment,
   ]
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    "cyhy_mailer_docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename}",
-    "cyhy_mailer_ses_aws_region=${var.ses_aws_region}",
-    "cyhy_mailer_ses_send_email_role=${var.ses_role_arn}",
-    "host=${aws_instance.cyhy_reporter.private_ip}",
-    "host_groups=docker,cyhy_reporter",
-    "production_workspace=${local.production_workspace}",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run ONLY if the target EC2 instance is replaced or destroyed
+  triggers = {
+    instance_id = aws_instance.cyhy_reporter.id
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.cyhy_reporter.private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${aws_instance.cyhy_bastion.public_ip} cyhy_mailer_docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename} cyhy_mailer_ses_aws_region=${var.ses_aws_region} cyhy_mailer_ses_send_email_role=${var.ses_role_arn} host=${aws_instance.cyhy_reporter.private_ip} host_groups=docker,cyhy_reporter production_workspace=${local.production_workspace}'"
+  }
 }
