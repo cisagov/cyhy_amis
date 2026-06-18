@@ -58,6 +58,6 @@ resource "null_resource" "mgmt_nessus_ansible_provisioner" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${aws_instance.mgmt_nessus[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.mgmt_bastion[*].public_ip[count.index]}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${aws_instance.mgmt_bastion[*].public_ip[count.index]} host=${aws_instance.mgmt_nessus[count.index].private_ip} host_groups=nessus nessus_activation_code=${var.mgmt_nessus_activation_codes[count.index]}'"
+    command = "ansible-playbook -i '${aws_instance.mgmt_nessus[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${try(aws_instance.mgmt_bastion[0].public_ip, "")}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${try(aws_instance.mgmt_bastion[0].public_ip, "")} host=${aws_instance.mgmt_nessus[count.index].private_ip} host_groups=nessus nessus_activation_code=${var.mgmt_nessus_activation_codes[count.index]}'"
   }
 }
