@@ -146,7 +146,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 
 | Name | Version |
 | ---- | ------- |
-| terraform | ~> 1.1 |
+| terraform | ~> 1.4 |
 | aws | ~> 6.7 |
 | cloudinit | ~> 2.0 |
 | null | ~> 3.2 |
