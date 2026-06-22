@@ -39,4 +39,5 @@ terraform apply -var-file="$workspace.tfvars" \
   -target=aws_security_group_rule.private_mongodb_ingress \
   -target=aws_security_group_rule.private_webd_egress_to_webui \
   -target=aws_security_group_rule.private_webd_ingress_from_bastion \
-  -target=null_resource.cyhy_dashboard_ansible_provisioner
+  -target=terraform_data.cyhy_dashboard_ansible_provisioner \
+  -target=terraform_data.cyhy_dashboard_ansible_provisioner_extra_vars

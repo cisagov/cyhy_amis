@@ -189,8 +189,14 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   stop_instance_before_detaching = true
 }
 
+resource "terraform_data" "cyhy_nmap_ansible_provisioner_extra_vars" {
+  count = length(aws_instance.cyhy_nmap)
+
+  input = "'bastion_host=${aws_instance.cyhy_bastion.public_ip} host=${aws_instance.cyhy_nmap[count.index].private_ip} host_groups=cyhy_runner,nmap'"
+}
+
 # Provision an nmap EC2 instance via Ansible
-resource "null_resource" "cyhy_nmap_ansible_provisioner" {
+resource "terraform_data" "cyhy_nmap_ansible_provisioner" {
   count = length(aws_instance.cyhy_nmap)
 
   # Ensure any EBS volumes are attached before running Ansible
@@ -202,7 +208,8 @@ resource "null_resource" "cyhy_nmap_ansible_provisioner" {
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated
-  triggers = {
+  triggers_replace = {
+    ansible_extra_vars   = terraform_data.cyhy_nmap_ansible_provisioner_extra_vars[count.index].input
     instance_id          = aws_instance.cyhy_nmap[count.index].id
     playbook_groups_sha1 = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
     playbook_main_sha1   = filesha1("${path.module}/../ansible/playbook.yml")
@@ -210,6 +217,6 @@ resource "null_resource" "cyhy_nmap_ansible_provisioner" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${aws_instance.cyhy_nmap[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${aws_instance.cyhy_bastion.public_ip} host=${aws_instance.cyhy_nmap[count.index].private_ip} host_groups=cyhy_runner,nmap'"
+    command = "ansible-playbook -i '${aws_instance.cyhy_nmap[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars ${terraform_data.cyhy_nmap_ansible_provisioner_extra_vars[count.index].input}"
   }
 }

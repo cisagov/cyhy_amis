@@ -72,8 +72,12 @@ resource "aws_instance" "cyhy_dashboard" {
   )
 }
 
+resource "terraform_data" "cyhy_dashboard_ansible_provisioner_extra_vars" {
+  input = "'bastion_host=${aws_instance.cyhy_bastion.public_ip} host=${aws_instance.cyhy_dashboard.private_ip} host_groups=cyhy_dashboard'"
+}
+
 # Provision the cyhy_dashboard EC2 instance via Ansible
-resource "null_resource" "cyhy_dashboard_ansible_provisioner" {
+resource "terraform_data" "cyhy_dashboard_ansible_provisioner" {
   # Ensure the EC2 instance is created before running Ansible
   depends_on = [
     aws_instance.cyhy_dashboard,
@@ -83,7 +87,8 @@ resource "null_resource" "cyhy_dashboard_ansible_provisioner" {
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated
-  triggers = {
+  triggers_replace = {
+    ansible_extra_vars      = terraform_data.cyhy_dashboard_ansible_provisioner_extra_vars.input
     instance_id             = aws_instance.cyhy_dashboard.id
     playbook_dashboard_sha1 = filesha1("${path.module}/../ansible/roles/cyhy_dashboard/tasks/main.yml")
     playbook_groups_sha1    = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
@@ -91,6 +96,6 @@ resource "null_resource" "cyhy_dashboard_ansible_provisioner" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${aws_instance.cyhy_dashboard.private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${aws_instance.cyhy_bastion.public_ip} host=${aws_instance.cyhy_dashboard.private_ip} host_groups=cyhy_dashboard'"
+    command = "ansible-playbook -i '${aws_instance.cyhy_dashboard.private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars ${terraform_data.cyhy_dashboard_ansible_provisioner_extra_vars.input}"
   }
 }

@@ -48,15 +48,22 @@ resource "aws_instance" "mgmt_nessus" {
   }
 }
 
+resource "terraform_data" "mgmt_nessus_ansible_provisioner_extra_vars" {
+  count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_nessus) : 0
+
+  input = "'bastion_host=${try(aws_instance.mgmt_bastion[0].public_ip, "")} host=${aws_instance.mgmt_nessus[count.index].private_ip} host_groups=nessus nessus_activation_code=${var.mgmt_nessus_activation_codes[count.index]}'"
+}
+
 # Provision a Management Nessus EC2 instance via Ansible
-resource "null_resource" "mgmt_nessus_ansible_provisioner" {
+resource "terraform_data" "mgmt_nessus_ansible_provisioner" {
   count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_nessus) : 0
 
   # Re-run this provisioner when:
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated
-  triggers = {
+  triggers_replace = {
+    ansible_extra_vars   = terraform_data.mgmt_nessus_ansible_provisioner_extra_vars[count.index].input
     instance_id          = aws_instance.mgmt_nessus[count.index].id
     playbook_groups_sha1 = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
     playbook_main_sha1   = filesha1("${path.module}/../ansible/playbook.yml")
@@ -64,6 +71,6 @@ resource "null_resource" "mgmt_nessus_ansible_provisioner" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${aws_instance.mgmt_nessus[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${try(aws_instance.mgmt_bastion[0].public_ip, "")}\"' --user=${var.remote_ssh_user} --extra-vars 'bastion_host=${try(aws_instance.mgmt_bastion[0].public_ip, "")} host=${aws_instance.mgmt_nessus[count.index].private_ip} host_groups=nessus nessus_activation_code=${var.mgmt_nessus_activation_codes[count.index]}'"
+    command = "ansible-playbook -i '${aws_instance.mgmt_nessus[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${try(aws_instance.mgmt_bastion[0].public_ip, "")}\"' --user=${var.remote_ssh_user} --extra-vars ${terraform_data.mgmt_nessus_ansible_provisioner_extra_vars[count.index].input}"
   }
 }

@@ -46,15 +46,22 @@ resource "aws_instance" "mgmt_bastion" {
   )
 }
 
+resource "terraform_data" "mgmt_bastion_ansible_provisioner_extra_vars" {
+  count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
+
+  input = "'host=${aws_instance.mgmt_bastion[count.index].public_ip} host_groups=mgmt_bastion'"
+}
+
 # Provision a Management Bastion EC2 instance via Ansible
-resource "null_resource" "mgmt_bastion_ansible_provisioner" {
+resource "terraform_data" "mgmt_bastion_ansible_provisioner" {
   count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
 
   # Re-run this provisioner when:
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated
-  triggers = {
+  triggers_replace = {
+    ansible_extra_vars     = terraform_data.mgmt_bastion_ansible_provisioner_extra_vars[count.index].input
     instance_id            = aws_instance.mgmt_bastion[count.index].id
     playbook_groups_sha1   = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
     playbook_main_sha1     = filesha1("${path.module}/../ansible/playbook.yml")
@@ -62,6 +69,6 @@ resource "null_resource" "mgmt_bastion_ansible_provisioner" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook -i '${aws_instance.mgmt_bastion[count.index].public_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no' --user=${var.remote_ssh_user} --extra-vars 'host=${aws_instance.mgmt_bastion[count.index].public_ip} host_groups=mgmt_bastion'"
+    command = "ansible-playbook -i '${aws_instance.mgmt_bastion[count.index].public_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no' --user=${var.remote_ssh_user} --extra-vars ${terraform_data.mgmt_bastion_ansible_provisioner_extra_vars[count.index].input}"
   }
 }

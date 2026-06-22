@@ -35,4 +35,5 @@ terraform apply -var-file="$workspace.tfvars" \
   -target=aws_route53_record.cyhy_rev_reporter_PTR \
   -target=aws_security_group_rule.private_mongodb_ingress \
   -target=aws_volume_attachment.cyhy_reporter_data_attachment \
-  -target=null_resource.cyhy_reporter_ansible_provisioner
+  -target=terraform_data.cyhy_reporter_ansible_provisioner \
+  -target=terraform_data.cyhy_reporter_ansible_provisioner_extra_vars
