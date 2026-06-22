@@ -146,6 +146,7 @@ resource "aws_volume_attachment" "vdp_report_data_attachment" {
   skip_destroy = true
 }
 
+# The extra variables passed into the Ansible provisioner below
 resource "terraform_data" "bod_docker_ansible_provisioner_extra_vars" {
   input = "'bastion_host=${aws_instance.bod_bastion.public_ip} code_gov_update_ses_aws_region=${var.ses_aws_region} code_gov_update_ses_send_email_role=${var.ses_role_arn} cyhy_mailer_docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename} cyhy_mailer_ses_aws_region=${var.ses_aws_region} cyhy_mailer_ses_send_email_role=${var.ses_role_arn} host=${aws_instance.bod_docker.private_ip} host_groups=docker,bod_docker orchestrator_aws_region=${var.aws_region} orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region} orchestrator_dmarc_import_es_role=${var.dmarc_import_es_read_write_role_arn} production_workspace=${local.production_workspace}'"
 }
@@ -159,6 +160,7 @@ resource "terraform_data" "bod_docker_ansible_provisioner" {
   ]
 
   # Re-run this provisioner when:
+  #  * The extra variables passed to Ansible are modified
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated

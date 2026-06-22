@@ -145,6 +145,7 @@ resource "aws_volume_attachment" "nessus_cyhy_runner_data_attachment" {
   stop_instance_before_detaching = true
 }
 
+# The extra variables passed into the Ansible provisioner below
 resource "terraform_data" "cyhy_nessus_ansible_provisioner_extra_vars" {
   count = length(aws_instance.cyhy_nessus)
 
@@ -161,6 +162,7 @@ resource "terraform_data" "cyhy_nessus_ansible_provisioner" {
   ]
 
   # Re-run this provisioner when:
+  #  * The extra variables passed to Ansible are modified
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated

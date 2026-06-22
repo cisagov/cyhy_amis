@@ -46,6 +46,7 @@ resource "aws_instance" "mgmt_bastion" {
   )
 }
 
+# The extra variables passed into the Ansible provisioner below
 resource "terraform_data" "mgmt_bastion_ansible_provisioner_extra_vars" {
   count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
 
@@ -57,6 +58,7 @@ resource "terraform_data" "mgmt_bastion_ansible_provisioner" {
   count = var.enable_mgmt_vpc ? length(aws_instance.mgmt_bastion) : 0
 
   # Re-run this provisioner when:
+  #  * The extra variables passed to Ansible are modified
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated

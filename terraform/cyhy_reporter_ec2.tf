@@ -109,6 +109,7 @@ resource "aws_volume_attachment" "cyhy_reporter_data_attachment" {
   stop_instance_before_detaching = true
 }
 
+# The extra variables passed into the Ansible provisioner below
 resource "terraform_data" "cyhy_reporter_ansible_provisioner_extra_vars" {
   input = "'bastion_host=${aws_instance.cyhy_bastion.public_ip} cyhy_mailer_docker_compose_override_file_for_mailer=${var.reporter_mailer_override_filename} cyhy_mailer_ses_aws_region=${var.ses_aws_region} cyhy_mailer_ses_send_email_role=${var.ses_role_arn} host=${aws_instance.cyhy_reporter.private_ip} host_groups=docker,cyhy_reporter production_workspace=${local.production_workspace}'"
 }
@@ -121,6 +122,7 @@ resource "terraform_data" "cyhy_reporter_ansible_provisioner" {
   ]
 
   # Re-run this provisioner when:
+  #  * The extra variables passed to Ansible are modified
   #  * The target EC2 instance is replaced or destroyed
   #  * The main Ansible playbook is updated
   #  * Any Ansible role playbooks for this instance are updated
