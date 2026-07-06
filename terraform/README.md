@@ -146,7 +146,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 
 | Name | Version |
 | ---- | ------- |
-| terraform | ~> 1.1 |
+| terraform | ~> 1.4 |
 | aws | ~> 6.7 |
 | cloudinit | ~> 2.0 |
 | null | ~> 3.2 |
@@ -165,16 +165,6 @@ terraform apply -var-file=<your_workspace>.tfvars
 
 | Name | Source | Version |
 | ---- | ------ | ------- |
-| bod\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| bod\_docker\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| cyhy\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| cyhy\_dashboard\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| cyhy\_mongo\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| cyhy\_nessus\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| cyhy\_nmap\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| cyhy\_reporter\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| mgmt\_bastion\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
-| mgmt\_nessus\_ansible\_provisioner | github.com/cloudposse/terraform-null-ansible | n/a |
 | wiz | tf.app.wiz.io/wiz/native-terraform/aws | ~> 1.0 |
 
 ## Resources ##
@@ -584,6 +574,26 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_vpc_peering_connection_options.cyhy_bod_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
 | [aws_vpc_peering_connection_options.cyhy_mgmt_peering_connection](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_options) | resource |
 | [null_resource.cyhy_nessus_pub_PTR](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [terraform_data.bod_bastion_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.bod_bastion_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.bod_docker_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.bod_docker_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_bastion_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_bastion_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_dashboard_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_dashboard_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_mongo_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_mongo_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_nessus_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_nessus_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_nmap_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_nmap_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_reporter_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.cyhy_reporter_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.mgmt_bastion_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.mgmt_bastion_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.mgmt_nessus_ansible_provisioner](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
+| [terraform_data.mgmt_nessus_ansible_provisioner_extra_vars](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) | resource |
 | [aws_ami.bastion](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.bod_docker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
 | [aws_ami.cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |

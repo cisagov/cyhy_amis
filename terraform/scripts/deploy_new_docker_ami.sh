@@ -35,4 +35,5 @@ terraform apply -var-file="$workspace.tfvars" \
   -target=aws_route53_record.bod_rev_docker_PTR \
   -target=aws_volume_attachment.bod_report_data_attachment \
   -target=aws_volume_attachment.vdp_report_data_attachment \
-  -target=module.bod_docker_ansible_provisioner
+  -target=terraform_data.bod_docker_ansible_provisioner \
+  -target=terraform_data.bod_docker_ansible_provisioner_extra_vars

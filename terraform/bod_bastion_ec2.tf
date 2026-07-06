@@ -45,18 +45,31 @@ resource "aws_instance" "bod_bastion" {
   )
 }
 
-# Provision the bastion EC2 instance via Ansible
-module "bod_bastion_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
+# The extra variables passed into the Ansible provisioner below
+resource "terraform_data" "bod_bastion_ansible_provisioner_extra_vars" {
+  input = "'host=${aws_instance.bod_bastion.public_ip} host_groups=bod_bastion'"
+}
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no'",
-    "--user=${var.remote_ssh_user}",
+# Provision the bastion EC2 instance via Ansible
+resource "terraform_data" "bod_bastion_ansible_provisioner" {
+  # Ensure the EC2 instance is created before running Ansible
+  depends_on = [
+    aws_instance.bod_bastion,
   ]
-  dry_run = false
-  envs = [
-    "host=${aws_instance.bod_bastion.public_ip}",
-    "host_groups=bod_bastion",
-  ]
-  playbook = "../ansible/playbook.yml"
+
+  # Re-run this provisioner when:
+  #  * The extra variables passed to Ansible are modified
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
+  triggers_replace = {
+    ansible_extra_vars   = terraform_data.bod_bastion_ansible_provisioner_extra_vars.input
+    instance_id          = aws_instance.bod_bastion.id
+    playbook_groups_sha1 = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_main_sha1   = filesha1("${path.module}/../ansible/playbook.yml")
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.bod_bastion.public_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no' --user=${var.remote_ssh_user} --extra-vars ${terraform_data.bod_bastion_ansible_provisioner_extra_vars.input}"
+  }
 }

@@ -189,35 +189,36 @@ resource "aws_volume_attachment" "nmap_cyhy_runner_data_attachment" {
   stop_instance_before_detaching = true
 }
 
+# The extra variables passed into the Ansible provisioner below
+resource "terraform_data" "cyhy_nmap_ansible_provisioner_extra_vars" {
+  count = length(aws_instance.cyhy_nmap)
+
+  input = "'bastion_host=${aws_instance.cyhy_bastion.public_ip} host=${aws_instance.cyhy_nmap[count.index].private_ip} host_groups=cyhy_runner,nmap'"
+}
+
 # Provision an nmap EC2 instance via Ansible
-module "cyhy_nmap_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
-  count  = length(aws_instance.cyhy_nmap)
+resource "terraform_data" "cyhy_nmap_ansible_provisioner" {
+  count = length(aws_instance.cyhy_nmap)
 
   # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.nmap_cyhy_runner_data_attachment,
   ]
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "bastion_host=${aws_instance.cyhy_bastion.public_ip}",
-    # If you terminate all the existing nmap instances and then run apply, the
-    # list aws_instance.cyhy_nmap[*].private_ip is empty at that time.  Then
-    # there is an error condition when Terraform evaluates what must be done
-    # for the apply because you are trying to use element() to reference
-    # indices in an empty list.  The list will be populated with the actual
-    # values as the apply runs, so we just need to get past the pre-apply
-    # stage.  Therefore this ugly hack works.
-    #
-    # If you find a better way, please use it and get rid of this
-    # affront to basic decency.
-    "host=${length(aws_instance.cyhy_nmap[*].private_ip) > 0 ? element(aws_instance.cyhy_nmap[*].private_ip, count.index) : ""}",
-    "host_groups=cyhy_runner,nmap",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run this provisioner when:
+  #  * The extra variables passed to Ansible are modified
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
+  triggers_replace = {
+    ansible_extra_vars   = terraform_data.cyhy_nmap_ansible_provisioner_extra_vars[count.index].input
+    instance_id          = aws_instance.cyhy_nmap[count.index].id
+    playbook_groups_sha1 = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_main_sha1   = filesha1("${path.module}/../ansible/playbook.yml")
+    playbook_swap_sha1   = filesha1("${path.module}/../ansible/roles/swap/tasks/main.yml")
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.cyhy_nmap[count.index].private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.cyhy_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars ${terraform_data.cyhy_nmap_ansible_provisioner_extra_vars[count.index].input}"
+  }
 }

@@ -146,36 +146,37 @@ resource "aws_volume_attachment" "vdp_report_data_attachment" {
   skip_destroy = true
 }
 
-# Provision the Docker EC2 instance via Ansible
-module "bod_docker_ansible_provisioner" {
-  source = "github.com/cloudposse/terraform-null-ansible"
+# The extra variables passed into the Ansible provisioner below
+resource "terraform_data" "bod_docker_ansible_provisioner_extra_vars" {
+  input = "'bastion_host=${aws_instance.bod_bastion.public_ip} code_gov_update_ses_aws_region=${var.ses_aws_region} code_gov_update_ses_send_email_role=${var.ses_role_arn} cyhy_mailer_docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename} cyhy_mailer_ses_aws_region=${var.ses_aws_region} cyhy_mailer_ses_send_email_role=${var.ses_role_arn} host=${aws_instance.bod_docker.private_ip} host_groups=docker,bod_docker orchestrator_aws_region=${var.aws_region} orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region} orchestrator_dmarc_import_es_role=${var.dmarc_import_es_read_write_role_arn} production_workspace=${local.production_workspace}'"
+}
 
+# Provision the Docker EC2 instance via Ansible
+resource "terraform_data" "bod_docker_ansible_provisioner" {
   # Ensure any EBS volumes are attached before running Ansible
   depends_on = [
     aws_volume_attachment.bod_report_data_attachment,
     aws_volume_attachment.vdp_report_data_attachment,
   ]
 
-  arguments = [
-    "--ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"'",
-    "--user=${var.remote_ssh_user}",
-  ]
-  dry_run = false
-  envs = [
-    "bastion_host=${aws_instance.bod_bastion.public_ip}",
-    "code_gov_update_ses_aws_region=${var.ses_aws_region}",
-    "code_gov_update_ses_send_email_role=${var.ses_role_arn}",
-    # This file will be used to add/override any settings in
-    # docker-compose.yml (for cyhy-mailer).
-    "cyhy_mailer_docker_compose_override_file_for_mailer=${var.docker_mailer_override_filename}",
-    "cyhy_mailer_ses_aws_region=${var.ses_aws_region}",
-    "cyhy_mailer_ses_send_email_role=${var.ses_role_arn}",
-    "host=${aws_instance.bod_docker.private_ip}",
-    "host_groups=docker,bod_docker",
-    "orchestrator_aws_region=${var.aws_region}",
-    "orchestrator_dmarc_import_aws_region=${var.dmarc_import_aws_region}",
-    "orchestrator_dmarc_import_es_role=${var.dmarc_import_es_read_write_role_arn}",
-    "production_workspace=${local.production_workspace}",
-  ]
-  playbook = "../ansible/playbook.yml"
+  # Re-run this provisioner when:
+  #  * The extra variables passed to Ansible are modified
+  #  * The target EC2 instance is replaced or destroyed
+  #  * The main Ansible playbook is updated
+  #  * Any Ansible role playbooks for this instance are updated
+  triggers_replace = {
+    ansible_extra_vars         = terraform_data.bod_docker_ansible_provisioner_extra_vars.input
+    instance_id                = aws_instance.bod_docker.id
+    playbook_code_gov_sha1     = filesha1("${path.module}/../ansible/roles/code_gov_update/tasks/main.yml")
+    playbook_groups_sha1       = filesha1("${path.module}/../ansible/roles/groups/tasks/main.yml")
+    playbook_mailer_sha1       = filesha1("${path.module}/../ansible/roles/cyhy_mailer/tasks/main.yml")
+    playbook_main_sha1         = filesha1("${path.module}/../ansible/playbook.yml")
+    playbook_ops_sha1          = filesha1("${path.module}/../ansible/roles/cyhy_ops/tasks/main.yml")
+    playbook_orchestrator_sha1 = filesha1("${path.module}/../ansible/roles/orchestrator/tasks/main.yml")
+    playbook_vdp_sha1          = filesha1("${path.module}/../ansible/roles/vdp_scanner/tasks/main.yml")
+  }
+
+  provisioner "local-exec" {
+    command = "ansible-playbook -i '${aws_instance.bod_docker.private_ip},' ../ansible/playbook.yml --ssh-common-args='-o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -W %h:%p -o StrictHostKeyChecking=no -q ${var.remote_ssh_user}@${aws_instance.bod_bastion.public_ip}\"' --user=${var.remote_ssh_user} --extra-vars ${terraform_data.bod_docker_ansible_provisioner_extra_vars.input}"
+  }
 }
