@@ -4,9 +4,12 @@ data "amazon-ami" "debian_buster_x86_64" {
     root-device-type    = "ebs"
     virtualization-type = "hvm"
   }
-  most_recent = true
-  owners      = ["136693071363"]
-  region      = var.build_region
+  # This allows for the use of deprecated AMIs, which is now necessary
+  # for Debian Buster.
+  include_deprecated = true
+  most_recent        = true
+  owners             = ["136693071363"]
+  region             = var.build_region
 }
 
 data "amazon-ami" "debian_bookworm_arm64" {
