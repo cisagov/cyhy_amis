@@ -165,17 +165,14 @@ repos:
     hooks:
       - id: pip-audit
         args:
-          # We have to ignore this vulnerability since we need to pin
-          # to ansible 10 for now to support our CyHy code that must
-          # still run on Debian Buster.  This vulnerability is fixed
-          # in ansible>=12.
+          # We have to ignore these vulnerabilities since we need to
+          # pin to Ansible 10 for now to support our CyHy code that
+          # must still run on Debian Buster.
           #
-          # This isn't a big deal since the vulnerability only impacts
-          # users of the Keycloak modules in
-          # ansible.community.general, and we don't use these modules.
-          #
-          # TODO: Remove this when it becomes possible.  See
+          # TODO: Remove these lines when that becomes possible.  See
           # cisagov/skeleton-ansible-role#248 for more details.
+          - --ignore-vuln
+          - CVE-2026-11332
           - --ignore-vuln
           - GHSA-8ggh-xwr9-3373
           # We have to ignore this vulnerability for now since an
