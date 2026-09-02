@@ -115,7 +115,7 @@ resource "aws_ebs_volume" "cyhy_mongo_data" {
 resource "aws_ebs_volume" "cyhy_mongo_journal" {
   availability_zone = "${var.aws_region}${var.aws_availability_zone}"
   type              = "io2"
-  size              = 8
+  size              = 16
   iops              = 250
   encrypted         = true
 
