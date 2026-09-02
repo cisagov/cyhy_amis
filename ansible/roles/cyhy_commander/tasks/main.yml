@@ -150,3 +150,45 @@
     minute: "45"
     name: Nightly cyhy-kevsync
     user: cyhy
+
+#
+# Ensure the /var/cyhy/scripts directory exists
+#
+- name: Create the /var/cyhy/scripts directory (if it doesn't already exist)
+  ansible.builtin.file:
+    group: cyhy
+    mode: u=rwx,g=rx,o=rx
+    owner: cyhy
+    path: /var/cyhy/scripts
+    state: directory
+
+#
+# Copy the run_cyhy_ssvcsync.sh script to the scripts directory
+#
+- name: Copy the run_cyhy_ssvcsync.sh script to the scripts directory
+  ansible.builtin.copy:
+    dest: /var/cyhy/scripts/run_cyhy_ssvcsync.sh
+    mode: u=rx,g=rx,o=rx
+    src: run_cyhy_ssvcsync.sh
+
+#
+# Install jq, which is used by the run_cyhy_ssvcsync.sh script to parse JSON
+# responses from the GitHub API
+#
+- name: Install jq (used by run_cyhy_ssvcsync.sh script)
+  ansible.builtin.package:
+    name:
+      - jq
+
+#
+# Run cyhy-ssvcsync daily at 0900 (UTC) as cyhy user
+#
+- name: Set up nightly cron job to sync SSVC data
+  ansible.builtin.cron:
+    hour: "9"
+    job: >-
+      /var/cyhy/scripts/run_cyhy_ssvcsync.sh 2>&1
+      | /usr/bin/logger --tag cyhy-ssvcsync
+    minute: "0"
+    name: Nightly cyhy-ssvcsync
+    user: cyhy
