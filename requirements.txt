@@ -6,7 +6,7 @@
 # jumping to another major version without testing, since there are
 # often breaking changes across major versions.  This is the reason
 # for the upper bound.
-ansible>=10,<11
+ansible>=10,<15
 # ansible-core<2.17.7 suffers from GHSA-99w6-3xph-cx78.
 #
 # Note that any changes made to this dependency must also be made in
