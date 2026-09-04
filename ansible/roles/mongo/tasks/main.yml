@@ -25,6 +25,7 @@
     password: "{{ mongo_admin_pw }}"
     roles: "{{ mongo_admin_roles }}"
     state: present
+  register: mongo_create_admin_user
   when: mongo_check_for_mongo_users.rc == 0
 
 - name: Update admin user in admin db (authenticate as admin)
@@ -37,6 +38,7 @@
     password: "{{ mongo_admin_pw }}"
     roles: "{{ mongo_admin_roles }}"
     state: present
+  register: mongo_update_admin_user
   when: mongo_check_for_mongo_users.rc != 0
 
 - name: Update other users (authenticate as admin)
@@ -62,14 +64,51 @@
   # miss an edge case like error output on task failure that would leak
   # password information by disabling the rule.
   no_log: true
+  register: mongo_update_other_users
 
 - name: Copy mongo configuration file
   ansible.builtin.template:
     dest: /etc/mongod.conf
     mode: u=rw,g=r,o=r
     src: mongod.conf
+  register: mongo_copy_mongo_conf
 
-- name: Restart mongod service to use new configuration
+- name: Restart mongod service and stop/start cyhy-commander service if needed
+  when: >-
+    mongo_create_admin_user.changed
+    or mongo_update_admin_user.changed
+    or mongo_update_other_users.changed
+    or mongo_copy_mongo_conf.changed
+  block:
+    - name: Get service information
+      ansible.builtin.service_facts:
+
+    - name: Determine if cyhy-commander needs to be stopped
+      ansible.builtin.set_fact:
+        mongo_stop_commander: >-
+          {{
+            'cyhy-commander' in ansible_facts.services
+            and ansible_facts.services['cyhy-commander'].state != 'stopped'
+          }}
+
+    - name: Stop cyhy-commander
+      ansible.builtin.service:
+        name: cyhy-commander
+        state: stopped
+      when: mongo_stop_commander
+
+    - name: Restart mongod service to use new configuration
+      ansible.builtin.service:
+        name: mongod
+        state: restarted
+
+    - name: Start cyhy-commander
+      ansible.builtin.service:
+        name: cyhy-commander
+        state: started
+      when: mongo_stop_commander
+
+- name: Start mongod if it is not already running
   ansible.builtin.service:
     name: mongod
-    state: restarted
+    state: started
