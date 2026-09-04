@@ -4,4 +4,7 @@
   become: true
   become_method: ansible.builtin.sudo
   roles:
-    - vdp_scanner
+    - role: vdp_scanner
+      vars:
+        vdp_scanner_file_owner_group: "{{ cyhy_user_username }}"
+        vdp_scanner_file_owner_username: "{{ cyhy_user_username }}"
