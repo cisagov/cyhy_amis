@@ -439,6 +439,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_route_table_association.mgmt_association](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route_table_association) | resource |
 | [aws_s3_bucket.cyhy_archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket.moe_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
+| [aws_s3_bucket_lifecycle_configuration.cyhy_archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
 | [aws_s3_bucket_notification.fdi_lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_notification) | resource |
 | [aws_s3_bucket_ownership_controls.cyhy_archive](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
 | [aws_s3_bucket_ownership_controls.moe_bucket](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
@@ -656,6 +657,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | create\_bod\_flow\_logs | Whether or not to create flow logs for the BOD 18-01 VPC. | `bool` | `false` | no |
 | create\_cyhy\_flow\_logs | Whether or not to create flow logs for the CyHy VPC. | `bool` | `false` | no |
 | create\_mgmt\_flow\_logs | Whether or not to create flow logs for the Management VPC. | `bool` | `false` | no |
+| cyhy\_archive\_bucket\_lifecycle\_rule\_name | The name of the lifecycle rule for the cyhy-archive S3 bucket. | `string` | `"cyhy-archive-object-storage-class-transitions"` | no |
 | cyhy\_archive\_bucket\_name | S3 bucket for storing compressed archive files created by cyhy-archive. | `string` | `"ncats-cyhy-archive"` | no |
 | cyhy\_elastic\_ip\_cidr\_block | The CIDR block of elastic addresses available for use by CyHy scanner instances. | `string` | `""` | no |
 | cyhy\_portscan\_first\_elastic\_ip\_offset | The offset of the address (from the start of the elastic IP CIDR block) to be assigned to the *first* CyHy portscan instance.  For example, if the CIDR block is 192.168.1.0/24 and the offset is set to 10, the first portscan address used will be 192.168.1.10.  This is only used in production workspaces.  Each additional portscan instance will get the next consecutive address in the block.  NOTE: This will only work as intended when a contiguous CIDR block of EIP addresses is available. | `number` | `0` | no |
