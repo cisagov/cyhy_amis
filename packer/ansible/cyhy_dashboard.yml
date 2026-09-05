@@ -6,6 +6,7 @@
   roles:
     - role: ncats_webd
       vars:
+        ncats_webd_cyhy_core_version: "{{ cyhy_core_version }}"
         ncats_webd_maxmind_account_id: "{{ maxmind_account_id_secret }}"
         ncats_webd_maxmind_license_key: "{{ maxmind_license_key_secret }}"
     - ncats_webui

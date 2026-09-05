@@ -32,6 +32,7 @@ build {
     extra_arguments = flatten(setproduct(["--extra-vars"], concat(
       local.cyhy_user_ansible_variables,
       local.maxmind_account_ansible_variables,
+      local.python_package_variables,
     )))
     groups        = ["cyhy_archive", "cyhy_commander", "cyhy_feeds", "mongo"]
     playbook_file = "ansible/playbook.yml"
