@@ -1,8 +1,8 @@
 resource "aws_dlm_lifecycle_policy" "cyhy_ebs" {
-  description        = "Policy to generate twice-daily EBS snapshots for CyHy"
+  description        = "Policy to generate EBS snapshots for CyHy"
   execution_role_arn = aws_iam_role.dlm_lifecycle_role.arn
   tags = {
-    Name = "Generate twice-daily EBS snapshots for CyHy"
+    Name = "EBS snapshots for CyHy"
   }
 
   policy_details {
@@ -14,16 +14,15 @@ resource "aws_dlm_lifecycle_policy" "cyhy_ebs" {
 
     schedule {
       copy_tags = true
-      name      = "10 twice-daily snapshots"
+      name      = "CyHy EBS snapshots"
 
       create_rule {
-        interval      = 12
-        interval_unit = "HOURS"
-        times         = ["09:00"]
+        interval = var.ebs_volume_snapshot_create_interval
+        times    = [var.ebs_volume_snapshot_evaluate_time]
       }
 
       retain_rule {
-        count = 10
+        count = var.ebs_volume_snapshot_retain_count
       }
     }
   }
