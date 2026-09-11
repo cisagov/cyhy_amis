@@ -270,7 +270,7 @@ variable "docker_mailer_override_filename" {
 
 variable "ebs_volume_snapshot_create_interval" {
   default     = 12
-  description = "A positive, non-zero integer denoting the interval in hours at which new snapshots of EBS volumes are to be created (e.g., 5).  Valid values range are non-zero integers that divide 24:  1, 2, 3, 4, 6, 8, 12, 24."
+  description = "A positive, non-zero integer denoting the interval in hours at which new snapshots of EBS volumes are to be created (e.g., 5).  Valid values are non-zero integers that divide 24:  1, 2, 3, 4, 6, 8, 12, 24."
   nullable    = false
   type        = number
 
