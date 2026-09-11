@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "dlm_assume_role" {
 # Create the DLM IAM Role
 resource "aws_iam_role" "dlm_lifecycle_role" {
   assume_role_policy = data.aws_iam_policy_document.dlm_assume_role.json
-  name               = "dlm-lifecycle-role"
+  name               = format("dlm_lifecycle_role_%s", local.production_workspace ? "production" : terraform.workspace)
 }
 
 # Attach the necessary AWS-managed policy to the DLM role
