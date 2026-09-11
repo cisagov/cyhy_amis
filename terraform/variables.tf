@@ -268,6 +268,44 @@ variable "docker_mailer_override_filename" {
   type        = string
 }
 
+variable "ebs_volume_snapshot_create_interval" {
+  default     = 12
+  description = "A positive, non-zero integer denoting the interval in hours at which new snapshots of EBS volumes are to be created (e.g., 5).  Valid values are non-zero integers that divide 24:  1, 2, 3, 4, 6, 8, 12, 24."
+  nullable    = false
+  type        = number
+
+  validation {
+    # floor() verifies the number is an integer.
+    condition     = floor(var.ebs_volume_snapshot_create_interval) == var.ebs_volume_snapshot_create_interval && contains([1, 2, 3, 4, 6, 8, 12, 24], var.ebs_volume_snapshot_create_interval)
+    error_message = "The creation interval must be a positive, non-zero integer that divides 24."
+  }
+}
+
+variable "ebs_volume_snapshot_evaluate_time" {
+  default     = "09:00"
+  description = "A string denoting a time in 24 hour clock format (e.g., \"15:00\") corresponding to when the lifecycle policy should be evaluated."
+  nullable    = false
+  type        = string
+
+  validation {
+    condition     = can(regex("^(?:[01][0-9]|2[0-3]):[0-5][0-9]$", var.ebs_volume_snapshot_evaluate_time))
+    error_message = "The evaluation time must be a time in 24 hour clock format (e.g., \"15:00\")."
+  }
+}
+
+variable "ebs_volume_snapshot_retain_count" {
+  default     = 10
+  description = "A positive, non-zero integer denoting the number of past snapshots of EBS volumes that are to be retained (e.g., 5).  Valid values range from 1 to 1000."
+  nullable    = false
+  type        = number
+
+  validation {
+    # floor() verifies the number is an integer.
+    condition     = floor(var.ebs_volume_snapshot_retain_count) == var.ebs_volume_snapshot_retain_count && var.ebs_volume_snapshot_retain_count >= 1 && var.ebs_volume_snapshot_retain_count <= 1000
+    error_message = "The retention count must be a positive, non-zero integer in the range [1,1000]."
+  }
+}
+
 # If additional VPCs are added in the future:
 #  - Ensure that they include security groups and ACLs that allow complete
 #    access by the vulnscanner in the management VPC

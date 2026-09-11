@@ -184,6 +184,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_default_route_table.bod_default_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table) | resource |
 | [aws_default_route_table.cyhy_default_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table) | resource |
 | [aws_default_route_table.mgmt_default_route_table](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/default_route_table) | resource |
+| [aws_dlm_lifecycle_policy.cyhy_ebs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dlm_lifecycle_policy) | resource |
 | [aws_ebs_volume.bod_report_data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume) | resource |
 | [aws_ebs_volume.cyhy_mongo_data](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume) | resource |
 | [aws_ebs_volume.cyhy_mongo_journal](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ebs_volume) | resource |
@@ -229,6 +230,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_iam_role.cyhy_nessus_instance_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.cyhy_nmap_instance_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.cyhy_reporter_instance_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role.dlm_lifecycle_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.fdi_lambda_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.lambda_roles](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.mgmt_flow_log_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
@@ -248,6 +250,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_iam_role_policy_attachment.cloudwatch_agent_policy_attachment_cyhy_nessus](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.cloudwatch_agent_policy_attachment_cyhy_nmap](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.cloudwatch_agent_policy_attachment_cyhy_reporter](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.dlm_lifecycle_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.dmarc_es_assume_read_role_policy_attachment_cyhy_mongo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.dmarc_es_assume_read_write_role_policy_attachment_bod_docker](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_iam_role_policy_attachment.lambda_eni_policy_attachment_bod](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
@@ -610,6 +613,7 @@ terraform apply -var-file=<your_workspace>.tfvars
 | [aws_eip.cyhy_nmap_eips](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eip) | data source |
 | [aws_iam_policy_document.bod_flow_log_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.cyhy_flow_log_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.dlm_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.dmarc_es_assume_read_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.dmarc_es_assume_read_write_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.ec2_service_assume_role_doc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -665,6 +669,9 @@ terraform apply -var-file=<your_workspace>.tfvars
 | dmarc\_import\_es\_read\_role\_arn | The ARN of the role that must be assumed in order to read the dmarc-import Elasticsearch database. | `string` | n/a | yes |
 | dmarc\_import\_es\_read\_write\_role\_arn | The ARN of the role that must be assumed in order to read and write to the dmarc-import Elasticsearch database. | `string` | n/a | yes |
 | docker\_mailer\_override\_filename | This file is used to add/override any Docker composition settings for cyhy-mailer for the docker EC2 instance.  It must already exist in /var/cyhy/cyhy-mailer. | `string` | `"docker-compose.bod.yml"` | no |
+| ebs\_volume\_snapshot\_create\_interval | A positive, non-zero integer denoting the interval in hours at which new snapshots of EBS volumes are to be created (e.g., 5).  Valid values are non-zero integers that divide 24:  1, 2, 3, 4, 6, 8, 12, 24. | `number` | `12` | no |
+| ebs\_volume\_snapshot\_evaluate\_time | A string denoting a time in 24 hour clock format (e.g., "15:00") corresponding to when the lifecycle policy should be evaluated. | `string` | `"09:00"` | no |
+| ebs\_volume\_snapshot\_retain\_count | A positive, non-zero integer denoting the number of past snapshots of EBS volumes that are to be retained (e.g., 5).  Valid values range from 1 to 1000. | `number` | `10` | no |
 | enable\_mgmt\_vpc | Whether or not to enable unfettered access from the vulnerability scanner in the Management VPC to other VPCs (CyHy, BOD).  This should only be enabled while running security scans from the Management VPC. | `bool` | `false` | no |
 | findings\_data\_field\_map | The key for the file storing field name mappings in JSON format. | `string` | n/a | yes |
 | findings\_data\_import\_db\_hostname | The hostname that has the database to store the findings data in. | `string` | `""` | no |
