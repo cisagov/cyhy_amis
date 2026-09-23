@@ -6,8 +6,7 @@ resource "aws_dlm_lifecycle_policy" "cyhy_ebs" {
   }
 
   policy_details {
-    policy_language = "STANDARD"
-    resource_types  = ["VOLUME"]
+    resource_types = ["VOLUME"]
     target_tags = {
       Application = "Cyber Hygiene"
     }
