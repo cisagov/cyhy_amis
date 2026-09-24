@@ -4,4 +4,7 @@
   become: true
   become_method: ansible.builtin.sudo
   roles:
-    - cyhy_feeds
+    - role: cyhy_feeds
+      vars:
+        cyhy_feeds_file_owner_group: "{{ cyhy_user_username }}"
+        cyhy_feeds_file_owner_username: "{{ cyhy_user_username }}"

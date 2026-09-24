@@ -8,4 +8,7 @@
       vars:
         ncats_webd_maxmind_account_id: "{{ maxmind_account_id_secret }}"
         ncats_webd_maxmind_license_key: "{{ maxmind_license_key_secret }}"
-    - ncats_webui
+    - role: ncats_webui
+      vars:
+        ncats_webui_file_owner_group: "{{ cyhy_user_username }}"
+        ncats_webui_file_owner_username: "{{ cyhy_user_username }}"

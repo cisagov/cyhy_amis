@@ -6,5 +6,7 @@
   roles:
     - role: cyhy_archive
       vars:
+        cyhy_archive_file_owner_group: "{{ cyhy_user_username }}"
+        cyhy_archive_file_owner_username: "{{ cyhy_user_username }}"
         cyhy_archive_maxmind_account_id: "{{ maxmind_account_id_secret }}"
         cyhy_archive_maxmind_license_key: "{{ maxmind_license_key_secret }}"
