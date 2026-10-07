@@ -31,6 +31,24 @@ variable "build_region" {
   type        = string
 }
 
+variable "cyhy_commander_version" {
+  default     = "v1.1.0"
+  description = "The version of cisagov/cyhy-commander to use; must be a valid git reference."
+  type        = string
+}
+
+variable "cyhy_core_version" {
+  default     = "v1.1.14"
+  description = "The version of cisagov/cyhy-core to use; must be a valid git reference."
+  type        = string
+}
+
+variable "cyhy_reports_version" {
+  default     = "v1.1.1"
+  description = "The version of cisagov/cyhy-reports to use; must be a valid git reference."
+  type        = string
+}
+
 variable "cyhy_user_information" {
   default = {
     home_directory = "/var/cyhy"

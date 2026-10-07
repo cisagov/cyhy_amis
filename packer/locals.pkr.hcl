@@ -13,4 +13,10 @@ locals {
     "maxmind_account_id_secret=${data.amazon-parameterstore.maxmind_account_id.value}",
     "maxmind_license_key_secret=${data.amazon-parameterstore.maxmind_license_key.value}",
   ]
+
+  python_package_variables = [
+    "cyhy_commander_version=${var.cyhy_commander_version}",
+    "cyhy_core_version=${var.cyhy_core_version}",
+    "cyhy_reports_version=${var.cyhy_reports_version}",
+  ]
 }
