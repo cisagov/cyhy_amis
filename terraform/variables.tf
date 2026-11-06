@@ -147,11 +147,12 @@ variable "aws_region" {
 
 variable "bod_lambda_functions" {
   default     = {}
-  description = "A map of information for each BOD 18-01 Lambda. The keys are the scan types and the values are objects that contain the Lambda's name and the key (name) for the corresponding deployment package in the BOD Lambda S3 bucket. Example: `{ pshtt = { lambda_file = \"pshtt.zip\", lambda_name = \"task_pshtt\" }}`"
+  description = "A map of information for each BOD 18-01 Lambda. The keys are the scan types and the values are objects that contain the Lambda's name, key (name), and runtime for the corresponding deployment package in the BOD Lambda S3 bucket. Example: `{ pshtt = { lambda_file = \"pshtt.zip\", lambda_name = \"task_pshtt\", lambda_runtime = \"python3.10\" }}`"
   nullable    = false
   type = map(object({
-    lambda_file = string,
-    lambda_name = string,
+    lambda_file    = string,
+    lambda_name    = string,
+    lambda_runtime = string,
   }))
 }
 
