@@ -66,7 +66,7 @@ resource "aws_lambda_function" "lambdas" {
   function_name = each.value.lambda_name
   role          = aws_iam_role.lambda_roles[each.key].arn
   handler       = "lambda_handler.handler"
-  runtime       = "python3.7"
+  runtime       = each.value.lambda_runtime
   timeout       = 900
   memory_size   = 128
   description   = "Lambda function for performing BOD 18-01 ${each.key} scans"
