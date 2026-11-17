@@ -37,6 +37,41 @@ resource "aws_s3_bucket_ownership_controls" "cyhy_archive" {
   }
 }
 
+# Add a lifecycle configuration to the bucket to transition any cyhy-archive objects to
+# progressively slower and/or more expensive to access, but cheaper to store, storage
+# classes. The dates to transition take into account the minimum retention period
+# requirements for the storage class the object is transitioning from.
+resource "aws_s3_bucket_lifecycle_configuration" "cyhy_archive" {
+  bucket = aws_s3_bucket.cyhy_archive.id
+
+  rule {
+    id     = var.cyhy_archive_bucket_lifecycle_rule_name
+    status = "Enabled"
+
+    filter {
+      # This matches the prefix for the archive files produced by the cyhy-archive
+      # script.
+      prefix = "cyhy_archive_"
+    }
+
+    # After 30 days, transition archive objects to the Glacier Instant Retrieval
+    # storage class. This storage class has a 90 day minimum retention period.
+    transition {
+      days          = 30
+      storage_class = "GLACIER_IR"
+    }
+
+    # After 120 days (30 in Standard and 90 in Glacier Instant Retrieval), transition
+    # archive objects to the Glacier Deep Archive storage class. This storage class has
+    # a 180 day minimum retention period. This is the final storage class for these
+    # objects.
+    transition {
+      days          = 120
+      storage_class = "DEEP_ARCHIVE"
+    }
+  }
+}
+
 # IAM policy document that that allows S3 PutObject (write) on our
 # cyhy-archive bucket.  This will be applied to the cyhy-archive role.
 data "aws_iam_policy_document" "s3_cyhy_archive_write_doc" {
