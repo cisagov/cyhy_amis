@@ -7,6 +7,8 @@
     - xfs
     - role: cyhy_reports
       vars:
+        cyhy_reports_file_owner_group: "{{ cyhy_user_username }}"
+        cyhy_reports_file_owner_username: "{{ cyhy_user_username }}"
         cyhy_reports_maxmind_account_id: "{{ maxmind_account_id_secret }}"
         cyhy_reports_maxmind_license_key: "{{ maxmind_license_key_secret }}"
         cyhy_reports_texmf_buffer_size: 100000000

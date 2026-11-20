@@ -4,7 +4,10 @@
   become: true
   become_method: ansible.builtin.sudo
   roles:
-    - cyhy_runner
+    - role: cyhy_runner
+      vars:
+        cyhy_runner_file_owner_group: "{{ cyhy_user_username }}"
+        cyhy_runner_file_owner_username: "{{ cyhy_user_username }}"
     - role: nessus
       vars:
         nessus_package_bucket: ncats-3rd-party-packages
