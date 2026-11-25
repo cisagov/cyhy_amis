@@ -36,7 +36,6 @@
   loop_control:
     label: "{{ item.filename }}"
 
-
 - name: Create the AWS config
   ansible.builtin.template:
     dest: /var/cyhy/orchestrator/secrets/aws_config
@@ -44,6 +43,18 @@
     mode: u=r,g=r,o=
     owner: cyhy
     src: aws_config.j2
+
+- name: Create the Redis password file
+  ansible.builtin.copy:
+    content: >-
+      {{ lookup('ansible.builtin.password',
+      '/dev/null chars=ascii_letters,digits length=32') }}
+    dest: /var/cyhy/orchestrator/secrets/redis_password
+    group: cyhy
+    mode: u=r,g=r,o=
+    owner: cyhy
+  no_log: true
+
 
 #
 # Create a cron job for scanning
