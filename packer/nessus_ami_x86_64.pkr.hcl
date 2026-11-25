@@ -17,13 +17,13 @@ source "amazon-ebs" "nessus_x86_64" {
     volume_type           = "gp3"
   }
   region       = var.build_region
-  source_ami   = data.amazon-ami.debian_bookworm_x86_64.id
-  ssh_username = "admin"
+  source_ami   = data.amazon-ami.ubuntu_server_noble_x86_64.id
+  ssh_username = "ubuntu"
   tags = {
     Application   = "Cyber Hygiene"
     Architecture  = "x86_64"
-    Base_AMI_Name = data.amazon-ami.debian_bookworm_x86_64.name
-    OS_Version    = "Debian Bookworm"
+    Base_AMI_Name = data.amazon-ami.ubuntu_server_noble_x86_64.name
+    OS_Version    = "Ubuntu Noble Numbat"
     Pre_Release   = var.is_prerelease
     Release       = "Latest"
     Team          = "VM Fusion - Development"
